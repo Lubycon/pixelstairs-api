@@ -32,23 +32,23 @@ class SecurityHandler
 			Abort::Error('0043','Check Origin');
 		}
 
-        if( !$this->isOptionMethod($request) ){
-
-            if ( $this->devPassKey($request) !== $this->devPassValue() ) {
-                Abort::Error('0043','Check Dev Pass');
-            }
-            if ( !$this->apiUrlVersionCheck($request) || !$this->apiVersionCheck($request) ) {
-                Abort::Error('0073','Check Current API version');
-            }
-            if ( $this->isProvision() ) {
-                if ( !$this->checkProvisionFront($request) ) {
-                    Abort::Error('0073');
-                }
-            }
-            if ( !$this->requiredHeaderCheck($request) ) {
-                Abort::Error('0047');
-            }
-        }
+        // if( !$this->isOptionMethod($request) ){
+        //
+        //     if ( $this->devPassKey($request) !== $this->devPassValue() ) {
+        //         Abort::Error('0043','Check Dev Pass');
+        //     }
+        //     if ( !$this->apiUrlVersionCheck($request) || !$this->apiVersionCheck($request) ) {
+        //         Abort::Error('0073','Check Current API version');
+        //     }
+        //     if ( $this->isProvision() ) {
+        //         if ( !$this->checkProvisionFront($request) ) {
+        //             Abort::Error('0073');
+        //         }
+        //     }
+        //     if ( !$this->requiredHeaderCheck($request) ) {
+        //         Abort::Error('0047');
+        //     }
+        // }
 
 		$response = $next($request);
 

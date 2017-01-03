@@ -44,7 +44,7 @@ class CheckContoller extends Controller
     }
 
     public static function checkToken($request){
-        $token = $request->header('X-lubycon-token');
+        $token = $request->header('X-mitty-token');
         $tokenData = (object)array(
             "device" => substr($token, 0, 1),
             "token" => substr($token, 1, 30),

@@ -5,6 +5,8 @@ namespace App\Http\Requests\Auth;
 use App\Http\Requests\Request;
 use App\Models\User;
 
+use Log;
+
 class AuthSignupRequest extends Request
 {
     public function authorize()
@@ -15,17 +17,15 @@ class AuthSignupRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            'email' => 'required|unique:users,email',
+            'email' => 'required|unique:users,email|email',
+            'name' => 'required|unique:users,name',
             'nickname' => 'required|unique:users,nickname',
             'password' => 'required',
-            'snsCode' => 'required',
-            'country' => 'required',
-            'newsletter' => 'required'
+            'position' => 'required',
+            'grade' => 'required|in:user,admin,super_admin',
         ];
-        $validateRule = $this->getModelValidateRule();
-        $rule = $this->ruleMapping($requiredRule,$validateRule);
 
-        return $rule;
+        return $requiredRule;
     }
 
     public function getModelValidateRule(){

@@ -16,13 +16,9 @@ class AuthSigninRequest extends Request
     {
         $requiredRule = [
             'email' => 'required',
-            'password' => 'required',
-            'snsCode' => 'required'
+            'password' => 'required'
         ];
-        $validateRule = $this->getModelValidateRule();
-        $rule = $this->ruleMapping($requiredRule,$validateRule);
-
-        return $rule;
+        return $requiredRule;
     }
 
     public function getModelValidateRule(){

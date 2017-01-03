@@ -16,6 +16,7 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('email')->unique();
             $table->string('name')->unique();
+            $table->string('nickname')->unique();
             $table->string('password', 60);
 
             $table->enum('grade',['super_admin','admin','user'])->default('user');

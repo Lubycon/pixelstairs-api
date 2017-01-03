@@ -7,7 +7,7 @@ use Log;
 
 trait GetUserModelTrait{
     function getUserToken($request){
-        return $request->header('X-lubycon-token');
+        return $request->header('X-mitty-token');
     }
 
     function getUserByTokenRequestOrFail($request){
