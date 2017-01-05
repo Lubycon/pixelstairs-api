@@ -10,9 +10,7 @@
         "asm89/stack-cors": "dev-master as 0.2.2",
         "barryvdh/laravel-cors": "^0.8.1",
         "pda/pheanstalk": "^3.1",
-        "aws/aws-sdk-php-laravel": "~3.0",
-        "pusher/pusher-php-server": "^2.6",
-        "vinkla/pusher": "^2.4"
+        "guzzlehttp/guzzle": "^6.2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

@@ -140,7 +140,6 @@ return [
 
         // Lubycon added Providers
         Barryvdh\Cors\ServiceProvider::class,
-        Vinkla\Pusher\PusherServiceProvider::class,
         App\Providers\ResponseMacroServiceProvider::class,
 
         /*

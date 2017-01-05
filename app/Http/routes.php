@@ -1,6 +1,7 @@
 <?php
 Route::group(['prefix' => '/v1'], function () {
 
+    Route::get('/data','insertSectorController@check');
 
     //about members event
     Route::group(['prefix' => '/members/'], function () {
