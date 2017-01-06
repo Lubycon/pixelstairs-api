@@ -53,11 +53,28 @@ class MarketController extends Controller
             'id' => $product_data['Product']['ProductCode'],
             'name' => $product_data['Product']['ProductName'],
             'priceInfo' => (object)array(
-                'price' => $product_data['Product']['ProductPrice']['Price'],
-                'lowestPrice' => $product_data['Product']['ProductPrice']['LowestPrice'],
+                'price' => $this->splitWon($product_data['Product']['ProductPrice']['Price']),
+                'lowestPrice' => $this->splitWon($product_data['Product']['ProductPrice']['LowestPrice']),
             ),
-            'deliveryPrice' => $product_data['Product']['ShipFee'],
+            'deliveryPrice' => $this->splitWon($product_data['Product']['ShipFee']),
+            'options' => $this->bindOption( $product_data ),
         ];
+    }
+
+    public function splitWon($value){
+        $explode = explode('원',$value);
+        $result = str_replace(",","", $explode[0]);
+        return $result;
+    }
+
+    public function bindOption($option){
+        if ( !isset($option['ProductOption']) ) return NULL;
+        $optionList = $option['ProductOption']['OptionList']['Option']['ValueList']['Value'];
+        $recodeList = [];
+        foreach ($optionList as $key => $value) {
+            $optionList[$key]['Price'] = $this->splitWon($value['Price']);
+        }
+        return $optionList;
     }
 
     public function getProductNumber($query_array){
