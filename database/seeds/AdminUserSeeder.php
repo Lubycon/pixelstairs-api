@@ -16,7 +16,7 @@ class AdminUserSeeder extends Seeder
             array(
             	'email'=>'admin@mittycompany.com',
             	'name' => 'Admin',
-            	'password' => bcrypt('mittymitty0102'),
+            	'password' => bcrypt('alxlalxl0102'),
                 'remember_token' => 'wmLRmEIui4DtFz5ikU5mZ6Cm2gKCIOW1',
             	'grade' => 'super_admin',
                 'position' => 'admin',

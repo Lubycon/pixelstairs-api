@@ -14,12 +14,16 @@ class MarketTableSeeder extends Seeder
         DB::table('markets')->truncate();
         $market = array(
             array(
-            	'id'=>'1',
+                'code' => '0100',
             	'name' => '11st',
             ),
             array(
-            	'id'=>'2',
+                'code' => '0101',
             	'name' => 'gmarket',
+            ),
+            array(
+                'code' => '0102',
+            	'name' => 'auction',
             ),
         );
 

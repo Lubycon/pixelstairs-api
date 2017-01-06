@@ -21,4 +21,9 @@ Route::group(['prefix' => '/v1'], function () {
             Route::post('reset', 'Auth\PasswordController@postReset');
         });
     });
+
+
+    Route::group(['prefix' => '/markets/'], function () {
+        Route::get('product', 'MarketController@get');
+    });
 });
