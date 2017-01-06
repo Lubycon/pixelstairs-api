@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('nickname')->unique();
             $table->string('password', 60);
 
-            $table->enum('grade',['super_admin','admin','normal'])->default('user');
+            $table->enum('grade',['super_admin','admin','normal'])->default('normal');
             $table->string('position',30);
 
             $table->rememberToken();
