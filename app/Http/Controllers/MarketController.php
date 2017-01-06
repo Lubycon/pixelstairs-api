@@ -72,7 +72,9 @@ class MarketController extends Controller
         $optionList = $option['ProductOption']['OptionList']['Option']['ValueList']['Value'];
         $recodeList = [];
         foreach ($optionList as $key => $value) {
-            $optionList[$key]['Price'] = $this->splitWon($value['Price']);
+            $recodeList[$key]['order'] = $value['Order'];
+            $recodeList[$key]['price'] = $this->splitWon($value['Price']);
+            $recodeList[$key]['valueName'] = $value['ValueName'];
         }
         return $optionList;
     }
