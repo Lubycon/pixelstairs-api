@@ -20,9 +20,9 @@ class AuthSignupRequest extends Request
             'email' => 'required|unique:users,email|email',
             'name' => 'required|unique:users,name',
             'nickname' => 'required|unique:users,nickname',
-            'password' => 'required',
+            'password' => '',
             'position' => 'required',
-            'grade' => 'required|in:user,admin,super_admin',
+            'grade' => 'required|in:normal,admin,super_admin',
         ];
 
         return $requiredRule;

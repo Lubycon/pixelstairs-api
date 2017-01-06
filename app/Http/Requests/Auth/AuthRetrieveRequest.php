@@ -15,9 +15,12 @@ class AuthRetrieveRequest extends Request
     public function rules()
     {
         $requiredRule = [
+            'name' => 'required',
+            'nickname' => 'required',
+            'email' => 'required',
             'password' => 'required',
             'position' => 'required',
-            'grade' => 'required|in:user,admin,super_admin',
+            'grade' => 'required|in:normal,admin,super_admin',
         ];
 
         return $requiredRule;

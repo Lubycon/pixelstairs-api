@@ -95,6 +95,28 @@ class AuthController extends Controller
         };
     }
 
+    protected function getList()
+    {
+        $list = User::all();
+        $responseData = [];
+
+        if(!is_null($list)){
+            foreach ($list as $key => $value) {
+                $responseData[] = (object)array(
+                    "id" => $value->id,
+                    "email" => $value->email,
+                    "name" => $value->name,
+                    "nickname" => $value->nickname,
+                    "position" => $value->position,
+                    "grade" => $value->grade
+                );
+            }
+            return response()->success($responseData);
+        }else{
+            Abort::Error('0040');
+        }
+    }
+
     protected function getRetrieve($id)
     {
         $findUser = User::findOrFail($id);
@@ -122,6 +144,9 @@ class AuthController extends Controller
         $userExist = CheckContoller::checkUserExistById($tokenData->id);
 
         if($userExist && $id == $findUser->id){
+                $findUser->email = $data['email'];
+                $findUser->nickname = $data['nickname'];
+                $findUser->name = $data['name'];
                 $findUser->password = bcrypt($data['password']);
                 $findUser->position = $data['position'];
                 $findUser->grade = $data['grade'];
