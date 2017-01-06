@@ -76,7 +76,7 @@ class MarketController extends Controller
             $recodeList[$key]['price'] = $this->splitWon($value['Price']);
             $recodeList[$key]['valueName'] = $value['ValueName'];
         }
-        return $optionList;
+        return $recodeList;
     }
 
     public function getProductNumber($query_array){
