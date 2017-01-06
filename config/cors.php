@@ -3,10 +3,10 @@
 return [
     'supportsCredentials' => false,
     'allowedOrigins' => [
-        "http://aws.lubycon.com",
+        "http://www.mittycompany.com",
+        "http://admin.mittycompany.com",
         "http://localhost:3000",
         "http://localhost:3003",
-        "chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop"
     ],
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'],
