@@ -27,7 +27,7 @@ class MarketController extends Controller
 
     public function get(Request $request){
         $query = $request->query();
-        $this->market = Market::wherecode($query['market_id'])->first();
+        $this->market = Market::wherecode($query['marketId'])->first();
         $this->url = $query['url'];
 
         $parse_array = parse_url($this->url);
