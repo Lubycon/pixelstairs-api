@@ -2,6 +2,7 @@
 Route::group(['prefix' => '/v1'], function () {
 
     Route::get('/category','insertSectorController@categoryOrder');
+    Route::get('/division','insertSectorController@divisionActive');
     Route::get('/data','insertSectorController@check');
 
     //about members event
@@ -26,6 +27,7 @@ Route::group(['prefix' => '/v1'], function () {
 
     Route::group(['prefix' => '/products/'], function () {
         Route::post('', 'ProductController@post');
+        Route::get('', 'ProductController@get');
     });
 
 

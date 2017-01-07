@@ -35,6 +35,9 @@ class CreateProductsTable extends Migration
             $table->integer('domestic_delivery_price');
             $table->boolean('is_free_delivery');
 
+            $table->integer('stock');
+            $table->integer('safe_stock');
+
             $table->longtext('url');
 
             $table->string('status_code');

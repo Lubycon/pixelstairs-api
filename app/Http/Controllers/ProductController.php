@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Pager\PageController;
 
 use Carbon\Carbon;
 use Log;
@@ -20,6 +21,44 @@ class ProductController extends Controller
 {
     public $product_id;
     public $market_id;
+
+    public function get(Request $request){
+        $query = $request->query();
+        $controller = new PageController(null,$query);
+        $collection = $controller->getCollection();
+
+        $result = (object)array(
+            "totalCount" => $controller->totalCount,
+            "currentPage" => $controller->currentPage,
+            "contents" => []
+        );
+        foreach($collection as $array){
+            $result->products[] = (object)array(
+                'id' => $array['product_id'],
+                'haitaoId' => $array['haitao_product_id'],
+                'title' => (object)array(
+                    'origin' => $array['original_title'],
+                    'ko' => $array['korean_title'],
+                    'en' => $array['english_title'],
+                    'zh' => $array['chinese_title'],
+                ),
+                'brandName' => is_null($array['brand_id']) ? NULL : Brand::findOrFail($array['brand_id']),
+
+                'description' => $array['description'],
+                'price' => $array['price'],
+                'stock' => $array['stock'],
+                'safeStock' => $array['safeStock'],
+                'url' => $array['url'],
+                'status_code' => $array['status_code'],
+            );
+        };
+
+        if(!empty($result->products)){
+            return response()->success($result);
+        }else{
+            return response()->success();
+        }
+    }
 
     public function post(Request $request){
         $data = $request->json()->all();
@@ -42,6 +81,8 @@ class ProductController extends Controller
         $product->price = $data['price'];
         $product->domestic_delivery_price = $data['deliveryPrice'];
         $product->is_free_delivery = $data['isFreeDelivery'];
+        $product->stock = $data['stock'];
+        $product->safe_stock = $data['safeStock'];
         $product->url = $data['url'];
         $product->status_code = '0300';
         $product->start_date = Carbon::now()->toDateTimeString();
