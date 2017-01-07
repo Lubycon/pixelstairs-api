@@ -19,6 +19,9 @@ class MarketController extends Controller
     public $url;
     public $market;
     public $product_number;
+    public $category_number;
+
+    public $category_data;
 
     public function __construct(){
         $this->client = new Client();
@@ -33,25 +36,31 @@ class MarketController extends Controller
         $parse_array = parse_url($this->url);
         parse_str($parse_array['query'], $query_parse);
         $this->product_number = $this->getProductNumber($query_parse);
+        $this->category_number = $this->getCategoryNumber($query_parse);
 
+        $productRequest = $this->requsetOpenApi('product');
+        $productXml = $this->getXmlOnBody($productRequest);
 
-        $response = $this->requsetBy11st($this->product_number);
-        $responseXml = $this->getXmlOnBody($response);
+        if (!is_null($this->category_number)) {
+            $categoryRequest = $this->requsetOpenApi('category');
+            $categoryXml = $this->getXmlOnBody($categoryRequest);
+            if ( $this->checkError($categoryXml) ) Abort::Error('0040');
+            $this->category_data = $this->xmlToJson($categoryXml);
+        }
 
-        if ( $this->checkError($responseXml) ) Abort::Error('0040');
+        if ( $this->checkError($productXml) ) Abort::Error('0040');
 
-        $product_data = $this->xmlToJson($responseXml);
+        $product_data = $this->xmlToJson($productXml);
         $bindData = $this->bindXml($product_data);
 
         return response()->success($bindData);
-
-
     }
 
     public function bindXml($product_data){
         return $data = [
             'id' => $product_data['Product']['ProductCode'],
             'name' => $product_data['Product']['ProductName'],
+            'category' => $this->getCategroyData(),
             'priceInfo' => (object)array(
                 'price' => $this->splitWon($product_data['Product']['ProductPrice']['Price']),
                 'lowestPrice' => $this->splitWon($product_data['Product']['ProductPrice']['LowestPrice']),
@@ -59,6 +68,18 @@ class MarketController extends Controller
             'deliveryPrice' => $this->splitWon($product_data['Product']['ShipFee']),
             'options' => $this->bindOption( $product_data ),
         ];
+    }
+
+    public function getCategroyData(){
+        Log::info($this->category_data);
+        if ( !is_null($this->category_data) ) {
+            return array(
+                "categoryId" => $this->category_data['Category']['CategoryCode'],
+                "categoryName" => $this->category_data['Category']['CategoryName'],
+            );
+        }else{
+            return null;
+        }
     }
 
     public function splitWon($value){
@@ -69,12 +90,20 @@ class MarketController extends Controller
 
     public function bindOption($option){
         if ( !isset($option['ProductOption']) ) return NULL;
-        $optionList = $option['ProductOption']['OptionList']['Option']['ValueList']['Value'];
+        $valueList = $option['ProductOption']['OptionList']['Option']['ValueList'];
+        $optionList = $valueList['Value'];
         $recodeList = [];
-        foreach ($optionList as $key => $value) {
-            $recodeList[$key]['order'] = $value['Order'];
-            $recodeList[$key]['price'] = $this->splitWon($value['Price']);
-            $recodeList[$key]['valueName'] = $value['ValueName'];
+
+        if ( isset($optionList['Order']) ) {
+            $recodeList[]['order'] = $optionList['Order'];
+            $recodeList[]['price'] = $this->splitWon($optionList['Price']);
+            $recodeList[]['valueName'] = $optionList['ValueName'];
+        }else{
+            foreach ($optionList as $key => $value) {
+                $recodeList[$key]['order'] = $value['Order'];
+                $recodeList[$key]['price'] = $this->splitWon($value['Price']);
+                $recodeList[$key]['valueName'] = $value['ValueName'];
+            }
         }
         return $recodeList;
     }
@@ -83,6 +112,10 @@ class MarketController extends Controller
         $product_number_name = 'prdNo';
         return $query_array[$product_number_name];
     }
+    public function getCategoryNumber($query_array){
+        $product_number_name = 'trCtgrNo';
+        return isset($query_array[$product_number_name]) ? $query_array[$product_number_name] : null;
+    }
 
     public function xmlToJson($xml){
         $json = json_encode($xml);
@@ -90,17 +123,34 @@ class MarketController extends Controller
 
         return $array;
     }
-    public function requsetBy11st($product_number){
+    public function requsetOpenApi($kind){
         $response = $this->client->request('GET', 'http://openapi.11st.co.kr/openapi/OpenApiService.tmall', [
-            'query' => [
-                'key' => '079b465d19c823b1582f605532755f3c',
-                'apiCode' => 'ProductInfo',
-                'productCode' => $product_number,
-                'option' => 'SemiReviews,PdOption'
-            ]
+            'query' => $this->apiSetting($kind)
         ])->getBody()->getContents();
 
         return $response;
+    }
+    public function apiSetting($kind){
+        switch ($kind) {
+            case 'product':
+            $result = [
+                'key' => '079b465d19c823b1582f605532755f3c',
+                'apiCode' => 'ProductInfo',
+                'productCode' => $this->product_number,
+                'option' => 'SemiReviews,PdOption'
+            ];
+            break;
+            case 'category':
+            $result = [
+                'key' => '079b465d19c823b1582f605532755f3c',
+                'apiCode' => 'CategoryInfo',
+                'categoryCode' => $this->category_number,
+            ];
+            break;
+
+            default: Abort::Error('0040'); break;
+        }
+        return $result;
     }
     public function getXmlOnBody($response){
         return simplexml_load_string($response, 'SimpleXMLElement', LIBXML_NOCDATA);
