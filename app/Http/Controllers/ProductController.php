@@ -25,7 +25,7 @@ class ProductController extends Controller
         $product->market_id = $data['marketId'];
         $product->brand_id = $data['brandName'];
         $product->original_title = $data['title']['origin'];
-        $product->korean_title = $data['title']['kr'];
+        $product->korean_title = $data['title']['ko'];
         $product->english_title = $data['title']['en'];
         $product->chinese_title = $data['title']['zh'];
         $product->description = $data['description'];
@@ -36,6 +36,10 @@ class ProductController extends Controller
         $product->status_code = '0300';
         $product->start_date = Carbon::now()->toDateTimeString();
         $product->end_date = $data['endDate'];
+
+
+
+
 
         $product->save();
 
