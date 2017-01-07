@@ -20,6 +20,7 @@ class CreateDetailsTable extends Migration
             $table->integer('sector_id');
             $table->string('name',30);
             $table->string('data_number',20);
+            $table->boolean('is_active');
             $table->timestamps();
         });
     }

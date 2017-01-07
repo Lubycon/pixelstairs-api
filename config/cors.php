@@ -7,15 +7,11 @@ return [
         "http://admin.mittycompany.com",
         "http://localhost:3000",
         "http://localhost:3003",
+        "chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop"
     ],
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'],
-    'requiredHeader' => [
-        "x-lubycon-device",
-        "x-lubycon-country",
-        "x-lubycon-language",
-        "x-lubycon-version",
-    ],
+    'requiredHeader' => ['*'],
     'exposedHeaders' => [],
     'maxAge' => 0,
     'hosts' => [],

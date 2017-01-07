@@ -16,6 +16,7 @@ class CreateCategoriesTable extends Migration
             $table->increments('id');
             $table->integer('market_id');
             $table->string('name',40);
+            $table->boolean('is_active');
             $table->timestamps();
         });
     }

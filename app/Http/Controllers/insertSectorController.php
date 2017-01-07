@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use Log;
 
+use App\Models\Category;
 use App\Models\Division;
 use App\Models\Sector;
 use App\Models\Detail;
@@ -25,13 +26,37 @@ class insertSectorController extends Controller
     public $log;
 
     public function __construct(){
-        $this->client = new Client();
-        $this->division = Division::all();
-        $this->log = [];
-        $this->success = [];
+        // $this->client = new Client();
+        // $this->division = Division::all();
+        // $this->log = [];
+        // $this->success = [];
+        //
+        // DB::table('sectors')->truncate();
+        // DB::table('details')->truncate();
+    }
 
-        DB::table('sectors')->truncate();
-        DB::table('details')->truncate();
+    public function categoryOrder(){
+        $division = Division::all();
+        foreach ($division as $key => $value) {
+            if ( !$value->category['is_active'] ) {
+                Log::info($value->category['is_active']);
+                $value->is_active = false;
+                $value->save();
+            }
+        }
+    }
+    public function divisionActive(){
+        $division = Division::whereis_active(true)->get();
+        $result=[];
+        foreach ($division as $key => $value) {
+            $result[] = array(
+                'id' => $value->id,
+                'category_id' => $value->category['name'],
+                'name' => $value->name,
+                'is_active' => '',
+            );
+        }
+        return json_encode($result);
     }
 
     public function check(){
