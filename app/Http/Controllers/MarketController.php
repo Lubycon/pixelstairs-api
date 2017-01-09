@@ -120,8 +120,10 @@ class MarketController extends Controller
         return $query_array[$product_number_name];
     }
     public function getCategoryNumber($query_array){
-        $product_number_name = 'trCtgrNo';
-        return isset($query_array[$product_number_name]) ? $query_array[$product_number_name] : null;
+        $category_name = ['mCtgrNo','lCtgrNo','trCtgrNo'];
+        foreach ($category_name as $key => $value) {
+            if ( isset($query_array[$value]) ) return $query_array[$value];
+        }
     }
 
     public function xmlToJson($xml){
