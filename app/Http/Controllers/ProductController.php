@@ -41,8 +41,8 @@ class ProductController extends Controller
                 'haitaoId' => $array['haitao_product_id'],
                 'title' => (object)array(
                     'origin' => $array['original_title'],
-                    'ko' => $array['korean_title'],
-                    'en' => $array['english_title'],
+                    // 'ko' => $array['korean_title'],
+                    // 'en' => $array['english_title'],
                     'zh' => $array['chinese_title'],
                 ),
                 'brandName' => is_null($array['brand_id']) ? NULL : Brand::findOrFail($array['brand_id']),
@@ -84,8 +84,8 @@ class ProductController extends Controller
         $product->market_id = $data['marketId'];
         $product->brand_id = is_null($data['brandName']) ? null : Brand::firstOrCreate(['name' => $data['brandName']])->id;
         $product->original_title = $data['title']['origin'];
-        $product->korean_title = $data['title']['ko'];
-        $product->english_title = $data['title']['en'];
+        // $product->korean_title = $data['title']['ko'];
+        // $product->english_title = $data['title']['en'];
         $product->chinese_title = $data['title']['zh'];
         $product->description = $data['description'];
         $product->price = $data['price'];
@@ -113,8 +113,8 @@ class ProductController extends Controller
                 "sku_id" => $this->createSku($option,$index),
                 "original_name" => $option['name']['origin'],
                 "chinese_name" => $option['name']['zh'],
-                "korean_name" => $option['name']['ko'],
-                "english_name" => $option['name']['en'],
+                // "korean_name" => $option['name']['ko'],
+                // "english_name" => $option['name']['en'],
                 "price" => $option['price'],
                 "stock" => $option['stock'],
                 "safe_stock" => $option['safeStock'],
