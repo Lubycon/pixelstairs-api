@@ -108,7 +108,7 @@ class MarketController extends Controller
             foreach ($optionList as $key => $value) {
                 $recodeList[$key]['order'] = $value['Order'];
                 $recodeList[$key]['price'] = $this->splitWon($value['Price']);
-                $recodeList[$key]['valueName'] = $value['ValueName'];
+                $recodeList[$key]['name'] = $value['ValueName'];
             }
         }
         return $recodeList;
