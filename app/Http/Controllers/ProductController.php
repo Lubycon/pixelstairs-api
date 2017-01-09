@@ -33,7 +33,7 @@ class ProductController extends Controller
             'id' => $product['id'],
             'marketProductId' => $product['product_id'],
             'haitaoId' => $product['haitao_product_id'],
-            'market_id' => $product['market_id'],
+            'marketId' => $product['market_id'],
             'categoryId' => $product['category_id'],
             'divisionId' => $product['division_id'],
             'marketCategoryId' => Division::find($product['division_id'])['market_category_id'],
@@ -47,16 +47,15 @@ class ProductController extends Controller
             'description' => $product['description'],
             'price' => $product['price'],
             'deliveryPrice' => $product['domestic_delivery_price'],
-            'is_free_delivery' => $product['is_free_delivery'],
+            'isFreeDelivery' => $product['is_free_delivery'],
             'stock' => $product['stock'],
             'safeStock' => $product['safe_stock'],
             'url' => $product['url'],
-            'status_code' => $product['status_code'],
+            'statusCode' => $product['status_code'],
             'startDate' => $product['start_date'],
             'endDate' => $product['end_date'],
             'options' => $this->bindOption(Option::whereproduct_id($product['id'])->get())
         );
-        Log::info(Division::find($product['division_id']))['market_category_id'];
 
         return response()->success($response);
     }
@@ -145,10 +144,7 @@ class ProductController extends Controller
         $data = $request->json()->all();
 
         $this->product = Product::findOrFail($id);
-        $origin_options = Option::whereproduct_id($this->product->id);
-
         $options = $data['options'];
-        $this->isDirdyOption($options);
 
         $this->market_id = $this->product->market_id;
         $this->market_category_id = $data['market_category_id'];
@@ -173,10 +169,9 @@ class ProductController extends Controller
         $this->product->start_date = Carbon::now()->toDateTimeString();
         $this->product->end_date = $data['endDate'];
 
-        if ( !$this->product->save() ) Abort::Error('0040');
 
-        if ( $this->product->option()->update($this->setOption($options)) )
-        return response()->success($this->product);
+        if ( !$this->product->save() ) Abort::Error('0040');
+        if ($this->updateOptions($options)) return response()->success($this->product);
         Abort::Error('0040');
     }
 
@@ -234,9 +229,26 @@ class ProductController extends Controller
         return $result;
     }
 
+    private function updateOptions($options){
+        $this->isDirdyOption($options);
+        $checkedArray = [];
+        foreach ($options as $key => $value) {
+            $targetOption = Option::wheresku_id($value['sku'])->firstOrFail();
+
+            $checkedArray = array(
+                "id" => $targetOption['id'],
+                "market_id" => $value['market_id'],
+                "market_id" => $value['market_id'],
+            );
+
+
+
+        }
+        return true;
+    }
+
     private function isDirdyOption($options){
-        $original_option = Option::whereproduct_id($this->product->id)->get();
-        if ( count($original_option) !==  count($options)) Abort::Error('0040','Can not add option at update product');
+        if ( count($this->product->option()->get()) !==  count($options)) Abort::Error('0040','Can not add option at update product');
         return false;
     }
 
