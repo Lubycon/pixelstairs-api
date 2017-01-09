@@ -52,7 +52,7 @@ class ProductController extends Controller
             'safeStock' => $product['safe_stock'],
             'url' => $product['url'],
             'statusCode' => $product['status_code'],
-            'createDate' => $product['created_at'],
+            'createDate' => Carbon::instance($product['created_at'])->toDateTimeString(),
             'startDate' => $product['start_date'],
             'endDate' => $product['end_date'],
             'options' => $this->bindOption(Option::whereproduct_id($product['id'])->get())
