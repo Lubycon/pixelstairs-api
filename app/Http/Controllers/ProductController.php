@@ -116,8 +116,8 @@ class ProductController extends Controller
                 // "korean_name" => $option['name']['ko'],
                 // "english_name" => $option['name']['en'],
                 "price" => $option['price'],
-                "stock" => $option['stock'],
-                "safe_stock" => $option['safeStock'],
+                // "stock" => $option['stock'],
+                // "safe_stock" => $option['safeStock'],
             );
             $index++;
         }
