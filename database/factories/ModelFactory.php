@@ -52,7 +52,7 @@ $factory->define(App\Models\Sku::class, function (Faker\Generator $faker) {
 $factory->define(App\Models\Option::class, function (Faker\Generator $faker) {
     return [
         'product_id' => mt_rand(1,500),
-        'sku_id' => $faker->safeEmail,
+        'sku_id' => mt_rand(1,3000),
         'original_name' => str_random(10),
         'chinese_name' => str_random(10),
         'price' => mt_rand(10000,50000),
@@ -68,6 +68,7 @@ $factory->define(App\Models\Brand::class, function (Faker\Generator $faker) {
 $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
     return [
         'product_id' => mt_rand(100000000,110000000),
+        'haitao_product_id' => mt_rand(100000000,110000000),
         'category_id' => mt_rand(1,30),
         'division_id' => mt_rand(1,100),
         'market_id' => 1,
@@ -78,7 +79,7 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'price' => mt_rand(10000,50000),
         'domestic_delivery_price' => mt_rand(1000,2500),
         'is_free_delivery' => mt_rand(0,1),
-        'url' => 'input_url',
+        'url' => 'http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=333125048&trTypeCd=PW02&trCtgrNo=585021&lCtgrNo=1001452&mCtgrNo=1003081',
         'status_code' => '0300',
         'end_date' => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
     ];

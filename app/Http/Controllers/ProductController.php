@@ -81,7 +81,7 @@ class ProductController extends Controller
                     // 'en' => $array['english_title'],
                     'zh' => $array['chinese_title'],
                 ),
-                'brandName' => is_null($array['brand_id']) ? NULL : Brand::findOrFail($array['brand_id']),
+                'brandName' => is_null($array['brand_id']) ? NULL : Brand::findOrFail($array['brand_id'])->value('name'),
 
                 'description' => $array['description'],
                 'price' => $array['price'],
