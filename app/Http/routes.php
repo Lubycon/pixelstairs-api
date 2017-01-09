@@ -27,7 +27,9 @@ Route::group(['prefix' => '/v1'], function () {
 
     Route::group(['prefix' => '/products/'], function () {
         Route::post('', 'ProductController@post');
-        Route::get('', 'ProductController@get');
+        Route::get('detail/{id}', 'ProductController@get');
+        Route::put('detail/{id}', 'ProductController@put');
+        Route::get('', 'ProductController@getList');
     });
 
 

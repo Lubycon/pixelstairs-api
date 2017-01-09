@@ -22,10 +22,46 @@ use Abort;
 
 class ProductController extends Controller
 {
+    public $product;
     public $product_id;
     public $market_id;
+    public $market_category_id;
 
-    public function get(Request $request){
+    public function get(Request $request,$id){
+        $product = Product::findOrFail($id);
+        $response = (object)array(
+            'id' => $product['id'],
+            'marketProductId' => $product['product_id'],
+            'haitaoId' => $product['haitao_product_id'],
+            'market_id' => $product['market_id'],
+            'categoryId' => $product['category_id'],
+            'divisionId' => $product['division_id'],
+            'marketCategoryId' => Division::find($product['division_id'])['market_category_id'],
+            'title' => (object)array(
+                'origin' => $product['original_title'],
+                // 'ko' => $product['korean_title'],
+                // 'en' => $product['english_title'],
+                'zh' => $product['chinese_title'],
+            ),
+            'brandName' => Brand::find($product['brand_id'])->value('name'),
+            'description' => $product['description'],
+            'price' => $product['price'],
+            'deliveryPrice' => $product['domestic_delivery_price'],
+            'is_free_delivery' => $product['is_free_delivery'],
+            'stock' => $product['stock'],
+            'safeStock' => $product['safe_stock'],
+            'url' => $product['url'],
+            'status_code' => $product['status_code'],
+            'startDate' => $product['start_date'],
+            'endDate' => $product['end_date'],
+            'options' => $this->bindOption(Option::whereproduct_id($product['id'])->get())
+        );
+        Log::info(Division::find($product['division_id']))['market_category_id'];
+
+        return response()->success($response);
+    }
+
+    public function getList(Request $request){
         $query = $request->query();
         $controller = new PageController(null,$query);
         $collection = $controller->getCollection();
@@ -37,7 +73,8 @@ class ProductController extends Controller
         );
         foreach($collection as $array){
             $result->products[] = (object)array(
-                'id' => $array['product_id'],
+                'id' => $array['id'],
+                'marketProductId' => $array['product_id'],
                 'haitaoId' => $array['haitao_product_id'],
                 'title' => (object)array(
                     'origin' => $array['original_title'],
@@ -50,7 +87,7 @@ class ProductController extends Controller
                 'description' => $array['description'],
                 'price' => $array['price'],
                 'stock' => $array['stock'],
-                'safeStock' => $array['safeStock'],
+                'safeStock' => $array['safe_stock'],
                 'url' => $array['url'],
                 'status_code' => $array['status_code'],
             );
@@ -66,41 +103,114 @@ class ProductController extends Controller
     public function post(Request $request){
         $data = $request->json()->all();
 
-        $this->product_id = $data['id'];
+        $this->product_id = $data['marketProductId'];
         $this->market_id = $data['marketId'];
 
-        $product = new Product;
-        $product->product_id = $data['id'];
-        $product->category_id = is_string($data['category']) ? Category::firstOrCreate(array("name"=>$data['category']))['id'] : Category::findOrFail($data['category'])->value('id');
-        $product->division_id = is_string($data['division'])
+        $this->product = new Product;
+        $this->product->product_id = $this->product_id;
+        $this->product->category_id = is_string($data['category']) ? Category::firstOrCreate(array("name"=>$data['category']))['id'] : Category::findOrFail($data['category'])->value('id');
+        $this->product->division_id = is_string($data['division'])
             ? Division::firstOrCreate(
                 array(
-                    "parent_id" => $product->category_id,
+                    "parent_id" => $this->product->category_id,
                     "market_id" => $data['marketId'],
                     "market_category_id" => $data['marketDivisionId'],
                     "name" => $data['division'],
                 ))['id']
             : Division::findOrFail($data['division'])->value('id');
-        $product->market_id = $data['marketId'];
-        $product->brand_id = is_null($data['brandName']) ? null : Brand::firstOrCreate(['name' => $data['brandName']])->id;
-        $product->original_title = $data['title']['origin'];
+        $this->product->market_id = $data['marketId'];
+        $this->product->brand_id = $this->getBrandId($data['brandName']);
+        $this->product->original_title = $data['title']['origin'];
         // $product->korean_title = $data['title']['ko'];
         // $product->english_title = $data['title']['en'];
-        $product->chinese_title = $data['title']['zh'];
-        $product->description = $data['description'];
-        $product->price = $data['price'];
-        $product->domestic_delivery_price = $data['deliveryPrice'];
-        $product->is_free_delivery = $data['isFreeDelivery'];
-        $product->stock = $data['stock'];
-        $product->safe_stock = $data['safeStock'];
-        $product->url = $data['url'];
-        $product->status_code = '0300';
-        $product->start_date = Carbon::now()->toDateTimeString();
-        $product->end_date = $data['endDate'];
-        Option::insert($this->setOption($data['options']));
+        $this->product->chinese_title = $data['title']['zh'];
+        $this->product->description = $data['description'];
+        $this->product->price = $data['price'];
+        $this->product->domestic_delivery_price = $data['deliveryPrice'];
+        $this->product->is_free_delivery = $data['isFreeDelivery'];
+        $this->product->stock = $data['stock'];
+        $this->product->safe_stock = $data['safeStock'];
+        $this->product->url = $data['url'];
+        $this->product->status_code = '0300';
+        $this->product->start_date = Carbon::now()->toDateTimeString();
+        $this->product->end_date = $data['endDate'];
 
-        if ($product->save()) return response()->success($product);
+        if ( !$this->product->save() ) Abort::Error('0040');
+
+        if ( Option::insert($this->setOption($data['options'])) ) return response()->success($this->product);
         Abort::Error('0040');
+    }
+
+    public function put(Request $request,$id){
+        $data = $request->json()->all();
+
+        $this->product = Product::findOrFail($id);
+        $origin_options = Option::whereproduct_id($this->product->id);
+
+        $options = $data['options'];
+        $this->isDirdyOption($options);
+
+        $this->market_id = $this->product->market_id;
+        $this->market_category_id = $data['market_category_id'];
+
+        $this->product->product_id = $data['marketProductId'];
+        $this->product->category_id = $this->getCategoryId($data['category']);
+        $this->product->division_id = $this->getDivisionId($data['division']);
+        $this->product->market_id = $data['marketId'];
+        $this->product->brand_id = $this->getBrandId($data['brandName']);
+        $this->product->original_title = $data['title']['origin'];
+        // $product->korean_title = $data['title']['ko'];
+        // $product->english_title = $data['title']['en'];
+        $this->product->chinese_title = $data['title']['zh'];
+        $this->product->description = $data['description'];
+        $this->product->price = $data['price'];
+        $this->product->domestic_delivery_price = $data['deliveryPrice'];
+        $this->product->is_free_delivery = $data['isFreeDelivery'];
+        $this->product->stock = $data['stock'];
+        $this->product->safe_stock = $data['safeStock'];
+        $this->product->url = $data['url'];
+        $this->product->status_code = $data['statusCode'];
+        $this->product->start_date = Carbon::now()->toDateTimeString();
+        $this->product->end_date = $data['endDate'];
+
+        if ( !$this->product->save() ) Abort::Error('0040');
+
+        if ( $this->product->option()->update($this->setOption($options)) )
+        return response()->success($this->product);
+        Abort::Error('0040');
+    }
+
+    private function getBrandId($brand_name){
+        return is_null($brand_name) ? null : Brand::firstOrCreate(['name' => $brand_name])->id;
+    }
+    private function getCategoryId($category){
+        return is_string($category) ? Category::firstOrCreate(array("name"=>$category))['id'] : Category::findOrFail($category)->value('id');
+    }
+    private function getDivisionId($division){
+        return is_string($division)
+        ? Division::firstOrCreate(
+            array(
+                "parent_id" => $this->product->category_id,
+                "market_id" => $this->market_id,
+                "market_category_id" => $this->market_category_id,
+                "name" => $division,
+            ))['id']
+        : Division::findOrFail($division)->value('id');
+    }
+
+    private function bindOption($option){
+        $response = [];
+        foreach ($option as $key => $value) {
+            $response[] = array(
+                "skuId" => Sku::find($value->sku_id)->value('sku'),
+                "name" => array(
+                    "origin" => $value->original_name,
+                    "zh" => $value->chinese_name,
+                ),
+                "price" => $value->price
+            );
+        }
+        return $response;
     }
 
     private function setOption($options){
@@ -109,7 +219,7 @@ class ProductController extends Controller
         foreach ($options as $key => $option) {
             $result[] = array(
                 "market_id" => $this->market_id,
-                "product_id" => $this->product_id,
+                "product_id" => $this->product->id,
                 "sku_id" => $this->createSku($option,$index),
                 "original_name" => $option['name']['origin'],
                 "chinese_name" => $option['name']['zh'],
@@ -124,14 +234,20 @@ class ProductController extends Controller
         return $result;
     }
 
+    private function isDirdyOption($options){
+        $original_option = Option::whereproduct_id($this->product->id)->get();
+        if ( count($original_option) !==  count($options)) Abort::Error('0040','Can not add option at update product');
+        return false;
+    }
+
     private function createSku($option,$index){
         $sku = array(
             "market_id" => $this->market_id,
-            "product_id" => $this->product_id,
+            "product_id" => $this->product->id,
             "sku" => 'MK'.$this->market_id.'PD'.$this->product_id.'ID'.$index,
             "description" => $option['name']['origin'],
         );
-        $id = Sku::create($sku)->id;
+        $id = Sku::firstOrCreate($sku)->id;
         return $id;
     }
 }
