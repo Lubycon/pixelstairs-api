@@ -100,10 +100,11 @@ class MarketController extends Controller
         $optionList = $valueList['Value'];
         $recodeList = [];
 
+
         if ( isset($optionList['Order']) ) {
-            $recodeList[]['order'] = $optionList['Order'];
-            $recodeList[]['price'] = $this->splitWon($optionList['Price']);
-            $recodeList[]['valueName'] = $optionList['ValueName'];
+            $recodeList['order'] = $optionList['Order'];
+            $recodeList['price'] = $this->splitWon($optionList['Price']);
+            $recodeList['valueName'] = $optionList['ValueName'];
         }else{
             foreach ($optionList as $key => $value) {
                 $recodeList[$key]['order'] = $value['Order'];
