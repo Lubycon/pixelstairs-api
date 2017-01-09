@@ -234,15 +234,14 @@ class ProductController extends Controller
         $checkedArray = [];
         foreach ($options as $key => $value) {
             $targetOption = Option::wheresku_id($value['sku'])->firstOrFail();
+            $targetOption["original_name"] = $value['name']['origin'];
+            $targetOption["chinese_name"] = $value['name']['zh'];
+            $targetOption["price"] = $value['price'];
+            if (!$targetOption->save()) Abort::Error('0040','Option Update Fail');
 
-            $checkedArray = array(
-                "id" => $targetOption['id'],
-                "market_id" => $value['market_id'],
-                "market_id" => $value['market_id'],
-            );
-
-
-
+            $targetSku = Sku::whereid($targetOption["sku_id"])->firstOrFail();
+            $targetSku['description'] = $value['name']['origin'];
+            if (!$targetSku->save()) Abort::Error('0040','Sku Update Fail');
         }
         return true;
     }
