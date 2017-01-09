@@ -11,6 +11,9 @@ use App\Http\Controllers\Pager\PageController;
 use Carbon\Carbon;
 use Log;
 
+use App\Models\Category;
+use App\Models\Division;
+
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Option;
@@ -68,9 +71,16 @@ class ProductController extends Controller
 
         $product = new Product;
         $product->product_id = $data['id'];
-        // $product->category_id = $data['id'];
-        // $product->division_id = $data['id'];
-        // $product->sector_id = $data['id'];
+        $product->category_id = is_string($data['category']) ? Category::firstOrCreate(array("name"=>$data['category']))['id'] : Category::findOrFail($data['category'])->value('id');
+        $product->division_id = is_string($data['division'])
+            ? Division::firstOrCreate(
+                array(
+                    "parent_id" => $product->category_id,
+                    "market_id" => $data['marketId'],
+                    "market_category_id" => $data['marketDivisionId'],
+                    "name" => $data['division'],
+                ))['id']
+            : Division::findOrFail($data['division'])->value('id');
         $product->market_id = $data['marketId'];
         $product->brand_id = is_null($data['brandName']) ? null : Brand::firstOrCreate(['name' => $data['brandName']])->id;
         $product->original_title = $data['title']['origin'];
@@ -121,7 +131,6 @@ class ProductController extends Controller
             "sku" => 'MK'.$this->market_id.'PD'.$this->product_id.'ID'.$index,
             "description" => $option['name']['origin'],
         );
-        Log::info(Sku::create($sku));
         $id = Sku::create($sku)->id;
         return $id;
     }

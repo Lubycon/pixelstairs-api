@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class DivisionTableSeeder extends Seeder
+class MarketDivisionTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
