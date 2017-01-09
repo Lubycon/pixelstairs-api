@@ -81,6 +81,8 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'is_free_delivery' => mt_rand(0,1),
         'url' => 'http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=333125048&trTypeCd=PW02&trCtgrNo=585021&lCtgrNo=1001452&mCtgrNo=1003081',
         'status_code' => '0300',
+        'stock' => mt_rand(1000,2500),
+        'safe_stock' => mt_rand(1000,2500),
         'end_date' => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
     ];
 });
