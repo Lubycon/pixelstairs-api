@@ -57,10 +57,14 @@ class MarketController extends Controller
     }
 
     public function bindXml($product_data){
+        $category_data = $this->getCategroyData();
         return $data = [
             'id' => $product_data['Product']['ProductCode'],
             'name' => $product_data['Product']['ProductName'],
-            'category' => $this->getCategroyData(),
+            'category' => array(
+                "categoryId" => $category_data['categoryId'],
+                "categoryName" => $category_data['categoryName'],
+            ),
             'priceInfo' => (object)array(
                 'price' => $this->splitWon($product_data['Product']['ProductPrice']['Price']),
                 'lowestPrice' => $this->splitWon($product_data['Product']['ProductPrice']['LowestPrice']),
@@ -71,15 +75,10 @@ class MarketController extends Controller
     }
 
     public function getCategroyData(){
-        Log::info($this->category_data);
-        if ( !is_null($this->category_data) ) {
-            return array(
-                "categoryId" => $this->category_data['Category']['CategoryCode'],
-                "categoryName" => $this->category_data['Category']['CategoryName'],
-            );
-        }else{
-            return null;
-        }
+        return array(
+            "categoryId" => !is_null($this->category_data) ? $this->category_data['Category']['CategoryCode'] : null,
+            "categoryName" => !is_null($this->category_data) ? $this->category_data['Category']['CategoryName'] : null,
+        );
     }
 
     public function splitWon($value){
