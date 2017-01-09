@@ -10,10 +10,10 @@ use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use Log;
 
-use App\Models\Category;
-use App\Models\Division;
-use App\Models\Sector;
-use App\Models\Detail;
+use App\Models\MarketCategory;
+use App\Models\MarketDivision;
+use App\Models\MarketSector;
+use App\Models\MarketDetail;
 use DB;
 
 
@@ -36,7 +36,7 @@ class insertSectorController extends Controller
     }
 
     public function categoryOrder(){
-        $division = Division::all();
+        $division = MarketDivision::all();
         foreach ($division as $key => $value) {
             if ( !$value->category['is_active'] ) {
                 Log::info($value->category['is_active']);
@@ -46,7 +46,7 @@ class insertSectorController extends Controller
         }
     }
     public function divisionActive(){
-        $division = Division::whereis_active(true)->get();
+        $division = MarketDivision::whereis_active(true)->get();
         $result=[];
         foreach ($division as $key => $value) {
             $result[] = array(
@@ -106,10 +106,10 @@ class insertSectorController extends Controller
     }
 
     public function insertSector($sector){
-        Sector::insert($sector);
+        MarketSector::insert($sector);
     }
     public function insertDetail($detail){
-        Detail::insert($detail);
+        MarketDetail::insert($detail);
     }
     public function xmlToJson($xml){
         $json = json_encode($xml);

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDetailsTable extends Migration
+class CreateDivisionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,15 +12,12 @@ class CreateDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('details', function (Blueprint $table) {
+        Schema::create('divisions', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('parent_id');
             $table->integer('market_id');
-            $table->integer('category_id');
-            $table->integer('division_id');
-            $table->integer('sector_id');
-            $table->string('name',30);
-            $table->string('data_number',20);
-            $table->boolean('is_active');
+            $table->integer('market_category_id');
+            $table->string('name','50');
             $table->timestamps();
         });
     }
@@ -32,6 +29,6 @@ class CreateDetailsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('details');
+        Schema::drop('divisions');
     }
 }

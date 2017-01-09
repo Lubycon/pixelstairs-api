@@ -11,6 +11,7 @@ use Abort;
 use Log;
 use GuzzleHttp\Client;
 
+use App\Models\Division;
 use App\Models\Market;
 
 class MarketController extends Controller
@@ -62,8 +63,12 @@ class MarketController extends Controller
             'id' => $product_data['Product']['ProductCode'],
             'name' => $product_data['Product']['ProductName'],
             'category' => array(
-                "categoryId" => $category_data['categoryId'],
-                "categoryName" => $category_data['categoryName'],
+                "id" => $category_data['market_category_id'],
+                "name" => $category_data['market_category_name'],
+                "ours" => (object)array(
+                    "id" => $category_data['division_id']['id'],
+                    "parantId" => $category_data['category_id']['parent_id'],
+                ),
             ),
             'priceInfo' => (object)array(
                 'price' => $this->splitWon($product_data['Product']['ProductPrice']['Price']),
@@ -76,8 +81,10 @@ class MarketController extends Controller
 
     public function getCategroyData(){
         return array(
-            "categoryId" => !is_null($this->category_data) ? $this->category_data['Category']['CategoryCode'] : null,
-            "categoryName" => !is_null($this->category_data) ? $this->category_data['Category']['CategoryName'] : null,
+            "market_category_id" => !is_null($this->category_data) ? $this->category_data['Category']['CategoryCode'] : null,
+            "market_category_name" => !is_null($this->category_data) ? $this->category_data['Category']['CategoryName'] : null,
+            "division_id" => Division::wheremarket_category_id($this->category_data['Category']['CategoryCode'])->first(),
+            "category_id" => Division::wheremarket_category_id($this->category_data['Category']['CategoryCode'])->first(),
         );
     }
 
