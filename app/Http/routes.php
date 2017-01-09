@@ -3,7 +3,7 @@ Route::group(['prefix' => '/v1'], function () {
 
     Route::get('/category','insertSectorController@categoryOrder');
     Route::get('/division','insertSectorController@divisionActive');
-    Route::get('/data','insertSectorController@check');
+    Route::get('/insert','insertSectorController@check');
 
     //about members event
     Route::group(['prefix' => '/members/'], function () {
@@ -36,4 +36,7 @@ Route::group(['prefix' => '/v1'], function () {
     Route::group(['prefix' => '/markets/'], function () {
         Route::get('product', 'MarketController@get');
     });
+
+
+    Route::get('/data/','DataResponseController@dataSimpleResponse');
 });
