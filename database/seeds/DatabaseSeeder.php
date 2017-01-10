@@ -15,11 +15,12 @@ class DatabaseSeeder extends Seeder
         Model::unguard();
 
         $this->call(AdminUserSeeder::class);
-        // $this->call(MarketTableSeeder::class);
+         $this->call(MarketTableSeeder::class);
         // $this->call(MarketCategoryTableSeeder::class);
         // $this->call(MarketDivisionTableSeeder::class);
         $this->call(CountryTableSeeder::class);
         $this->call(DummyDataSeeder::class);
+        $this->call(StatusTableSeeder::class);
 
         // $this->call(CountryTableSeeder::class);
         // $this->call(OccupationsTableSeeder::class);

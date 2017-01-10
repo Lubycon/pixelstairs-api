@@ -14,6 +14,8 @@ use Log;
 use App\Models\Category;
 use App\Models\Division;
 
+use App\Models\Status;
+use App\Models\Market;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Option;
@@ -29,6 +31,53 @@ class ProductController extends Controller
     public $product_id;
     public $market_id;
     public $market_category_id;
+
+    public function haitaoData(Request $request){
+        $product = Product::findOrFail(1);
+
+        $response = (object)array(
+            'mittyProductId' => $product['id'],
+            'marketProductId' => $product['product_id'],
+            'haitaoProductId' => 'haitao present',
+            'market' => (object)array(
+                "id" => $product['market_id'],
+                "name" => Market::find($product['market_id'])['name'],
+            ),
+            'category' => array(
+                "id" => $product['category_id'],
+                "name" => Category::find($product['category_id'])['name'],
+            ),
+            'division' => array(
+                "id" => $product['division_id'],
+                "name" => Division::find($product['division_id'])['name'],
+            ),
+            'title' => (object)array(
+                'origin' => $product['original_title'],
+                'zh' => $product['chinese_title'],
+            ),
+            'brand' => array(
+                "id" => $product['brand_id'],
+                "name" => Brand::find($product['brand_id'])['name'],
+            ),
+            'description' => $product['description'],
+            'price' => $product['price'],
+            'deliveryPrice' => $product['domestic_delivery_price'],
+            'isFreeDelivery' => $product['is_free_delivery'],
+            'stock' => $product['stock'],
+            'safeStock' => $product['safe_stock'],
+            'url' => $product['url'],
+            'status' => array(
+                "code" => $product['status_code'],
+                "name" => Status::wherecode($product['status_code'])->value('name'),
+            ),
+            'createDate' => Carbon::instance($product['created_at'])->toDateTimeString(),
+            'startDate' => $product['start_date'],
+            'endDate' => $product['end_date'],
+            'options' => $this->bindOption(Option::whereproduct_id($product['id'])->get())
+        );
+
+        return response()->success($response);
+    }
 
     public function get(Request $request,$id){
         $product = Product::findOrFail($id);
