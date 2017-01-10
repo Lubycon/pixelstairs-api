@@ -163,8 +163,8 @@ class ProductController extends Controller
 
         $this->product = new Product;
         $this->product->product_id = $this->product_id;
-        $this->product->category_id = $this->getCategoryId($data['category']);
-        $this->product->division_id = $this->getDivisionId($data['division']);
+        $this->product->category_id = $this->getCategoryId($data['categoryId']);
+        $this->product->division_id = $this->getDivisionId($data['divisionId']);
         $this->product->market_id = $data['marketId'];
         $this->product->brand_id = $this->getBrandId($data['brandName']);
         $this->product->original_title = $data['title']['origin'];
@@ -197,8 +197,8 @@ class ProductController extends Controller
         $this->market_category_id = $data['marketDivisionId'];
 
         $this->product->product_id = $data['marketProductId'];
-        $this->product->category_id = $this->getCategoryId($data['category']);
-        $this->product->division_id = $this->getDivisionId($data['division']);
+        $this->product->category_id = $this->getCategoryId($data['categoryId']);
+        $this->product->division_id = $this->getDivisionId($data['divisionId']);
         $this->product->market_id = $data['marketId'];
         $this->product->brand_id = $this->getBrandId($data['brandName']);
         $this->product->original_title = $data['title']['origin'];
