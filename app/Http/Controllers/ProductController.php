@@ -19,9 +19,12 @@ use App\Models\Product;
 use App\Models\Option;
 use App\Models\Sku;
 use Abort;
+use App\Traits\getUserModelTrait;
 
 class ProductController extends Controller
 {
+    use getUserModelTrait;
+
     public $product;
     public $product_id;
     public $market_id;
@@ -166,7 +169,7 @@ class ProductController extends Controller
         $this->product->stock = $data['stock'];
         $this->product->safe_stock = $data['safeStock'];
         $this->product->url = $data['url'];
-        $this->product->status_code = $data['statusCode'];
+        $this->product->status_code = $this->statusUpdate($request);
         $this->product->start_date = Carbon::now()->toDateTimeString();
         $this->product->end_date = $data['endDate'];
 
@@ -240,7 +243,7 @@ class ProductController extends Controller
             $targetOption["price"] = $value['price'];
             if (!$targetOption->save()) Abort::Error('0040','Option Update Fail');
 
-            $targetSku = Sku::whereid($targetOption["sku_id"])->firstOrFail();
+            $targetSku = Sku::whereid($targetOption["sku_id"])->whereproduct_id($this->product->id)->firstOrFail();
             $targetSku['description'] = $value['name']['origin'];
             if (!$targetSku->save()) Abort::Error('0040','Sku Update Fail');
         }
@@ -248,6 +251,8 @@ class ProductController extends Controller
     }
 
     private function isDirdyOption($options){
+        Log::info(count($this->product->option()->get()));
+        Log::info(count($options));
         if ( count($this->product->option()->get()) !==  count($options)) Abort::Error('0040','Can not add option at update product');
         return false;
     }
@@ -261,5 +266,12 @@ class ProductController extends Controller
         );
         $id = Sku::firstOrCreate($sku)->id;
         return $id;
+    }
+    private function statusUpdate($request){
+        $user = $this->getUserByTokenRequestOrFail($request);
+        if ( $this->product->status_code != $request->statusCode ){
+            if ( $user->grade != 'super_admin' ) Abort::Error('0043','Can not change status');
+        }
+        return $request->statusCode;
     }
 }
