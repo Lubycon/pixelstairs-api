@@ -14,7 +14,7 @@ class CreateMarketsTable extends Migration
     {
         Schema::create('markets', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('code');
+            $table->string('code',4);
             $table->string('name','20');
             $table->timestamps();
         });
