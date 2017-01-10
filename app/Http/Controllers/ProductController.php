@@ -159,7 +159,7 @@ class ProductController extends Controller
 
         $this->product_id = $data['marketProductId'];
         $this->market_id = $data['marketId'];
-        $this->market_category_id = $data['marketDivisionId'];
+//        $this->market_category_id = $data['marketDivisionId'];
 
         $this->product = new Product;
         $this->product->product_id = $this->product_id;
@@ -194,7 +194,7 @@ class ProductController extends Controller
         $options = $data['options'];
 
         $this->market_id = $this->product->market_id;
-        $this->market_category_id = $data['marketDivisionId'];
+//        $this->market_category_id = $data['marketDivisionId'];
 
         $this->product->product_id = $data['marketProductId'];
         $this->product->category_id = $this->getCategoryId($data['categoryId']);
