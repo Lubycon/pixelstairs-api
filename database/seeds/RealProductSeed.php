@@ -36,7 +36,8 @@ class RealProductSeed extends Seeder
             "parent_id" => 1,
             "market_id" => '0100',
             "market_category_id" => 1002031,
-            "name" => "로션/에멀젼",
+            'original_name' => "로션/에멀젼",
+            'chinese_name' => "露/乳液",
         ));
         DB::table('options')->insert([
             array(

@@ -27,22 +27,24 @@
 
 $factory->define(App\Models\Category::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->name
+        'original_name' => $faker->name,
+        'chinese_name' => 'zh'.$faker->name
     ];
 });
 
 $factory->define(App\Models\Division::class, function (Faker\Generator $faker) {
     return [
-        'market_id' => 1,
+        'market_id' => "0100",
         'market_category_id' => mt_rand(100000000,110000000),
-        'name' => $faker->name,
+        'original_name' => $faker->name,
+        'chinese_name' => 'zh'.$faker->name,
         'parent_id' => mt_rand(1,30),
     ];
 });
 
 $factory->define(App\Models\Sku::class, function (Faker\Generator $faker) {
     return [
-        'market_id' => 1,
+        'market_id' => "0100",
         'product_id' => mt_rand(1,500),
         'sku' => 'MK001PD'.mt_rand(10000000,11000000).'ID'.mt_rand(0,100),
         'description' => $faker->name.','.$faker->name.','.$faker->name,
@@ -71,7 +73,7 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'haitao_product_id' => mt_rand(100000000,110000000),
         'category_id' => mt_rand(1,30),
         'division_id' => mt_rand(1,100),
-        'market_id' => 1,
+        'market_id' => "0100",
         'brand_id' => mt_rand(1,100),
         'original_title' => $faker->name,
         'chinese_title' => '中国名字',

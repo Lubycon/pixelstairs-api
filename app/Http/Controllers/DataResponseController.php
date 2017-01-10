@@ -17,6 +17,7 @@ use App\Models\Option;
 use App\Models\Category;
 use App\Models\Division;
 use App\Models\Status;
+use App\Models\Market;
 
 class DataResponseController extends Controller
 {
@@ -31,13 +32,14 @@ class DataResponseController extends Controller
             'category' => Category::all(),
             'division' => Division::all(),
             'status' => Status::all(),
+            'market' => Market::all(),
         );
         $models = (object)array();
         foreach($query as $key => $value){
             if(isset($whiteList->$value)){
                 $models->$key = $whiteList->$value;
             }else{
-                return null;
+                $models->$key = NULL;
             }
         };
         return $models;
@@ -50,7 +52,7 @@ class DataResponseController extends Controller
         if( !is_null($models) ){
             return response()->success($models);
         }else{
-            return response()->success();
+            Abort::Error('0040');
         }
     }
 }

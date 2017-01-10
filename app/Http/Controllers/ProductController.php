@@ -33,7 +33,7 @@ class ProductController extends Controller
     public $market_category_id;
 
     public function haitaoData(Request $request){
-        $product = Product::findOrFail(1);
+        $product = Product::findOrFail(501);
 
         $response = (object)array(
             'mittyProductId' => $product['id'],
@@ -41,15 +41,17 @@ class ProductController extends Controller
             'haitaoProductId' => 'haitao present',
             'market' => (object)array(
                 "id" => $product['market_id'],
-                "name" => Market::find($product['market_id'])['name'],
+                "name" => Market::wherecode($product['market_id'])->value('name'),
             ),
             'category' => array(
                 "id" => $product['category_id'],
-                "name" => Category::find($product['category_id'])['name'],
+                "origin" => Category::find($product['category_id'])['original_name'],
+                "zh" => Category::find($product['category_id'])['chinese_name'],
             ),
             'division' => array(
                 "id" => $product['division_id'],
-                "name" => Division::find($product['division_id'])['name'],
+                "origin" => Division::find($product['division_id'])['original_name'],
+                "zh" => Division::find($product['division_id'])['chinese_name'],
             ),
             'title' => (object)array(
                 'origin' => $product['original_title'],
@@ -157,19 +159,12 @@ class ProductController extends Controller
 
         $this->product_id = $data['marketProductId'];
         $this->market_id = $data['marketId'];
+        $this->market_category_id = $data['marketDivisionId'];
 
         $this->product = new Product;
         $this->product->product_id = $this->product_id;
-        $this->product->category_id = is_string($data['category']) ? Category::firstOrCreate(array("name"=>$data['category']))['id'] : Category::findOrFail($data['category'])->value('id');
-        $this->product->division_id = is_string($data['division'])
-            ? Division::firstOrCreate(
-                array(
-                    "parent_id" => $this->product->category_id,
-                    "market_id" => $data['marketId'],
-                    "market_category_id" => $data['marketDivisionId'],
-                    "name" => $data['division'],
-                ))['id']
-            : Division::findOrFail($data['division'])->value('id');
+        $this->product->category_id = $this->getCategoryId($data['category']);
+        $this->product->division_id = $this->getDivisionId($data['division']);
         $this->product->market_id = $data['marketId'];
         $this->product->brand_id = $this->getBrandId($data['brandName']);
         $this->product->original_title = $data['title']['origin'];
@@ -199,7 +194,7 @@ class ProductController extends Controller
         $options = $data['options'];
 
         $this->market_id = $this->product->market_id;
-        $this->market_category_id = $data['market_category_id'];
+        $this->market_category_id = $data['marketDivisionId'];
 
         $this->product->product_id = $data['marketProductId'];
         $this->product->category_id = $this->getCategoryId($data['category']);
@@ -231,16 +226,23 @@ class ProductController extends Controller
         return is_null($brand_name) ? null : Brand::firstOrCreate(['name' => $brand_name])->id;
     }
     private function getCategoryId($category){
-        return is_string($category) ? Category::firstOrCreate(array("name"=>$category))['id'] : Category::findOrFail($category)->value('id');
+        return is_array($category)
+        ? Category::firstOrCreate(
+            array(
+                "original_name" => $category['origin'],
+                "chinese_name" => $category['zh'],
+            ))['id']
+        : Category::findOrFail($category)->value('id');
     }
     private function getDivisionId($division){
-        return is_string($division)
+        return is_array($division)
         ? Division::firstOrCreate(
             array(
                 "parent_id" => $this->product->category_id,
                 "market_id" => $this->market_id,
                 "market_category_id" => $this->market_category_id,
-                "name" => $division,
+                "original_name" => $division['origin'],
+                "chinese_name" => $division['zh'],
             ))['id']
         : Division::findOrFail($division)->value('id');
     }
@@ -319,6 +321,7 @@ class ProductController extends Controller
         $user = $this->getUserByTokenRequestOrFail($request);
         if ( $this->product->status_code != $request->statusCode ){
             if ( $user->grade != 'super_admin' ) Abort::Error('0043','Can not change status');
+            $this->product->start_date = Carbon::now()->toDateTimeString();
         }
         return $request->statusCode;
     }
