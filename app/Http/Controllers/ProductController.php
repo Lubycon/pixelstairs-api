@@ -21,11 +21,11 @@ use App\Models\Product;
 use App\Models\Option;
 use App\Models\Sku;
 use Abort;
-use App\Traits\getUserModelTrait;
+use App\Traits\GetUserModelTrait;
 
 class ProductController extends Controller
 {
-    use getUserModelTrait;
+    use GetUserModelTrait;
 
     public $product;
     public $product_id;
