@@ -16,6 +16,7 @@ use App\Models\Brand;
 use App\Models\Option;
 use App\Models\Category;
 use App\Models\Division;
+use App\Models\Status;
 
 class DataResponseController extends Controller
 {
@@ -29,6 +30,7 @@ class DataResponseController extends Controller
             'option' => Option::all(),
             'category' => Category::all(),
             'division' => Division::all(),
+            'status' => Status::all(),
         );
         $models = (object)array();
         foreach($query as $key => $value){
