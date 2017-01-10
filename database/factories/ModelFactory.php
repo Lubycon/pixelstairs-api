@@ -44,7 +44,7 @@ $factory->define(App\Models\Sku::class, function (Faker\Generator $faker) {
     return [
         'market_id' => 1,
         'product_id' => mt_rand(1,500),
-        'sku' => $faker->name,
+        'sku' => 'MK001PD'.mt_rand(10000000,11000000).'ID'.mt_rand(0,100),
         'description' => $faker->name.','.$faker->name.','.$faker->name,
     ];
 });
@@ -53,8 +53,8 @@ $factory->define(App\Models\Option::class, function (Faker\Generator $faker) {
     return [
         'product_id' => mt_rand(1,500),
         'sku_id' => mt_rand(1,3000),
-        'original_name' => str_random(10),
-        'chinese_name' => str_random(10),
+        'original_name' => '옵션1'.',옵션2'.',옵션3',
+        'chinese_name' => '选项1'.',选项2'.',选项3',
         'price' => mt_rand(10000,50000),
     ];
 });
@@ -74,8 +74,8 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'market_id' => 1,
         'brand_id' => mt_rand(1,100),
         'original_title' => $faker->name,
-        'chinese_title' => $faker->name,
-        'description' => 'description_'.str_random(10),
+        'chinese_title' => '中国名字',
+        'description' => '产品说明列_'.str_random(10),
         'price' => mt_rand(10000,50000),
         'domestic_delivery_price' => mt_rand(1000,2500),
         'is_free_delivery' => mt_rand(0,1),

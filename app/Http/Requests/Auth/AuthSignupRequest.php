@@ -20,15 +20,10 @@ class AuthSignupRequest extends Request
             'email' => 'required|unique:users,email|email',
             'name' => 'required|unique:users,name',
             'nickname' => 'required|unique:users,nickname',
-            'password' => '',
             'position' => 'required',
             'grade' => 'required|in:normal,admin,super_admin',
         ];
 
         return $requiredRule;
-    }
-
-    public function getModelValidateRule(){
-        return User::rules();
     }
 }

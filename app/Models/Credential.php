@@ -23,12 +23,11 @@ class Credential extends Model
       $credential = [
           'email' => $data['email'],
           'name' => $data['name'],
-          'niackname' => $data['nickname'],
+          'nickname' => $data['nickname'],
           'password' => bcrypt($data['password']),
           'grade' => 'user',
           'position' => $data['position']
       ];
-
       return $credential;
 
     }

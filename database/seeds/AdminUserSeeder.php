@@ -16,10 +16,20 @@ class AdminUserSeeder extends Seeder
             array(
             	'email'=>'admin@mittycompany.com',
             	'name' => 'Admin',
+                'nickname' => 'Admin',
             	'password' => bcrypt('alxlalxl0102'),
                 'remember_token' => 'wmLRmEIui4DtFz5ikU5mZ6Cm2gKCIOW1',
             	'grade' => 'super_admin',
                 'position' => 'admin',
+            ),
+            array(
+                'email'=>'peter@mittycompany.com',
+                'name' => '오주현',
+                'nickname' => 'Peter',
+                'password' => bcrypt('ojh770700'),
+                'remember_token' => 'wmLRmEIui4DtFz5ikU5mZ6Cm2gKCIOW1',
+                'grade' => 'admin',
+                'position' => 'CEO',
             ),
         );
 
