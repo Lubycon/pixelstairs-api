@@ -16,14 +16,17 @@ class MarketTableSeeder extends Seeder
             array(
                 'code' => '0100',
             	'name' => '11st',
+                'country_id' => 211,
             ),
             array(
                 'code' => '0101',
             	'name' => 'gmarket',
+                'country_id' => 211,
             ),
             array(
                 'code' => '0102',
             	'name' => 'auction',
+                'country_id' => 211,
             ),
         );
 
