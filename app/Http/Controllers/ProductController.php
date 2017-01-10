@@ -319,7 +319,7 @@ class ProductController extends Controller
     private function statusUpdate($request){
         $user = $this->getUserByTokenRequestOrFail($request);
         if ( $this->product->status_code != $request->statusCode ){
-            if ( $user->grade != "super_admin" ) Abort::Error("0043","Can not change status");
+            if ( $user->grade != "superAdmin" ) Abort::Error("0043","Can not change status");
             $this->product->start_date = Carbon::now()->toDateTimeString();
         }
         return $request->statusCode;

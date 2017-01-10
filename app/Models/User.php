@@ -10,7 +10,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-
+use Log;
 class User extends Model implements AuthenticatableContract,
                                     AuthorizableContract,
                                     CanResetPasswordContract
@@ -18,6 +18,10 @@ class User extends Model implements AuthenticatableContract,
     use Authenticatable, Authorizable, CanResetPassword ,SoftDeletes;
 
     protected $table = 'users';
+
+    protected $casts = [
+        'id' => 'string',
+    ];
 
     protected function rules(){
         // Must be :: without unique value you must be adding unique value to form request required array!!
@@ -40,5 +44,5 @@ class User extends Model implements AuthenticatableContract,
 
     protected $hidden = ['password', 'remember_token'];
 
-    protected $dates = ['deleted_at'];
+    protected $dates = ['last_login_time','created_at','updated_at','deleted_at'];
 }

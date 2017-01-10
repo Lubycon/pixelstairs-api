@@ -12,4 +12,12 @@ class Division extends Model
         "market_category_id",
         "name"
     ];
+
+    protected $casts = [
+        'id' => 'string',
+        'parent_id' => 'string',
+        'market_category_id' => 'string',
+    ];
+
+    protected $dates = ['created_at','updated_at'];
 }

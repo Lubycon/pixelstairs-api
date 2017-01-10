@@ -19,8 +19,8 @@ class AdminUserSeeder extends Seeder
                 'nickname' => 'Admin',
             	'password' => bcrypt('alxlalxl0102'),
                 'remember_token' => 'wmLRmEIui4DtFz5ikU5mZ6Cm2gKCIOW1',
-            	'grade' => 'super_admin',
-                'position' => 'admin',
+            	'grade' => 'superAdmin',
+                'position' => 'admin_account',
             ),
             array(
                 'email'=>'peter@mittycompany.com',

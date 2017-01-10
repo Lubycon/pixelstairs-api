@@ -16,6 +16,7 @@ class CreateMarketsTable extends Migration
             $table->increments('id');
             $table->string('code',4);
             $table->string('name','20');
+            $table->integer('country_id');
             $table->timestamps();
         });
     }
