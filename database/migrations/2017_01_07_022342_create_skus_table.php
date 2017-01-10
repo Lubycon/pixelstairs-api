@@ -14,7 +14,7 @@ class CreateSkusTable extends Migration
     {
         Schema::create('skus', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('market_id');
+            $table->string('market_id',4);
             $table->integer('product_id');
             $table->string('sku','30');
             $table->string('description',300);

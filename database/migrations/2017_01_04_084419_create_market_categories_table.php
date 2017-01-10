@@ -14,7 +14,7 @@ class CreateMarketCategoriesTable extends Migration
     {
         Schema::create('market_categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('market_id');
+            $table->string('market_id',4);
             $table->string('name',40);
             $table->boolean('is_active');
             $table->timestamps();

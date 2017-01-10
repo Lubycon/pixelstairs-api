@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CountryTableSeeder::class);
         $this->call(DummyDataSeeder::class);
         $this->call(StatusTableSeeder::class);
-
+        $this->call(RealProductSeed::class);
         // $this->call(CountryTableSeeder::class);
         // $this->call(OccupationsTableSeeder::class);
         // $this->call(BoardsTableSeeder::class);

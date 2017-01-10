@@ -15,7 +15,7 @@ class CreateDivisionsTable extends Migration
         Schema::create('divisions', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('parent_id');
-            $table->integer('market_id');
+            $table->string('market_id',4);
             $table->integer('market_category_id');
             $table->string('name','50');
             $table->timestamps();

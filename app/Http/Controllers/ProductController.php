@@ -184,7 +184,6 @@ class ProductController extends Controller
         $this->product->safe_stock = $data['safeStock'];
         $this->product->url = $data['url'];
         $this->product->status_code = '0300';
-        $this->product->start_date = Carbon::now()->toDateTimeString();
         $this->product->end_date = $data['endDate'];
 
         if ( !$this->product->save() ) Abort::Error('0040');

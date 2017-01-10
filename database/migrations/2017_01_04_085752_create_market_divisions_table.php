@@ -14,7 +14,7 @@ class CreateMarketDivisionsTable extends Migration
     {
         Schema::create('market_divisions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('market_id');
+            $table->string('market_id',4);
             $table->integer('category_id');
             $table->string('name',30);
             $table->string('data_number',20);
