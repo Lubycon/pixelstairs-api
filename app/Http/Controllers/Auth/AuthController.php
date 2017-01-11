@@ -69,6 +69,8 @@ class AuthController extends Controller
         $credentialSignup = Credential::signup($data);
         $credentialSignin = Credential::signin($data);
 
+            Log::info(var_dump($credentialSignup));
+
         if(User::create($credentialSignup)){
             if(Auth::once($credentialSignin)){
                 $id = Auth::user()->getAuthIdentifier();
@@ -112,6 +114,26 @@ class AuthController extends Controller
                 );
             }
             return response()->success($responseData);
+        }else{
+            Abort::Error('0040');
+        }
+    }
+
+    protected function simpleRetrieve(Request $request){
+        $tokenData = CheckContoller::checkToken($request);
+
+        $findUser = User::findOrFail($tokenData->id);
+        $userExist = CheckContoller::checkUserExistById($tokenData->id);
+
+        if($userExist){
+            $result = (object)array(
+                "id" => $findUser->id,
+                "email" => $findUser->email,
+                "nickname" => $findUser->nickname,
+                "position" => $findUser->position,
+                "grade" => $findUser->grade
+            );
+            return response()->success($result);
         }else{
             Abort::Error('0040');
         }

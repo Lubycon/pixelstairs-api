@@ -21,6 +21,7 @@ Route::group(['prefix' => '/v1'], function () {
 
         //member data check and get
         Route::get('', 'Auth\AuthController@getList');
+        Route::get('simple', 'Auth\AuthController@simpleRetrieve');
         Route::get('detail/{id}', 'Auth\AuthController@getRetrieve');
         Route::post('detail/{id}', 'Auth\AuthController@postRetrieve');
 
