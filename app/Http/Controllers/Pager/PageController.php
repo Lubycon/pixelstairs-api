@@ -77,6 +77,7 @@ class PageController extends Controller
         switch($section){
             case 'product' : $this->model = new Product; $this->initProduct(); break;
             case 'category' : $this->model = new Category; $this->initCategory(); break;
+            case 'division' : $this->model = new Division; $this->initDivision(); break;
             default : Abort::Error('0040','Unknown Model') ;break; //error point
         }
     }
@@ -91,6 +92,10 @@ class PageController extends Controller
         return;
     }
     private function initCategory(){
+        $this->query['sort'] = 1;
+        return;
+    }
+    private function initDivision(){
         $this->query['sort'] = 1;
         return;
     }
