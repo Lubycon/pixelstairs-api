@@ -167,9 +167,11 @@ class ProductController extends Controller
 
         $this->product = new Product;
         $this->product->product_id = $this->product_id;
-        $this->product->category_id = $this->getCategoryId($data["categoryId"]);
-        $this->product->division_id = $this->getDivisionId($data["divisionId"]);
-        $this->product->sector_id = $this->getSectorId($data["sectorId"]);
+        $this->product->category_id = $data["categoryId"];
+        $this->product->division_id = $data["divisionId"];
+        $this->product->sector_id_0 = $data["sector"][0];
+        $this->product->sector_id_1 = isset($data["sector"][1]) ? $data["sector"][1] : NULL;
+        $this->product->sector_id_2 = isset($data["sector"][2]) ? $data["sector"][2] : NULL;
         $this->product->market_id = $data["marketId"];
         $this->product->brand_id = $this->getBrandId($data["brandName"]);
         $this->product->original_title = $data["title"]["origin"];
@@ -200,9 +202,11 @@ class ProductController extends Controller
 
         $this->market_id = $this->product->market_id;
         $this->product->product_id = $data["marketProductId"];
-        $this->product->category_id = $this->getCategoryId($data["categoryId"]);
-        $this->product->division_id = $this->getDivisionId($data["divisionId"]);
-        $this->product->sector_id = $this->getSectorId($data["sectorId"]);
+        $this->product->category_id = $data["categoryId"];
+        $this->product->division_id = $data["divisionId"];
+        $this->product->sector_id_0 = $data["sector"][0];
+        $this->product->sector_id_1 = isset($data["sector"][1]) ? $data["sector"][1] : NULL;
+        $this->product->sector_id_2 = isset($data["sector"][2]) ? $data["sector"][2] : NULL;
         $this->product->market_id = $data["marketId"];
         $this->product->brand_id = $this->getBrandId($data["brandName"]);
         $this->product->original_title = $data["title"]["origin"];
@@ -278,38 +282,6 @@ class ProductController extends Controller
         return is_null($brand_name) ? null : Brand::firstOrCreate(["name" => $brand_name])->id;
     }
 
-    private function getCategoryId($category){
-        return is_array($category)
-        ? Category::firstOrCreate(
-            array(
-                "original_name" => $category["origin"],
-                "chinese_name" => $category["zh"],
-            ))["id"]
-        : Category::findOrFail($category)->value("id");
-    }
-    private function getDivisionId($division){
-        return is_array($division)
-        ? Division::firstOrCreate(
-            array(
-                "parent_id" => $this->product->category_id,
-                "original_name" => $division["origin"],
-                "chinese_name" => $division["zh"],
-            ))["id"]
-        : Division::findOrFail($division)->value("id");
-    }
-    private function getSectorId($division){
-        return is_array($division)
-            ? Sector::firstOrCreate(
-                array(
-                    "parent_id" => $this->product->category_id,
-                    "market_id" => $this->market_id,
-                    "market_category_id" => $this->market_category_id,
-                    "original_name" => $division["origin"],
-                    "chinese_name" => $division["zh"],
-                ))["id"]
-            : Sector::findOrFail($division)->value("id");
-    }
-
     private function bindOption($option){
         $response = [];
         foreach ($option as $key => $value) {
@@ -375,4 +347,36 @@ class ProductController extends Controller
         $id = Sku::firstOrCreate($sku)->id;
         return $id;
     }
+
+//    private function getCategoryId($category){
+//        return is_array($category)
+//        ? Category::firstOrCreate(
+//            array(
+//                "original_name" => $category["origin"],
+//                "chinese_name" => $category["zh"],
+//            ))["id"]
+//        : Category::findOrFail($category)->value("id");
+//    }
+//    private function getDivisionId($division){
+//        return is_array($division)
+//        ? Division::firstOrCreate(
+//            array(
+//                "parent_id" => $this->product->category_id,
+//                "original_name" => $division["origin"],
+//                "chinese_name" => $division["zh"],
+//            ))["id"]
+//        : Division::findOrFail($division)->value("id");
+//    }
+//    private function getSectorId($division){
+//        return is_array($division)
+//            ? Sector::firstOrCreate(
+//                array(
+//                    "parent_id" => $this->product->category_id,
+//                    "market_id" => $this->market_id,
+//                    "market_category_id" => $this->market_category_id,
+//                    "original_name" => $division["origin"],
+//                    "chinese_name" => $division["zh"],
+//                ))["id"]
+//            : Sector::findOrFail($division)->value("id");
+//    }
 }

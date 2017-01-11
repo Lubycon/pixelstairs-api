@@ -19,7 +19,9 @@ class CreateProductsTable extends Migration
 
             $table->integer('category_id');
             $table->integer('division_id');
-            $table->integer('sector_id');
+            $table->integer('sector_id_0');
+            $table->integer('sector_id_1')->nullable();
+            $table->integer('sector_id_2')->nullable();
 
             $table->string('market_id','4');
             $table->integer('brand_id')->nullable();
