@@ -14,6 +14,4 @@ class Sku extends Model
         'id' => 'string',
         'product_id' => 'string',
     ];
-
-    protected $dates = ['created_at','updated_at'];
 }

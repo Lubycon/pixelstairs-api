@@ -19,6 +19,4 @@ class Product extends Model
         'division_id' => 'string',
         'brand_id' => 'string',
     ];
-
-    protected $dates = ['created_at','updated_at'];
 }

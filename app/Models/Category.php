@@ -13,6 +13,4 @@ class Category extends Model
     protected $casts = [
         'id' => 'string',
     ];
-
-    protected $dates = ['created_at','updated_at'];
 }

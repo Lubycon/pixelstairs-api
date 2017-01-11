@@ -44,6 +44,4 @@ class User extends Model implements AuthenticatableContract,
     ];
 
     protected $hidden = ['password', 'remember_token'];
-
-    protected $dates = ['last_login_time','created_at','updated_at','deleted_at'];
 }

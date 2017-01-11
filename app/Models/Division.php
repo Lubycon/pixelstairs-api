@@ -19,5 +19,4 @@ class Division extends Model
         'market_category_id' => 'string',
     ];
 
-    protected $dates = ['created_at','updated_at'];
 }

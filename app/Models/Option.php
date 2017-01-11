@@ -11,6 +11,4 @@ class Option extends Model
         'product_id' => 'string',
         'sku_id' => 'string',
     ];
-
-    protected $dates = ['created_at','updated_at'];
 }
