@@ -5,7 +5,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateBrandsTable extends Migration
 {
-    use
     /**
      * Run the migrations.
      *
