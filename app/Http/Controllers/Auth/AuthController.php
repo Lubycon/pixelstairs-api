@@ -127,6 +127,7 @@ class AuthController extends Controller
             $result = (object)array(
                 "id" => $findUser->id,
                 "email" => $findUser->email,
+                "name" => $findUser->name,
                 "nickname" => $findUser->nickname,
                 "position" => $findUser->position,
                 "grade" => $findUser->grade
