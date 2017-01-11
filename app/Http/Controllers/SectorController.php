@@ -43,21 +43,18 @@ class SectorController extends Controller
         }
     }
     public function post(Request $request){
+        $this->sector = new sector;
         $array = [];
         foreach( $request['name'] as $key => $value ){
-            $array[] = array(
+            $array[] = Sector::firstOrCreate(array(
                 "original_name" => $value['origin'],
                 "chinese_name" => $value['zh'],
                 "market_id" => $request['marketId'],
                 "market_category_id" => $request['marketCategoryId'],
                 "parent_id" => $request['parentId'],
-            );
+            ))['id'];
         }
-        if( $insert = Sector::insert($array) ){
-            return response()->success($insert);
-        }else{
-            Abort::Error('0040');
-        }
+        return response()->success($array);
     }
     public function put(Request $request,$id){
         $this->sector = Sector::findOrFail($id);
