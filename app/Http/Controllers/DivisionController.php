@@ -76,6 +76,5 @@ class DivisionController extends Controller
         }else {
             Abort::Error('0040');
         }
-
     }
 }

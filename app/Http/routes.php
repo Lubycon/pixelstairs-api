@@ -27,10 +27,13 @@ Route::group(['prefix' => '/v1'], function () {
         });
     });
     Route::group(['prefix' => '/products/'], function () {
-        Route::post('', 'ProductController@post');
-        Route::get('detail/{id}', 'ProductController@get');
-        Route::put('detail/{id}', 'ProductController@put');
         Route::get('', 'ProductController@getList');
+        Route::get('detail/{id}', 'ProductController@get');
+        Route::post('', 'ProductController@post');
+        Route::put('detail/{id}', 'ProductController@put');
+        Route::delete('detail/{id}', 'ProductController@delete');
+
+        Route::put('status/{status_name}', 'ProductController@status');
     });
     Route::group(['prefix' => '/markets/'], function () {
         Route::get('product', 'MarketController@get');

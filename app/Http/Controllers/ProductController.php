@@ -193,8 +193,6 @@ class ProductController extends Controller
         $options = $data["options"];
 
         $this->market_id = $this->product->market_id;
-//        $this->market_category_id = $data["marketDivisionId"];
-
         $this->product->product_id = $data["marketProductId"];
         $this->product->category_id = $this->getCategoryId($data["categoryId"]);
         $this->product->division_id = $this->getDivisionId($data["divisionId"]);
@@ -211,16 +209,64 @@ class ProductController extends Controller
         $this->product->stock = $data["stock"];
         $this->product->safe_stock = $data["safeStock"];
         $this->product->url = $data["url"];
-        $this->product->status_code = $this->statusUpdate($request);
-        $this->product->start_date = Carbon::now()->toDateTimeString();
+        $this->product->status_code = $this->statusUpdate($request,$request['statusCode']);
         $this->product->end_date = $data["endDate"];
 
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ($this->updateOptions($options)) return response()->success($this->product);
+        if (1) return response()->success($this->product);
         Abort::Error("0040");
     }
 
+    public function delete(Request $request,$id){
+        $this->product = Product::findOrFail($id);
+        if($this->product->delete()){
+            return response()->success();
+        }else {
+            Abort::Error('0040');
+        }
+    }
+    public function status(Request $request,$status_name){
+        $status = Status::whereenglish_name($status_name)->firstOrFail();
+        $products = $request['products'];
+        foreach( $products as $value ){
+            $this->product = Product::findOrFail($value);
+            $this->product->status_code = $this->statusUpdate($request,$status['code']);
+            $this->product->save();
+        }
+        return response()->success();
+    }
+    public function statusUpdate($request,$status_code){
+        if( !$this->isSameStatus($status_code) ){
+            $this->statusPermissionCheck($request);
+            $this->forConfirm($status_code);
+            return $status_code;
+        }
+        return $this->product->status_code;
+    }
+    public function forConfirm($status_code){
+        if( $status_code == '0301' ){
+            $this->startDateUpdate();
+            return true;
+        }
+        return false;
+    }
+    private function statusPermissionCheck($request){
+        $user = $this->getUserByTokenRequestOrFail($request);
+        if ($user->grade == "superAdmin" || $user->grade == "admin"){
+            return true;
+        }
+        Abort::Error("0043", "Can not change status");
+    }
+    private function isSameStatus($status_code){
+        if( $this->product->status_code == $status_code ){
+            return true;
+        }
+        return false;
+    }
+    private function startDateUpdate(){
+        $this->product->start_date = Carbon::now()->toDateTimeString();
+    }
     private function getBrandId($brand_name){
         return is_null($brand_name) ? null : Brand::firstOrCreate(["name" => $brand_name])->id;
     }
@@ -281,7 +327,6 @@ class ProductController extends Controller
         }
         return $result;
     }
-
     private function updateOptions($options){
         $this->isDirdyOption($options);
         $checkedArray = [];
@@ -298,14 +343,12 @@ class ProductController extends Controller
         }
         return true;
     }
-
     private function isDirdyOption($options){
         Log::info(count($this->product->option()->get()));
         Log::info(count($options));
         if ( count($this->product->option()->get()) !==  count($options)) Abort::Error("0040","Can not add option at update product");
         return false;
     }
-
     private function createSku($option,$index){
         $sku = array(
             "market_id" => $this->market_id,
@@ -315,13 +358,5 @@ class ProductController extends Controller
         );
         $id = Sku::firstOrCreate($sku)->id;
         return $id;
-    }
-    private function statusUpdate($request){
-        $user = $this->getUserByTokenRequestOrFail($request);
-        if ( $this->product->status_code != $request->statusCode ){
-            if ( $user->grade != "superAdmin" ) Abort::Error("0043","Can not change status");
-            $this->product->start_date = Carbon::now()->toDateTimeString();
-        }
-        return $request->statusCode;
     }
 }
