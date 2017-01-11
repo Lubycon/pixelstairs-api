@@ -18,6 +18,7 @@ class CreateMarketsTable extends Migration
             $table->string('name','20');
             $table->integer('country_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

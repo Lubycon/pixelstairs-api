@@ -24,7 +24,8 @@ class CreateOptionsTable extends Migration
             $table->integer('price');
             $table->integer('stock')->nullable();
             $table->integer('safe_stock')->nullable();
-            $table->timestamps();
+            $table->timestamps()
+            $table->softDeletes();
         });
     }
 

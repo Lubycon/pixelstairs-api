@@ -49,9 +49,24 @@ class CategoryController extends Controller
             Abort::Error('0040');
         }
     }
-    public function put(Request $request){
-
+    public function put(Request $request,$id){
+        $this->category = Category::findOrFail($id);
+        $this->category->original_name = $request['name']['origin'];
+        $this->category->chinese_name = $request['name']['zh'];
+        if( $this->category->save() ){
+            return response()->success($this->category);
+        }else {
+            Abort::Error('0040');
+        }
     }
-    public function delete(){
+    public function delete(Request $request,$id){
+        $this->category = Category::findOrFail($id);
+
+        if($this->category->delete()){
+            return response()->success();
+        }else {
+            Abort::Error('0040');
+        }
+
     }
 }

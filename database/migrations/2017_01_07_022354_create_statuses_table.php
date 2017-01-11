@@ -18,6 +18,7 @@ class CreateStatusesTable extends Migration
             $table->string('name',30);
             $table->string('description',50);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

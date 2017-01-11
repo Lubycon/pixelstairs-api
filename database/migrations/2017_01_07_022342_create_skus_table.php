@@ -19,6 +19,7 @@ class CreateSkusTable extends Migration
             $table->string('sku','30');
             $table->string('description',300);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

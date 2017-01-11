@@ -20,6 +20,7 @@ class CreateDivisionsTable extends Migration
             $table->string('original_name','50');
             $table->string('chinese_name','50');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
