@@ -214,7 +214,7 @@ class ProductController extends Controller
 
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if (1) return response()->success($this->product);
+        if ( $this->updateOptions($data['options']) ) return response()->success($this->product);
         Abort::Error("0040");
     }
 
@@ -344,8 +344,6 @@ class ProductController extends Controller
         return true;
     }
     private function isDirdyOption($options){
-        Log::info(count($this->product->option()->get()));
-        Log::info(count($options));
         if ( count($this->product->option()->get()) !==  count($options)) Abort::Error("0040","Can not add option at update product");
         return false;
     }
