@@ -49,7 +49,8 @@ class CategoryController extends Controller
             Abort::Error('0040');
         }
     }
-    public function put(){
+    public function put(Request $request){
+
     }
     public function delete(){
     }

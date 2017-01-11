@@ -117,7 +117,7 @@ class ProductController extends Controller
 
     public function getList(Request $request){
         $query = $request->query();
-        $controller = new PageController('category',$query);
+        $controller = new PageController('product',$query);
         $collection = $controller->getCollection();
 
         $result = (object)array(
