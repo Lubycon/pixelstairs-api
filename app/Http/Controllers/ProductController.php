@@ -13,6 +13,7 @@ use Log;
 
 use App\Models\Category;
 use App\Models\Division;
+use App\Models\Sector;
 
 use App\Models\Status;
 use App\Models\Market;
@@ -95,7 +96,7 @@ class ProductController extends Controller
             "marketId" => $product["market_id"],
             "categoryId" => $product["category_id"],
             "divisionId" => $product["division_id"],
-            "sectorId" => $product["sector_id"],
+            "sector" => $product->sectors(),
             "marketCategoryId" => Sector::find($product["sector_id"])["market_category_id"],
             "title" => (object)array(
                 "origin" => $product["original_title"],
