@@ -8,12 +8,8 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Models\Product;
-// use App\Models\Content;
-// use App\Models\Post;
-// use App\Models\Comment;
-// use App\Models\User;
-// use App\Models\View;
-// use App\Models\Board;
+use App\Models\Category;
+use App\Models\Division;
 
 use Abort;
 
@@ -59,26 +55,29 @@ class PageController extends Controller
         $this->query = $query;
         $this->sort = (object)array('option' => 'created_at','direction' => 'desc');
 
-        $this->categoryName = $this->getSectionName($section);
+//        $this->categoryName = $this->getSectionName($section);
         $this->setModel($section);
         $this->setPageRange();
         $this->setModelFilter();
         $this->bindData();
     }
 
-    private function getSectionName($section){
-        // if($section == 'comment'){
-        //     return 'comment';
-        // }else{
-        //     return Board::where('name','=',$section)->value('group');
-        // }
-        return 'product';
-    }
+//    private function getSectionName($section){
+////         if($section == 'comment'){
+////             return 'comment';
+////         }else{
+////             return Board::where('name','=',$section)->value('group');
+////         }
+//        switch ($section){
+//
+//        }
+//    }
 
     private function setModel($section){
-        switch($this->categoryName){
+        switch($section){
             case 'product' : $this->model = new Product; $this->initProduct(); break;
-            default : break; //error point
+            case 'category' : $this->model = new Category; $this->initCategory(); break;
+            default : Abort::Error('0040','Unknown Model') ;break; //error point
         }
     }
 
@@ -91,7 +90,10 @@ class PageController extends Controller
         $this->query['sort'] = 1;
         return;
     }
-
+    private function initCategory(){
+        $this->query['sort'] = 1;
+        return;
+    }
 
     private function setPageRange(){
         $this->setPage = isset($this->query['pageIndex']) ? $this->query['pageIndex'] : $this->firstFageNumber;
