@@ -44,9 +44,10 @@ class SectorController extends Controller
     }
     public function post(Request $request){
         $this->sector = new sector;
-        $array = [];
+        $result = (object)array();
+        $result->sectors = [];
         foreach( $request['name'] as $key => $value ){
-            $array[] = Sector::firstOrCreate(array(
+            $array->sectors[] = Sector::firstOrCreate(array(
                 "original_name" => $value['origin'],
                 "chinese_name" => $value['zh'],
                 "market_id" => $request['marketId'],
