@@ -82,13 +82,9 @@ class AuthController extends Controller
 
     protected function signdrop(AuthSigndropRequest $request)
     {
-        $tokenData = CheckContoller::checkToken($request);
+        $user = User::findOrFail($request->memberId);
 
-        $user = User::findOrFail($tokenData->id);
-        $userExist = CheckContoller::checkUserExistById($tokenData->id);
-
-        if($userExist){
-            $user->delete();
+        if($user->delete()){
             return response()->success();
         }else{
             Abort::Error('0040');
