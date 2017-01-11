@@ -25,8 +25,8 @@ class Credential extends Model
           'name' => $data['name'],
           'nickname' => $data['nickname'],
           'password' => bcrypt($data['password']),
-          'grade' => 'user',
-          'position' => $data['position']
+          'grade' => 'normal',
+          'position' => $data['position'],
       ];
       return $credential;
 

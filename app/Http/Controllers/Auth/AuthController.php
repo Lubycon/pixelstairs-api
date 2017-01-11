@@ -69,8 +69,6 @@ class AuthController extends Controller
         $credentialSignup = Credential::signup($data);
         $credentialSignin = Credential::signin($data);
 
-            Log::info(var_dump($credentialSignup));
-
         if(User::create($credentialSignup)){
             if(Auth::once($credentialSignin)){
                 $id = Auth::user()->getAuthIdentifier();
