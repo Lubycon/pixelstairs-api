@@ -10,7 +10,9 @@ class Category extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name'
+        'name',
+        "original_name",
+        "chinese_name"
     ];
 
     protected $casts = [

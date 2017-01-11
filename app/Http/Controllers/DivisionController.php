@@ -31,8 +31,6 @@ class DivisionController extends Controller
                     "zh" => $array['chinese_name'],
                 ),
                 "parentId" => $array['parent_id'],
-                "marketId" => $array['market_id'],
-                "marketCategoryId" => $array['market_category_id'],
             );
         };
 
@@ -47,8 +45,6 @@ class DivisionController extends Controller
         $this->division->original_name = $request['name']['origin'];
         $this->division->chinese_name = $request['name']['zh'];
         $this->division->parent_id = $request['parentId'];
-        $this->division->market_id = $request['marketId'];
-        $this->division->market_category_id = $request['marketCategoryId'];
 
         if( $this->division->save() ){
             return response()->success($this->division);
@@ -61,8 +57,6 @@ class DivisionController extends Controller
         $this->division->original_name = $request['name']['origin'];
         $this->division->chinese_name = $request['name']['zh'];
         $this->division->parent_id = $request['parentId'];
-        $this->division->market_id = $request['marketId'];
-        $this->division->market_category_id = $request['marketCategoryId'];
         if( $this->division->save() ){
             return response()->success($this->division);
         }else {

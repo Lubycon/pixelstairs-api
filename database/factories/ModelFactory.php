@@ -34,11 +34,19 @@ $factory->define(App\Models\Category::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Models\Division::class, function (Faker\Generator $faker) {
     return [
+        'original_name' => $faker->name,
+        'chinese_name' => 'zh'.$faker->name,
+        'parent_id' => mt_rand(1,30),
+    ];
+});
+
+$factory->define(App\Models\Sector::class, function (Faker\Generator $faker) {
+    return [
         'market_id' => "0100",
         'market_category_id' => mt_rand(100000000,110000000),
         'original_name' => $faker->name,
         'chinese_name' => 'zh'.$faker->name,
-        'parent_id' => mt_rand(1,30),
+        'parent_id' => mt_rand(1,100),
     ];
 });
 

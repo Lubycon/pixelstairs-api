@@ -50,5 +50,11 @@ Route::group(['prefix' => '/v1'], function () {
         Route::put('{id}', 'DivisionController@put');
         Route::delete('{id}', 'DivisionController@delete');
     });
+    Route::group(['prefix' => '/sectors/'], function () {
+        Route::get('', 'SectorController@getList');
+        Route::post('', 'SectorController@post');
+        Route::put('{id}', 'SectorController@put');
+        Route::delete('{id}', 'SectorController@delete');
+    });
     Route::get('/data/','DataResponseController@dataSimpleResponse');
 });

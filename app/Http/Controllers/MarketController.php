@@ -11,7 +11,7 @@ use Abort;
 use Log;
 use GuzzleHttp\Client;
 
-use App\Models\Division;
+use App\Models\Sector;
 use App\Models\Market;
 
 class MarketController extends Controller
@@ -27,7 +27,6 @@ class MarketController extends Controller
     public function __construct(){
         $this->client = new Client();
     }
-
 
     public function get(Request $request){
         $query = $request->query();
@@ -66,8 +65,8 @@ class MarketController extends Controller
                 "id" => $category_data['market_category_id'],
                 "name" => $category_data['market_category_name'],
                 "ours" => (object)array(
-                    "id" => $category_data['division_id']['id'],
-                    "parantId" => $category_data['category_id']['parent_id'],
+                    "id" => $category_data['sector_id']['id'],
+                    "parantId" => $category_data['sector_id']['parent_id'],
                 ),
             ),
             'priceInfo' => (object)array(
@@ -83,8 +82,7 @@ class MarketController extends Controller
         return array(
             "market_category_id" => !is_null($this->category_data) ? $this->category_data['Category']['CategoryCode'] : null,
             "market_category_name" => !is_null($this->category_data) ? $this->category_data['Category']['CategoryName'] : null,
-            "division_id" => Division::wheremarket_category_id($this->category_data['Category']['CategoryCode'])->first(),
-            "category_id" => Division::wheremarket_category_id($this->category_data['Category']['CategoryCode'])->first(),
+            "sector_id" => Sector::wheremarket_category_id($this->category_data['Category']['CategoryCode'])->first(),
         );
     }
 

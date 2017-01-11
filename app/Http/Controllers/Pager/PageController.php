@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Division;
+use App\Models\Sector;
 
 use Abort;
 
@@ -78,6 +79,7 @@ class PageController extends Controller
             case 'product' : $this->model = new Product; $this->initProduct(); break;
             case 'category' : $this->model = new Category; $this->initCategory(); break;
             case 'division' : $this->model = new Division; $this->initDivision(); break;
+            case 'sector' : $this->model = new Sector; $this->initSector(); break;
             default : Abort::Error('0040','Unknown Model') ;break; //error point
         }
     }
@@ -96,6 +98,10 @@ class PageController extends Controller
         return;
     }
     private function initDivision(){
+        $this->query['sort'] = 1;
+        return;
+    }
+    private function initSector(){
         $this->query['sort'] = 1;
         return;
     }

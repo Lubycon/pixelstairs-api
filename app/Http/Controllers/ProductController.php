@@ -53,6 +53,11 @@ class ProductController extends Controller
                 "origin" => Division::find($product["division_id"])["original_name"],
                 "zh" => Division::find($product["division_id"])["chinese_name"],
             ),
+            "sector" => array(
+                "id" => $product["sector_id"],
+                "origin" => Sector::find($product["sector_id"])["original_name"],
+                "zh" => Sector::find($product["sector_id"])["chinese_name"],
+            ),
             "title" => (object)array(
                 "origin" => $product["original_title"],
                 "zh" => $product["chinese_title"],
@@ -90,7 +95,8 @@ class ProductController extends Controller
             "marketId" => $product["market_id"],
             "categoryId" => $product["category_id"],
             "divisionId" => $product["division_id"],
-            "marketCategoryId" => Division::find($product["division_id"])["market_category_id"],
+            "sectorId" => $product["sector_id"],
+            "marketCategoryId" => Sector::find($product["sector_id"])["market_category_id"],
             "title" => (object)array(
                 "origin" => $product["original_title"],
                 // "ko" => $product["korean_title"],
@@ -136,7 +142,6 @@ class ProductController extends Controller
                     "zh" => $array["chinese_title"],
                 ),
                 "brandName" => is_null($array["brand_id"]) ? NULL : Brand::findOrFail($array["brand_id"])->value("name"),
-
                 "description" => $array["description"],
                 "price" => $array["price"],
                 "stock" => $array["stock"],
@@ -164,6 +169,7 @@ class ProductController extends Controller
         $this->product->product_id = $this->product_id;
         $this->product->category_id = $this->getCategoryId($data["categoryId"]);
         $this->product->division_id = $this->getDivisionId($data["divisionId"]);
+        $this->product->sector_id = $this->getSectorId($data["sectorId"]);
         $this->product->market_id = $data["marketId"];
         $this->product->brand_id = $this->getBrandId($data["brandName"]);
         $this->product->original_title = $data["title"]["origin"];
@@ -196,6 +202,7 @@ class ProductController extends Controller
         $this->product->product_id = $data["marketProductId"];
         $this->product->category_id = $this->getCategoryId($data["categoryId"]);
         $this->product->division_id = $this->getDivisionId($data["divisionId"]);
+        $this->product->sector_id = $this->getSectorId($data["sectorId"]);
         $this->product->market_id = $data["marketId"];
         $this->product->brand_id = $this->getBrandId($data["brandName"]);
         $this->product->original_title = $data["title"]["origin"];
@@ -270,6 +277,7 @@ class ProductController extends Controller
     private function getBrandId($brand_name){
         return is_null($brand_name) ? null : Brand::firstOrCreate(["name" => $brand_name])->id;
     }
+
     private function getCategoryId($category){
         return is_array($category)
         ? Category::firstOrCreate(
@@ -284,12 +292,22 @@ class ProductController extends Controller
         ? Division::firstOrCreate(
             array(
                 "parent_id" => $this->product->category_id,
-                "market_id" => $this->market_id,
-                "market_category_id" => $this->market_category_id,
                 "original_name" => $division["origin"],
                 "chinese_name" => $division["zh"],
             ))["id"]
         : Division::findOrFail($division)->value("id");
+    }
+    private function getSectorId($division){
+        return is_array($division)
+            ? Sector::firstOrCreate(
+                array(
+                    "parent_id" => $this->product->category_id,
+                    "market_id" => $this->market_id,
+                    "market_category_id" => $this->market_category_id,
+                    "original_name" => $division["origin"],
+                    "chinese_name" => $division["zh"],
+                ))["id"]
+            : Sector::findOrFail($division)->value("id");
     }
 
     private function bindOption($option){

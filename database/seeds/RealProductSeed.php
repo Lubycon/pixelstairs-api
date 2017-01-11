@@ -29,10 +29,7 @@ class RealProductSeed extends Seeder
             "status_code" => '0300',
             "end_date" => "2017/05/02 00:00:00",
         ));
-        DB::table('categories')->insert(array(
-
-        ));
-        DB::table('divisions')->insert(array(
+        DB::table('sectors')->insert(array(
             "parent_id" => 1,
             "market_id" => '0100',
             "market_category_id" => 1002031,

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDivisionsTable extends Migration
+class CreateSectorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,11 @@ class CreateDivisionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('divisions', function (Blueprint $table) {
+        Schema::create('sectors', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('parent_id');
+            $table->string('market_id',4);
+            $table->integer('market_category_id')->nullable();
             $table->string('original_name','50');
             $table->string('chinese_name','50');
             $table->timestamps();
@@ -29,6 +31,6 @@ class CreateDivisionsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('divisions');
+        Schema::drop('sectors');
     }
 }

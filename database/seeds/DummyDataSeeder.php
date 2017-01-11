@@ -20,6 +20,9 @@ class DummyDataSeeder extends Seeder
         DB::table('divisions')->truncate();
         factory(App\Models\Division::class, 100)->create();
 
+        DB::table('sectors')->truncate();
+        factory(App\Models\Division::class, 300)->create();
+
         DB::table('skus')->truncate();
         factory(App\Models\Sku::class, 3000)->create();
 
