@@ -287,7 +287,7 @@ class ProductController extends Controller
         $response = [];
         foreach ($option as $key => $value) {
             $response[] = array(
-                "skuId" => Sku::find($value->sku_id)->value("id"),
+                "skuId" => $value->sku_id,
                 "sku" => Sku::find($value->sku_id)->value("sku"),
                 "name" => array(
                     "origin" => $value->original_name,
