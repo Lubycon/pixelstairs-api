@@ -188,8 +188,7 @@ class ProductController extends Controller
         $this->product->safe_stock = $data["safeStock"];
         $this->product->url = $data["url"];
         $this->product->status_code = "0300";
-        $this->product->end_date = $data["endDate"];
-
+        $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
         if ( !$this->product->save() ) Abort::Error("0040");
 
         if ( Option::insert($this->setOption($data["options"])) ) return response()->success($this->product);
@@ -223,7 +222,7 @@ class ProductController extends Controller
         $this->product->safe_stock = $data["safeStock"];
         $this->product->url = $data["url"];
         $this->product->status_code = $this->statusUpdate($request,$request['statusCode']);
-        $this->product->end_date = $data["endDate"];
+        $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
 
 
         if ( !$this->product->save() ) Abort::Error("0040");

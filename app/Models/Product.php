@@ -20,6 +20,9 @@ class Product extends Model
         'haitao_product_id' => 'string',
         'category_id' => 'string',
         'division_id' => 'string',
+        'sector_id_0' => 'string',
+        'sector_id_1' => 'string',
+        'sector_id_2' => 'string',
         'brand_id' => 'string',
     ];
 
