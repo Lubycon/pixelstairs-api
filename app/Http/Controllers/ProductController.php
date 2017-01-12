@@ -287,6 +287,7 @@ class ProductController extends Controller
         $response = [];
         foreach ($option as $key => $value) {
             $response[] = array(
+                "skuId" => Sku::find($value->sku_id)->value("id"),
                 "sku" => Sku::find($value->sku_id)->value("sku"),
                 "name" => array(
                     "origin" => $value->original_name,
@@ -322,7 +323,7 @@ class ProductController extends Controller
         $this->isDirdyOption($options);
         $checkedArray = [];
         foreach ($options as $key => $value) {
-            $targetOption = Option::wheresku_id($value["sku"])->firstOrFail();
+            $targetOption = Option::wheresku_id($value["skuId"])->firstOrFail();
             $targetOption["original_name"] = $value["name"]["origin"];
             $targetOption["chinese_name"] = $value["name"]["zh"];
             $targetOption["price"] = $value["price"];
