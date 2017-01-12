@@ -20,18 +20,19 @@ use Log;
 class PageController extends Controller
 {
     private $model;
-    private $filteredModel = null;
+    private $finalModel = null;
     private $query;
-    private $firstFageNumber = 0;
-    private $maxSize = 50;
+    private $firstFageNumber = 1;
+    private $maxSize = 100;
     private $defaultSize = 20;
-    private $sortDefault = 0; // 0 = recent, default result
-    private $sort;
+    private $sortDefault = array('value' => 'id','direction' => 'desc'); // 0 = recent, default result
+
+    private $filterQuery;
+    private $sortQuery;
+    private $dateQuery;
 
     private $pageNumber;
     private $pageSize;
-    private $sortOption;
-    private $filterOptions = [];
 
     private $withUserModel;
     public $paginator;
@@ -43,115 +44,147 @@ class PageController extends Controller
     public $DBquery;
 
     public function __construct($section,$query){
+
         DB::connection()->enableQueryLog();
         $this->DBquery = DB::getQueryLog();
         $lastQuery = end($query);
 
-        $this->query = $query;
-        $this->sort = (object)array('option' => 'id','direction' => 'desc');
-
         $this->setModel($section);
+        $this->query = $query;
+        $this->dateQuery = null; // check in queryParsing function
+        $this->filterQuery = $this->queryParser('filter');
+        $this->sortQuery = $this->queryParser('sort');
         $this->pageNumber = $this->setPageNumber();
         $this->pageSize = $this->setPageSize();
-        $this->setSort();
-        $this->setFilter();
-        $this->modelFiltering();
+        $this->modelFiltering($this->filterQuery);
+        $this->modelSorting($this->sortQuery);
         $this->bindData();
     }
 
+    private function queryParser($query){
+        $result = [];
+        if( isset( $this->query[$query] ) ){
+            $queries = $this->query[$query];
+            $explodeQuery = explode(',',$queries);
+            foreach( $explodeQuery as $key => $value ){
+                $explodeValue = explode(':',$value);
+                $key = $this->columnChecker($explodeValue[0]);
+                $value = $this->stringToValueChecker($explodeValue[1]);
+                if( $this->isDateQuery($value) ){
+                    $this->dateQuery = array($key => $this->getDateArray($value));
+                }else{
+                    $result[] = array($key => $value);
+                }
+            }
+        }
+        return $result;
+    }
+    private function isDateQuery($string){
+        return strpos($string,'~');
+    }
+    private function getDatearray($value){
+        $explodeValue = explode('~',$value);
+        return array(
+            $explodeValue[0],
+            $explodeValue[1]
+        );
+    }
+    private function columnChecker($string){
+        $columnName = $this->stringToKeyChecker($string);
+
+        $tableName = strtolower(str_plural(explode('\\',get_class($this->model))[2]));
+        $columnList = DB::getSchemaBuilder()->getColumnListing($tableName);
+
+        if(in_array($columnName,$columnList)) return $columnName;
+        Abort::Error('0040','Unknown Filter Key');
+    }
+    private function stringToKeyChecker($string){
+        switch($string){
+            case 'createDate' : return 'created_at';
+            case 'endDate' : return 'end_date';
+            case 'marketCategoryId' : return 'market_category_id';
+        }
+        Abort::Error('0040','Undefinded search key');
+    }
+    private function stringToValueChecker($string){
+        switch($string){
+            case 'isNull' : return NUll;
+        }
+        return $string;
+    }
     private function setModel($section){
         switch($section){
-            case 'product' : $this->model = new Product; $this->initProduct(); break;
-            case 'category' : $this->model = new Category; $this->initCategory(); break;
-            case 'division' : $this->model = new Division; $this->initDivision(); break;
-            case 'sector' : $this->model = new Sector; $this->initSector(); break;
+            case 'product' : $this->model = new Product; break;
+            case 'category' : $this->model = new Category; break;
+            case 'division' : $this->model = new Division; break;
+            case 'sector' : $this->model = new Sector; break;
             default : Abort::Error('0040','Unknown Model') ;break; //error point
         }
-    }
-
-
-    private function initProduct(){
-        // if( isset($this->query['sort']) && $this->query['sort'] > 4 ){
-        //     $this->query['sort'] = 1;
-        // }
-        $this->query['sort'] = 1;
-        return;
-    }
-    private function initCategory(){
-        $this->query['sort'] = 1;
-        return;
-    }
-    private function initDivision(){
-        $this->query['sort'] = 1;
-        return;
-    }
-    private function initSector(){
-        $this->query['sort'] = 1;
-        return;
     }
 
     private function setPageNumber(){
         return isset($this->query['pageIndex']) ? $this->query['pageIndex'] : $this->firstFageNumber;
     }
-    private function setPageSize(){
+    private function setPageSize()
+    {
         return isset($this->query['pageSize']) && $this->query['pageSize'] <= $this->maxSize ? $this->query['pageSize'] : $this->defaultSize;
     }
 
-    private function setFilter(){
-
-        // in sector filter
-        if( isset($this->query['marketCategoryId']) ){
-            $this->filterOptions[] = array(
-                "columnName" => 'market_category_id',
-                "value" => $this->query['marketCategoryId'] == 'isNull' ? NULL : $this->query['marketCategoryId'] ,
+    private function modelFiltering($filterQuery){
+        if( !is_null($this->dateQuery) ){
+            $this->finalModel = $this->model->whereBetween(
+                key($this->dateQuery),
+                $this->dateQuery[key($this->dateQuery)]
             );
         }
-        // in sector filter
-    }
-
-    private function setSort(){
-        $this->sortOption = isset($this->query['sort']) ? $this->query['sort'] : $this->sortDefault;
-        switch($this->sortOption){
-            case 1 : break; //recent
-            // case 2 : $this->sort->option = 'view_count' ; break; //view count
-            // case 3 : $this->sort->option = 'comment_count' ; break; //comment count
-            // case 4 : $this->sort->option = 'download_count' ; break; //download count
-            default : break; //error point
-        }
-    }
-
-    private function modelFiltering(){
-        if( $this->hasFilter() ){
-            foreach( $this->filterOptions as $key => $value ){
-                $this->filteredModel = $this->model->where($value['columnName'],'=',$value['value']);
+        if( $this->hasFilter($filterQuery) ){
+            foreach( $filterQuery as $key => $value ){
+                $this->finalModel = $this->finalModel->where(key($value),'=',$value[key($value)]);
             }
+        }else{
+            $this->initModelFilter();
         }
-
-        //none filtered model
-        if($this->filteredModel == null) $this->initModel();
+    }
+    private function modelSorting($sortQuery){
+        if( $this->hasSort($sortQuery) ){
+            foreach( $sortQuery as $key => $value ){
+                $this->finalModel = $this->finalModel->orderBy(
+                    key($value),
+                    $value[key($value)]
+                );
+            }
+        }else{
+            $this->initModelSort();
+        }
     }
 
-    private function hasFilter(){
-        return count($this->filterOptions);
+    private function hasFilter($filterQuery){
+        return count($filterQuery);
     }
-
-    private function initModel(){
-        $this->filteredModel = $this->model;
+    private function hasSort($sortQuery){
+        return count($sortQuery);
+    }
+    private function initModelFilter(){
+        $this->finalModel = $this->model;
+    }
+    private function initModelSort(){
+        $this->finalModel = $this->finalModel->orderBy(
+            key($this->sortDefault),
+            $this->sortDefault[key($this->sortDefault)]
+        );
     }
 
     private function bindData(){
 //        $this->withUserModel = $this->setModel;
-        $this->paginator = $this->filteredModel->
-            orderBy($this->sort->option,$this->sort->direction)->
-            paginate($this->pageSize, ['*'], 'page', $this->pageNumber);
-//             Log::debug('pagnator', [DB::getQueryLog()]);
+        $this->paginator = $this->finalModel->
+        paginate($this->pageSize, ['*'], 'page', $this->pageNumber);
+//        Log::debug('pagnator', [DB::getQueryLog()]);
         $this->totalCount = $this->paginator->total();
         $this->currentPage = $this->paginator->currentPage();
         $this->collection = $this->paginator->getCollection();
     }
 
     public function getCollection(){
-//        return [];
         return $this->collection;
     }
 }
