@@ -25,7 +25,7 @@ class PageController extends Controller
     private $firstFageNumber = 1;
     private $maxSize = 100;
     private $defaultSize = 20;
-    private $sortDefault = array('value' => 'id','direction' => 'desc'); // 0 = recent, default result
+    private $sortDefault = array('id' => 'desc'); // 0 = recent, default result
 
     private $filterQuery;
     private $sortQuery;
@@ -100,6 +100,7 @@ class PageController extends Controller
     }
     private function stringToKeyChecker($string){
         switch($string){
+            case 'id' : return 'id';
             case 'createDate' : return 'created_at';
             case 'endDate' : return 'end_date';
             case 'marketCategoryId' : return 'market_category_id';
@@ -131,18 +132,18 @@ class PageController extends Controller
     }
 
     private function modelFiltering($filterQuery){
-        if( !is_null($this->dateQuery) ){
-            $this->finalModel = $this->model->whereBetween(
+        $this->initModelFilter();
+
+        if( $this->hasDateFilter($this->dateQuery) ){
+            $this->finalModel = $this->finalModel->whereBetween(
                 key($this->dateQuery),
                 $this->dateQuery[key($this->dateQuery)]
             );
         }
-        if( $this->hasFilter($filterQuery) ){
-            foreach( $filterQuery as $key => $value ){
-                $this->finalModel = $this->finalModel->where(key($value),'=',$value[key($value)]);
+        if( $this->hasFilter($filterQuery) ) {
+            foreach ($filterQuery as $key => $value) {
+                $this->finalModel = $this->finalModel->where(key($value), '=', $value[key($value)]);
             }
-        }else{
-            $this->initModelFilter();
         }
     }
     private function modelSorting($sortQuery){
@@ -158,6 +159,9 @@ class PageController extends Controller
         }
     }
 
+    private function hasDateFilter($dateQuery){
+        return !is_null($this->dateQuery);
+    }
     private function hasFilter($filterQuery){
         return count($filterQuery);
     }
