@@ -48,7 +48,7 @@ class PageController extends Controller
         $lastQuery = end($query);
 
         $this->query = $query;
-        $this->sort = (object)array('option' => 'created_at','direction' => 'desc');
+        $this->sort = (object)array('option' => 'id','direction' => 'desc');
 
         $this->setModel($section);
         $this->pageNumber = $this->setPageNumber();

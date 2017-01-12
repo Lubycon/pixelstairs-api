@@ -66,11 +66,7 @@ class MarketController extends Controller
             'category' => array(
                 "id" => $category_data['market_category_id'],
                 "name" => $category_data['market_category_name'],
-                "ours" => (object)array(
-                    "categoryId" => $category_data['category']['id'],
-                    "divisionId" => $category_data['division']['id'],
-                    "sectors" => $category_data['sectors'],
-                ),
+                "ours" => $category_data['ours'],
             ),
             'priceInfo' => (object)array(
                 'price' => $this->splitWon($product_data['Product']['ProductPrice']['Price']),
@@ -85,18 +81,18 @@ class MarketController extends Controller
         $result = array(
             'market_category_id' => $this->category_data['Category']['CategoryCode'],
             'market_category_name' => $this->category_data['Category']['CategoryName'],
-            'category' => null,
-            'division' => null,
-            'sectors' => [],
+            'ours' => null,
         );
         if(!is_null($this->category_data)){
             $sectors = Sector::wheremarket_category_id($this->category_data['Category']['CategoryCode'])->get();
             if(isset($sectors[0])){
                 foreach( $sectors as $key => $value ){
-                    $result['sectors'][] = $value['id'];
+                    $result['ours']['sectors'][] = $value['id'];
                 }
-                $result['division'] = Division::findOrFail($sectors[0]['parent_id']);
-                $result['category'] = Category::findOrFail($result['division']['parent_id']);
+            $division = Division::findOrFail($sectors[0]['parent_id']);
+            $category = Category::findOrFail($division['parent_id']);
+            $result['ours']['division'] = $division['id'];
+            $result['ours']['category'] = $category['id'];
             }
         }
 
