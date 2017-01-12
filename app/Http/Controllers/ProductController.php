@@ -148,7 +148,7 @@ class ProductController extends Controller
                 "stock" => $array["stock"],
                 "safeStock" => $array["safe_stock"],
                 "url" => $array["url"],
-                "status_code" => $array["status_code"],
+                "statusCode" => $array["status_code"],
                 "endDate" => $array["end_date"],
             );
         };

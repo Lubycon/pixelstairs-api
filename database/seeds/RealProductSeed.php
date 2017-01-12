@@ -13,8 +13,11 @@ class RealProductSeed extends Seeder
     {
         DB::table('products')->insert(array(
             "product_id" => 1232247992,
-            "category_id" => 1,
+            "category_id" => 31,
             "division_id" => 101,
+            "sector_id_0" => 301,
+            "sector_id_1" => 302,
+            "sector_id_2" => null,
             "market_id" => '0100',
             "brand_id" => 101,
             "original_title" => "설화수샘플증정(진설크림자음생크림자음수자음유액)",
@@ -29,13 +32,31 @@ class RealProductSeed extends Seeder
             "status_code" => '0300',
             "end_date" => "2017/05/02 00:00:00",
         ));
-        DB::table('sectors')->insert(array(
-            "parent_id" => 1,
-            "market_id" => '0100',
-            "market_category_id" => 1002031,
-            'original_name' => "로션/에멀젼",
-            'chinese_name' => "露/乳液",
+        DB::table('categories')->insert(array(
+            'original_name' => "화장품",
+            'chinese_name' => "化妆品",
         ));
+        DB::table('divisions')->insert(array(
+            "parent_id" => 31,
+            'original_name' => "기초화장품",
+            'chinese_name' => "基于化妆品",
+        ));
+        DB::table('sectors')->insert([
+            array(
+                "parent_id" => 101,
+                "market_id" => '0100',
+                "market_category_id" => 1002031,
+                'original_name' => "로션",
+                'chinese_name' => "露",
+            ),
+            array(
+                "parent_id" => 101,
+                "market_id" => '0100',
+                "market_category_id" => 1002031,
+                'original_name' => "에멀젼",
+                'chinese_name' => "乳液",
+            ),
+        ]);
         DB::table('options')->insert([
             array(
                 "market_id" => 100,
