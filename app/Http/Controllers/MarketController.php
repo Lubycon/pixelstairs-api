@@ -91,18 +91,13 @@ class MarketController extends Controller
                 }
             $division = Division::findOrFail($sectors[0]['parent_id']);
             $category = Category::findOrFail($division['parent_id']);
-            $result['ours']['division'] = $division['id'];
-            $result['ours']['category'] = $category['id'];
+            $result['ours']['divisionId'] = $division['id'];
+            $result['ours']['categoryId'] = $category['id'];
             }
         }
 
 
         return $result;
-//        return array(
-//            "category" => !is_null($this->category_data) ? $this->category_data['Category']['CategoryCode'] : null,
-//            "division" => !is_null($this->category_data) ? $this->category_data['Category']['CategoryName'] : null,
-//            "sector" => Sector::wheremarket_category_id($this->category_data['Category']['CategoryCode'])->get(),
-//        );
     }
 
     public function splitWon($value){
