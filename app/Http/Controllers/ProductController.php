@@ -97,15 +97,18 @@ class ProductController extends Controller
             "categoryId" => $product["category_id"],
             "divisionId" => $product["division_id"],
             "sector" => $product->sectors(),
-//            "marketCategoryId" => Sector::find($product["sector_id"])["market_category_id"],
             "title" => (object)array(
                 "origin" => $product["original_title"],
-                // "ko" => $product["korean_title"],
-                // "en" => $product["english_title"],
                 "zh" => $product["chinese_title"],
             ),
-            "brandName" => Brand::find($product["brand_id"])->value("name"),
-            "description" => $product["description"],
+            "brand" => array(
+                'origin' => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])->value("original_name"),
+                'zh' => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])->value("chinese_name"),
+            ),
+            "description" =>array(
+                'origin' => $product["original_description"],
+                'zh' => $product["chinese_description"],
+            ),
             "price" => $product["price"],
             "deliveryPrice" => $product["domestic_delivery_price"],
             "isFreeDelivery" => $product["is_free_delivery"],
@@ -142,8 +145,14 @@ class ProductController extends Controller
                     // "en" => $array["english_title"],
                     "zh" => $array["chinese_title"],
                 ),
-                "brandName" => is_null($array["brand_id"]) ? NULL : Brand::findOrFail($array["brand_id"])->value("name"),
-                "description" => $array["description"],
+                "brand" => array(
+                    'origin' => is_null($array["brand_id"]) ? NULL : Brand::find($array["brand_id"])->value("original_name"),
+                    'zh' => is_null($array["brand_id"]) ? NULL : Brand::find($array["brand_id"])->value("chinese_name"),
+                ),
+                "description" =>array(
+                    'origin' => $array["original_description"],
+                    'zh' => $array["chinese_description"],
+                ),
                 "price" => $array["price"],
                 "stock" => $array["stock"],
                 "safeStock" => $array["safe_stock"],
@@ -175,12 +184,11 @@ class ProductController extends Controller
         $this->product->sector_id_1 = isset($data["sector"][1]) ? $data["sector"][1] : NULL;
         $this->product->sector_id_2 = isset($data["sector"][2]) ? $data["sector"][2] : NULL;
         $this->product->market_id = $data["marketId"];
-        $this->product->brand_id = $this->getBrandId($data["brandName"]);
+        $this->product->brand_id = $this->getBrandId($data["brand"]);
         $this->product->original_title = $data["title"]["origin"];
-        // $product->korean_title = $data["title"]["ko"];
-        // $product->english_title = $data["title"]["en"];
         $this->product->chinese_title = $data["title"]["zh"];
-        $this->product->description = $data["description"];
+        $this->product->original_description = $data["description"]['origin'];
+        $this->product->chinese_description = $data["description"]['zh'];
         $this->product->price = $data["price"];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
@@ -209,12 +217,11 @@ class ProductController extends Controller
         $this->product->sector_id_1 = isset($data["sector"][1]) ? $data["sector"][1] : NULL;
         $this->product->sector_id_2 = isset($data["sector"][2]) ? $data["sector"][2] : NULL;
         $this->product->market_id = $data["marketId"];
-        $this->product->brand_id = $this->getBrandId($data["brandName"]);
+        $this->product->brand_id = $this->getBrandId($data["brand"]);
         $this->product->original_title = $data["title"]["origin"];
-        // $product->korean_title = $data["title"]["ko"];
-        // $product->english_title = $data["title"]["en"];
         $this->product->chinese_title = $data["title"]["zh"];
-        $this->product->description = $data["description"];
+        $this->product->original_description = $data["description"]['origin'];
+        $this->product->chinese_description = $data["description"]['zh'];
         $this->product->price = $data["price"];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
@@ -279,8 +286,13 @@ class ProductController extends Controller
     private function startDateUpdate(){
         $this->product->start_date = Carbon::now()->toDateTimeString();
     }
-    private function getBrandId($brand_name){
-        return is_null($brand_name) ? null : Brand::firstOrCreate(["name" => $brand_name])->id;
+    private function getBrandId($brand){
+        return is_null($brand['origin'])
+            ? null
+            : Brand::firstOrCreate(array(
+                "original_name" => $brand['origin'],
+                "chinese_name" => $brand['zh'],
+            ))->id;
     }
 
     private function bindOption($option){

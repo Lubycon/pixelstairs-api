@@ -24,6 +24,7 @@ class CreateProductsTable extends Migration
             $table->integer('sector_id_2')->nullable();
 
             $table->string('market_id','4');
+
             $table->integer('brand_id')->nullable();
 
             $table->string('original_title');
@@ -31,7 +32,10 @@ class CreateProductsTable extends Migration
             $table->string('korean_title')->nullable();
             $table->string('english_title')->nullable();
 
-            $table->string('description')->nullable();
+            $table->string('original_description');
+            $table->string('chinese_description');
+            $table->string('korean_description')->nullable();
+            $table->string('english_description')->nullable();
 
             $table->integer('price');
             $table->integer('domestic_delivery_price');

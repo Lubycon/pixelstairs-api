@@ -23,7 +23,8 @@ class RealProductSeed extends Seeder
             "brand_id" => 101,
             "original_title" => "설화수샘플증정(진설크림자음생크림자음수자음유액)",
             "chinese_title" => "雪花秀展示样品（雪花奶油可以辅音声母辅音液）",
-            "description" => "一个女人真正的魅力不言的装饰皮肤表面。翻翻觉醒一颗平常心的全过程走出来完成我的不可动摇的美，尽管时间！",
+            "original_description" => "여자의 진짜 매력없는 피부의 장식 표면을했다. 심지어 시간이 있지만, 내 흔들리지 않는 미국을 마무리 균형 감각을 각성의 전 과정을 통해 찾고!",
+            "chinese_description" => "一个女人真正的魅力不言的装饰皮肤表面。翻翻觉醒一颗平常心的全过程走出来完成我的不可动摇的美，尽管时间！",
             "price" => 32000,
             "domestic_delivery_price" => 0,
             "is_free_delivery" => true,
@@ -1705,7 +1706,8 @@ class RealProductSeed extends Seeder
             )
         ]);
         DB::table('brands')->insert(array(
-            "name" => "N Cosmetic",
+            "original_name" => "N Cosmetic",
+            "chinese_name" => "N 化妆品",
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ));

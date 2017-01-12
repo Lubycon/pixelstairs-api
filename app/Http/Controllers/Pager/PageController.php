@@ -91,13 +91,14 @@ class PageController extends Controller
     }
     private function columnChecker($string){
         $columnName = $this->stringToKeyChecker($string);
-
         $tableName = strtolower(str_plural(explode('\\',get_class($this->model))[2]));
         $columnList = DB::getSchemaBuilder()->getColumnListing($tableName);
 
         if(in_array($columnName,$columnList)) return $columnName;
         Abort::Error('0040','Unknown Filter Key');
     }
+
+    // Functions that must be added continuously
     private function stringToKeyChecker($string){
         switch($string){
             case 'id' : return 'id';

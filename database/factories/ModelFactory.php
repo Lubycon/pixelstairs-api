@@ -71,7 +71,10 @@ $factory->define(App\Models\Option::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Models\Brand::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->name,
+        'original_name' => 'original_'.$faker->name,
+        'korean_name' => 'korean_'.$faker->name,
+        'chinese_name' => 'chinese_'.$faker->name,
+        'english_name' => 'english_'.$faker->name,
     ];
 });
 
@@ -88,7 +91,10 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'brand_id' => mt_rand(1,100),
         'original_title' => $faker->name,
         'chinese_title' => '中国名字',
-        'description' => '产品说明列_'.str_random(10),
+        'original_description' => 'original_'.str_random(10),
+        'korean_description' => 'korean_'.str_random(10),
+        'english_description' => 'english_'.str_random(10),
+        'chinese_description' => 'chinese_'.str_random(10),
         'price' => mt_rand(10000,50000),
         'domestic_delivery_price' => mt_rand(1000,2500),
         'is_free_delivery' => mt_rand(0,1),

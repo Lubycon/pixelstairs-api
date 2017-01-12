@@ -10,7 +10,10 @@ class Brand extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name'
+        'original_name',
+        'chinese_name',
+        'english_name',
+        'korean_name',
     ];
 
     protected $casts = [
