@@ -103,7 +103,7 @@ class PageController extends Controller
         if( isset($this->query['marketCategoryId']) ){
             $this->filterOptions[] = array(
                 "columnName" => 'market_category_id',
-                "value" => $this->query['marketCategoryId'] == 'null' ? NULL : $this->query['marketCategoryId'] ,
+                "value" => $this->query['marketCategoryId'] == 'isNull' ? NULL : $this->query['marketCategoryId'] ,
             );
         }
         // in sector filter

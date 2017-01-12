@@ -11,6 +11,8 @@ use Abort;
 use Log;
 use GuzzleHttp\Client;
 
+use App\Models\Category;
+use App\Models\Division;
 use App\Models\Sector;
 use App\Models\Market;
 
@@ -57,7 +59,7 @@ class MarketController extends Controller
     }
 
     public function bindXml($product_data){
-        $category_data = $this->getCategroyData();
+        $category_data = $this->getCategoryData();
         return $data = [
             'id' => $product_data['Product']['ProductCode'],
             'name' => $product_data['Product']['ProductName'],
@@ -65,8 +67,9 @@ class MarketController extends Controller
                 "id" => $category_data['market_category_id'],
                 "name" => $category_data['market_category_name'],
                 "ours" => (object)array(
-                    "id" => $category_data['sector_id']['id'],
-                    "parantId" => $category_data['sector_id']['parent_id'],
+                    "categoryId" => $category_data['category']['id'],
+                    "divisionId" => $category_data['division']['id'],
+                    "sectors" => $category_data['sectors'],
                 ),
             ),
             'priceInfo' => (object)array(
@@ -78,12 +81,32 @@ class MarketController extends Controller
         ];
     }
 
-    public function getCategroyData(){
-        return array(
-            "market_category_id" => !is_null($this->category_data) ? $this->category_data['Category']['CategoryCode'] : null,
-            "market_category_name" => !is_null($this->category_data) ? $this->category_data['Category']['CategoryName'] : null,
-            "sector_id" => Sector::wheremarket_category_id($this->category_data['Category']['CategoryCode'])->first(),
+    public function getCategoryData(){
+        $result = array(
+            'market_category_id' => $this->category_data['Category']['CategoryCode'],
+            'market_category_name' => $this->category_data['Category']['CategoryName'],
+            'category' => null,
+            'division' => null,
+            'sectors' => [],
         );
+        if(!is_null($this->category_data)){
+            $sectors = Sector::wheremarket_category_id($this->category_data['Category']['CategoryCode'])->get();
+            if(isset($sectors[0])){
+                foreach( $sectors as $key => $value ){
+                    $result['sectors'][] = $value['id'];
+                }
+                $result['division'] = Division::findOrFail($sectors[0]['parent_id']);
+                $result['category'] = Category::findOrFail($result['division']['parent_id']);
+            }
+        }
+
+
+        return $result;
+//        return array(
+//            "category" => !is_null($this->category_data) ? $this->category_data['Category']['CategoryCode'] : null,
+//            "division" => !is_null($this->category_data) ? $this->category_data['Category']['CategoryName'] : null,
+//            "sector" => Sector::wheremarket_category_id($this->category_data['Category']['CategoryCode'])->get(),
+//        );
     }
 
     public function splitWon($value){
