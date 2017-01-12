@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class RealProductSeed extends Seeder
 {
@@ -31,15 +32,21 @@ class RealProductSeed extends Seeder
             "url" => "http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=1232247992&trTypeCd=PW02&trCtgrNo=1002031#ui_option_layer1",
             "status_code" => '0300',
             "end_date" => "2017/05/02 00:00:00",
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ));
         DB::table('categories')->insert(array(
             'original_name' => "화장품",
             'chinese_name' => "化妆品",
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ));
         DB::table('divisions')->insert(array(
             "parent_id" => 31,
             'original_name' => "기초화장품",
             'chinese_name' => "基于化妆品",
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ));
         DB::table('sectors')->insert([
             array(
@@ -48,6 +55,8 @@ class RealProductSeed extends Seeder
                 "market_category_id" => 1002031,
                 'original_name' => "로션",
                 'chinese_name' => "露",
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ),
             array(
                 "parent_id" => 101,
@@ -55,6 +64,8 @@ class RealProductSeed extends Seeder
                 "market_category_id" => 1002031,
                 'original_name' => "에멀젼",
                 'chinese_name' => "乳液",
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ),
         ]);
         DB::table('options')->insert([
@@ -1694,7 +1705,9 @@ class RealProductSeed extends Seeder
             )
         ]);
         DB::table('brands')->insert(array(
-            "name" => "N Cosmetic"
+            "name" => "N Cosmetic",
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ));
     }
 }
