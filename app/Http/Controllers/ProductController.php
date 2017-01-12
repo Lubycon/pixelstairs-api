@@ -97,7 +97,7 @@ class ProductController extends Controller
             "categoryId" => $product["category_id"],
             "divisionId" => $product["division_id"],
             "sector" => $product->sectors(),
-            "marketCategoryId" => Sector::find($product["sector_id"])["market_category_id"],
+//            "marketCategoryId" => Sector::find($product["sector_id"])["market_category_id"],
             "title" => (object)array(
                 "origin" => $product["original_title"],
                 // "ko" => $product["korean_title"],
@@ -149,6 +149,7 @@ class ProductController extends Controller
                 "safeStock" => $array["safe_stock"],
                 "url" => $array["url"],
                 "status_code" => $array["status_code"],
+                "endDate" => $array["end_date"],
             );
         };
 

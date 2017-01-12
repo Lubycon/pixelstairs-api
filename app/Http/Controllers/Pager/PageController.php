@@ -36,6 +36,7 @@ class PageController extends Controller
     private $searchUser;
     private $searchUserName = 'id';
     private $searchPostName = 'id';
+    private $searchMarketCategoryId = 'market_category_id';
     private $sortOption;
 
     private $userModelFunctionName = 'user';
@@ -111,6 +112,7 @@ class PageController extends Controller
         $this->pageSize = isset($this->query['pageSize']) && $this->query['pageSize'] <= $this->maxSize ? $this->query['pageSize'] : $this->defaultSize;
         // $this->searchPost = isset($this->query['boardId']) ? $this->query['boardId'] : $this->searchAllPost;
         // $this->searchUser = isset($this->query['userId']) ? $this->query['userId'] : $this->searchAllUser;
+//        $this->searchMarketCategory = isset($this->query['userId']) ? $this->query['userId'] : $this->searchAllUser;
         $this->sortOption = isset($this->query['sort']) ? $this->query['sort'] : $this->sortDefault;
         switch($this->sortOption){
             case 1 : break; //recent
@@ -131,6 +133,11 @@ class PageController extends Controller
         //     ?$this->model->where($this->searchPostName,'=',$this->searchPost)
         //     :$this->setModel->where($this->searchPostName,'=',$this->searchPost);
         // }
+//         if($this->searchPost){ // target posts search
+//             $this->setModel = $this->setModel == null
+//             ?$this->model->where($this->searchPostName,'=',$this->searchPost)
+//             :$this->setModel->where($this->searchPostName,'=',$this->searchPost);
+//         }
         if($this->setModel == null){ //default search
             $this->initModel();
         }

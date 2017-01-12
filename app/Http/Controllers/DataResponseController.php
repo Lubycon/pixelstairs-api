@@ -18,6 +18,7 @@ use App\Models\Category;
 use App\Models\Division;
 use App\Models\Status;
 use App\Models\Market;
+use App\Models\Sector;
 
 class DataResponseController extends Controller
 {
@@ -31,6 +32,7 @@ class DataResponseController extends Controller
             'option' => Option::all(),
             'category' => Category::all(),
             'division' => Division::all(),
+            'sector' => Sector::all(),
             'status' => Status::all(),
             'market' => Market::all(),
         );
