@@ -15,7 +15,7 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->increments('id');
             $table->string('product_id',200);
-            $table->string('haitao_product_id',200);
+            $table->string('haitao_product_id',200)->nullable();
 
             $table->integer('category_id');
             $table->integer('division_id');
@@ -32,8 +32,8 @@ class CreateProductsTable extends Migration
             $table->string('korean_title')->nullable();
             $table->string('english_title')->nullable();
 
-            $table->string('original_description');
-            $table->string('chinese_description');
+            $table->string('original_description')->nullable();
+            $table->string('chinese_description')->nullable();
             $table->string('korean_description')->nullable();
             $table->string('english_description')->nullable();
 
