@@ -10,7 +10,8 @@
         "asm89/stack-cors": "dev-master as 0.2.2",
         "barryvdh/laravel-cors": "^0.8.1",
         "pda/pheanstalk": "^3.1",
-        "guzzlehttp/guzzle": "^6.2"
+        "guzzlehttp/guzzle": "^6.2",
+        "zircote/swagger-php": "^2.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

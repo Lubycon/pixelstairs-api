@@ -1,0 +1,25 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Walter Mitty Dev API Document",
+        "termsOfService": "",
+        "contact": {
+            "email": "daniel@mittycompany.com"
+        },
+        "license": {
+            "name": "Private License"
+        },
+        "version": "1.0.0"
+    },
+    "host": "dev-api@mittycompany.com",
+    "basePath": "/v11",
+    "schemes": [
+        "http"
+    ],
+    "paths": {},
+    "definitions": {},
+    "externalDocs": {
+        "description": "Find out more about my website",
+        "url": "http://www.mittycompany.com"
+    }
+}
