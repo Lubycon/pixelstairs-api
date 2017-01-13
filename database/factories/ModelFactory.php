@@ -81,7 +81,7 @@ $factory->define(App\Models\Brand::class, function (Faker\Generator $faker) {
 $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
     return [
         'product_id' => mt_rand(100000000,110000000),
-        'haitao_product_id' => mt_rand(100000000,110000000),
+        'haitao_product_id' => mt_rand(100000000,110000000)%2 == 0 ? mt_rand(100000000,110000000) : NULL,
         'category_id' => mt_rand(1,30),
         'division_id' => mt_rand(1,100),
         'sector_id_0' => mt_rand(1,300),

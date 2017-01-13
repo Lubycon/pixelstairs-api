@@ -102,6 +102,8 @@ class PageController extends Controller
     private function stringToKeyChecker($string){
         switch($string){
             case 'id' : return 'id';
+            case 'haitaoProductId' : return 'haitao_product_id';
+            // order, product divide
             case 'statusCode' : return 'status_code';
             case 'createDate' : return 'created_at';
             case 'endDate' : return 'end_date';
