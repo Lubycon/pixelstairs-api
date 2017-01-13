@@ -11,7 +11,7 @@
         },
         "version": "1.0.0"
     },
-    "host": "mitty.api",
+    "host": "dev-api.mittycompany.com",
     "basePath": "/v1",
     "schemes": [
         "http"
@@ -22,9 +22,9 @@
                 "tags": [
                     "data"
                 ],
-                "summary": "summary",
-                "description": "descriptionssssss",
-                "operationId": "opidddddd",
+                "summary": "Get Referer Data",
+                "description": "Relationship data refrer get",
+                "operationId": "data_get",
                 "produces": [
                     "application/json"
                 ],
@@ -32,34 +32,92 @@
                     {
                         "name": "country",
                         "in": "query",
-                        "description": "param description",
+                        "description": "",
                         "required": false,
                         "type": "string",
-                        "collectionFormat": "multi"
+                        "default": "country"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string",
+                        "default": "status"
+                    },
+                    {
+                        "name": "market",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string",
+                        "default": "market"
+                    },
+                    {
+                        "name": "brand",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string",
+                        "default": "brand"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Pet"
-                            }
-                        }
+                        "description": "successful operation"
                     },
                     "400": {
-                        "description": "Invalid status value"
+                        "description": "Unexpected data value"
                     }
-                },
-                "security": [
+                }
+            }
+        },
+        "/market": {
+            "get": {
+                "tags": [
+                    "market"
+                ],
+                "summary": "Get Openmarket Data",
+                "description": "get openmarket data from url",
+                "operationId": "get_market",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
                     {
-                        "petstore_auth": [
-                            "write:pets",
-                            "read:pets"
-                        ]
+                        "name": "marketId",
+                        "in": "query",
+                        "description": "",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "default": "0100",
+                            "enum": [
+                                "0100",
+                                "0101",
+                                "0102"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "url",
+                        "in": "query",
+                        "description": "",
+                        "required": true,
+                        "type": "string",
+                        "default": "http://deal.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=1648381925&trTypeCd=38&trCtgrNo=947548"
                     }
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Unexpected data value"
+                    }
+                }
             }
         }
     },

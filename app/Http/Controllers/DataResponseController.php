@@ -25,34 +25,51 @@ class DataResponseController extends Controller
     /**
      * @SWG\Get(
      *     path="/data",
-     *     summary="summary",
-     *     description="descriptionssssss",
-     *     operationId="opidddddd",
+     *     summary="Get Referer Data",
+     *     description="Relationship data refrer get",
+     *     operationId="data_get",
      *     produces={"application/json"},
      *     tags={"data"},
      *     @SWG\Parameter(
      *         name="country",
+     *         default="country",
      *         in="query",
-     *         description="param description",
+     *         description="",
+     *         required=false,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         name="status",
+     *         default="status",
+     *         in="query",
+     *         description="",
      *         required=false,
      *         type="string",
-     *         collectionFormat="multi"
+     *     ),
+     *     @SWG\Parameter(
+     *         name="market",
+     *         default="market",
+     *         in="query",
+     *         description="",
+     *         required=false,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="brand",
+     *         default="brand",
+     *         in="query",
+     *         description="",
+     *         required=false,
+     *         type="string",
      *     ),
      *     @SWG\Response(
      *         response=200,
      *         description="successful operation",
-     *         @SWG\Schema(
-     *             type="array",
-     *             @SWG\Items(ref="#/definitions/Pet")
-     *         ),
      *     ),
      *     @SWG\Response(
      *         response="400",
-     *         description="Invalid status value",
-     *     ),
-     *     security={
-     *       {"petstore_auth": {"write:pets", "read:pets"}}
-     *     }
+     *         description="Unexpected data value",
+     *     )
      * )
      */
     private function getModelByWhitelist($query){
