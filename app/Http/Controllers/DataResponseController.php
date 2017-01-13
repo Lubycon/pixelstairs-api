@@ -40,7 +40,6 @@ class DataResponseController extends Controller
      *     ),
      *     @SWG\Parameter(
      *         name="status",
-     *         default="status",
      *         in="query",
      *         description="",
      *         required=false,
@@ -48,7 +47,6 @@ class DataResponseController extends Controller
      *     ),
      *     @SWG\Parameter(
      *         name="market",
-     *         default="market",
      *         in="query",
      *         description="",
      *         required=false,
@@ -56,7 +54,6 @@ class DataResponseController extends Controller
      *     ),
      *     @SWG\Parameter(
      *         name="brand",
-     *         default="brand",
      *         in="query",
      *         description="",
      *         required=false,
