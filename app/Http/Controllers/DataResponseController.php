@@ -22,6 +22,39 @@ use App\Models\Sector;
 
 class DataResponseController extends Controller
 {
+    /**
+     * @SWG\Get(
+     *     path="/data",
+     *     summary="summary",
+     *     description="descriptionssssss",
+     *     operationId="opidddddd",
+     *     produces={"application/json"},
+     *     tags={"data"},
+     *     @SWG\Parameter(
+     *         name="country",
+     *         in="query",
+     *         description="param description",
+     *         required=false,
+     *         type="string",
+     *         collectionFormat="multi"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/Pet")
+     *         ),
+     *     ),
+     *     @SWG\Response(
+     *         response="400",
+     *         description="Invalid status value",
+     *     ),
+     *     security={
+     *       {"petstore_auth": {"write:pets", "read:pets"}}
+     *     }
+     * )
+     */
     private function getModelByWhitelist($query){
         $whiteList = (object)array(
             'user' => User::all(),

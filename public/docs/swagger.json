@@ -11,12 +11,58 @@
         },
         "version": "1.0.0"
     },
-    "host": "dev-api@mittycompany.com",
-    "basePath": "/v11",
+    "host": "mitty.api",
+    "basePath": "/v1",
     "schemes": [
         "http"
     ],
-    "paths": {},
+    "paths": {
+        "/data": {
+            "get": {
+                "tags": [
+                    "data"
+                ],
+                "summary": "summary",
+                "description": "descriptionssssss",
+                "operationId": "opidddddd",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "description": "param description",
+                        "required": false,
+                        "type": "string",
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Pet"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid status value"
+                    }
+                },
+                "security": [
+                    {
+                        "petstore_auth": [
+                            "write:pets",
+                            "read:pets"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
     "definitions": {},
     "externalDocs": {
         "description": "Find out more about my website",

@@ -8,6 +8,7 @@ return [
         "http://admin.mittycompany.com",
         "http://localhost:3000",
         "http://localhost:3003",
+        "http://mitty.api",
         "chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop"
     ],
     'allowedHeaders' => ['*'],
