@@ -29,7 +29,7 @@ class PageController extends Controller
 
     private $filterQuery;
     private $sortQuery;
-    private $dateQuery;
+    private $rangeQuery;
 
     private $pageNumber;
     private $pageSize;
@@ -51,7 +51,7 @@ class PageController extends Controller
 
         $this->setModel($section);
         $this->query = $query;
-        $this->dateQuery = null; // check in queryParsing function
+        $this->rangeQuery = null; // check in queryParsing function
         $this->filterQuery = $this->queryParser('filter');
         $this->sortQuery = $this->queryParser('sort');
         $this->pageNumber = $this->setPageNumber();
@@ -70,8 +70,8 @@ class PageController extends Controller
                 $explodeValue = explode(':',$value);
                 $key = $this->columnChecker($explodeValue[0]);
                 $value = $this->stringToValueChecker($explodeValue[1]);
-                if( $this->isDateQuery($value) ){
-                    $this->dateQuery = array($key => $this->getDateArray($value));
+                if( $this->isRangeFilter($value) ){
+                    $this->rangeQuery = array($key => $this->getRangeArray($value));
                 }else{
                     $result[] = array($key => $value);
                 }
@@ -79,10 +79,10 @@ class PageController extends Controller
         }
         return $result;
     }
-    private function isDateQuery($string){
+    private function isRangeFilter($string){
         return strpos($string,'~');
     }
-    private function getDatearray($value){
+    private function getRangeArray($value){
         $explodeValue = explode('~',$value);
         return array(
             $explodeValue[0],
@@ -135,10 +135,10 @@ class PageController extends Controller
     private function modelFiltering($filterQuery){
         $this->initModelFilter();
 
-        if( $this->hasDateFilter($this->dateQuery) ){
+        if( $this->hasRangeFilter($this->rangeQuery) ){
             $this->finalModel = $this->finalModel->whereBetween(
-                key($this->dateQuery),
-                $this->dateQuery[key($this->dateQuery)]
+                key($this->rangeQuery),
+                $this->rangeQuery[key($this->rangeQuery)]
             );
         }
         if( $this->hasFilter($filterQuery) ) {
@@ -160,8 +160,8 @@ class PageController extends Controller
         }
     }
 
-    private function hasDateFilter($dateQuery){
-        return !is_null($this->dateQuery);
+    private function hasRangeFilter($rangeQuery){
+        return !is_null($rangeQuery);
     }
     private function hasFilter($filterQuery){
         return count($filterQuery);

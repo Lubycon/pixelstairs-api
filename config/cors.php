@@ -3,6 +3,7 @@
 return [
     'supportsCredentials' => false,
     'allowedOrigins' => [
+        "http://mittycompany.com",
         "http://www.mittycompany.com",
         "http://admin.mittycompany.com",
         "http://localhost:3000",
