@@ -38,7 +38,7 @@
       if (url && url.length > 1) {
         url = decodeURIComponent(url[1]);
       } else {
-        url = "http://mitty.api/docs/swagger.json";
+        url = window.location.origin+"/docs/swagger.json";
       }
 
       hljs.configure({
