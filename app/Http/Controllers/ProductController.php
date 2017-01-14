@@ -54,20 +54,19 @@ class ProductController extends Controller
                 "origin" => Division::find($product["division_id"])["original_name"],
                 "zh" => Division::find($product["division_id"])["chinese_name"],
             ),
-            "sector" => array(
-                "id" => $product["sector_id"],
-                "origin" => Sector::find($product["sector_id"])["original_name"],
-                "zh" => Sector::find($product["sector_id"])["chinese_name"],
-            ),
+            "sector" => $product->sectorsDetail(),
             "title" => (object)array(
                 "origin" => $product["original_title"],
                 "zh" => $product["chinese_title"],
             ),
             "brand" => array(
-                "id" => $product["brand_id"],
-                "name" => Brand::find($product["brand_id"])["name"],
+                'origin' => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])->value("original_name"),
+                'zh' => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])->value("chinese_name"),
             ),
-            "description" => $product["description"],
+            "description" =>array(
+                'origin' => $product["original_description"],
+                'zh' => $product["chinese_description"],
+            ),
             "price" => $product["price"],
             "deliveryPrice" => $product["domestic_delivery_price"],
             "isFreeDelivery" => $product["is_free_delivery"],
@@ -76,7 +75,9 @@ class ProductController extends Controller
             "url" => $product["url"],
             "status" => array(
                 "code" => $product["status_code"],
-                "name" => Status::wherecode($product["status_code"])->value("name"),
+                "kr" => Status::wherecode($product["status_code"])->value("korean_name"),
+                "en" => Status::wherecode($product["status_code"])->value("english_name"),
+                "zh" => Status::wherecode($product["status_code"])->value("chinese_name"),
             ),
             "createDate" => Carbon::instance($product["created_at"])->toDateTimeString(),
             "startDate" => $product["start_date"],
@@ -355,7 +356,13 @@ class ProductController extends Controller
         $sku = array(
             "market_id" => $this->market_id,
             "product_id" => $this->product->id,
-            "sku" => "MK".$this->market_id."PD".$this->product_id."ID".$index,
+            "sku" =>
+                "MK".$this->market_id.
+                "CT".$this->product->category_id.
+                "DV".$this->product->division_id.
+                "ST".$this->product->sector_id.
+                "PD".$this->product_id.
+                "ID".$index,
             "description" => $option["name"]["origin"],
         );
         $id = Sku::firstOrCreate($sku)->id;

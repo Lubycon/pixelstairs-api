@@ -54,7 +54,13 @@ $factory->define(App\Models\Sku::class, function (Faker\Generator $faker) {
     return [
         'market_id' => "0100",
         'product_id' => mt_rand(1,500),
-        'sku' => 'MK001PD'.mt_rand(10000000,11000000).'ID'.mt_rand(0,100),
+        'sku' =>
+            "MK0100".
+            "CT".mt_rand(1,30).
+            "DV".mt_rand(1,100).
+            "ST".mt_rand(1,300).
+            "PD".mt_rand(100000000,110000000).
+            "ID".mt_rand(1,100),
         'description' => $faker->name.','.$faker->name.','.$faker->name,
     ];
 });
