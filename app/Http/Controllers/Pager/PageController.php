@@ -65,29 +65,45 @@ class PageController extends Controller
         $result = [];
         if( isset( $this->query[$query] ) ){
             $queries = $this->query[$query];
-            $explodeQuery = explode(',',$queries);
+            $explodeQuery = explode('||',$queries);
             foreach( $explodeQuery as $key => $value ){
-                $explodeValue = explode('||',$value);
-                $key = $this->columnChecker($explodeValue[0]);
-                $value = $this->stringToValueChecker($explodeValue[1]);
-                if( $this->isRangeFilter($value) ){
-                    $this->rangeQuery = array($key => $this->getRangeArray($value));
+                $split = preg_split('(<[=>]?|>=?|==|~|:)',$value);
+                $searchKey = $this->columnChecker($split[0]);
+                $searchValue = $this->stringToValueChecker($split[1]);
+                $comparison = $this->getComparision($value,$split);
+
+                if( $this->isRangeFilter($comparison) ){
+                    $this->rangeQuery = array(
+                        'key' => $searchKey,
+                        'value' => $this->getRangeArray($searchValue),
+                    );
                 }else{
-                    $result[] = array($key => $value);
+                    $result[] = array(
+                        'key' => $searchKey,
+                        'comparision'=> $comparison,
+                        'value' => $this->isColumnQuery($comparison)
+                            ? DB::raw( $this->stringToKeyChecker($searchValue) )
+                            : $searchValue,
+                    );
                 }
             }
         }
         return $result;
     }
-    private function isRangeFilter($string){
-        return strpos($string,'~');
+    private function getComparision($subject,$search){
+        $result = str_replace($search,'',$subject);
+        $result = $result == ':' ? '=' : $result;
+        return $result;
+    }
+    private function isRangeFilter($comparison){
+        return $comparison == '~';
+    }
+    private function isColumnQuery($comparison){
+        return $comparison !== '=';
     }
     private function getRangeArray($value){
         $explodeValue = explode('~',$value);
-        return array(
-            $explodeValue[0],
-            $explodeValue[1]
-        );
+        return array($explodeValue[0],$explodeValue[1]);
     }
     private function columnChecker($string){
         $columnName = $this->stringToKeyChecker($string);
@@ -104,6 +120,8 @@ class PageController extends Controller
             case 'id' : return 'id';
             case 'haitaoProductId' : return 'haitao_product_id';
             // order, product divide
+            case 'stock' : return 'stock';
+            case 'safeStock' : return 'safe_stock';
             case 'statusCode' : return 'status_code';
             case 'createDate' : return 'created_at';
             case 'endDate' : return 'end_date';
@@ -140,13 +158,13 @@ class PageController extends Controller
 
         if( $this->hasRangeFilter($this->rangeQuery) ){
             $this->finalModel = $this->finalModel->whereBetween(
-                key($this->rangeQuery),
-                $this->rangeQuery[key($this->rangeQuery)]
+                $this->rangeQuery['key'],
+                $this->rangeQuery['value']
             );
         }
         if( $this->hasFilter($filterQuery) ) {
             foreach ($filterQuery as $key => $value) {
-                $this->finalModel = $this->finalModel->where(key($value), '=', $value[key($value)]);
+                $this->finalModel = $this->finalModel->where($value['key'],$value['comparision'],$value['value']);
             }
         }
     }
@@ -154,8 +172,8 @@ class PageController extends Controller
         if( $this->hasSort($sortQuery) ){
             foreach( $sortQuery as $key => $value ){
                 $this->finalModel = $this->finalModel->orderBy(
-                    key($value),
-                    $value[key($value)]
+                    $value['key'],
+                    $value['value']
                 );
             }
         }else{
