@@ -67,7 +67,7 @@ class PageController extends Controller
             $queries = $this->query[$query];
             $explodeQuery = explode(',',$queries);
             foreach( $explodeQuery as $key => $value ){
-                $explodeValue = explode(':',$value);
+                $explodeValue = explode('||',$value);
                 $key = $this->columnChecker($explodeValue[0]);
                 $value = $this->stringToValueChecker($explodeValue[1]);
                 if( $this->isRangeFilter($value) ){
