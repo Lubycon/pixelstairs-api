@@ -27,6 +27,7 @@ class PageController extends Controller
     private $defaultSize = 20;
     private $sortDefault = array('id' => 'desc'); // 0 = recent, default result
 
+    private $searchQuery;
     private $filterQuery;
     private $sortQuery;
     private $rangeQuery;
@@ -52,11 +53,12 @@ class PageController extends Controller
         $this->setModel($section);
         $this->query = $query;
         $this->rangeQuery = null; // check in queryParsing function
+        $this->searchQuery = $this->queryParser('search');
         $this->filterQuery = $this->queryParser('filter');
         $this->sortQuery = $this->queryParser('sort');
         $this->pageNumber = $this->setPageNumber();
         $this->pageSize = $this->setPageSize();
-        $this->modelFiltering($this->filterQuery);
+        $this->modelFiltering($this->filterQuery,$this->searchQuery);
         $this->modelSorting($this->sortQuery);
         $this->bindData();
     }
@@ -67,6 +69,7 @@ class PageController extends Controller
             $queries = $this->query[$query];
             $explodeQuery = explode('||',$queries);
             foreach( $explodeQuery as $key => $value ){
+
                 $split = preg_split('(<[=>]?|>=?|==|~|:)',$value);
                 $searchKey = $this->columnChecker($split[0]);
                 $searchValue = $this->stringToValueChecker($split[1]);
@@ -111,7 +114,7 @@ class PageController extends Controller
         $columnList = DB::getSchemaBuilder()->getColumnListing($tableName);
 
         if(in_array($columnName,$columnList)) return $columnName;
-        Abort::Error('0040','Unknown Filter Key');
+        Abort::Error('0040','Unknown Filter Key'.$string);
     }
 
     // Functions that must be added continuously
@@ -127,7 +130,7 @@ class PageController extends Controller
             case 'endDate' : return 'end_date';
             case 'marketCategoryId' : return 'market_category_id';
         }
-        Abort::Error('0040','Undefinded search key');
+        Abort::Error('0040','Undefinded search key'.$string);
     }
     private function stringToValueChecker($string){
         switch($string){
@@ -153,7 +156,7 @@ class PageController extends Controller
         return isset($this->query['pageSize']) && $this->query['pageSize'] <= $this->maxSize ? $this->query['pageSize'] : $this->defaultSize;
     }
 
-    private function modelFiltering($filterQuery){
+    private function modelFiltering($filterQuery,$searchQuery){
         $this->initModelFilter();
 
         if( $this->hasRangeFilter($this->rangeQuery) ){
@@ -162,14 +165,19 @@ class PageController extends Controller
                 $this->rangeQuery['value']
             );
         }
-        if( $this->hasFilter($filterQuery) ) {
+        if( $this->hasQuery($searchQuery) ) {
+            foreach ($searchQuery as $key => $value) {
+                $this->finalModel = $this->finalModel->where($value['key'],$value['comparision'],$value['value']);
+            }
+        }
+        if( $this->hasQuery($filterQuery) ) {
             foreach ($filterQuery as $key => $value) {
                 $this->finalModel = $this->finalModel->where($value['key'],$value['comparision'],$value['value']);
             }
         }
     }
     private function modelSorting($sortQuery){
-        if( $this->hasSort($sortQuery) ){
+        if( $this->hasQuery($sortQuery) ){
             foreach( $sortQuery as $key => $value ){
                 $this->finalModel = $this->finalModel->orderBy(
                     $value['key'],
@@ -184,11 +192,8 @@ class PageController extends Controller
     private function hasRangeFilter($rangeQuery){
         return !is_null($rangeQuery);
     }
-    private function hasFilter($filterQuery){
-        return count($filterQuery);
-    }
-    private function hasSort($sortQuery){
-        return count($sortQuery);
+    private function hasQuery($query){
+        return count($query);
     }
     private function initModelFilter(){
         $this->finalModel = $this->model;
@@ -204,7 +209,7 @@ class PageController extends Controller
 //        $this->withUserModel = $this->setModel;
         $this->paginator = $this->finalModel->
         paginate($this->pageSize, ['*'], 'page', $this->pageNumber);
-//        Log::debug('pagnator', [DB::getQueryLog()]);
+        Log::debug('pagnator', [DB::getQueryLog()]);
         $this->totalCount = $this->paginator->total();
         $this->currentPage = $this->paginator->currentPage();
         $this->collection = $this->paginator->getCollection();
