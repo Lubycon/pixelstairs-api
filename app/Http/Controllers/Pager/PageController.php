@@ -25,7 +25,7 @@ class PageController extends Controller
     private $firstFageNumber = 1;
     private $maxSize = 100;
     private $defaultSize = 20;
-    private $sortDefault = array('id' => 'desc'); // 0 = recent, default result
+    private $sortDefault = array('key' => 'id','value' => 'desc'); // 0 = recent, default result
 
     private $searchQuery;
     private $filterQuery;
@@ -35,7 +35,6 @@ class PageController extends Controller
     private $pageNumber;
     private $pageSize;
 
-    private $withUserModel;
     public $paginator;
     public $totalCount;
     public $currentPage;
@@ -69,14 +68,11 @@ class PageController extends Controller
             $queries = $this->query[$query];
             $explodeQuery = explode('||',$queries);
             foreach( $explodeQuery as $key => $value ){
-
-                Log::info($value);
-                Log::info(urldecode($value));
-
-                $split = preg_split('(<[=>]?|>=?|==|:)',$value);
+                $queryString = urldecode($value);
+                $split = preg_split('(<[=>]?|>=?|==|:)',$queryString);
                 $searchKey = $this->columnChecker($split[0]);
                 $searchValue = $this->stringToValueChecker($split[1]);
-                $comparison = $this->getComparision($value,$split);
+                $comparison = $this->getComparision($queryString,$split);
 
                 if( $this->isRangeFilter($searchValue) ){
                     $this->rangeQuery = array(
@@ -185,12 +181,16 @@ class PageController extends Controller
             foreach( $sortQuery as $key => $value ){
                 $this->finalModel = $this->finalModel->orderBy(
                     $value['key'],
-                    $value['value']
+                    $this->sortDirectionCheck($value['value'])
                 );
             }
         }else{
             $this->initModelSort();
         }
+    }
+    private function sortDirectionCheck($direction){
+        if($direction == 'desc' || $direction == 'asc') return $direction;
+        Abort::Error('0040','Check Sort Direction');
     }
 
     private function hasRangeFilter($rangeQuery){
@@ -204,16 +204,15 @@ class PageController extends Controller
     }
     private function initModelSort(){
         $this->finalModel = $this->finalModel->orderBy(
-            key($this->sortDefault),
-            $this->sortDefault[key($this->sortDefault)]
+            $this->sortDefault['key'],
+            $this->sortDefault['value']
         );
     }
 
     private function bindData(){
-//        $this->withUserModel = $this->setModel;
         $this->paginator = $this->finalModel->
         paginate($this->pageSize, ['*'], 'page', $this->pageNumber);
-        Log::debug('pagnator', [DB::getQueryLog()]);
+//        Log::debug('pagnator', [DB::getQueryLog()]);
         $this->totalCount = $this->paginator->total();
         $this->currentPage = $this->paginator->currentPage();
         $this->collection = $this->paginator->getCollection();
