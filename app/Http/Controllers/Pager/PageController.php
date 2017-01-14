@@ -167,7 +167,11 @@ class PageController extends Controller
         }
         if( $this->hasQuery($searchQuery) ) {
             foreach ($searchQuery as $key => $value) {
-                $this->finalModel = $this->finalModel->where($value['key'],$value['comparision'],$value['value']);
+                if( $this->isIdKey($value['key']) ){
+                    $this->finalModel = $this->finalModel->where($value['key'],$value['comparision'],$value['value']);
+                }else{
+                    $this->finalModel = $this->finalModel->where($value['key'],'LIKE','%'.$value['value'].'%');
+                }
             }
         }
         if( $this->hasQuery($filterQuery) ) {
@@ -187,6 +191,10 @@ class PageController extends Controller
         }else{
             $this->initModelSort();
         }
+    }
+    private function isIdKey($key){
+        $lowCase = strtolower($key);
+        return !is_null(strpos($lowCase,'id'));
     }
     private function sortDirectionCheck($direction){
         if($direction == 'desc' || $direction == 'asc') return $direction;
@@ -212,7 +220,7 @@ class PageController extends Controller
     private function bindData(){
         $this->paginator = $this->finalModel->
         paginate($this->pageSize, ['*'], 'page', $this->pageNumber);
-//        Log::debug('pagnator', [DB::getQueryLog()]);
+        Log::debug('pagnator', [DB::getQueryLog()]);
         $this->totalCount = $this->paginator->total();
         $this->currentPage = $this->paginator->currentPage();
         $this->collection = $this->paginator->getCollection();
