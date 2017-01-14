@@ -70,12 +70,15 @@ class PageController extends Controller
             $explodeQuery = explode('||',$queries);
             foreach( $explodeQuery as $key => $value ){
 
-                $split = preg_split('(<[=>]?|>=?|==|~|:)',$value);
+                Log::info($value);
+                Log::info(urldecode($value));
+
+                $split = preg_split('(<[=>]?|>=?|==|:)',$value);
                 $searchKey = $this->columnChecker($split[0]);
                 $searchValue = $this->stringToValueChecker($split[1]);
                 $comparison = $this->getComparision($value,$split);
 
-                if( $this->isRangeFilter($comparison) ){
+                if( $this->isRangeFilter($searchValue) ){
                     $this->rangeQuery = array(
                         'key' => $searchKey,
                         'value' => $this->getRangeArray($searchValue),
@@ -98,8 +101,8 @@ class PageController extends Controller
         $result = $result == ':' ? '=' : $result;
         return $result;
     }
-    private function isRangeFilter($comparison){
-        return $comparison == '~';
+    private function isRangeFilter($value){
+        return strpos($value,'~');
     }
     private function isColumnQuery($comparison){
         return $comparison !== '=';
@@ -122,6 +125,7 @@ class PageController extends Controller
         switch($string){
             case 'id' : return 'id';
             case 'haitaoProductId' : return 'haitao_product_id';
+            case 'originTitle' : return 'original_title';
             // order, product divide
             case 'stock' : return 'stock';
             case 'safeStock' : return 'safe_stock';
