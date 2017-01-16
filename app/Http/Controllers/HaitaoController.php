@@ -23,8 +23,35 @@ class HaitaoController extends Controller
 {
     use OptionControllTraits;
 
-    public function productGet(Request $request){
-        $product = Product::findOrFail(501);
+
+    /**
+     * @SWG\Get(
+     *     path="/haitao/product/{product_id}",
+     *     summary="Get Product Detail",
+     *     description="Get Product Detail via Mitty Product ID",
+     *     produces={"application/json"},
+     *     tags={"Product"},
+     *     @SWG\Parameter(
+     *         name="product_id",
+     *         default="501",
+     *         in="path",
+     *         description="product's data you want item id",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="successful operation",
+     *     ),
+     *     @SWG\Response(
+     *         response="400",
+     *         description="Unexpected data value",
+     *     )
+     * )
+     */
+
+    public function productGet(Request $request,$product_id){
+        $product = Product::findOrFail($product_id);
 
         $response = (object)array(
             "mittyProductId" => $product["id"],

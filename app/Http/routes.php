@@ -7,7 +7,7 @@ Route::group(['prefix' => '/v1'], function () {
 
     Route::group(['prefix' => '/haitao/'], function () {
         Route::group(['prefix' => 'product/'], function () {
-            Route::get('', 'HaitaoController@productDetailGet'); // get detail example
+            Route::get('{product_id}', 'HaitaoController@productDetailGet'); // get detail example
             Route::post('', 'HaitaoController@productPost');
 //            Route::post('', 'HaitaoController@OrderStore');
             Route::put('', 'HaitaoController@OrderPut');
