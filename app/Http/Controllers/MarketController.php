@@ -30,46 +30,45 @@ class MarketController extends Controller
         $this->client = new Client();
     }
 
-    /**
-     * @SWG\Get(
-     *     path="/market",
-     *     summary="Get Openmarket Data",
-     *     description="get openmarket data from url",
-     *     operationId="get_market",
-     *     produces={"application/json"},
-     *     tags={"market"},
-     *     @SWG\Parameter(
-     *         name="marketId",
-     *         in="query",
-     *         description="",
-     *         required=true,
-     *         type="array",
-     *         @SWG\Items(
-     *             type="string",
-     *             enum={"0100", "0101", "0102"},
-     *             default="0100"
-     *         ),
-     *         collectionFormat="multi"
-     *     ),
-     *     @SWG\Parameter(
-     *         name="url",
-     *         in="query",
-     *         description="",
-     *         required=true,
-     *         type="string",
-     *         default="http://deal.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=1648381925&trTypeCd=38&trCtgrNo=947548"
-     *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="successful operation",
-     *     ),
-     *     @SWG\Response(
-     *         response="400",
-     *         description="Unexpected data value",
-     *     )
-     * )
-     */
-
+//    /**
+//     * @SWG\Get(
+//     *     path="/market",
+//     *     summary="Get Openmarket Data",
+//     *     description="get openmarket data from url",
+//     *     operationId="get_market",
+//     *     produces={"application/json"},
+//     *     tags={"market"},
+//     *     @SWG\Parameter(
+//     *         name="marketId",
+//     *         in="query",
+//     *         description="",
+//     *         required=true,
+//     *         type="array",
+//     *         @SWG\Items(
+//     *             type="string",
+//     *             enum={"0100", "0101", "0102"},
+//     *             default="0100"
+//     *         ),
+//     *         collectionFormat="multi"
+//     *     ),
+//     *     @SWG\Parameter(
+//     *         name="url",
+//     *         in="query",
+//     *         description="",
+//     *         required=true,
+//     *         type="string",
+//     *         default="http://deal.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=1648381925&trTypeCd=38&trCtgrNo=947548"
+//     *     ),
+//     *     @SWG\Response(
+//     *         response=200,
+//     *         description="successful operation",
+//     *     ),
+//     *     @SWG\Response(
+//     *         response="400",
+//     *         description="Unexpected data value",
+//     *     )
+//     * )
+//     */
     public function get(Request $request){
         $query = $request->query();
         $this->market = Market::wherecode($query['marketId'])->first();

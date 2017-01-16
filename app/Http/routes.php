@@ -1,11 +1,17 @@
 <?php
 Route::group(['prefix' => '/v1'], function () {
+
 //    Route::get('/category','insertSectorController@categoryOrder');
 //    Route::get('/division','insertSectorController@divisionActive');
 //    Route::get('/insert','insertSectorController@check');
+
     Route::group(['prefix' => '/haitao/'], function () {
         Route::group(['prefix' => 'product/'], function () {
-            Route::get('', 'ProductController@haitaoData');
+            Route::get('', 'HaitaoController@productDetailGet'); // get detail example
+            Route::post('', 'HaitaoController@productPost');
+//            Route::post('', 'HaitaoController@OrderStore');
+            Route::put('', 'HaitaoController@OrderPut');
+
         });
     });
     Route::group(['prefix' => '/members/'], function () {
