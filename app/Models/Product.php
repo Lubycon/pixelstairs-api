@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Log;
+use App\Models\Sector;
+
 class Product extends Model
 {
     use SoftDeletes;
@@ -31,6 +33,22 @@ class Product extends Model
         for( $i=0 ; $i<3 ; $i++ ){
             $value = $this['sector_id_'.$i];
             if(!is_null($value)) $result[] = $value;
+        }
+        return $result;
+    }
+
+    public function sectorsDetail(){
+        $result = [];
+        for( $i=0 ; $i<3 ; $i++ ){
+            $value = $this['sector_id_'.$i];
+            if(!is_null($value)){
+                $sector = Sector::find($value);
+                $result[] = array(
+                    'origin' => $value,
+                    'origin' => $sector['original_name'],
+                    'zh' => $sector['chinese_name'],
+                );
+            }
         }
         return $result;
     }
