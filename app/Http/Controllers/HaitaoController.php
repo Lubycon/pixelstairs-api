@@ -50,7 +50,7 @@ class HaitaoController extends Controller
      * )
      */
 
-    public function productGet(Request $request,$product_id){
+    public function productDetailGet(Request $request,$product_id){
         $product = Product::findOrFail($product_id);
 
         $response = (object)array(
