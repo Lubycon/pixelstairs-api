@@ -52,4 +52,16 @@ class Product extends Model
         }
         return $result;
     }
+
+    public function sectorsDetailZh(){
+        $result = [];
+        for( $i=0 ; $i<3 ; $i++ ){
+            $value = $this['sector_id_'.$i];
+            if(!is_null($value)){
+                $sector = Sector::find($value);
+                $result[] = $sector['chinese_name'];
+            }
+        }
+        return $result;
+    }
 }

@@ -22,6 +22,56 @@ use App\Models\Sector;
 
 class DataResponseController extends Controller
 {
+<<<<<<< Updated upstream
+=======
+//    /**
+//     * @SWG\Get(
+//     *     path="/data",
+//     *     summary="Get Referer Data",
+//     *     description="Relationship data refrer get",
+//     *     operationId="data_get",
+//     *     produces={"application/json"},
+//     *     tags={"data"},
+//     *     @SWG\Parameter(
+//     *         name="country",
+//     *         default="country",
+//     *         in="query",
+//     *         description="",
+//     *         required=false,
+//     *         type="string"
+//     *     ),
+//     *     @SWG\Parameter(
+//     *         name="status",
+//     *         in="query",
+//     *         description="",
+//     *         required=false,
+//     *         type="string",
+//     *     ),
+//     *     @SWG\Parameter(
+//     *         name="market",
+//     *         in="query",
+//     *         description="",
+//     *         required=false,
+//     *         type="string",
+//     *     ),
+//     *     @SWG\Parameter(
+//     *         name="brand",
+//     *         in="query",
+//     *         description="",
+//     *         required=false,
+//     *         type="string",
+//     *     ),
+//     *     @SWG\Response(
+//     *         response=200,
+//     *         description="successful operation",
+//     *     ),
+//     *     @SWG\Response(
+//     *         response="400",
+//     *         description="Unexpected data value",
+//     *     )
+//     * )
+//     */
+>>>>>>> Stashed changes
     private function getModelByWhitelist($query){
         $whiteList = (object)array(
             'user' => User::all(),
