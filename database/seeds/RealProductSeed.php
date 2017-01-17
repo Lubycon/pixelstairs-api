@@ -31,6 +31,7 @@ class RealProductSeed extends Seeder
             "is_free_delivery" => true,
             "stock" => 5000,
             "safe_stock" => 100,
+            "thumbnail_url" => "http://i.011st.com/pd/16/2/4/7/9/9/2/WCzDh/1232247992_B.jpg",
             "url" => "http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=1232247992&trTypeCd=PW02&trCtgrNo=1002031#ui_option_layer1",
             "status_code" => '0300',
             "end_date" => "2017/05/02 00:00:00",

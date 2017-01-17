@@ -105,6 +105,7 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'price' => mt_rand(10000,50000),
         'domestic_delivery_price' => mt_rand(1000,2500),
         'is_free_delivery' => mt_rand(0,1),
+        'thumbnail_url' => "http://i.011st.com/pd/16/2/4/7/9/9/2/WCzDh/1232247992_B.jpg",
         'url' => 'http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=333125048&trTypeCd=PW02&trCtgrNo=585021&lCtgrNo=1001452&mCtgrNo=1003081',
         'status_code' => '0300',
         'stock' => mt_rand(1000,2500),

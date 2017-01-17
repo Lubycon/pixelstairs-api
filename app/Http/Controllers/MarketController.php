@@ -112,6 +112,7 @@ class MarketController extends Controller
                 'lowestPrice' => $this->splitWon($product_data['Product']['ProductPrice']['LowestPrice']),
             ),
             'deliveryPrice' => $this->splitWon($product_data['Product']['ShipFee']),
+            'thumbnail_url' => $product_data['Product']['BasicImage'],
             'options' => $this->bindOption( $product_data ),
         ];
     }

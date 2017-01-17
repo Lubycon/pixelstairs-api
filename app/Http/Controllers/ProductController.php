@@ -62,6 +62,7 @@ class ProductController extends Controller
             "isFreeDelivery" => $product["is_free_delivery"],
             "stock" => $product["stock"],
             "safeStock" => $product["safe_stock"],
+            "thumbnailUrl" => $product["thumbnail_url"],
             "url" => $product["url"],
             "statusCode" => $product["status_code"],
             "createDate" => Carbon::instance($product["created_at"])->toDateTimeString(),
@@ -105,6 +106,7 @@ class ProductController extends Controller
                 "price" => $array["price"],
                 "stock" => $array["stock"],
                 "safeStock" => $array["safe_stock"],
+                "thumbnailUrl" => $array["thumbnail_url"],
                 "url" => $array["url"],
                 "statusCode" => $array["status_code"],
                 "endDate" => $array["end_date"],
@@ -144,6 +146,7 @@ class ProductController extends Controller
         $this->product->is_free_delivery = $data["isFreeDelivery"];
         $this->product->stock = $data["stock"];
         $this->product->safe_stock = $data["safeStock"];
+        $this->product->thumbnail_url = $data["thumbnailUrl"];
         $this->product->url = $data["url"];
         $this->product->status_code = "0300";
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
@@ -178,6 +181,7 @@ class ProductController extends Controller
         $this->product->is_free_delivery = $data["isFreeDelivery"];
         $this->product->stock = $data["stock"];
         $this->product->safe_stock = $data["safeStock"];
+        $this->product->thumbnail_url = $data["thumbnailUrl"];
         $this->product->url = $data["url"];
         $this->product->status_code = $this->statusUpdate($request,$request['statusCode']);
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();

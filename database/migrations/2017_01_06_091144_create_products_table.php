@@ -45,6 +45,7 @@ class CreateProductsTable extends Migration
             $table->integer('stock');
             $table->integer('safe_stock');
 
+            $table->longtext('thumbnail_url');
             $table->longtext('url');
 
             $table->string('status_code');
