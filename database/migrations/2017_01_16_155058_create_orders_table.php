@@ -14,8 +14,8 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('haitao_order_id');
-            $table->string('sku',100);
+            $table->integer('haitao_order_id')->unique();
+            $table->string('sku_id',100);
             $table->string('haitao_user_id',50);
             $table->integer('quantity');
             $table->softDeletes();

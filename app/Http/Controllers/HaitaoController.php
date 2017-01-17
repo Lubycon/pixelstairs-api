@@ -15,12 +15,15 @@ use App\Models\Status;
 use App\Models\Brand;
 use App\Models\Option;
 use App\Models\Order;
+use App\Models\Sku;
 use GuzzleHttp\Client;
 
 use Abort;
 use Log;
 
 use App\Traits\OptionControllTraits;
+
+use App\Http\Requests\Order\OrderPostRequest;
 
 class HaitaoController extends Controller
 {
@@ -35,14 +38,14 @@ class HaitaoController extends Controller
 
     /**
      * @SWG\Get(
-     *     path="/haitao/product/{product_id}",
+     *     path="/haitao/product/{haitao_product_id}",
      *     summary="Get Product Detail",
-     *     description="Get Product Detail via Mitty Product ID",
+     *     description="Get Product Detail via Haitao Product ID",
      *     produces={"application/json"},
      *     tags={"Product"},
      *     @SWG\Parameter(
-     *         name="product_id",
-     *         default="501",
+     *         name="haitao_product_id",
+     *         default="100000000",
      *         in="path",
      *         description="product's data you want item id",
      *         required=true,
@@ -57,19 +60,29 @@ class HaitaoController extends Controller
      *         description="Unexpected data value",
      *     ),
      *     @SWG\Response(
+     *         response="403",
+     *         description="ended product sales",
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="Not found product",
+     *     ),
+     *     @SWG\Response(
      *         response="500",
      *         description="Mitty Server Error",
      *     )
      * )
      */
 
-    public function productDetailGet(Request $request,$product_id){
-        $product = Product::findOrFail($product_id);
+    public function productDetailGet(Request $request,$haitao_product_id){
+        $product = Product::wherehaitao_product_id($haitao_product_id)->firstOrFail();
+
+        if( $product->status_code != '0301' ) Abort::Error('0043',"Ended sale product");
 
         $response = (object)array(
             "mittyProductId" => $product["id"],
             "marketProductId" => $product["product_id"],
-            "haitaoProductId" => "haitao present",
+            "haitaoProductId" => $product["haitao_product_id"],
             "market" => Market::wherecode($product["market_id"])->value("name"),
             "category" => Category::find($product["category_id"])["chinese_name"],
             "division" => Division::find($product["division_id"])["chinese_name"],
@@ -134,7 +147,7 @@ class HaitaoController extends Controller
      *     ),
      *     @SWG\Response(
      *         response=200,
-     *         description="successful operation",
+     *         description="return with created your product id",
      *     )
      * )
      */
@@ -169,13 +182,13 @@ class HaitaoController extends Controller
      * )
      */
 
-    public function orderStore(Request $request){
+    public function orderStore(OrderPostRequest $request){
         $order = new Order;
 
         $order->haitao_order_id = $request['order_id'];
         $order->haitao_user_id = $request['user_id'];
         $order->quantity = $request['quantity'];
-        $order->sku = $request['sku'];
+        $order->sku_id = Sku::wheresku($request['sku'])->firstOrFail()['id'];
 
         if(!$order->save()) Abor::Error('0040','Check Request');
 
