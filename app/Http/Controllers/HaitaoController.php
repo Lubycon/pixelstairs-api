@@ -15,14 +15,22 @@ use App\Models\Status;
 use App\Models\Brand;
 use App\Models\Option;
 use App\Models\Order;
+use GuzzleHttp\Client;
 
-use Carbon\Carbon;
+use Abort;
+use Log;
 
 use App\Traits\OptionControllTraits;
 
 class HaitaoController extends Controller
 {
     use OptionControllTraits;
+
+    public $client;
+
+    public function __construct(){
+        $this->client = new Client();
+    }
 
 
     /**
@@ -84,9 +92,9 @@ class HaitaoController extends Controller
 
     /**
      * @SWG\Post(
-     *     path="/haitao/api/address",
+     *     path="To haitao API",
      *     summary="Upload Product to 1Haitao",
-     *     description="Upload product via using haitao api ( options array has 0~1000 index )",
+     *     description="Upload product via using haitao api ( options array has 0~1000 index )<br/>After upload product, return created your product id via this API",
      *     produces={"application/json"},
      *     tags={"Product"},
      *     @SWG\Parameter(
@@ -132,29 +140,7 @@ class HaitaoController extends Controller
      */
 
     public function productStore(Request $request){
-        $product = Product::findOrFail($request['product_id']);
-
-        $response = (object)array(
-            "mittyProductId" => $product["id"],
-            "marketProductId" => $product["product_id"],
-            "market" => Market::wherecode($product["market_id"])->value("name"),
-            "category" => Category::find($product["category_id"])["chinese_name"],
-            "division" => Division::find($product["division_id"])["chinese_name"],
-            "sector" => $product->sectorsDetailZh(),
-            "title" => $product["chinese_title"],
-            "brand" => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])->value("chinese_name"),
-            "description" => $product["chinese_description"],
-            "weight" => $product["weight"],
-            "price" => $product["price"] + $product["domestic_delivery_price"],
-            "stock" => $product["stock"] - $product["safe_stock"],
-            "thumbnailUrl" => $product["thumbnail_url"],
-            "url" => $product["url"],
-            "status" => Status::wherecode($product["status_code"])->value("chinese_name"),
-            "startDate" => $product["start_date"],
-            "endDate" => $product["end_date"],
-            "options" => $this->bindOptionZh(Option::whereproduct_id($product["id"])->get())
-        );
-        return response()->success($response);
+        // in Traits
     }
 
     /**

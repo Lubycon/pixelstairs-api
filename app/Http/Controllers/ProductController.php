@@ -11,23 +11,20 @@ use App\Http\Controllers\Pager\PageController;
 use Carbon\Carbon;
 use Log;
 
-use App\Models\Category;
-use App\Models\Division;
-use App\Models\Sector;
-
 use App\Models\Status;
-use App\Models\Market;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Option;
-use App\Models\Sku;
 use Abort;
+
 use App\Traits\GetUserModelTrait;
 use App\Traits\OptionControllTraits;
+use App\Traits\HaitaoRequestTraits;
+use App\Traits\StatusInfoTraits;
 
 class ProductController extends Controller
 {
-    use GetUserModelTrait,OptionControllTraits;
+    use GetUserModelTrait,OptionControllTraits,HaitaoRequestTraits,StatusInfoTraits;
 
     public $product;
     public $product_id;
@@ -90,8 +87,6 @@ class ProductController extends Controller
                 "haitaoId" => $array["haitao_product_id"],
                 "title" => (object)array(
                     "origin" => $array["original_title"],
-                    // "ko" => $array["korean_title"],
-                    // "en" => $array["english_title"],
                     "zh" => $array["chinese_title"],
                 ),
                 "brand" => array(
@@ -125,7 +120,6 @@ class ProductController extends Controller
 
         $this->product_id = $data["marketProductId"];
         $this->market_id = $data["marketId"];
-//        $this->market_category_id = $data["marketDivisionId"];
 
         $this->product = new Product;
         $this->product->product_id = $this->product_id;
@@ -210,37 +204,7 @@ class ProductController extends Controller
         }
         return response()->success();
     }
-    public function statusUpdate($request,$status_code){
-        if( !$this->isSameStatus($status_code) ){
-            $this->statusPermissionCheck($request);
-            $this->forConfirm($status_code);
-            return $status_code;
-        }
-        return $this->product->status_code;
-    }
-    public function forConfirm($status_code){
-        if( $status_code == '0301' ){
-            $this->startDateUpdate();
-            return true;
-        }
-        return false;
-    }
-    private function statusPermissionCheck($request){
-        $user = $this->getUserByTokenRequestOrFail($request);
-        if ($user->grade == "superAdmin" || $user->grade == "admin"){
-            return true;
-        }
-        Abort::Error("0043", "Can not change status");
-    }
-    private function isSameStatus($status_code){
-        if( $this->product->status_code == $status_code ){
-            return true;
-        }
-        return false;
-    }
-    private function startDateUpdate(){
-        $this->product->start_date = Carbon::now()->toDateTimeString();
-    }
+
     private function getBrandId($brand){
         return is_null($brand['origin'])
             ? null
@@ -249,36 +213,4 @@ class ProductController extends Controller
                 "chinese_name" => $brand['zh'],
             ))->id;
     }
-
-//    private function getCategoryId($category){
-//        return is_array($category)
-//        ? Category::firstOrCreate(
-//            array(
-//                "original_name" => $category["origin"],
-//                "chinese_name" => $category["zh"],
-//            ))["id"]
-//        : Category::findOrFail($category)->value("id");
-//    }
-//    private function getDivisionId($division){
-//        return is_array($division)
-//        ? Division::firstOrCreate(
-//            array(
-//                "parent_id" => $this->product->category_id,
-//                "original_name" => $division["origin"],
-//                "chinese_name" => $division["zh"],
-//            ))["id"]
-//        : Division::findOrFail($division)->value("id");
-//    }
-//    private function getSectorId($division){
-//        return is_array($division)
-//            ? Sector::firstOrCreate(
-//                array(
-//                    "parent_id" => $this->product->category_id,
-//                    "market_id" => $this->market_id,
-//                    "market_category_id" => $this->market_category_id,
-//                    "original_name" => $division["origin"],
-//                    "chinese_name" => $division["zh"],
-//                ))["id"]
-//            : Sector::findOrFail($division)->value("id");
-//    }
 }
