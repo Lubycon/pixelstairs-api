@@ -56,6 +56,7 @@ class ProductController extends Controller
                 'origin' => $product["original_description"],
                 'zh' => $product["chinese_description"],
             ),
+            "weight" => $product["weight"],
             "price" => $product["price"],
             "deliveryPrice" => $product["domestic_delivery_price"],
             "isFreeDelivery" => $product["is_free_delivery"],
@@ -100,6 +101,7 @@ class ProductController extends Controller
                     'origin' => $array["original_description"],
                     'zh' => $array["chinese_description"],
                 ),
+                "weight" => $array["weight"],
                 "price" => $array["price"],
                 "stock" => $array["stock"],
                 "safeStock" => $array["safe_stock"],
@@ -136,6 +138,7 @@ class ProductController extends Controller
         $this->product->chinese_title = $data["title"]["zh"];
         $this->product->original_description = $data["description"]['origin'];
         $this->product->chinese_description = $data["description"]['zh'];
+        $this->product->weight = $data["weight"];
         $this->product->price = $data["price"];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
@@ -169,6 +172,7 @@ class ProductController extends Controller
         $this->product->chinese_title = $data["title"]["zh"];
         $this->product->original_description = $data["description"]['origin'];
         $this->product->chinese_description = $data["description"]['zh'];
+        $this->product->weight = $data["weight"];
         $this->product->price = $data["price"];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];

@@ -41,6 +41,7 @@ class CreateProductsTable extends Migration
             $table->integer('domestic_delivery_price');
             $table->boolean('is_free_delivery');
 
+            $table->double('weight',4,2)->nullable();
             $table->integer('stock');
             $table->integer('safe_stock');
 

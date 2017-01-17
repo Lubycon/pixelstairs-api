@@ -101,6 +101,7 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'korean_description' => 'korean_'.str_random(10),
         'english_description' => 'english_'.str_random(10),
         'chinese_description' => 'chinese_'.str_random(10),
+        'weight' => mt_rand(1,100),
         'price' => mt_rand(10000,50000),
         'domestic_delivery_price' => mt_rand(1000,2500),
         'is_free_delivery' => mt_rand(0,1),
