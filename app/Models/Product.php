@@ -26,6 +26,7 @@ class Product extends Model
         'sector_id_1' => 'string',
         'sector_id_2' => 'string',
         'brand_id' => 'string',
+        'weight' => 'string',
     ];
 
     public function sectors(){
