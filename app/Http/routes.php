@@ -10,8 +10,8 @@ Route::group(['prefix' => '/v1'], function () {
             Route::get('{haitao_product_id}', 'HaitaoController@productDetailGet'); // get detail example
         });
         Route::group(['prefix' => 'order/'], function () {
-            Route::post('', 'HaitaoController@OrderStore');
-//            Route::put('', 'HaitaoController@OrderPut');
+            Route::post('', 'HaitaoController@orderStore');
+//            Route::put('', 'HaitaoController@orderPut');
         });
     });
     Route::group(['prefix' => '/members/'], function () {

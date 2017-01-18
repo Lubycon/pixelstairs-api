@@ -180,6 +180,14 @@ class HaitaoController extends Controller
      *         description="successful operation",
      *     ),
      *     @SWG\Response(
+     *         response=400,
+     *         description="400 error",
+     *     ),
+     *     @SWG\Response(
+     *         response=404,
+     *         description="Can not found Product via SKU",
+     *     ),
+     *     @SWG\Response(
      *         response=424,
      *         description="Failed Dependency",
      *     )

@@ -154,16 +154,16 @@ class MarketController extends Controller
 
 
         if ( isset($optionList['Order']) ) {
-            $recodeList[] = $this->bindOptions($optionList);
+            $recodeList[] = $this->setOptionArray($optionList);
         }else{
             foreach ($optionList as $key => $value) {
-                $recodeList[] = $this->bindOptions($value);
+                $recodeList[] = $this->setOptionArray($value);
             }
         }
         return $recodeList;
     }
 
-    public function bindOptions($option){
+    public function setOptionArray($option){
         return array(
             "order" => $option['Order'],
             'price' => $this->splitWon($option['Price']),
