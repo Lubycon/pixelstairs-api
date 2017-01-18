@@ -154,17 +154,21 @@ class MarketController extends Controller
 
 
         if ( isset($optionList['Order']) ) {
-            $recodeList[0]['order'] = $optionList['Order'];
-            $recodeList[0]['price'] = $this->splitWon($optionList['Price']);
-            $recodeList[0]['valueName'] = $optionList['ValueName'];
+            $recodeList[] = $this->bindOptions($optionList);
         }else{
             foreach ($optionList as $key => $value) {
-                $recodeList[$key]['order'] = $value['Order'];
-                $recodeList[$key]['price'] = $this->splitWon($value['Price']);
-                $recodeList[$key]['name'] = $value['ValueName'];
+                $recodeList[] = $this->bindOptions($value);
             }
         }
         return $recodeList;
+    }
+
+    public function bindOptions($option){
+        return array(
+            "order" => $option['Order'],
+            'price' => $this->splitWon($option['Price']),
+            'valueName' => $option['ValueName'],
+        );
     }
 
     public function getProductNumber($query_array){
