@@ -178,6 +178,10 @@ class HaitaoController extends Controller
      *     @SWG\Response(
      *         response=200,
      *         description="successful operation",
+     *     ),
+     *     @SWG\Response(
+     *         response=424,
+     *         description="Failed Dependency",
      *     )
      * )
      */
@@ -190,7 +194,7 @@ class HaitaoController extends Controller
         $order->quantity = $request['quantity'];
         $order->sku_id = Sku::wheresku($request['sku'])->firstOrFail()['id'];
 
-        if(!$order->save()) Abor::Error('0040','Check Request');
+        if(!$order->save()) Abort::Error('0040','Check Request');
 
         return response()->success($order);
     }
