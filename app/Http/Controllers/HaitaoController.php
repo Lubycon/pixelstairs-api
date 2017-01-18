@@ -88,7 +88,7 @@ class HaitaoController extends Controller
             "division" => Division::find($product["division_id"])["chinese_name"],
             "sector" => $product->sectorsDetailZh(),
             "title" => $product["chinese_title"],
-            "brand" => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])->value("chinese_name"),
+            "brand" => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])['chinese_name'],
             "description" => $product["chinese_description"],
             "weight" => $product["weight"],
             "price" => $product["price"] + $product["domestic_delivery_price"],

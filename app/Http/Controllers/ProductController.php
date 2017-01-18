@@ -46,8 +46,8 @@ class ProductController extends Controller
                 "zh" => $product["chinese_title"],
             ),
             "brand" => array(
-                'origin' => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])->value("original_name"),
-                'zh' => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])->value("chinese_name"),
+                'origin' => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])['original_name'],
+                'zh' => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])['chinese_name'],
             ),
             "description" =>array(
                 'origin' => $product["original_description"],
