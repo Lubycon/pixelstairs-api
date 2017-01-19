@@ -16,6 +16,8 @@ use App\Models\Division;
 use App\Models\Sector;
 use App\Models\Market;
 
+use App\Classes\Snoopy;
+
 class MarketController extends Controller
 {
     public $client;
@@ -69,6 +71,16 @@ class MarketController extends Controller
 //     *     )
 //     * )
 //     */
+
+    public function getBySnoopy(){
+        $snoopy = new Snoopy;
+
+        $snoopy->fetch("http://deal.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=1254155722&trTypeCd=22&trCtgrNo=895019");
+        $source = $snoopy->results;
+        $res = iconv("euc-kr","UTF-8",$source);
+        print_r($res);
+    }
+
     public function get(Request $request){
         $query = $request->query();
         $this->market = Market::wherecode($query['marketId'])->first();

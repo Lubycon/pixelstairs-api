@@ -42,6 +42,7 @@ Route::group(['prefix' => '/v1'], function () {
         Route::put('status/{status_name}', 'ProductController@status');
     });
     Route::group(['prefix' => '/markets/'], function () {
+        Route::get('snoopy', 'MarketController@getBySnoopy');
         Route::get('product', 'MarketController@get');
     });
     Route::group(['prefix' => '/categories/'], function () {
