@@ -15,7 +15,7 @@ class CreateSectionMarketInfosTable extends Migration
         Schema::create('section_market_infos', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('section_id');
-            $table->integer('market_id');
+            $table->string('market_id',4);
             $table->integer('market_category_id');
             $table->softDeletes();
             $table->timestamps();

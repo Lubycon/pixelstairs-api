@@ -18,8 +18,9 @@ class DatabaseSeeder extends Seeder
         $this->call(MarketTableSeeder::class);
         $this->call(CountryTableSeeder::class);
         $this->call(TranslateTableSeeder::class);
-//        $this->call(DummyDataSeeder::class);
-//        $this->call(StatusTableSeeder::class);
+        $this->call(StatusTableSeeder::class);
+        $this->call(GenderTableSeeder::class);
+        $this->call(DummyDataSeeder::class);
 //        $this->call(RealProductSeed::class);
 
         Model::reguard();

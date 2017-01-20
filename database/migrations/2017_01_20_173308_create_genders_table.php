@@ -13,7 +13,7 @@ class CreateGendersTable extends Migration
     public function up()
     {
         Schema::create('genders', function (Blueprint $table) {
-            $table->increments('id');
+            $table->integer('id')->index();
             $table->integer('translate_name_id');
             $table->timestamps();
         });

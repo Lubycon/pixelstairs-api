@@ -34,4 +34,8 @@ class Category extends Model
     {
         return $this->belongsTo('App\Models\Product','category_id','id');
     }
+    public function division()
+    {
+        return $this->belongsTo('App\Models\Division','parent_id','id');
+    }
 }

@@ -17,18 +17,23 @@ class CreateProductsTable extends Migration
             $table->string('market_product_id',200);
             $table->string('haitao_product_id',200)->nullable();
 
-            $table->integer('category_id');
-            $table->integer('division_id');
-            $table->integer('sector_group_id');
+            $table->integer('category_id')->nullable();
+            $table->integer('division_id')->nullable();
+            $table->integer('sector_group_id')->nullable();
 
             $table->string('market_id','4');
 
-            $table->integer('brand_id')->nullable();
+            $table->integer('brand_id');
+            $table->integer('seller_id');
+            $table->integer('gender_id');
+            $table->integer('manufacturer');
 
             $table->integer('translate_name_id');
             $table->integer('translate_description_id');
 
-            $table->integer('price');
+            $table->integer('original_price');
+            $table->integer('lower_price');
+            $table->string('price_unit',10);
             $table->integer('domestic_delivery_price');
             $table->boolean('is_free_delivery');
 
@@ -39,7 +44,7 @@ class CreateProductsTable extends Migration
             $table->longtext('thumbnail_url');
             $table->longtext('url');
 
-            $table->string('status_code');
+            $table->string('status_code')->default('0300');
 
             $table->datetime('start_date')->nullable();
             $table->datetime('end_date')->nullable();

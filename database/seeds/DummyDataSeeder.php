@@ -14,6 +14,18 @@ class DummyDataSeeder extends Seeder
         //DB::table('users')->truncate(); run this code in admin seeder
         // factory(App\Models\User::class, 100)->create();
 
+        DB::table('categories')->truncate();
+        DB::table('divisions')->truncate();
+        DB::table('sections')->truncate();
+        DB::table('section_groups')->truncate();
+        DB::table('section_market_infos')->truncate();
+        factory(App\Models\SectionMarketInfo::class, 100)->create();
+
+        DB::table('brands')->truncate();
+        DB::table('sellers')->truncate();
+        DB::table('products')->truncate();
+        factory(App\Models\Product::class, 100)->create();
+
 //        DB::table('categories')->truncate();
 //        factory(App\Models\Category::class, 30)->create();
 //
