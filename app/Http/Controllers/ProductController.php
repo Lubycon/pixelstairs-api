@@ -129,7 +129,7 @@ class ProductController extends Controller
         $this->product->sector_id_1 = isset($data["sector"][1]) ? $data["sector"][1] : NULL;
         $this->product->sector_id_2 = isset($data["sector"][2]) ? $data["sector"][2] : NULL;
         $this->product->market_id = $data["marketId"];
-        $this->product->brand_id = $this->getBrandId($data["brand"]);
+        $this->product->brand_id = $this->getBrandId($data["brandName"]);
         $this->product->original_title = $data["title"]["origin"];
         $this->product->chinese_title = $data["title"]["zh"];
         $this->product->original_description = $data["description"]['origin'];
