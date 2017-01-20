@@ -11,5 +11,6 @@ class Status extends Model
 
     protected $casts = [
         'id' => 'string',
+        'code' => 'string',
     ];
 }

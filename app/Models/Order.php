@@ -11,6 +11,10 @@ class Order extends Model
 
     protected $casts = [
         'id' => 'string',
-        'integer' => 'string',
+        'haitao_user_id' => 'string',
+        'haitao_order_id' => 'string',
+        'sku' => 'string',
+        'quantity' => 'string',
+        'status_code' => 'string',
     ];
 }

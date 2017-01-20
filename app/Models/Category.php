@@ -10,12 +10,28 @@ class Category extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name',
-        "original_name",
-        "chinese_name"
+        'id',
     ];
 
     protected $casts = [
         'id' => 'string',
     ];
+
+
+    // get reference data
+    // hasOne('remote_table_column_name','local_column_name');
+
+    public function translate_name()
+    {
+        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+    }
+
+
+    // belongsTo
+    // belongsTo('remote_table_column_name','local_column_name');
+
+    public function product()
+    {
+        return $this->belongsTo('App\Models\Product','category_id','id');
+    }
 }

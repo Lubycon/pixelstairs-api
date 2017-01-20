@@ -12,6 +12,6 @@ class Option extends Model
     protected $casts = [
         'id' => 'string',
         'product_id' => 'string',
-        'sku_id' => 'string',
+        'sku' => 'string',
     ];
 }

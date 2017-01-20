@@ -10,16 +10,13 @@ class Section extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        "parent_id",
-        "market_id",
-        "market_category_id",
-        "original_name",
-        "chinese_name",
+        "id",
+        "group_id",
+        "translate_name_id",
     ];
 
     protected $casts = [
         'id' => 'string',
-        'parent_id' => 'string',
-        'market_category_id' => 'string',
+        'group_id' => 'string',
     ];
 }
