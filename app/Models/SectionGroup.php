@@ -2,20 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Log;
 
-class SectionGroup extends Model
+class SectionGroup extends BaseModel
 {
     use SoftDeletes;
 
     // get reference data
     // hasOne('remote_table_column_name','local_column_name');
 
-    public function division()
+    public function section()
     {
-        return $this->hasOne('App\Models\Division','id','parent_id');
+        return $this->hasMany('App\Models\Section','group_id','id');
     }
 
 
@@ -26,8 +25,8 @@ class SectionGroup extends Model
 //    {
 //        return $this->belongsTo('App\Models\Product','category_id','id');
 //    }
-//    public function division()
-//    {
-//        return $this->belongsTo('App\Models\Division','parent_id','id');
-//    }
+    public function division()
+    {
+        return $this->belongsTo('App\Models\Division','parent_id','id');
+    }
 }

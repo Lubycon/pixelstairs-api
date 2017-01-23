@@ -138,7 +138,7 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'haitao_product_id' => $statusCode != '0300' ? mt_rand(100000000,110000000) : NULL,
         'category_id' => $category['id'],
         'division_id' => $division['id'],
-        'sector_group_id' => $sectionGroup['id'],
+        'section_group_id' => $sectionGroup['id'],
         'market_id' => "0100",
         'brand_id' => factory(App\Models\Brand::class)->create()->id,
         'seller_id' => factory(App\Models\Seller::class)->create()->id,

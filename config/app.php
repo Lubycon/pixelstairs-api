@@ -198,7 +198,7 @@ return [
         'View'      => Illuminate\Support\Facades\View::class,
 
         'Abort'     => App\Classes\Abort::class,
-        'Pusher'     => App\Classes\Pusher::class,
+        'BaseModel'      => App\Models\BaseModel::class,
         //'AWS'       => Aws\Laravel\AwsFacade::class,
 
     ],

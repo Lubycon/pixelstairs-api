@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OptionKey extends Model
+class OptionKey extends BaseModel
 {
     use SoftDeletes;
 }

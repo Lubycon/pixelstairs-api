@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Category extends Model
+class Category extends BaseModel
 {
     use SoftDeletes;
 
@@ -21,7 +20,7 @@ class Category extends Model
     // get reference data
     // hasOne('remote_table_column_name','local_column_name');
 
-    public function translate_name()
+    public function translateName()
     {
         return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
     }

@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Section extends Model
+class Section extends BaseModel
 {
     use SoftDeletes;
 
@@ -19,4 +18,11 @@ class Section extends Model
         'id' => 'string',
         'group_id' => 'string',
     ];
+
+
+    // get translate data
+    public function translateName()
+    {
+        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+    }
 }

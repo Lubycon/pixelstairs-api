@@ -11,22 +11,22 @@ class UnitTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('statuses')->truncate();
+        DB::table('units')->truncate();
         $data = array(
             array(
                 'id' => 1,
-                'translate_name_id' => 4,
+                'translate_name_id' => 20,
             ),
             array(
                 'id' => 2,
-                'translate_name_id' => 5,
+                'translate_name_id' => 21,
             ),
             array(
                 'id' => 3,
-                'translate_name_id' => 6,
+                'translate_name_id' => 22,
             ),
         );
 
-        DB::table('statuses')->insert($data);
+        DB::table('units')->insert($data);
     }
 }

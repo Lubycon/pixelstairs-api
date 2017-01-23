@@ -35,26 +35,17 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         $response = (object)array(
             "id" => $product["id"],
-            "marketProductId" => $product["product_id"],
-            "haitaoId" => $product["haitao_product_id"],
+            "marketProductId" => $product["market_product_id"],
+            "haitaoProductId" => $product["haitao_product_id"],
             "marketId" => $product["market_id"],
+            "title" => $product->getTranslate($product),
+            "brand" => $product->getTranslate($product->brand),
+            "description" => $product->getTranslateDescription($product),
             "categoryId" => $product["category_id"],
             "divisionId" => $product["division_id"],
-            "sector" => $product->sectors(),
-            "title" => (object)array(
-                "origin" => $product["original_title"],
-                "zh" => $product["chinese_title"],
-            ),
-            "brand" => array(
-                'origin' => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])['original_name'],
-                'zh' => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])['chinese_name'],
-            ),
-            "description" =>array(
-                'origin' => $product["original_description"],
-                'zh' => $product["chinese_description"],
-            ),
+            "section" => $product->getSectionIds(),
             "weight" => $product["weight"],
-            "price" => $product["price"],
+            "priceInfo" => $product->getPriceInfo(),
             "deliveryPrice" => $product["domestic_delivery_price"],
             "isFreeDelivery" => $product["is_free_delivery"],
             "stock" => $product["stock"],
@@ -65,7 +56,8 @@ class ProductController extends Controller
             "createDate" => Carbon::instance($product["created_at"])->toDateTimeString(),
             "startDate" => $product["start_date"],
             "endDate" => $product["end_date"],
-            "options" => $this->bindOption(Option::whereproduct_id($product["id"])->get())
+            "optionKeys" => $product->getOptionKey(),
+            "options" => $product->getOption(),
         );
 
         return response()->success($response);
@@ -80,31 +72,23 @@ class ProductController extends Controller
             "totalCount" => $controller->totalCount,
             "currentPage" => $controller->currentPage,
         );
-        foreach($collection as $array){
+        foreach($collection as $product){
+
             $result->products[] = (object)array(
-                "id" => $array["id"],
-                "marketProductId" => $array["product_id"],
-                "haitaoId" => $array["haitao_product_id"],
-                "title" => (object)array(
-                    "origin" => $array["original_title"],
-                    "zh" => $array["chinese_title"],
-                ),
-                "brand" => array(
-                    'origin' => is_null($array["brand_id"]) ? NULL : Brand::find($array["brand_id"])["original_name"],
-                    'zh' => is_null($array["brand_id"]) ? NULL : Brand::find($array["brand_id"])["chinese_name"],
-                ),
-                "description" =>array(
-                    'origin' => $array["original_description"],
-                    'zh' => $array["chinese_description"],
-                ),
-                "weight" => $array["weight"],
-                "price" => $array["price"],
-                "stock" => $array["stock"],
-                "safeStock" => $array["safe_stock"],
-                "thumbnailUrl" => $array["thumbnail_url"],
-                "url" => $array["url"],
-                "statusCode" => $array["status_code"],
-                "endDate" => $array["end_date"],
+                "id" => $product["id"],
+                "marketProductId" => $product["market_product_id"],
+                "haitaoProductId" => $product["haitao_product_id"],
+                "title" => $product->getTranslate($product),
+                "brand" => $product->getTranslate($product->brand),
+                "description" => $product->getTranslateDescription($product),
+                "weight" => $product["weight"],
+                "priceInfo" => $product->priceInfo(),
+                "stock" => $product["stock"],
+                "safeStock" => $product["safe_stock"],
+                "thumbnailUrl" => $product["thumbnail_url"],
+                "url" => $product["url"],
+                "statusCode" => $product["status_code"],
+                "endDate" => $product["end_date"],
             );
         };
 
@@ -125,9 +109,9 @@ class ProductController extends Controller
         $this->product->product_id = $this->product_id;
         $this->product->category_id = $data["categoryId"];
         $this->product->division_id = $data["divisionId"];
-        $this->product->sector_id_0 = $data["sector"][0];
-        $this->product->sector_id_1 = isset($data["sector"][1]) ? $data["sector"][1] : NULL;
-        $this->product->sector_id_2 = isset($data["sector"][2]) ? $data["sector"][2] : NULL;
+        $this->product->section_id_0 = $data["section"][0];
+        $this->product->section_id_1 = isset($data["section"][1]) ? $data["section"][1] : NULL;
+        $this->product->section_id_2 = isset($data["section"][2]) ? $data["section"][2] : NULL;
         $this->product->market_id = $data["marketId"];
         $this->product->brand_id = $this->getBrandId($data["brand"]);
         $this->product->original_title = $data["title"]["origin"];
@@ -160,9 +144,9 @@ class ProductController extends Controller
         $this->product->product_id = $data["marketProductId"];
         $this->product->category_id = $data["categoryId"];
         $this->product->division_id = $data["divisionId"];
-        $this->product->sector_id_0 = $data["sector"][0];
-        $this->product->sector_id_1 = isset($data["sector"][1]) ? $data["sector"][1] : NULL;
-        $this->product->sector_id_2 = isset($data["sector"][2]) ? $data["sector"][2] : NULL;
+        $this->product->section_id_0 = $data["section"][0];
+        $this->product->section_id_1 = isset($data["section"][1]) ? $data["section"][1] : NULL;
+        $this->product->section_id_2 = isset($data["section"][2]) ? $data["section"][2] : NULL;
         $this->product->market_id = $data["marketId"];
         $this->product->brand_id = $this->getBrandId($data["brand"]);
         $this->product->original_title = $data["title"]["origin"];

@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OptionCollection extends Model
+class OptionCollection extends BaseModel
 {
     use SoftDeletes;
 }

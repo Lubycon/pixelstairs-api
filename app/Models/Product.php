@@ -2,19 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Log;
-use App\Models\Sector;
+use App\Models\section;
 
-class Product extends Model
+class Product extends BaseModel
 {
     use SoftDeletes;
-
-    public function option()
-    {
-        return $this->hasMany('App\Models\Option','product_id','id');
-    }
 
     protected $casts = [
         'id' => 'string',
@@ -26,10 +20,48 @@ class Product extends Model
         'brand_id' => 'string',
         'seller_id' => 'string',
         'gender_id' => 'string',
-        // find way sector id to string
+        // find way section id to string
         'weight' => 'string',
         'status_code' => 'string',
     ];
+
+
+    // get information data
+    public function getPriceInfo(){
+        return [
+            "price" => $this->original_price,
+            "lowestPrice" => $this->lower_price,
+            "unit" => $this->getTranslate($this->unit),
+        ];
+    }
+    public function getSectionIds(){
+        return $this->getTranslate($this->sectionGroup->section);
+    }
+    public function getOptionKey(){
+        $optionKeys = $this->option->first()->optionCollection;
+        $result = [];
+        for( $i=0;$i<4;$i++ ){
+            if( is_null($optionKeys['option_key_id_'.$i]) ) return $result;
+            $result[] = $optionKeys['option_key_id_'.$i];
+        }
+        return $result;
+    }
+    public function getOption(){
+        $optionKeys = $this->option;
+        $result = [];
+
+        foreach( $optionKeys as $key => $value ){
+            $result[] = array(
+                "name" => $this->getTranslate($value),
+                "price" => $value->price,
+                "stock" => $value->stock,
+                "thumbnailUrl" => $value->thumbnail_url,
+                "sku" => $value->sku,
+            );
+        }
+
+        return $result;
+    }
 
     // get reference data
     // hasOne('remote_table_column_name','local_column_name');
@@ -70,53 +102,12 @@ class Product extends Model
     {
         return $this->hasOne('App\Models\Status','id','status_id');
     }
-    // get reference data
-
-    // get translate data
-    public function translate_name()
+    public function unit()
     {
-        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+        return $this->hasOne('App\Models\Unit','id','unit_id');
     }
-    public function translate_description()
+    public function option()
     {
-        return $this->hasOne('App\Models\TranslateDescription','id','translate_description_id');
+        return $this->hasMany('App\Models\Option','product_id','id');
     }
-    // get translate data
-
-//    public function sectors(){
-//        $result = [];
-//        for( $i=0 ; $i<3 ; $i++ ){
-//            $value = $this['sector_id_'.$i];
-//            if(!is_null($value)) $result[] = $value;
-//        }
-//        return $result;
-//    }
-//
-//    public function sectorsDetail(){
-//        $result = [];
-//        for( $i=0 ; $i<3 ; $i++ ){
-//            $value = $this['sector_id_'.$i];
-//            if(!is_null($value)){
-//                $sector = Sector::find($value);
-//                $result[] = array(
-//                    'origin' => $value,
-//                    'origin' => $sector['original_name'],
-//                    'zh' => $sector['chinese_name'],
-//                );
-//            }
-//        }
-//        return $result;
-//    }
-//
-//    public function sectorsDetailZh(){
-//        $result = [];
-//        for( $i=0 ; $i<3 ; $i++ ){
-//            $value = $this['sector_id_'.$i];
-//            if(!is_null($value)){
-//                $sector = Sector::find($value);
-//                $result[] = $sector['chinese_name'];
-//            }
-//        }
-//        return $result;
-//    }
 }

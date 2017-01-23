@@ -2,9 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Unit extends Model
+class Unit extends BaseModel
 {
-    //
+
+    // get reference data
+    // hasOne('remote_table_column_name','local_column_name');
+
+    public function translateName()
+    {
+        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+    }
 }

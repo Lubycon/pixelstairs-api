@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Seller extends Model
+class Seller extends BaseModel
 {
     protected $fillable = [
         'id',

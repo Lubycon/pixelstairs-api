@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Market extends Model
+class Market extends BaseModel
 {
     use SoftDeletes;
 
@@ -22,7 +21,7 @@ class Market extends Model
     {
         return $this->hasOne('App\Models\Country','id','country_id');
     }
-    public function translate_name()
+    public function translateName()
     {
         return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
     }

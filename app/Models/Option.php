@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Option extends Model
+class Option extends BaseModel
 {
     use SoftDeletes;
 
@@ -14,4 +13,12 @@ class Option extends Model
         'product_id' => 'string',
         'sku' => 'string',
     ];
+
+    // get reference data
+    // hasOne('remote_table_column_name','local_column_name');
+
+    public function optionCollection()
+    {
+        return $this->hasOne('App\Models\OptionCollection','id','option_collection_id');
+    }
 }
