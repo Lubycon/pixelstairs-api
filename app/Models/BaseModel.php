@@ -9,16 +9,6 @@ use Log;
 
 class BaseModel extends Model
 {
-    // get translate data
-    public function translateName()
-    {
-        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
-    }
-    public function translateDescription()
-    {
-        return $this->hasOne('App\Models\TranslateDescription', 'id', 'translate_description_id');
-    }
-
     public function getTranslate($translate){
         $result = [];
         if( count($translate) > 1 ){

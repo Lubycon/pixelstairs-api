@@ -35,32 +35,46 @@ class Product extends BaseModel
         ];
     }
     public function getSectionIds(){
-        return $this->getTranslate($this->sectionGroup->section);
+        $sections = $this->sectionGroup->section;
+        $result = [];
+        foreach( $sections as $key => $value ){
+            $result[] = $value['id'];
+        }
+        return $result;
     }
     public function getOptionKey(){
-        $optionKeys = $this->option->first()->optionCollection;
         $result = [];
-        for( $i=0;$i<4;$i++ ){
-            if( is_null($optionKeys['option_key_id_'.$i]) ) return $result;
-            $result[] = $optionKeys['option_key_id_'.$i];
+        if( count($this->option) ) {
+            $optionKeys = $this->option->first()->optionCollection;
+            for ($i = 0; $i < 4; $i++) {
+                if (is_null($optionKeys['option_key_id_' . $i])) return $result;
+                $result[] = $this->getTranslate( $optionKeys->optionKey($i)->first() );
+            }
         }
         return $result;
     }
     public function getOption(){
-        $optionKeys = $this->option;
         $result = [];
-
-        foreach( $optionKeys as $key => $value ){
-            $result[] = array(
-                "name" => $this->getTranslate($value),
-                "price" => $value->price,
-                "stock" => $value->stock,
-                "thumbnailUrl" => $value->thumbnail_url,
-                "sku" => $value->sku,
-            );
+        if( count($this->option) ) {
+            $optionKeys = $this->option;
+            foreach ($optionKeys as $key => $value) {
+                $result[] = array(
+                    "name" => $this->getTranslate($value),
+                    "price" => $value->price,
+                    "stock" => $value->stock,
+                    "thumbnailUrl" => $value->thumbnail_url,
+                    "sku" => $value->sku,
+                );
+            }
         }
-
         return $result;
+    }
+    public function getSeller(){
+        $seller = $this->seller;
+        return [
+            "name" => $this->getTranslate($seller),
+            "rate" => $seller->rate,
+        ];
     }
 
     // get reference data
@@ -106,8 +120,25 @@ class Product extends BaseModel
     {
         return $this->hasOne('App\Models\Unit','id','unit_id');
     }
+    public function manufacturer()
+    {
+        return $this->hasOne('App\Models\Manufacturer','id','manufacturer_id');
+    }
+
+
     public function option()
     {
         return $this->hasMany('App\Models\Option','product_id','id');
+    }
+
+
+    // get translate data
+    public function translateName()
+    {
+        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+    }
+    public function translateDescription()
+    {
+        return $this->hasOne('App\Models\TranslateDescription','id','translate_description_id');
     }
 }

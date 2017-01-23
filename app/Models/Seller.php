@@ -14,4 +14,10 @@ class Seller extends BaseModel
         'id' => 'string',
         'rate' => 'string',
     ];
+
+    // get translate data
+    public function translateName()
+    {
+        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+    }
 }

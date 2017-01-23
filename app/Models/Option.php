@@ -21,4 +21,12 @@ class Option extends BaseModel
     {
         return $this->hasOne('App\Models\OptionCollection','id','option_collection_id');
     }
+
+
+
+    // get translate data
+    public function translateName()
+    {
+        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+    }
 }

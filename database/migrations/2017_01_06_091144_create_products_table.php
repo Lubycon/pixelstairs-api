@@ -26,7 +26,7 @@ class CreateProductsTable extends Migration
             $table->integer('brand_id');
             $table->integer('seller_id');
             $table->integer('gender_id');
-            $table->integer('manufacturer');
+            $table->integer('manufacturer_id');
 
             $table->integer('translate_name_id');
             $table->integer('translate_description_id');

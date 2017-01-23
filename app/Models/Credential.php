@@ -5,7 +5,7 @@ namespace App\Models;
 use Log;
 use Abort;
 
-class Credential extends Model
+class Credential
 {
     protected static function signin($data){
 

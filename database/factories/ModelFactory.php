@@ -119,6 +119,12 @@ $factory->define(App\Models\Brand::class, function (Faker\Generator $faker) {
     ];
 });
 
+$factory->define(App\Models\Manufacturer::class, function (Faker\Generator $faker) {
+    return [
+        'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
+    ];
+});
+
 $factory->define(App\Models\Seller::class, function (Faker\Generator $faker) {
     return [
         'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
@@ -146,7 +152,6 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
         'translate_description_id' => factory(App\Models\TranslateDescription::class)->create()->id,
         'weight' => mt_rand(1,100),
-        'manufacturer' => $faker->country,
         'original_price' => mt_rand(50000,70000),
         'lower_price' => mt_rand(10000,50000),
         'unit_id' => 1,
@@ -154,6 +159,7 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'is_free_delivery' => mt_rand(0,1),
         'thumbnail_url' => $faker->imageUrl,
         'url' => 'http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=333125048&trTypeCd=PW02&trCtgrNo=585021&lCtgrNo=1001452&mCtgrNo=1003081',
+        'manufacturer_id' => factory(App\Models\Manufacturer::class)->create()->id,
         'status_code' => $statusCode,
         'stock' => mt_rand(1000,2500),
         'safe_stock' => mt_rand(1000,2500),

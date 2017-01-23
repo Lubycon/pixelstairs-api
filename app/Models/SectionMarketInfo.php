@@ -13,4 +13,11 @@ class SectionMarketInfo extends BaseModel
         'market_id',
         'market_category_id',
     ];
+
+
+    // get translate data
+    public function translateName()
+    {
+        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+    }
 }

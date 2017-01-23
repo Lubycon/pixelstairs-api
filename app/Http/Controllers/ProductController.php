@@ -58,6 +58,9 @@ class ProductController extends Controller
             "endDate" => $product["end_date"],
             "optionKeys" => $product->getOptionKey(),
             "options" => $product->getOption(),
+            "seller" => $product->getSeller(),
+            "productGender" => $product->gender->id,
+            "manufacturer" => $product->getTranslate($product->manufacturer),
         );
 
         return response()->success($response);
@@ -110,8 +113,6 @@ class ProductController extends Controller
         $this->product->category_id = $data["categoryId"];
         $this->product->division_id = $data["divisionId"];
         $this->product->section_id_0 = $data["section"][0];
-        $this->product->section_id_1 = isset($data["section"][1]) ? $data["section"][1] : NULL;
-        $this->product->section_id_2 = isset($data["section"][2]) ? $data["section"][2] : NULL;
         $this->product->market_id = $data["marketId"];
         $this->product->brand_id = $this->getBrandId($data["brand"]);
         $this->product->original_title = $data["title"]["origin"];
@@ -129,7 +130,6 @@ class ProductController extends Controller
         $this->product->status_code = "0300";
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
         if ( !$this->product->save() ) Abort::Error("0040");
-
         if ( Option::insert($this->setOption($data["options"])) ) return response()->success($this->product);
         Abort::Error("0040");
     }

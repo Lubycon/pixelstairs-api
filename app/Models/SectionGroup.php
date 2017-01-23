@@ -29,4 +29,11 @@ class SectionGroup extends BaseModel
     {
         return $this->belongsTo('App\Models\Division','parent_id','id');
     }
+
+
+    // get translate data
+    public function translateName()
+    {
+        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+    }
 }

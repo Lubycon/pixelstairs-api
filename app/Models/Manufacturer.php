@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
-
-class OptionKey extends BaseModel
+class Manufacturer extends BaseModel
 {
-    use SoftDeletes;
 
+    // get reference data
+    // hasOne('remote_table_column_name','local_column_name');
 
-    // get translate data
     public function translateName()
     {
         return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
