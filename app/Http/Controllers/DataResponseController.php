@@ -79,7 +79,7 @@ class DataResponseController extends Controller
             'option' => Option::all(),
             'category' => Category::all(),
             'division' => Division::all(),
-            'sector' => Section::all(),
+            'section' => Section::all(),
             'status' => Status::all(),
             'market' => Market::all(),
             'unit' => Unit::all(),
