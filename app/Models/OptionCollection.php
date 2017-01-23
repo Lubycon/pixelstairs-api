@@ -8,6 +8,10 @@ class OptionCollection extends BaseModel
 {
     use SoftDeletes;
 
+    protected $fillable = [
+        'option_key_id_0','option_key_id_1','option_key_id_2','option_key_id_3'
+    ];
+
 
     // get reference data
     // hasOne('remote_table_column_name','local_column_name');

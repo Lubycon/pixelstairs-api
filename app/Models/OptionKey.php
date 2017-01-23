@@ -8,6 +8,9 @@ class OptionKey extends BaseModel
 {
     use SoftDeletes;
 
+    protected $fillable = [
+        'translate_name_id'
+    ];
 
     // get translate data
     public function translateName()

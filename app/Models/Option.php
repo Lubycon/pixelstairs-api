@@ -8,6 +8,10 @@ class Option extends BaseModel
 {
     use SoftDeletes;
 
+    protected $fillable = [
+        'product_id','sku','translate_name_id','price','stock','safe_stock','thumbnail_url','option_collection_id'
+    ];
+
     protected $casts = [
         'id' => 'string',
         'product_id' => 'string',

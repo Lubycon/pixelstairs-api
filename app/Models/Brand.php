@@ -9,7 +9,7 @@ class Brand extends BaseModel
     use SoftDeletes;
 
     protected $fillable = [
-        'id',
+        'id','translate_name_id'
     ];
 
     protected $casts = [

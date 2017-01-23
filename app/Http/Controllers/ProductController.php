@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TranslateName;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -14,21 +15,25 @@ use Log;
 use App\Models\Status;
 use App\Models\Brand;
 use App\Models\Product;
+use App\Models\Seller;
 use App\Models\Option;
+use App\Models\Manufacturer;
 use Abort;
 
 use App\Traits\GetUserModelTrait;
 use App\Traits\OptionControllTraits;
 use App\Traits\HaitaoRequestTraits;
 use App\Traits\StatusInfoTraits;
+use App\Traits\TranslateTraits;
 
 class ProductController extends Controller
 {
-    use GetUserModelTrait,OptionControllTraits,HaitaoRequestTraits,StatusInfoTraits;
+    use GetUserModelTrait,OptionControllTraits,HaitaoRequestTraits,StatusInfoTraits,TranslateTraits;
 
     public $product;
     public $product_id;
     public $market_id;
+    public $market_product_id;
     public $market_category_id;
 
     public function get(Request $request,$id){
@@ -76,7 +81,6 @@ class ProductController extends Controller
             "currentPage" => $controller->currentPage,
         );
         foreach($collection as $product){
-
             $result->products[] = (object)array(
                 "id" => $product["id"],
                 "marketProductId" => $product["market_product_id"],
@@ -94,7 +98,6 @@ class ProductController extends Controller
                 "endDate" => $product["end_date"],
             );
         };
-
         if(!empty($result->products)){
             return response()->success($result);
         }else{
@@ -105,22 +108,22 @@ class ProductController extends Controller
     public function post(Request $request){
         $data = $request->json()->all();
 
-        $this->product_id = $data["marketProductId"];
+        $this->market_product_id = $data["marketProductId"];
         $this->market_id = $data["marketId"];
 
         $this->product = new Product;
-        $this->product->product_id = $this->product_id;
+        $this->product->market_product_id = $this->market_product_id;
         $this->product->category_id = $data["categoryId"];
         $this->product->division_id = $data["divisionId"];
-        $this->product->section_id_0 = $data["section"][0];
+        $this->product->section_group_id = $data['sectionGroupId'];
         $this->product->market_id = $data["marketId"];
-        $this->product->brand_id = $this->getBrandId($data["brand"]);
-        $this->product->original_title = $data["title"]["origin"];
-        $this->product->chinese_title = $data["title"]["zh"];
-        $this->product->original_description = $data["description"]['origin'];
-        $this->product->chinese_description = $data["description"]['zh'];
+        $this->product->brand_id = Brand::firstOrCreate($this->relationTranslateName($data['brandName']))['id'];
+        $this->product->translate_name_id = $this->createTranslateName($data['title'])['id'];
+        $this->product->translate_description_id = $this->createTranslateDescription($data['description'])['id'];
         $this->product->weight = $data["weight"];
-        $this->product->price = $data["price"];
+        $this->product->original_price = $data["priceInfo"]['price'];
+        $this->product->lower_price = $data["priceInfo"]['lowestPrice'];
+        $this->product->unit_id = $data["priceInfo"]['unit'];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
         $this->product->stock = $data["stock"];
@@ -129,8 +132,16 @@ class ProductController extends Controller
         $this->product->url = $data["url"];
         $this->product->status_code = "0300";
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
+        $this->product->gender_id = $data['gender'];
+        $this->product->manufacturer_id = Manufacturer::firstOrCreate($this->relationTranslateName($data['manufacturer']))['id'];
+        $this->product->seller_id = Seller::firstOrCreate([
+            'translate_name_id' => $this->createTranslateName($data['seller']['name'])['id'],
+            'rate' => $data['seller']['rate'],
+        ])['id'];
+        $optionCollection = $this->createOptionCollection($data['optionKeys']);
+
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ( Option::insert($this->setOption($data["options"])) ) return response()->success($this->product);
+        if ( $this->product->option()->saveMany($this->setOption($data['options'],$optionCollection)) ) return response()->success($this->product);
         Abort::Error("0040");
     }
 
@@ -163,6 +174,8 @@ class ProductController extends Controller
         $this->product->url = $data["url"];
         $this->product->status_code = $this->statusUpdate($request,$request['statusCode']);
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
+        $this->product->gender_id = $data['gender'];
+        $this->product->manufacturer = $data['manufacturer'];
 
 
         if ( !$this->product->save() ) Abort::Error("0040");
@@ -187,14 +200,5 @@ class ProductController extends Controller
             $this->product->save();
         }
         return response()->success();
-    }
-
-    private function getBrandId($brand){
-        return is_null($brand['origin'])
-            ? null
-            : Brand::firstOrCreate(array(
-                "original_name" => $brand['origin'],
-                "chinese_name" => $brand['zh'],
-            ))->id;
     }
 }

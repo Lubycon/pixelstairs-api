@@ -10,6 +10,10 @@ class Product extends BaseModel
 {
     use SoftDeletes;
 
+    protected $fillable = [
+        'translate_name_id','translate_description_id'
+    ];
+
     protected $casts = [
         'id' => 'string',
         'market_product_id' => 'string',
@@ -76,6 +80,16 @@ class Product extends BaseModel
             "rate" => $seller->rate,
         ];
     }
+//    public function getBrandId($brandName){
+//        return is_null($brandName['origin'])
+//            ? null
+//            : Brand::firstOrCreate(array(
+//                "original" => $brandName['origin'],
+//                "chinese" => $brandName['zh'],
+//                "english" => $brandName['zh'],
+//                "chinese" => $brandName['zh'],
+//            ))->id;
+//    }
 
     // get reference data
     // hasOne('remote_table_column_name','local_column_name');
@@ -87,10 +101,6 @@ class Product extends BaseModel
     public function division()
     {
         return $this->hasOne('App\Models\Division','id','division_id');
-    }
-    public function section()
-    {
-//        return $this->hasOne('App\Models\SectionGroup','id','section_group_id');
     }
     public function sectionGroup()
     {
@@ -125,7 +135,8 @@ class Product extends BaseModel
         return $this->hasOne('App\Models\Manufacturer','id','manufacturer_id');
     }
 
-
+    // get reference data
+    // hasMany('local_column_name','remote_table_column_name');
     public function option()
     {
         return $this->hasMany('App\Models\Option','product_id','id');
@@ -141,4 +152,5 @@ class Product extends BaseModel
     {
         return $this->hasOne('App\Models\TranslateDescription','id','translate_description_id');
     }
+
 }
