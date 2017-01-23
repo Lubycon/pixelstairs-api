@@ -15,6 +15,7 @@ class CreateOptionKeysTable extends Migration
         Schema::create('option_keys', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('translate_name_id');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -79,24 +79,9 @@ $factory->define(App\Models\SectionMarketInfo::class, function (Faker\Generator 
 });
 
 
-//$factory->define(App\Models\Sku::class, function (Faker\Generator $faker) {
-//    return [
-//        'market_id' => "0100",
-//        'product_id' => mt_rand(1,500),
-//        'sku' =>
-//            "MK0100".
-//            "CT".mt_rand(1,30).
-//            "DV".mt_rand(1,100).
-//            "ST".mt_rand(1,300).
-//            "PD".mt_rand(100000000,110000000).
-//            "ID".mt_rand(1,100),
-//        'description' => $faker->name.','.$faker->name.','.$faker->name,
-//    ];
-//});
-
 $factory->define(App\Models\Option::class, function (Faker\Generator $faker) {
     return [
-        'product_id' => mt_rand(1,500),
+        'product_id' => mt_rand(1,100),
         'sku' =>
             "MK0100".
             "CT".mt_rand(1,30).
@@ -144,14 +129,16 @@ $factory->define(App\Models\Seller::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
     $statusCode = '030'.mt_rand(0,3);
-    $section = App\Models\SectionGroup::find(mt_rand(1,100));
+    $sectionGroup = App\Models\SectionGroup::find(mt_rand(1,100));
+    $division = App\Models\Division::find($sectionGroup['parent_id']);
+    $category = App\Models\Category::find($division['parent_id']);
 
     return [
         'market_product_id' => mt_rand(100000000,110000000),
-        'haitao_product_id' => mt_rand(100000000,110000000)%2 == 0 ? mt_rand(100000000,110000000) : NULL,
-        'category_id' => $section->category()->value('id'),
-        'division_id' => $section->division()->value('id'),
-        'sector_group_id' => $section['id'],
+        'haitao_product_id' => $statusCode != '0300' ? mt_rand(100000000,110000000) : NULL,
+        'category_id' => $category['id'],
+        'division_id' => $division['id'],
+        'sector_group_id' => $sectionGroup['id'],
         'market_id' => "0100",
         'brand_id' => factory(App\Models\Brand::class)->create()->id,
         'seller_id' => factory(App\Models\Seller::class)->create()->id,

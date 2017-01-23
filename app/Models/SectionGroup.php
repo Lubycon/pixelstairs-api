@@ -13,11 +13,6 @@ class SectionGroup extends Model
     // get reference data
     // hasOne('remote_table_column_name','local_column_name');
 
-    public function category()
-    {
-        return $this->hasOne('App\Models\Category','id', $this->division()->value('parent_id') );
-    }
-
     public function division()
     {
         return $this->hasOne('App\Models\Division','id','parent_id');
