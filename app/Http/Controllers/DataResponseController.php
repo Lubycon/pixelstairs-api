@@ -11,14 +11,15 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Country;
-use App\Models\Sku;
 use App\Models\Brand;
 use App\Models\Option;
 use App\Models\Category;
 use App\Models\Division;
 use App\Models\Status;
 use App\Models\Market;
-use App\Models\Sector;
+use App\Models\Section;
+use App\Models\Unit;
+use App\Models\Gender;
 
 class DataResponseController extends Controller
 {
@@ -74,14 +75,15 @@ class DataResponseController extends Controller
             'user' => User::all(),
             'product' => Product::all(),
             'country' => Country::all(),
-            'sku' => Sku::all(),
             'brand' => Brand::all(),
             'option' => Option::all(),
             'category' => Category::all(),
             'division' => Division::all(),
-            'sector' => Sector::all(),
+            'sector' => Section::all(),
             'status' => Status::all(),
             'market' => Market::all(),
+            'unit' => Unit::all(),
+            'gender' => Gender::all(),
         );
         $models = (object)array();
         foreach($query as $key => $value){

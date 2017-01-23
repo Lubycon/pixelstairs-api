@@ -33,7 +33,7 @@ class CreateProductsTable extends Migration
 
             $table->integer('original_price');
             $table->integer('lower_price');
-            $table->string('price_unit',10);
+            $table->integer('unit_id');
             $table->integer('domestic_delivery_price');
             $table->boolean('is_free_delivery');
 

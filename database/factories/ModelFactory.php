@@ -149,6 +149,7 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'manufacturer' => $faker->country,
         'original_price' => mt_rand(50000,70000),
         'lower_price' => mt_rand(10000,50000),
+        'unit_id' => 1,
         'domestic_delivery_price' => mt_rand(1000,2500),
         'is_free_delivery' => mt_rand(0,1),
         'thumbnail_url' => $faker->imageUrl,
