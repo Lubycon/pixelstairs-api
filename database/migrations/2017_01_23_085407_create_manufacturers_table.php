@@ -14,7 +14,7 @@ class CreateManufacturersTable extends Migration
     {
         Schema::create('manufacturers', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('translate_name_id');
+            $table->integer('translate_name_id')->unsigned();
             $table->timestamps();
         });
     }

@@ -14,7 +14,7 @@ class CreateBrandsTable extends Migration
     {
         Schema::create('brands', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('translate_name_id');
+            $table->integer('translate_name_id')->unsigned();
             $table->timestamps();
             $table->softDeletes();
         });

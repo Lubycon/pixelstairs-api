@@ -17,29 +17,29 @@ class CreateProductsTable extends Migration
             $table->string('market_product_id',200);
             $table->string('haitao_product_id',200)->nullable();
 
-            $table->integer('category_id')->nullable();
-            $table->integer('division_id')->nullable();
-            $table->integer('section_group_id')->nullable();
+            $table->integer('category_id')->nullable()->unsigned();
+            $table->integer('division_id')->nullable()->unsigned();
+            $table->integer('section_group_id')->nullable()->unsigned();
 
             $table->string('market_id','4');
 
-            $table->integer('brand_id');
-            $table->integer('seller_id');
-            $table->integer('gender_id');
-            $table->integer('manufacturer_id');
+            $table->integer('brand_id')->unsigned();
+            $table->integer('seller_id')->unsigned();
+            $table->integer('gender_id')->unsigned();
+            $table->integer('manufacturer_id')->unsigned();
 
-            $table->integer('translate_name_id');
-            $table->integer('translate_description_id');
+            $table->integer('translate_name_id')->unsigned();
+            $table->integer('translate_description_id')->unsigned();
 
-            $table->integer('original_price');
-            $table->integer('lower_price');
-            $table->integer('unit_id');
-            $table->integer('domestic_delivery_price');
-            $table->boolean('is_free_delivery');
+            $table->integer('original_price')->unsigned();
+            $table->integer('lower_price')->unsigned();
+            $table->integer('unit_id')->unsigned();
+            $table->integer('domestic_delivery_price')->unsigned();
+            $table->boolean('is_free_delivery')->unsigned();
 
-            $table->double('weight',4,2)->nullable();
-            $table->integer('stock');
-            $table->integer('safe_stock');
+            $table->double('weight',8,2)->nullable();
+            $table->integer('stock')->unsigned();
+            $table->integer('safe_stock')->unsigned();
 
             $table->longtext('thumbnail_url');
             $table->longtext('url');

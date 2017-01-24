@@ -14,13 +14,13 @@ class CreateOptionsTable extends Migration
     {
         Schema::create('options', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('product_id');
+            $table->integer('product_id')->unsigned();
             $table->string('sku',100);
-            $table->integer('translate_name_id');
-            $table->integer('price');
-            $table->integer('stock');
-            $table->integer('safe_stock');
-            $table->integer('option_collection_id');
+            $table->integer('translate_name_id')->unsigned();
+            $table->integer('price')->unsigned();
+            $table->integer('stock')->unsigned();
+            $table->integer('safe_stock')->unsigned();
+            $table->integer('option_collection_id')->unsigned();
             $table->longText('thumbnail_url');
             $table->timestamps();
             $table->softDeletes();

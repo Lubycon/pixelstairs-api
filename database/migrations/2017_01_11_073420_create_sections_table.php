@@ -14,8 +14,8 @@ class CreateSectionsTable extends Migration
     {
         Schema::create('sections', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('group_id');
-            $table->integer('translate_name_id');
+            $table->integer('group_id')->unsigned();
+            $table->integer('translate_name_id')->unsigned();
             $table->timestamps();
             $table->softDeletes();
         });

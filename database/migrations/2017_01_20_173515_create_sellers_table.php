@@ -14,8 +14,8 @@ class CreateSellersTable extends Migration
     {
         Schema::create('sellers', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('translate_name_id');
-            $table->double('rate',1,1);
+            $table->integer('translate_name_id')->unsigned();
+            $table->double('rate',2,1)->unsigned();
             $table->softDeletes();
             $table->timestamps();
         });

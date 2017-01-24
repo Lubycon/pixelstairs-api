@@ -15,8 +15,8 @@ class CreateMarketsTable extends Migration
         Schema::create('markets', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code',4);
-            $table->integer('translate_name_id');
-            $table->integer('country_id');
+            $table->integer('translate_name_id')->unsigned();
+            $table->integer('country_id')->unsigned();
             $table->timestamps();
             $table->softDeletes();
         });

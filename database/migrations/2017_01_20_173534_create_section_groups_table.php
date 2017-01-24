@@ -14,7 +14,7 @@ class CreateSectionGroupsTable extends Migration
     {
         Schema::create('section_groups', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('parent_id');
+            $table->integer('parent_id')->unsigned();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -134,14 +134,17 @@ class ProductController extends Controller
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
         $this->product->gender_id = $data['gender'];
         $this->product->manufacturer_id = Manufacturer::firstOrCreate($this->relationTranslateName($data['manufacturer']))['id'];
+
+        Log::info($data['seller']['rate']);
+
         $this->product->seller_id = Seller::firstOrCreate([
             'translate_name_id' => $this->createTranslateName($data['seller']['name'])['id'],
             'rate' => $data['seller']['rate'],
         ])['id'];
-        $optionCollection = $this->createOptionCollection($data['optionKeys']);
+        $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->product->option()->saveMany($this->setOption($data['options'],$optionCollection)) ) return response()->success($this->product);
+        if ( $this->product->option()->saveMany($this->setOption($data['options']['option'],$optionCollection)) ) return response()->success($this->product);
         Abort::Error("0040");
     }
 

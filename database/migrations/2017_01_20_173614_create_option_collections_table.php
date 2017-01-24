@@ -14,10 +14,10 @@ class CreateOptionCollectionsTable extends Migration
     {
         Schema::create('option_collections', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('option_key_id_0')->nullable();
-            $table->integer('option_key_id_1')->nullable();
-            $table->integer('option_key_id_2')->nullable();
-            $table->integer('option_key_id_3')->nullable();
+            $table->integer('option_key_id_0')->nullable()->unsigned();
+            $table->integer('option_key_id_1')->nullable()->unsigned();
+            $table->integer('option_key_id_2')->nullable()->unsigned();
+            $table->integer('option_key_id_3')->nullable()->unsigned();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -14,8 +14,8 @@ class CreateDivisionsTable extends Migration
     {
         Schema::create('divisions', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('parent_id');
-            $table->integer('translate_name_id');
+            $table->integer('parent_id')->unsigned();
+            $table->integer('translate_name_id')->unsigned();
             $table->timestamps();
             $table->softDeletes();
         });
