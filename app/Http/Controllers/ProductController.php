@@ -128,10 +128,8 @@ class ProductController extends Controller
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
         $this->product->gender_id = $data['gender'];
         $this->product->manufacturer_id = Manufacturer::firstOrCreate($this->relationTranslateName($data['manufacturer']))['id'];
-        $this->product->seller_id = Seller::firstOrCreate([
-            'translate_name_id' => $this->createTranslateName($data['seller']['name'])['id'],
-            'rate' => $data['seller']['rate'],
-        ])['id'];
+        $this->product->seller_id = Seller::firstOrCreate($data['seller'])['id'];
+        Log::info($data['seller']);
         $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
@@ -166,10 +164,7 @@ class ProductController extends Controller
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
         $this->product->gender_id = $data['gender'];
         $this->product->manufacturer_id = Manufacturer::firstOrCreate($this->relationTranslateName($data['manufacturer']))['id'];
-        $this->product->seller_id = Seller::firstOrCreate([
-            'translate_name_id' => $this->createTranslateName($data['seller']['name'])['id'],
-            'rate' => $data['seller']['rate'],
-        ])['id'];
+        $this->product->seller_id = Seller::firstOrCreate($data['seller'])['id'];
         $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
 
         if ( !$this->product->save() ) Abort::Error("0040");

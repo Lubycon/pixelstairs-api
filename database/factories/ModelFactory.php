@@ -127,8 +127,8 @@ $factory->define(App\Models\Manufacturer::class, function (Faker\Generator $fake
 
 $factory->define(App\Models\Seller::class, function (Faker\Generator $faker) {
     return [
-        'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
-        'rate' => mt_rand(1,9).'.'.mt_rand(0,9),
+        'name' => $faker->name,
+        'rate' => mt_rand(1,4).'.'.mt_rand(0,9),
     ];
 });
 

@@ -6,7 +6,7 @@ class Seller extends BaseModel
 {
     protected $fillable = [
         'id',
-        'translate_name_id',
+        'name',
         "rate",
     ];
 
