@@ -87,7 +87,7 @@ class ProductController extends Controller
                 "brand" => $product->getTranslate($product->brand),
                 "description" => $product->getTranslateDescription($product),
                 "weight" => $product["weight"],
-                "priceInfo" => $product->priceInfo(),
+                "priceInfo" => $product->getPriceInfo(),
                 "thumbnailUrl" => $product["thumbnail_url"],
                 "url" => $product["url"],
                 "statusCode" => $product["status_code"],

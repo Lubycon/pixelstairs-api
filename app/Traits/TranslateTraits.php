@@ -29,7 +29,7 @@ trait TranslateTraits{
     public function setTranslateArray($data){
         return[
             "original" => $data['origin'],
-            "korean" => $data['kr'],
+            "korean" => $data['ko'],
             "chinese" => $data['zh'],
             "english" => $data['en'],
         ];
