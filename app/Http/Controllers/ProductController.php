@@ -134,9 +134,6 @@ class ProductController extends Controller
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
         $this->product->gender_id = $data['gender'];
         $this->product->manufacturer_id = Manufacturer::firstOrCreate($this->relationTranslateName($data['manufacturer']))['id'];
-
-        Log::info($data['seller']['rate']);
-
         $this->product->seller_id = Seller::firstOrCreate([
             'translate_name_id' => $this->createTranslateName($data['seller']['name'])['id'],
             'rate' => $data['seller']['rate'],
@@ -144,7 +141,7 @@ class ProductController extends Controller
         $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->product->option()->saveMany($this->setOption($data['options']['option'],$optionCollection)) ) return response()->success($this->product);
+        if ( $this->product->option()->saveMany($this->setNewOption($data['options']['option'],$optionCollection)) ) return response()->success($this->product);
         Abort::Error("0040");
     }
 
@@ -152,38 +149,47 @@ class ProductController extends Controller
         $data = $request->json()->all();
 
         $this->product = Product::findOrFail($id);
-        $options = $data["options"];
-
         $this->market_id = $this->product->market_id;
-        $this->product->product_id = $data["marketProductId"];
+        $this->market_product_id = $this->product->market_product_id;
+
+        $this->product->market_product_id = $this->market_product_id;
         $this->product->category_id = $data["categoryId"];
         $this->product->division_id = $data["divisionId"];
-        $this->product->section_id_0 = $data["section"][0];
-        $this->product->section_id_1 = isset($data["section"][1]) ? $data["section"][1] : NULL;
-        $this->product->section_id_2 = isset($data["section"][2]) ? $data["section"][2] : NULL;
+        $this->product->section_group_id = $data['sectionGroupId'];
         $this->product->market_id = $data["marketId"];
-        $this->product->brand_id = $this->getBrandId($data["brand"]);
-        $this->product->original_title = $data["title"]["origin"];
-        $this->product->chinese_title = $data["title"]["zh"];
-        $this->product->original_description = $data["description"]['origin'];
-        $this->product->chinese_description = $data["description"]['zh'];
+        $this->product->brand_id = Brand::firstOrCreate($this->relationTranslateName($data['brandName']))['id'];
+        $this->product->translate_name_id = $this->createTranslateName($data['title'])['id'];
+        $this->product->translate_description_id = $this->createTranslateDescription($data['description'])['id'];
         $this->product->weight = $data["weight"];
-        $this->product->price = $data["price"];
+        $this->product->original_price = $data["priceInfo"]['price'];
+        $this->product->lower_price = $data["priceInfo"]['lowestPrice'];
+        $this->product->unit_id = $data["priceInfo"]['unit'];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
         $this->product->stock = $data["stock"];
         $this->product->safe_stock = $data["safeStock"];
         $this->product->thumbnail_url = $data["thumbnailUrl"];
         $this->product->url = $data["url"];
-        $this->product->status_code = $this->statusUpdate($request,$request['statusCode']);
+        $this->product->status_code = "0300";
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
         $this->product->gender_id = $data['gender'];
-        $this->product->manufacturer = $data['manufacturer'];
-
+        $this->product->manufacturer_id = Manufacturer::firstOrCreate($this->relationTranslateName($data['manufacturer']))['id'];
+        $this->product->seller_id = Seller::firstOrCreate([
+            'translate_name_id' => $this->createTranslateName($data['seller']['name'])['id'],
+            'rate' => $data['seller']['rate'],
+        ])['id'];
+        $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->updateOptions($data['options']) ) return response()->success($this->product);
+        if ( $this->updateOptions($data['options']['option'],$optionCollection) ) return response()->success($this->product);
         Abort::Error("0040");
+
+
+//        $this->product->save();
+////        $this->product->option()->delete();
+//        $this->product->option()->saveMany($this->updateOptions($data['options']['option'],$optionCollection));
+//        return response()->success($this->product);
+//        Abort::Error("0040");
     }
 
     public function delete(Request $request,$id){
