@@ -9,6 +9,7 @@ return [
         "http://localhost:3000",
         "http://localhost:3003",
         "http://mitty.api",
+        "http://52.78.202.148",
         "chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop"
     ],
     'allowedHeaders' => ['*'],
