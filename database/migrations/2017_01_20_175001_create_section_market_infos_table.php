@@ -16,7 +16,7 @@ class CreateSectionMarketInfosTable extends Migration
             $table->increments('id');
             $table->integer('section_id')->unsigned();
             $table->string('market_id',4);
-            $table->integer('market_category_id')->unsigned();
+            $table->integer('market_category_id')->unsigned()->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

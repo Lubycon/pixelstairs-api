@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Division;
-use App\Models\Sector;
+use App\Models\Section;
 
 use Abort;
 
@@ -143,7 +143,7 @@ class PageController extends Controller
             case 'product' : $this->model = new Product; break;
             case 'category' : $this->model = new Category; break;
             case 'division' : $this->model = new Division; break;
-            case 'sector' : $this->model = new Sector; break;
+            case 'section' : $this->model = Section::with('sectionMarketInfo'); break;
             default : Abort::Error('0040','Unknown Model') ;break; //error point
         }
     }

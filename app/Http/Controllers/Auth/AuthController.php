@@ -66,16 +66,18 @@ class AuthController extends Controller
     protected function signup(AuthSignupRequest $request)
     {
         $data = $request->json()->all();
+        $data['password'] = bcrypt(env('COMMON_PASSWORD'));
         $credentialSignup = Credential::signup($data);
         $credentialSignin = Credential::signin($data);
+        $token = '';
 
         if(User::create($credentialSignup)){
             if(Auth::once($credentialSignin)){
                 $id = Auth::user()->getAuthIdentifier();
-                $rememberToken = CheckContoller::insertRememberToken($id);
+                $token = CheckContoller::insertRememberToken($id);
             }
             return response()->success([
-                "token" => $rememberToken
+                "token" => $token
             ]);
         }
     }

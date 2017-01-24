@@ -39,10 +39,15 @@ class Product extends BaseModel
         ];
     }
     public function getSectionIds(){
-        $sections = $this->sectionGroup->section;
+//        $sections = $this->sectionGroup->section;
+//        foreach( $sections as $key => $value ){
+//            $result[] = $value['id'];
+//        }
         $result = [];
-        foreach( $sections as $key => $value ){
-            $result[] = $value['id'];
+        for( $i=0;$i<3;$i++ ){
+            $id = $this->sectionGroup->sectionById($i)->first()['id'];
+            if(is_null($id)) return $result;
+            $result[] = $id;
         }
         return $result;
     }
@@ -80,16 +85,6 @@ class Product extends BaseModel
             "rate" => $seller->rate,
         ];
     }
-//    public function getBrandId($brandName){
-//        return is_null($brandName['origin'])
-//            ? null
-//            : Brand::firstOrCreate(array(
-//                "original" => $brandName['origin'],
-//                "chinese" => $brandName['zh'],
-//                "english" => $brandName['zh'],
-//                "chinese" => $brandName['zh'],
-//            ))->id;
-//    }
 
     // get reference data
     // hasOne('remote_table_column_name','local_column_name');
@@ -132,7 +127,7 @@ class Product extends BaseModel
     }
 
     // get reference data
-    // hasMany('local_column_name','remote_table_column_name');
+    // hasMany('remote_table_column_name','local_column_name');
     public function option()
     {
         return $this->hasMany('App\Models\Option','product_id','id');

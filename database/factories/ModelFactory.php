@@ -60,12 +60,15 @@ $factory->define(App\Models\Division::class, function (Faker\Generator $faker) {
 $factory->define(App\Models\SectionGroup::class, function (Faker\Generator $faker) {
     return [
         'parent_id' => factory(App\Models\Division::class)->create()->id,
+        'section_id_0' => factory(App\Models\SectionMarketInfo::class)->create()->section_id,
+        'section_id_1' => mt_rand(0,100) < 7 ? factory(App\Models\SectionMarketInfo::class)->create()->section_id : NULL,
+        'section_id_2' => NULL,
     ];
 });
 
 $factory->define(App\Models\Section::class, function (Faker\Generator $faker) {
     return [
-        'group_id' => factory(App\Models\SectionGroup::class)->create()->id,
+        'parent_id' => factory(App\Models\Division::class)->create()->id,
         'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
     ];
 });

@@ -9,22 +9,23 @@ class SectionGroup extends BaseModel
 {
     use SoftDeletes;
 
+    protected $fillable = [
+        'parent_id',
+        'section_id_0',
+        'section_id_1',
+        'section_id_2',
+    ];
+
     // get reference data
     // hasOne('remote_table_column_name','local_column_name');
 
-    public function section()
+    public function sectionById($int)
     {
-        return $this->hasMany('App\Models\Section','group_id','id');
+        return $this->hasOne('App\Models\Section','id','section_id_'.$int);
     }
-
 
     // belongsTo
     // belongsTo('remote_table_column_name','local_column_name');
-
-//    public function product()
-//    {
-//        return $this->belongsTo('App\Models\Product','category_id','id');
-//    }
     public function division()
     {
         return $this->belongsTo('App\Models\Division','parent_id','id');

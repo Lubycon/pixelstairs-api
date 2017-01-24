@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SectionGroup;
 use App\Models\TranslateName;
 use Illuminate\Http\Request;
 
@@ -25,10 +26,11 @@ use App\Traits\OptionControllTraits;
 use App\Traits\HaitaoRequestTraits;
 use App\Traits\StatusInfoTraits;
 use App\Traits\TranslateTraits;
+use App\Traits\SectionTrait;
 
 class ProductController extends Controller
 {
-    use GetUserModelTrait,OptionControllTraits,HaitaoRequestTraits,StatusInfoTraits,TranslateTraits;
+    use GetUserModelTrait,OptionControllTraits,HaitaoRequestTraits,StatusInfoTraits,TranslateTraits,SectionTrait;
 
     public $product;
     public $product_id;
@@ -111,7 +113,7 @@ class ProductController extends Controller
         $this->product->market_product_id = $this->market_product_id;
         $this->product->category_id = $data["categoryId"];
         $this->product->division_id = $data["divisionId"];
-        $this->product->section_group_id = $data['sectionGroupId'];
+        $this->product->section_group_id = SectionGroup::firstOrCreate($this->setSectionGroup($data['section'],$this->product->division_id))['id'];
         $this->product->market_id = $data["marketId"];
         $this->product->brand_id = Brand::firstOrCreate($this->relationTranslateName($data['brandName']))['id'];
         $this->product->translate_name_id = $this->createTranslateName($data['title'])['id'];
@@ -129,7 +131,6 @@ class ProductController extends Controller
         $this->product->gender_id = $data['gender'];
         $this->product->manufacturer_id = Manufacturer::firstOrCreate($this->relationTranslateName($data['manufacturer']))['id'];
         $this->product->seller_id = Seller::firstOrCreate($data['seller'])['id'];
-        Log::info($data['seller']);
         $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
@@ -147,7 +148,7 @@ class ProductController extends Controller
         $this->product->market_product_id = $this->market_product_id;
         $this->product->category_id = $data["categoryId"];
         $this->product->division_id = $data["divisionId"];
-        $this->product->section_group_id = $data['sectionGroupId'];
+        $this->product->section_group_id = SectionGroup::firstOrCreate($this->setSectionGroup($data['section'],$this->product->division_id))['id'];
         $this->product->market_id = $data["marketId"];
         $this->product->brand_id = Brand::firstOrCreate($this->relationTranslateName($data['brandName']))['id'];
         $this->product->translate_name_id = $this->createTranslateName($data['title'])['id'];

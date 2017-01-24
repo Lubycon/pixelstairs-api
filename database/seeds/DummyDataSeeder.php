@@ -30,20 +30,7 @@ class DummyDataSeeder extends Seeder
         DB::table('sections')->truncate();
         DB::table('section_groups')->truncate();
         DB::table('section_market_infos')->truncate();
-        factory(App\Models\SectionMarketInfo::class, 100)->create();
-
-        for( $i=0; $i<10; $i++ ){
-            $int = SectionGroup::orderBy(\DB::raw('RAND()'))->first()['id'];
-            $section = Section::create(array(
-                'group_id' => $int,
-                'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
-            ));
-            SectionMarketInfo::create(array(
-                'section_id' => $section['id'],
-                'market_id' => '0100',
-                'market_category_id' => mt_rand(100000000,110000000),
-            ));
-        }
+        factory(App\Models\SectionGroup::class, 100)->create();
 
         DB::table('brands')->truncate();
         DB::table('sellers')->truncate();
