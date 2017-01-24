@@ -35,7 +35,7 @@ class Product extends BaseModel
         return [
             "price" => $this->original_price,
             "lowestPrice" => $this->lower_price,
-            "unit" => $this->getTranslate($this->unit),
+            "unit" => $this->unit,
         ];
     }
     public function getSectionIds(){
@@ -125,10 +125,6 @@ class Product extends BaseModel
     public function status()
     {
         return $this->hasOne('App\Models\Status','id','status_id');
-    }
-    public function unit()
-    {
-        return $this->hasOne('App\Models\Unit','id','unit_id');
     }
     public function manufacturer()
     {

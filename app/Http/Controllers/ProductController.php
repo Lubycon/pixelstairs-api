@@ -53,8 +53,6 @@ class ProductController extends Controller
             "priceInfo" => $product->getPriceInfo(),
             "deliveryPrice" => $product["domestic_delivery_price"],
             "isFreeDelivery" => $product["is_free_delivery"],
-            "stock" => $product["stock"],
-            "safeStock" => $product["safe_stock"],
             "thumbnailUrl" => $product["thumbnail_url"],
             "url" => $product["url"],
             "statusCode" => $product["status_code"],
@@ -90,8 +88,6 @@ class ProductController extends Controller
                 "description" => $product->getTranslateDescription($product),
                 "weight" => $product["weight"],
                 "priceInfo" => $product->priceInfo(),
-                "stock" => $product["stock"],
-                "safeStock" => $product["safe_stock"],
                 "thumbnailUrl" => $product["thumbnail_url"],
                 "url" => $product["url"],
                 "statusCode" => $product["status_code"],
@@ -123,11 +119,9 @@ class ProductController extends Controller
         $this->product->weight = $data["weight"];
         $this->product->original_price = $data["priceInfo"]['price'];
         $this->product->lower_price = $data["priceInfo"]['lowestPrice'];
-        $this->product->unit_id = $data["priceInfo"]['unit'];
+        $this->product->unit = $data["priceInfo"]['unit'];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
-        $this->product->stock = $data["stock"];
-        $this->product->safe_stock = $data["safeStock"];
         $this->product->thumbnail_url = $data["thumbnailUrl"];
         $this->product->url = $data["url"];
         $this->product->status_code = "0300";
@@ -163,11 +157,9 @@ class ProductController extends Controller
         $this->product->weight = $data["weight"];
         $this->product->original_price = $data["priceInfo"]['price'];
         $this->product->lower_price = $data["priceInfo"]['lowestPrice'];
-        $this->product->unit_id = $data["priceInfo"]['unit'];
+        $this->product->unit = $data["priceInfo"]['unit'];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
-        $this->product->stock = $data["stock"];
-        $this->product->safe_stock = $data["safeStock"];
         $this->product->thumbnail_url = $data["thumbnailUrl"];
         $this->product->url = $data["url"];
         $this->product->status_code = "0300";
@@ -183,17 +175,11 @@ class ProductController extends Controller
         if ( !$this->product->save() ) Abort::Error("0040");
         if ( $this->updateOptions($data['options']['option'],$optionCollection) ) return response()->success($this->product);
         Abort::Error("0040");
-
-
-//        $this->product->save();
-////        $this->product->option()->delete();
-//        $this->product->option()->saveMany($this->updateOptions($data['options']['option'],$optionCollection));
-//        return response()->success($this->product);
-//        Abort::Error("0040");
     }
 
     public function delete(Request $request,$id){
         $this->product = Product::findOrFail($id);
+        $this->product->option()->delete();
         if($this->product->delete()){
             return response()->success();
         }else {
@@ -201,7 +187,7 @@ class ProductController extends Controller
         }
     }
     public function status(Request $request,$status_name){
-        $status = Status::whereenglish_name($status_name)->firstOrFail();
+        $status = Status::with('translateName')->get()->where('translateName.english',$status_name)->first();
         $products = $request['products'];
         foreach( $products as $value ){
             $this->product = Product::findOrFail($value);

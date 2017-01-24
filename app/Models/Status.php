@@ -12,4 +12,9 @@ class Status extends BaseModel
         'id' => 'string',
         'code' => 'string',
     ];
+
+    public function translateName()
+    {
+        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+    }
 }
