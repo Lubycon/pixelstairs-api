@@ -96,6 +96,7 @@ class ProductController extends Controller
                 "endDate" => $product["end_date"],
             );
         };
+
         if(!empty($result->products)){
             return response()->success($result);
         }else{

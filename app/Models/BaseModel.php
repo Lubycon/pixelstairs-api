@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\TranslateName;
 use App\Models\TranslateDescription;
 use Log;
+use Symfony\Component\HttpFoundation\HeaderBag;
 
 class BaseModel extends Model
 {
@@ -39,4 +40,12 @@ class BaseModel extends Model
             'en' => $translate['english'],
         ];
     }
+    public function getTranslateResultByLanguage($translate,$language){
+        $data = $this->getTranslateResult($translate);
+        return $data[$language];
+    }
+
+
+
+
 }

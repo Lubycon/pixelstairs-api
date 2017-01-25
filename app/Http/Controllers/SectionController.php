@@ -28,8 +28,8 @@ class SectionController extends Controller
             "totalCount" => $controller->totalCount,
             "currentPage" => $controller->currentPage,
         );
+
         foreach($collection as $array){
-            Log::info($array);
             $result->sections[] = (object)array(
                 "id" => $array["id"],
                 "name" => $array->getTranslate($array),

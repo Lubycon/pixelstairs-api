@@ -21,6 +21,7 @@ class PageController extends Controller
 {
     private $model;
     private $finalModel = null;
+    private $baseTableName;
     private $query;
     private $firstFageNumber = 1;
     private $maxSize = 100;
@@ -31,6 +32,9 @@ class PageController extends Controller
     private $filterQuery;
     private $sortQuery;
     private $rangeQuery;
+
+    private $partsModels = [];
+    private $joinedmodel;
 
     private $pageNumber;
     private $pageSize;
@@ -49,6 +53,7 @@ class PageController extends Controller
         $this->DBquery = DB::getQueryLog();
         $lastQuery = end($query);
 
+        $this->baseTableName = strtolower(str_plural($section));
         $this->setModel($section);
         $this->query = $query;
         $this->rangeQuery = null; // check in queryParsing function
@@ -57,6 +62,7 @@ class PageController extends Controller
         $this->sortQuery = $this->queryParser('sort');
         $this->pageNumber = $this->setPageNumber();
         $this->pageSize = $this->setPageSize();
+        $this->joinedmodel = $this->joinModel($this->model);
         $this->modelFiltering($this->filterQuery,$this->searchQuery);
         $this->modelSorting($this->sortQuery);
         $this->bindData();
@@ -70,17 +76,21 @@ class PageController extends Controller
             foreach( $explodeQuery as $key => $value ){
                 $queryString = urldecode($value);
                 $split = preg_split('(<[=>]?|>=?|==|:)',$queryString);
-                $searchKey = $this->columnChecker($split[0]);
+                $checkColumn = $this->columnChecker($split[0]);
+                $searchTable = $checkColumn['tableName'];
+                $searchKey = $checkColumn['columnName'];
                 $searchValue = $this->stringToValueChecker($split[1]);
                 $comparison = $this->getComparision($queryString,$split);
 
                 if( $this->isRangeFilter($searchValue) ){
                     $this->rangeQuery = array(
+                        'table' => $searchTable,
                         'key' => $searchKey,
                         'value' => $this->getRangeArray($searchValue),
                     );
                 }else{
                     $result[] = array(
+                        'table' => $searchTable,
                         'key' => $searchKey,
                         'comparision'=> $comparison,
                         'value' => $this->isColumnQuery($comparison)
@@ -108,29 +118,38 @@ class PageController extends Controller
         return array($explodeValue[0],$explodeValue[1]);
     }
     private function columnChecker($string){
-        $columnName = $this->stringToKeyChecker($string);
-        $tableName = strtolower(str_plural(explode('\\',get_class($this->model))[2]));
-        $columnList = DB::getSchemaBuilder()->getColumnListing($tableName);
-
-        if(in_array($columnName,$columnList)) return $columnName;
-        Abort::Error('0040','Unknown Filter Key'.$string);
+        $checked = $this->stringToKeyChecker($string);
+        $explodeValue = explode('.',$checked);
+        if( count($explodeValue) > 1 ){
+            return [
+                "tableName" => $explodeValue[0],
+                "columnName" => $explodeValue[1],
+            ];
+        }
+        return [
+            "tableName" => $this->baseTableName,
+            "columnName" => $checked,
+        ];
+//        $columnList = DB::getSchemaBuilder()->getColumnListing($this->baseTableName);
+//        if(in_array($columnName,$columnList)) return $columnName;
+//        Abort::Error('0040','Unknown Filter Key '.$string);
     }
 
     // Functions that must be added continuously
     private function stringToKeyChecker($string){
         switch($string){
             case 'id' : return 'id';
-            case 'haitaoProductId' : return 'haitao_product_id';
-            case 'originTitle' : return 'original_title';
+            case 'haitaoProductId' : return 'products.haitao_product_id';
+            case 'originTitle' : return 'translate_names.original';
             // order, product divide
             case 'stock' : return 'stock';
             case 'safeStock' : return 'safe_stock';
             case 'statusCode' : return 'status_code';
             case 'createDate' : return 'created_at';
             case 'endDate' : return 'end_date';
-            case 'marketCategoryId' : return 'market_category_id';
+            case 'marketCategoryId' : return 'section_market_infos.market_category_id';
         }
-        Abort::Error('0040','Undefinded search key'.$string);
+        Abort::Error('0040','Undefinded search key '.$string);
     }
     private function stringToValueChecker($string){
         switch($string){
@@ -140,11 +159,56 @@ class PageController extends Controller
     }
     private function setModel($section){
         switch($section){
-            case 'product' : $this->model = new Product; break;
-            case 'category' : $this->model = new Category; break;
-            case 'division' : $this->model = new Division; break;
-            case 'section' : $this->model = Section::with('sectionMarketInfo'); break;
+            case 'product' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'translate_names',
+                        "base_table_key_column" => "translate_name_id",
+                        "join_table_key_column" => "id",
+                    ],
+                ]);
+                $this->model = new Product; break;
+            case 'category' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'translate_names',
+                        "base_table_key_column" => "translate_name_id",
+                        "join_table_key_column" => "id",
+                    ]
+                ]);
+                $this->model = new Category; break;
+            case 'division' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'translate_names',
+                        "base_table_key_column" => "translate_name_id",
+                        "join_table_key_column" => "id",
+                    ]
+                ]);
+                $this->model = new Division; break;
+            case 'section' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'section_market_infos',
+                        "base_table_key_column" => "sections.id",
+                        "join_table_key_column" => "section_id",
+                    ],
+                    [
+                        "join_table_name" => 'translate_names',
+                        "base_table_key_column" => "translate_name_id",
+                        "join_table_key_column" => "id",
+                    ]
+                ]);
+                $this->model = new Section; break;
             default : Abort::Error('0040','Unknown Model') ;break; //error point
+        }
+    }
+
+    // must exist in main model in parts function
+    private function setPartsModel($parts){
+        foreach($parts as $value){
+
+            $this->partsModels[] = $value;
         }
     }
 
@@ -157,7 +221,7 @@ class PageController extends Controller
     }
 
     private function modelFiltering($filterQuery,$searchQuery){
-        $this->initModelFilter();
+        $this->initModelFilter($this->joinedmodel);
 
         if( $this->hasRangeFilter($this->rangeQuery) ){
             $this->finalModel = $this->finalModel->whereBetween(
@@ -168,15 +232,15 @@ class PageController extends Controller
         if( $this->hasQuery($searchQuery) ) {
             foreach ($searchQuery as $key => $value) {
                 if( $this->isIdKey($value['key']) ){
-                    $this->finalModel = $this->finalModel->where($value['key'],$value['comparision'],$value['value']);
+                    $this->finalModel = $this->finalModel->where($value['table'].'.'.$value['key'],$value['comparision'],$value['value']);
                 }else{
-                    $this->finalModel = $this->finalModel->where($value['key'],'LIKE','%'.$value['value'].'%');
+                    $this->finalModel = $this->finalModel->where($value['table'].'.'.$value['key'],'LIKE','%'.$value['value'].'%');
                 }
             }
         }
         if( $this->hasQuery($filterQuery) ) {
             foreach ($filterQuery as $key => $value) {
-                $this->finalModel = $this->finalModel->where($value['key'],$value['comparision'],$value['value']);
+                $this->finalModel = $this->finalModel->where($value['table'].'.'.$value['key'],$value['comparision'],$value['value']);
             }
         }
     }
@@ -184,7 +248,7 @@ class PageController extends Controller
         if( $this->hasQuery($sortQuery) ){
             foreach( $sortQuery as $key => $value ){
                 $this->finalModel = $this->finalModel->orderBy(
-                    $value['key'],
+                    $value['table'].'.'.$value['key'],
                     $this->sortDirectionCheck($value['value'])
                 );
             }
@@ -207,20 +271,40 @@ class PageController extends Controller
     private function hasQuery($query){
         return count($query);
     }
-    private function initModelFilter(){
-        $this->finalModel = $this->model;
+    private function initModelFilter($baseModel){
+        $this->finalModel = $baseModel;
     }
     private function initModelSort(){
         $this->finalModel = $this->finalModel->orderBy(
-            $this->sortDefault['key'],
+            $this->baseTableName.'.'.$this->sortDefault['key'],
             $this->sortDefault['value']
         );
+    }
+    private function joinModel($baseModel){
+        $joinedModel = $baseModel;
+        $operator = '=';
+        foreach( $this->partsModels as $key => $value ){
+            //join('join_table_name','base_table_key_column','operator','join_table_key_column');
+            $joinedModel= $joinedModel->join(
+                $value['join_table_name'],
+                $this->getJoinTableColumnInfo($value),
+                $operator,
+                $value['join_table_name'].'.'.$value['join_table_key_column']
+            );
+        }
+        return $joinedModel;
+    }
+
+    private function getJoinTableColumnInfo($value){
+        return is_null(strpos($value['base_table_key_column'],'.'))
+            ? $this->baseTableName.'.'.$value['base_table_key_column']
+            : $value['base_table_key_column'];
     }
 
     private function bindData(){
         $this->paginator = $this->finalModel->
         paginate($this->pageSize, ['*'], 'page', $this->pageNumber);
-        Log::debug('pagnator', [DB::getQueryLog()]);
+        Log::debug('paginate', [DB::getQueryLog()]);
         $this->totalCount = $this->paginator->total();
         $this->currentPage = $this->paginator->currentPage();
         $this->collection = $this->paginator->getCollection();
