@@ -14,6 +14,13 @@ class SectionMarketInfo extends BaseModel
         'market_category_id',
     ];
 
+    // belongsTo
+    // belongsTo('local_column_name','remote_table_column_name');
+
+    public function section()
+    {
+        return $this->belongsTo('App\Models\Section','section_id','id');
+    }
 
     // get translate data
     public function translateName()
