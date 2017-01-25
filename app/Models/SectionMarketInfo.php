@@ -10,8 +10,14 @@ class SectionMarketInfo extends BaseModel
 
     protected $fillable = [
         'section_id',
+        "parent_id",
         'market_id',
         'market_category_id',
+    ];
+
+    protected $casts = [
+        'section_id' => 'string',
+        'parent_id' => 'string',
     ];
 
     // belongsTo

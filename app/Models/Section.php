@@ -16,6 +16,7 @@ class Section extends BaseModel
 
     protected $casts = [
         'id' => 'string',
+        'parent_id' => 'string',
         'group_id' => 'string',
     ];
 
