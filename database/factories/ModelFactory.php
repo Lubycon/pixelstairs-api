@@ -94,7 +94,7 @@ $factory->define(App\Models\Option::class, function (Faker\Generator $faker) {
             "ID".mt_rand(1,100),
         'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
         'stock' => mt_rand(100,500),
-        'safe_stock' => mt_rand(10,50),
+        'safe_stock' => 15,
         'price' => mt_rand(10000,50000),
         'option_collection_id' => factory(App\Models\OptionCollection::class)->create()->id,
     ];
@@ -137,7 +137,7 @@ $factory->define(App\Models\Seller::class, function (Faker\Generator $faker) {
 
 
 $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
-    $statusCode = '030'.mt_rand(0,3);
+    $statusCode = '030'.mt_rand(0,2);
     $sectionGroup = App\Models\SectionGroup::find(mt_rand(1,100));
     $division = App\Models\Division::find($sectionGroup['parent_id']);
     $category = App\Models\Category::find($division['parent_id']);
@@ -154,7 +154,7 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'gender_id' => mt_rand(0,2),
         'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
         'translate_description_id' => factory(App\Models\TranslateDescription::class)->create()->id,
-        'weight' => mt_rand(1,100),
+        'weight' => mt_rand(100,1000),
         'original_price' => mt_rand(50000,70000),
         'lower_price' => mt_rand(10000,50000),
         'unit' => "KRW",
@@ -164,8 +164,7 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'url' => 'http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=333125048&trTypeCd=PW02&trCtgrNo=585021&lCtgrNo=1001452&mCtgrNo=1003081',
         'manufacturer_country_id' => factory(App\Models\Manufacturer::class)->create()->id,
         'status_code' => $statusCode,
-        'stock' => mt_rand(1000,2500),
-        'safe_stock' => mt_rand(1000,2500),
+        'safe_stock' => mt_rand(15,100),
         'start_date' => $statusCode != '0300' ? date("Y-m-d H:i:s",rand(1262055681,1478304000)) : NULL ,
         'end_date' => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
     ];

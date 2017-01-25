@@ -25,7 +25,7 @@ class Product extends BaseModel
         'seller_id' => 'string',
         'gender_id' => 'string',
         // find way section id to string
-        'weight' => 'string',
+        'weight' => 'int',
         'status_code' => 'string',
     ];
 
@@ -71,6 +71,7 @@ class Product extends BaseModel
                     "name" => $this->getTranslate($value),
                     "price" => $value->price,
                     "stock" => $value->stock,
+                    "safeStock" => $value->safe_stock,
                     "thumbnailUrl" => $value->thumbnail_url,
                     "sku" => $value->sku,
                 );
@@ -81,7 +82,7 @@ class Product extends BaseModel
     public function getSeller(){
         $seller = $this->seller;
         return [
-            "name" => $this->getTranslate($seller),
+            "name" => $seller->name,
             "rate" => $seller->rate,
         ];
     }

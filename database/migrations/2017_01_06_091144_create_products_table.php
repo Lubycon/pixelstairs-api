@@ -37,8 +37,7 @@ class CreateProductsTable extends Migration
             $table->integer('domestic_delivery_price')->unsigned();
             $table->boolean('is_free_delivery')->unsigned();
 
-            $table->double('weight',8,2)->nullable();
-            $table->integer('stock')->unsigned();
+            $table->integer('weight')->unsigned()->nullable();
             $table->integer('safe_stock')->unsigned();
 
             $table->longtext('thumbnail_url');

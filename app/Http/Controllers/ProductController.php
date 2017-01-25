@@ -57,6 +57,7 @@ class ProductController extends Controller
             "isFreeDelivery" => $product["is_free_delivery"],
             "thumbnailUrl" => $product["thumbnail_url"],
             "url" => $product["url"],
+            "safeStock" => $product->option[0]->safe_stock,
             "statusCode" => $product["status_code"],
             "createDate" => Carbon::instance($product["created_at"])->toDateTimeString(),
             "startDate" => $product["start_date"],
