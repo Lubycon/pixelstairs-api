@@ -285,7 +285,7 @@ class PageController extends Controller
         $operator = '=';
         foreach( $this->partsModels as $key => $value ){
             //join('join_table_name','base_table_key_column','operator','join_table_key_column');
-            $joinedModel= $joinedModel->join(
+            $joinedModel= $joinedModel->leftjoin(
                 $value['join_table_name'],
                 $this->getJoinTableColumnInfo($value),
                 $operator,
@@ -302,7 +302,7 @@ class PageController extends Controller
     }
 
     private function bindData(){
-        $this->paginator = $this->finalModel->
+        $this->paginator = $this->finalModel->select($this->baseTableName.'.*')->
         paginate($this->pageSize, ['*'], 'page', $this->pageNumber);
         Log::debug('paginate', [DB::getQueryLog()]);
         $this->totalCount = $this->paginator->total();
