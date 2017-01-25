@@ -123,7 +123,7 @@ class Product extends BaseModel
     }
     public function manufacturer()
     {
-        return $this->hasOne('App\Models\Manufacturer','id','manufacturer_id');
+        return $this->hasOne('App\Models\Manufacturer','id','manufacturer_country_id');
     }
 
     // get reference data

@@ -26,7 +26,7 @@ class CreateProductsTable extends Migration
             $table->integer('brand_id')->unsigned();
             $table->integer('seller_id')->unsigned();
             $table->integer('gender_id')->unsigned();
-            $table->integer('manufacturer_id')->unsigned();
+            $table->integer('manufacturer_country_id')->unsigned();
 
             $table->integer('translate_name_id')->unsigned();
             $table->integer('translate_description_id')->unsigned();

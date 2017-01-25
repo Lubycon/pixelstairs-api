@@ -5,9 +5,13 @@ namespace App\Models;
 class Manufacturer extends BaseModel
 {
 
+    protected $casts = [
+        'id' => 'string',
+        'country_id' => 'string',
+    ];
 
     protected $fillable = [
-        'translate_name_id'
+        'country_id'
     ];
 
     // get reference data

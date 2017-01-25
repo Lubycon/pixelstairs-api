@@ -124,7 +124,7 @@ $factory->define(App\Models\Brand::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Models\Manufacturer::class, function (Faker\Generator $faker) {
     return [
-        'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
+        'country_id' => mt_rand(1,200),
     ];
 });
 
@@ -162,7 +162,7 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'is_free_delivery' => mt_rand(0,1),
         'thumbnail_url' => $faker->imageUrl,
         'url' => 'http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=333125048&trTypeCd=PW02&trCtgrNo=585021&lCtgrNo=1001452&mCtgrNo=1003081',
-        'manufacturer_id' => factory(App\Models\Manufacturer::class)->create()->id,
+        'manufacturer_country_id' => factory(App\Models\Manufacturer::class)->create()->id,
         'status_code' => $statusCode,
         'stock' => mt_rand(1000,2500),
         'safe_stock' => mt_rand(1000,2500),

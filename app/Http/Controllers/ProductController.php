@@ -65,7 +65,7 @@ class ProductController extends Controller
             "options" => $product->getOption(),
             "seller" => $product->getSeller(),
             "productGender" => $product->gender->id,
-            "manufacturer" => $product->getTranslate($product->manufacturer),
+            "manufacturerCountryId" => $product->manufacturer['country_id'],
         );
 
         return response()->success($response);
@@ -130,7 +130,7 @@ class ProductController extends Controller
         $this->product->status_code = "0300";
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
         $this->product->gender_id = $data['gender'];
-        $this->product->manufacturer_id = Manufacturer::firstOrCreate($this->relationTranslateName($data['manufacturer']))['id'];
+        $this->product->manufacturer_country_id = $data['manufacturerCountryId'];
         $this->product->seller_id = Seller::firstOrCreate($data['seller'])['id'];
         $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
 
@@ -165,7 +165,7 @@ class ProductController extends Controller
         $this->product->status_code = "0300";
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
         $this->product->gender_id = $data['gender'];
-        $this->product->manufacturer_id = Manufacturer::firstOrCreate($this->relationTranslateName($data['manufacturer']))['id'];
+        $this->product->manufacturer_country_id = $data['manufacturerCountryId'];
         $this->product->seller_id = Seller::firstOrCreate($data['seller'])['id'];
         $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
 
