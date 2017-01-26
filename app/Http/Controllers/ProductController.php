@@ -62,7 +62,7 @@ class ProductController extends Controller
             "createDate" => Carbon::instance($product["created_at"])->toDateTimeString(),
             "startDate" => $product["start_date"],
             "endDate" => $product["end_date"],
-            "optionKeys" => $product->getOptionKey(),
+            "optionKeys" => $product->getTranslate( $product->getOptionKey() ),
             "options" => $product->getOption(),
             "seller" => $product->getSeller(),
             "productGender" => $product->gender->id,

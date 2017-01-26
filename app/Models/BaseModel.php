@@ -44,17 +44,19 @@ class BaseModel extends Model
         if(count($translate) > 1){
             $result = [];
             foreach($translate as $key => $value){
+                $value = $this->isTranslateName($value);
                 $data = $this->getTranslateResult($value);
                 $result[] = $data[$language];
             }
             return $result;
         }else{
+            $translate = $this->isTranslateName($translate);
             $data = $this->getTranslateResult($translate);
             return $data[$language];
         }
     }
-
-
-
-
+    public function isTranslateName($value){
+        if( !isset($value['original']['original']) ) return $value->translateName;
+        return $value;
+    }
 }

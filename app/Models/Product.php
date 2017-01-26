@@ -52,7 +52,7 @@ class Product extends BaseModel
         for( $i=0;$i<3;$i++ ){
             $section = $this->sectionGroup->sectionById($i)->first();
             if(is_null($section)) return $result;
-            $result[] = $section->translateName;
+            $result[] = $section;
         }
         return $result;
     }
@@ -62,7 +62,36 @@ class Product extends BaseModel
             $optionKeys = $this->option->first()->optionCollection;
             for ($i = 0; $i < 4; $i++) {
                 if (is_null($optionKeys['option_key_id_' . $i])) return $result;
-                $result[] = $this->getTranslate( $optionKeys->optionKey($i)->first() );
+                $result[] = $optionKeys->optionKey($i)->first();
+            }
+        }
+        return $result;
+    }
+    public function getOptionCollection($options,$language){
+        $optionDivide = $this->optionDivide($options);
+        $result = [];
+        if( count($this->option) ) {
+            $optionKeys = $this->option->first()->optionCollection;
+            for ($i = 0; $i < 4; $i++) {
+                if (is_null($optionKeys['option_key_id_' . $i])) return $result;
+                $result[] = [
+                    "name" => $this->getTranslateResultByLanguage($optionKeys->optionKey($i)->first(),$language),
+                    "values" => $optionDivide[$i],
+//                    "thumbnailUrl" => null,
+                ];
+            }
+        }
+        return $result;
+    }
+    public function optionDivide($options){
+        $result =[];
+        foreach($options as $key=>$value){
+            $explode = explode(',',$value['name']);
+            foreach($explode as $int=>$name){
+                if(!isset($result[$int])) $result[$int] = [];
+                if( !in_array( $name , $result[$int] ) ){
+                    $result[$int][] = $name;
+                }
             }
         }
         return $result;
@@ -80,6 +109,26 @@ class Product extends BaseModel
                     "thumbnailUrl" => $value->thumbnail_url,
                     "sku" => $value->sku,
                 );
+            }
+        }
+        return $result;
+    }
+    public function getProvisionOption($language,$priceUnit){
+        $result = [];
+        if (count($this->option)) {
+            $optionKeys = $this->option;
+            foreach ($optionKeys as $key => $value) {
+                if( $value->stock > $value->safe_stock ){
+                    $result[] = array(
+                        "name" => $this->getTranslateResultByLanguage($value,$language),
+                        "price" => $value->price,
+                        "priceUnit" => $priceUnit,
+                        "stock" => $value->stock,
+                        "safeStock" => $value->safe_stock,
+//                    "thumbnailUrl" => $value->thumbnail_url,
+                        "sku" => $value->sku,
+                    );
+                }
             }
         }
         return $result;

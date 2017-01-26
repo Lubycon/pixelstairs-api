@@ -21,4 +21,13 @@ class Manufacturer extends BaseModel
     {
         return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
     }
+
+
+    // belongsTo
+    // belongsTo('remote_table_column_name','local_column_name');
+
+    public function country()
+    {
+        return $this->belongsTo('App\Models\Country','country_id','id');
+    }
 }

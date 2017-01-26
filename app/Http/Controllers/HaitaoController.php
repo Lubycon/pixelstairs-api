@@ -81,6 +81,8 @@ class HaitaoController extends Controller
 
         if( $product->status_code != '0301' ) Abort::Error('0043',"Ended sale product");
 
+        $options = $product->getProvisionOption($this->language,$product["unit"]);
+
         $response = (object)array(
             "mittyProductId" => $product["id"],
             "marketProductId" => $product["market_product_id"],
@@ -93,15 +95,21 @@ class HaitaoController extends Controller
             "brand" => $product->brand->getTranslateResultByLanguage($product->brand->translateName,$this->language),
             "description" => $product->getTranslateResultByLanguage($product->translateDescription,$this->language),
             "weight" => $product["weight"],
+            "weightUnit" => 'g',
             "price" => $product["original_price"],
+            "lowerPrice" => $product["lower_price"],
+            "priceUnit" => $product["unit"],
             "delivery_fee" => $product["domestic_delivery_price"],
-//            "stock" => $product["stock"],
+            "manufacturer" => $product->manufacturer->country['name'],
             "thumbnailUrl" => $product["thumbnail_url"],
             "url" => $product["url"],
+            "seller" => $product->getSeller(),
+            "gender" => $product->gender->getTranslateResultByLanguage($product->gender->translateName,$this->language),
             "status" => $product->status->getTranslateResultByLanguage($product->status->translateName,$this->language),
             "startDate" => $product["start_date"],
             "endDate" => $product["end_date"],
-//            "options" => $this->bindOptionZh(Option::whereproduct_id($product["id"])->get())
+            "optionCollection" => $product->getOptionCollection($options,$this->language),
+            "skuLists" => $options,
         );
         return response()->success($response);
     }
@@ -199,11 +207,14 @@ class HaitaoController extends Controller
 
     public function orderStore(OrderPostRequest $request){
         $order = new Order;
+        $findOption = Option::wheresku($request['sku'])->firstOrFail();
 
         $order->haitao_order_id = $request['order_id'];
         $order->haitao_user_id = $request['user_id'];
         $order->quantity = $request['quantity'];
-        $order->sku_id = Sku::wheresku($request['sku'])->firstOrFail()['id'];
+        $order->product_id = $findOption['product_id'];
+        $order->sku = $findOption['sku'];
+        $order->order_date = $request['order_date'];
 
         if(!$order->save()) Abort::Error('0040','Check Request');
 

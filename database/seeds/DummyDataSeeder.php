@@ -66,6 +66,9 @@ class DummyDataSeeder extends Seeder
                 ));
             }
         }
+
+        DB::table('orders')->truncate();
+        factory(App\Models\Order::class, 100)->create();
     }
 
     public function optionNameGenerate($faker){

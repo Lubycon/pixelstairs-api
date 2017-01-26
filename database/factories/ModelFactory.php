@@ -169,3 +169,16 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'end_date' => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
     ];
 });
+
+$factory->define(App\Models\Order::class, function (Faker\Generator $faker) {
+    $option = App\Models\Option::find(mt_rand(1,2000));
+    return [
+        'haitao_order_id' => mt_rand(10000,100000),
+        'haitao_user_id' => mt_rand(10000,100000),
+        'product_id' => $option['product_id'],
+        'sku' => $option['sku'],
+        'status_code' => '0313',
+        'quantity' => mt_rand(1,3),
+        'order_date' => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
+    ];
+});
