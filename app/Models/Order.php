@@ -10,10 +10,19 @@ class Order extends BaseModel
 
     protected $casts = [
         'id' => 'string',
+        'product_id' => 'string',
         'haitao_user_id' => 'string',
         'haitao_order_id' => 'string',
         'sku' => 'string',
-        'quantity' => 'string',
         'status_code' => 'string',
     ];
+
+
+    // belongsTo
+    // belongsTo('remote_table_column_name','local_column_name');
+
+    public function product()
+    {
+        return $this->belongsTo('App\Models\Product','product_id','id');
+    }
 }

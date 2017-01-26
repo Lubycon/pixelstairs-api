@@ -209,15 +209,20 @@ class HaitaoController extends Controller
         $order = new Order;
         $findOption = Option::wheresku($request['sku'])->firstOrFail();
 
-        $order->haitao_order_id = $request['order_id'];
-        $order->haitao_user_id = $request['user_id'];
+        $order->haitao_order_id = $request['haitaoOrderId'];
+        $order->haitao_user_id = $request['haitaoUserId'];
         $order->quantity = $request['quantity'];
         $order->product_id = $findOption['product_id'];
         $order->sku = $findOption['sku'];
-        $order->order_date = $request['order_date'];
+        $order->order_date = $request['orderDate'];
+        $order->status_code = '0313';
 
         if(!$order->save()) Abort::Error('0040','Check Request');
 
         return response()->success($order);
+    }
+    public function orderPut(OrderUpdateRequest $request,$haitao_order_id){
+
+        return response()->success();
     }
 }

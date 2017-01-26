@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Models\Product;
+use App\Models\Order;
 use App\Models\Category;
 use App\Models\Division;
 use App\Models\Section;
@@ -168,6 +169,16 @@ class PageController extends Controller
                     ],
                 ]);
                 $this->model = new Product; break;
+            case 'order' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'products',
+                        "base_table_key_column" => "orders.product_id",
+                        "join_table_key_column" => "id",
+                    ]
+                ]);
+                $this->model = new Order; break;
+                break;
             case 'category' :
                 $this->setPartsModel([
                     [

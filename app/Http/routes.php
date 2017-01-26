@@ -11,7 +11,7 @@ Route::group(['prefix' => '/v1'], function () {
         });
         Route::group(['prefix' => 'order/'], function () {
             Route::post('', 'HaitaoController@orderStore');
-//            Route::put('', 'HaitaoController@orderPut');
+            Route::put('{haitao_order_id}', 'HaitaoController@orderPut');
         });
     });
     Route::group(['prefix' => '/members/'], function () {
@@ -40,6 +40,10 @@ Route::group(['prefix' => '/v1'], function () {
         Route::delete('detail/{id}', 'ProductController@delete');
 
         Route::put('status/{status_name}', 'ProductController@status');
+    });
+    Route::group(['prefix' => '/orders/'], function () {
+        Route::get('', 'OrderController@getList');
+        Route::put('{order_id}', 'OrderController@put');
     });
     Route::group(['prefix' => '/markets/'], function () {
         Route::get('product', 'MarketController@get');
