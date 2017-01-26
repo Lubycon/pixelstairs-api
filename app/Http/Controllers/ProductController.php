@@ -93,6 +93,7 @@ class ProductController extends Controller
                 "priceInfo" => $product->getPriceInfo(),
                 "thumbnailUrl" => $product["thumbnail_url"],
                 "url" => $product["url"],
+                "safeStock" => $product->option[0]->safe_stock,
                 "statusCode" => $product["status_code"],
                 "endDate" => $product["end_date"],
             );
@@ -136,7 +137,7 @@ class ProductController extends Controller
         $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->product->option()->saveMany($this->setNewOption($data['options']['option'],$optionCollection)) ) return response()->success($this->product);
+        if ( $this->product->option()->saveMany($this->setNewOption($data['options']['option'],$data['safeStock'],$optionCollection)) ) return response()->success($this->product);
         Abort::Error("0040");
     }
 
@@ -171,7 +172,7 @@ class ProductController extends Controller
         $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->updateOptions($data['options']['option'],$optionCollection) ) return response()->success($this->product);
+        if ( $this->updateOptions($data['options']['option'],$data['safeStock'],$optionCollection) ) return response()->success($this->product);
         Abort::Error("0040");
     }
 

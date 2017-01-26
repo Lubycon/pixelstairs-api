@@ -10,7 +10,7 @@ use Log;
 trait OptionControllTraits
 {
 
-    public function setNewOption($options, $optionCollection)
+    public function setNewOption($options,$safeStock,$optionCollection)
     {
         $result = [];
         $index = 0;
@@ -20,7 +20,7 @@ trait OptionControllTraits
                 "sku" => $this->createSku($index),
                 "price" => $option["price"],
                 "stock" => $option["stock"],
-                "safe_stock" => $option["safeStock"],
+                "safe_stock" => Option::absoluteSafeStockCkeck($safeStock),
                 "translate_name_id" => $this->createTranslateName($option['name'])['id'],
 //                "thumbnail_url" => $option["thumbnailUrl"],
                 "option_collection_id" => $optionCollection['id'],
@@ -30,14 +30,14 @@ trait OptionControllTraits
         return $result;
     }
 
-    private function updateOptions($options,$optionCollection){
+    private function updateOptions($options,$safeStock,$optionCollection){
         $this->isDirtyOption($options);
         foreach ($options as $key => $option) {
             $originalSku = $this->product->option[$key]->sku;
             if($originalSku !== $option['sku']) Abort::Error('0040',"Diff SKU");
                 $this->product->option[$key]->price = $option["price"];
                 $this->product->option[$key]->stock = $option["stock"];
-                $this->product->option[$key]->safe_stock = $option["safeStock"];
+                $this->product->option[$key]->safe_stock = Option::absoluteSafeStockCkeck($safeStock);
                 $this->product->option[$key]->translate_name_id = $this->createTranslateName($option['name'])['id'];
                 $this->product->option[$key]->option_collection_id = $optionCollection['id'];
                 if (!$this->product->option[$key]->update()) Abort::Error("0040","Option Update Fail");

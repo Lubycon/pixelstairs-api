@@ -12,7 +12,6 @@ class Seller extends BaseModel
 
     protected $casts = [
         'id' => 'string',
-        'rate' => 'string',
     ];
 
     // get translate data

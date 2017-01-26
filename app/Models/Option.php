@@ -18,6 +18,12 @@ class Option extends BaseModel
         'sku' => 'string',
     ];
 
+    public static $absoluteSafeStock = 15;
+
+    public static function absoluteSafeStockCkeck($value){
+        return $value > Option::$absoluteSafeStock ? $value :Option::$absoluteSafeStock ;
+    }
+
     // get reference data
     // hasOne('remote_table_column_name','local_column_name');
 

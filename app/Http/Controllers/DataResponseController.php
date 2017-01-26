@@ -103,7 +103,6 @@ class DataResponseController extends Controller
                         );
                     }
                 }
-
             }
             return response()->success($models);
         }else{

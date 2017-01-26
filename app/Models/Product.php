@@ -39,15 +39,20 @@ class Product extends BaseModel
         ];
     }
     public function getSectionIds(){
-//        $sections = $this->sectionGroup->section;
-//        foreach( $sections as $key => $value ){
-//            $result[] = $value['id'];
-//        }
         $result = [];
         for( $i=0;$i<3;$i++ ){
             $id = $this->sectionGroup->sectionById($i)->first()['id'];
             if(is_null($id)) return $result;
             $result[] = $id;
+        }
+        return $result;
+    }
+    public function getSections(){
+        $result = [];
+        for( $i=0;$i<3;$i++ ){
+            $section = $this->sectionGroup->sectionById($i)->first();
+            if(is_null($section)) return $result;
+            $result[] = $section->translateName;
         }
         return $result;
     }
@@ -104,7 +109,7 @@ class Product extends BaseModel
     }
     public function market()
     {
-        return $this->hasOne('App\Models\Market','id','market_id');
+        return $this->hasOne('App\Models\Market','code','market_id');
     }
     public function brand()
     {
@@ -120,7 +125,7 @@ class Product extends BaseModel
     }
     public function status()
     {
-        return $this->hasOne('App\Models\Status','id','status_id');
+        return $this->hasOne('App\Models\Status','code','status_code');
     }
     public function manufacturer()
     {
