@@ -167,6 +167,13 @@ class TranslateTableSeeder extends Seeder
                 'korean' => "달러",
                 'chinese' => "美元",
             ),
+            array(
+                'id' => 23,
+                'origin' => '쿠팡',
+                'english' => 'coopang',
+                'korean' => "쿠팡",
+                'chinese' => "coopang",
+            ),
         );
 
         DB::table('translate_names')->insert($market);

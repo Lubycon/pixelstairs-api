@@ -28,6 +28,11 @@ class MarketTableSeeder extends Seeder
             	'translate_name_id' => 3,
                 'country_id' => 211,
             ),
+            array(
+                'code' => '0103',
+                'translate_name_id' => 23,
+                'country_id' => 211,
+            ),
         );
 
         DB::table('markets')->insert($market);
