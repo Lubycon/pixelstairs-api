@@ -40,11 +40,7 @@ class ResponseMacroServiceProvider extends ServiceProvider
                 ),
                 'result' => null
             ],$httpCode);
-
-            // correct barryvdh on error heading
-            if ($request->is(env('API_VERSION').'/*')) {
-                app('Barryvdh\Cors\Stack\CorsService')->addActualRequestHeaders($response, $request);
-            }
+            $response->headers->set('Access-Control-Allow-Origin', $request->headers->get('Origin'));
 
             return $response;
         });

@@ -14,10 +14,14 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('haitao_order_id')->unique();
-            $table->string('sku_id',100);
+            $table->integer('haitao_order_id')->unique()->unsigned();
             $table->string('haitao_user_id',50);
-            $table->integer('quantity');
+            $table->integer('product_id')->unsigned();
+            $table->string('sku',100);
+            $table->integer('quantity')->unsigned();
+            $table->string('status_code',4);
+            $table->timestamp('order_date')->nullable();
+            $table->timestamp('cancel_date')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

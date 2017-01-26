@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 use Log;
 use Abort;
 
-class Credential extends Model
+class Credential
 {
-    protected static function signin($data){
+    public static function signin($data){
 
       $credential = [
           'email'    => $data['email'],
@@ -19,7 +17,7 @@ class Credential extends Model
       return $credential;
     }
 
-    protected static function signup($data){
+    public static function signup($data){
       $credential = [
           'email' => $data['email'],
           'name' => $data['name'],

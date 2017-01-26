@@ -2,18 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
-
-class Brand extends BaseModel
+class Manufacturer extends BaseModel
 {
-    use SoftDeletes;
-
-    protected $fillable = [
-        'id','translate_name_id'
-    ];
 
     protected $casts = [
         'id' => 'string',
+        'country_id' => 'string',
+    ];
+
+    protected $fillable = [
+        'country_id'
     ];
 
     // get reference data
@@ -28,8 +26,8 @@ class Brand extends BaseModel
     // belongsTo
     // belongsTo('remote_table_column_name','local_column_name');
 
-    public function product()
+    public function country()
     {
-        return $this->belongsTo('App\Models\Product','brand_id','id');
+        return $this->belongsTo('App\Models\Country','country_id','id');
     }
 }

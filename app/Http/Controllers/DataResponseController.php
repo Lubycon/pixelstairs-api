@@ -8,17 +8,13 @@ use Abort;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\Models\User;
-use App\Models\Product;
 use App\Models\Country;
-use App\Models\Sku;
-use App\Models\Brand;
-use App\Models\Option;
 use App\Models\Category;
 use App\Models\Division;
-use App\Models\Status;
+use App\Models\Section;
 use App\Models\Market;
-use App\Models\Sector;
+
+use Log;
 
 class DataResponseController extends Controller
 {
@@ -69,19 +65,15 @@ class DataResponseController extends Controller
 //     *     )
 //     * )
 //     */
+    public $language;
+
     private function getModelByWhitelist($query){
         $whiteList = (object)array(
-            'user' => User::all(),
-            'product' => Product::all(),
             'country' => Country::all(),
-            'sku' => Sku::all(),
-            'brand' => Brand::all(),
-            'option' => Option::all(),
+            'market' => Market::all(),
             'category' => Category::all(),
             'division' => Division::all(),
-            'sector' => Sector::all(),
-            'status' => Status::all(),
-            'market' => Market::all(),
+            'section' => Section::all(),
         );
         $models = (object)array();
         foreach($query as $key => $value){
@@ -95,10 +87,23 @@ class DataResponseController extends Controller
     }
 
     public function dataSimpleResponse(Request $request){
+        $this->language = $request->header('X-mitty-language');
         $query = $request->query();
         $models = $this->getModelByWhitelist($query);
 
+
         if( !is_null($models) ){
+            foreach($models as $modelName => $modelInfo){
+                if( isset($modelInfo[0]['translate_name_id']) ){
+                    foreach($modelInfo as $key => $value ){
+                        $value['name'] = $value->getTranslateResultByLanguage($value->translateName,$this->language);
+                        unset(
+                            $value['translate_name_id'],
+                            $value->translateName
+                        );
+                    }
+                }
+            }
             return response()->success($models);
         }else{
             Abort::Error('0040');

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMarketsTable extends Migration
+class CreateTranslateNamesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,13 +12,14 @@ class CreateMarketsTable extends Migration
      */
     public function up()
     {
-        Schema::create('markets', function (Blueprint $table) {
+        Schema::create('translate_names', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('code',4);
-            $table->integer('translate_name_id')->unsigned();
-            $table->integer('country_id')->unsigned();
-            $table->timestamps();
+            $table->string('original',200);
+            $table->string('chinese',200);
+            $table->string('korean',200);
+            $table->string('english',200);
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -29,6 +30,6 @@ class CreateMarketsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('markets');
+        Schema::drop('translate_names');
     }
 }

@@ -1,9 +1,9 @@
 <?php
 Route::group(['prefix' => '/v1'], function () {
 
-//    Route::get('/category','insertSectorController@categoryOrder');
-//    Route::get('/division','insertSectorController@divisionActive');
-//    Route::get('/insert','insertSectorController@check');
+//    Route::get('/category','insertSectionController@categoryOrder');
+//    Route::get('/division','insertSectionController@divisionActive');
+//    Route::get('/insert','insertSectionController@check');
 
     Route::group(['prefix' => '/haitao/'], function () {
         Route::group(['prefix' => 'product/'], function () {
@@ -11,7 +11,7 @@ Route::group(['prefix' => '/v1'], function () {
         });
         Route::group(['prefix' => 'order/'], function () {
             Route::post('', 'HaitaoController@orderStore');
-//            Route::put('', 'HaitaoController@orderPut');
+            Route::put('{haitao_order_id}', 'HaitaoController@orderPut');
         });
     });
     Route::group(['prefix' => '/members/'], function () {
@@ -41,6 +41,10 @@ Route::group(['prefix' => '/v1'], function () {
 
         Route::put('status/{status_name}', 'ProductController@status');
     });
+    Route::group(['prefix' => '/orders/'], function () {
+        Route::get('', 'OrderController@getList');
+        Route::put('{order_id}', 'OrderController@put');
+    });
     Route::group(['prefix' => '/markets/'], function () {
         Route::get('snoopy', 'MarketController@getBySnoopy');
         Route::get('product', 'MarketController@get');
@@ -57,11 +61,11 @@ Route::group(['prefix' => '/v1'], function () {
         Route::put('{id}', 'DivisionController@put');
         Route::delete('{id}', 'DivisionController@delete');
     });
-    Route::group(['prefix' => '/sectors/'], function () {
-        Route::get('', 'SectorController@getList');
-        Route::post('', 'SectorController@post');
-        Route::put('{id}', 'SectorController@put');
-        Route::delete('{id}', 'SectorController@delete');
+    Route::group(['prefix' => '/sections/'], function () {
+        Route::get('', 'SectionController@getList');
+        Route::post('', 'SectionController@post');
+        Route::put('{id}', 'SectionController@put');
+        Route::delete('{id}', 'SectionController@delete');
     });
     Route::get('/data/','DataResponseController@dataSimpleResponse');
 });

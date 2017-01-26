@@ -4,15 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Status extends BaseModel
+class OptionKey extends BaseModel
 {
     use SoftDeletes;
 
-    protected $casts = [
-        'id' => 'string',
-        'code' => 'string',
+    protected $fillable = [
+        'translate_name_id'
     ];
 
+    // get translate data
     public function translateName()
     {
         return $this->hasOne('App\Models\TranslateName','id','translate_name_id');

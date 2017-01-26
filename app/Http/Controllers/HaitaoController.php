@@ -30,6 +30,7 @@ class HaitaoController extends Controller
     use OptionControllTraits;
 
     public $client;
+    public $language;
 
     public function __construct(){
         $this->client = new Client();
@@ -75,30 +76,40 @@ class HaitaoController extends Controller
      */
 
     public function productDetailGet(Request $request,$haitao_product_id){
+        $this->language = $request->header('X-mitty-language');
         $product = Product::wherehaitao_product_id($haitao_product_id)->firstOrFail();
 
         if( $product->status_code != '0301' ) Abort::Error('0043',"Ended sale product");
 
+        $options = $product->getProvisionOption($this->language,$product["unit"]);
+
         $response = (object)array(
             "mittyProductId" => $product["id"],
-            "marketProductId" => $product["product_id"],
+            "marketProductId" => $product["market_product_id"],
             "haitaoProductId" => $product["haitao_product_id"],
-            "market" => Market::wherecode($product["market_id"])->value("name"),
-            "category" => Category::find($product["category_id"])["chinese_name"],
-            "division" => Division::find($product["division_id"])["chinese_name"],
-            "sector" => $product->sectorsDetailZh(),
-            "title" => $product["chinese_title"],
-            "brand" => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])['chinese_name'],
-            "description" => $product["chinese_description"],
+            "market" => $product->market->getTranslateResultByLanguage($product->market->translateName,$this->language),
+            "category" => $product->category->getTranslateResultByLanguage($product->category->translateName,$this->language),
+            "division" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
+            "section" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
+            "title" => $product->getTranslateResultByLanguage($product->translateName,$this->language),
+            "brand" => $product->brand->getTranslateResultByLanguage($product->brand->translateName,$this->language),
+            "description" => $product->getTranslateResultByLanguage($product->translateDescription,$this->language),
             "weight" => $product["weight"],
-            "price" => $product["price"] + $product["domestic_delivery_price"],
-            "stock" => $product["stock"] - $product["safe_stock"],
+            "weightUnit" => 'g',
+            "price" => $product["original_price"],
+            "lowerPrice" => $product["lower_price"],
+            "priceUnit" => $product["unit"],
+            "delivery_fee" => $product["domestic_delivery_price"],
+            "manufacturer" => $product->manufacturer->country['name'],
             "thumbnailUrl" => $product["thumbnail_url"],
             "url" => $product["url"],
-            "status" => Status::wherecode($product["status_code"])->value("chinese_name"),
+            "seller" => $product->getSeller(),
+            "gender" => $product->gender->getTranslateResultByLanguage($product->gender->translateName,$this->language),
+            "status" => $product->status->getTranslateResultByLanguage($product->status->translateName,$this->language),
             "startDate" => $product["start_date"],
             "endDate" => $product["end_date"],
-            "options" => $this->bindOptionZh(Option::whereproduct_id($product["id"])->get())
+            "optionCollection" => $product->getOptionCollection($options,$this->language),
+            "skuLists" => $options,
         );
         return response()->success($response);
     }
@@ -196,14 +207,22 @@ class HaitaoController extends Controller
 
     public function orderStore(OrderPostRequest $request){
         $order = new Order;
+        $findOption = Option::wheresku($request['sku'])->firstOrFail();
 
-        $order->haitao_order_id = $request['order_id'];
-        $order->haitao_user_id = $request['user_id'];
+        $order->haitao_order_id = $request['haitaoOrderId'];
+        $order->haitao_user_id = $request['haitaoUserId'];
         $order->quantity = $request['quantity'];
-        $order->sku_id = Sku::wheresku($request['sku'])->firstOrFail()['id'];
+        $order->product_id = $findOption['product_id'];
+        $order->sku = $findOption['sku'];
+        $order->order_date = $request['orderDate'];
+        $order->status_code = '0313';
 
         if(!$order->save()) Abort::Error('0040','Check Request');
 
         return response()->success($order);
+    }
+    public function orderPut(OrderUpdateRequest $request,$haitao_order_id){
+
+        return response()->success();
     }
 }

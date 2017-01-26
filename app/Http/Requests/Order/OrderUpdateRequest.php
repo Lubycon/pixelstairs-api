@@ -4,7 +4,7 @@ namespace App\Http\Requests\Order;
 
 use App\Http\Requests\Request;
 
-class OrderPostRequest extends Request
+class OrderUpdateRequest extends Request
 {
     public function authorize()
     {
@@ -15,10 +15,6 @@ class OrderPostRequest extends Request
     {
         $requiredRule = [
             'haitaoOrderId' => 'required|unique:orders,haitao_order_id',
-            'haitaoUserId' => 'required',
-            'quantity' => 'required',
-            'sku' => 'required',
-            'orderDate' => 'required|date',
         ];
 
         return $requiredRule;

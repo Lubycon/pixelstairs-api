@@ -9,9 +9,12 @@ use App\Http\Controllers\Controller;
 
 use App\Http\Controllers\Pager\PageController;
 use App\Models\Division;
+use App\Traits\TranslateTraits;
 
 class DivisionController extends Controller
 {
+    use TranslateTraits;
+
     public $division;
 
     public function getList(Request $request){
@@ -26,10 +29,7 @@ class DivisionController extends Controller
         foreach($collection as $array){
             $result->divisions[] = (object)array(
                 "id" => $array["id"],
-                "name" => array(
-                    "origin" => $array["original_name"],
-                    "zh" => $array['chinese_name'],
-                ),
+                "name" => $array->getTranslate($array),
                 "parentId" => $array['parent_id'],
             );
         };
@@ -41,22 +41,19 @@ class DivisionController extends Controller
         }
     }
     public function post(Request $request){
-        $this->division = new Division;
-        $this->division->original_name = $request['name']['origin'];
-        $this->division->chinese_name = $request['name']['zh'];
-        $this->division->parent_id = $request['parentId'];
-
-        if( $this->division->save() ){
-            return response()->success($this->division);
+        $data = [
+            "translate_name_id" => $this->createTranslateName($request['name'])['id'],
+            "parentId" => $request['parentId'],
+        ];
+        if( $hello = Division::firstOrCreate($data) ){
+            return response()->success($hello);
         }else{
             Abort::Error('0040');
         }
     }
     public function put(Request $request,$id){
         $this->division = Division::findOrFail($id);
-        $this->division->original_name = $request['name']['origin'];
-        $this->division->chinese_name = $request['name']['zh'];
-        $this->division->parent_id = $request['parentId'];
+        $this->division->translate_name_id = $this->createTranslateName($request['name'])['id'];
         if( $this->division->save() ){
             return response()->success($this->division);
         }else {

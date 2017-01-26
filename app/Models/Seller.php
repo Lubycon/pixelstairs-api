@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
-
-class Status extends BaseModel
+class Seller extends BaseModel
 {
-    use SoftDeletes;
+    protected $fillable = [
+        'id',
+        'name',
+        "rate",
+    ];
 
     protected $casts = [
         'id' => 'string',
-        'code' => 'string',
     ];
 
+    // get translate data
     public function translateName()
     {
         return $this->hasOne('App\Models\TranslateName','id','translate_name_id');

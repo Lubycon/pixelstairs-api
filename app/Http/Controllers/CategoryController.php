@@ -10,8 +10,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Pager\PageController;
 use App\Models\Category;
 
+use App\Traits\TranslateTraits;
+
 class CategoryController extends Controller
 {
+    use TranslateTraits;
+
     public $category;
 
 //    /**
@@ -73,10 +77,7 @@ class CategoryController extends Controller
         foreach($collection as $array){
             $result->categories[] = (object)array(
                 "id" => $array["id"],
-                "name" => array(
-                    "origin" => $array['original_name'],
-                    "zh" => $array['chinese_name'],
-                ),
+                "name" => $array->getTranslate($array),
             );
         };
 
@@ -154,19 +155,18 @@ class CategoryController extends Controller
 //     * )
 //     */
     public function post(Request $request){
-        $this->category = new Category;
-        $this->category->original_name = $request['name']['origin'];
-        $this->category->chinese_name = $request['name']['zh'];
-        if( $this->category->save() ){
-            return response()->success($this->category);
+        $data = [
+            "translate_name_id" => $this->createTranslateName($request['name'])['id'],
+        ];
+        if( $cate = Category::firstOrCreate($data) ){
+            return response()->success($cate);
         }else{
             Abort::Error('0040');
         }
     }
     public function put(Request $request,$id){
         $this->category = Category::findOrFail($id);
-        $this->category->original_name = $request['name']['origin'];
-        $this->category->chinese_name = $request['name']['zh'];
+        $this->category->translate_name_id = $this->createTranslateName($request['name'])['id'];
         if( $this->category->save() ){
             return response()->success($this->category);
         }else {
@@ -175,12 +175,10 @@ class CategoryController extends Controller
     }
     public function delete(Request $request,$id){
         $this->category = Category::findOrFail($id);
-
         if($this->category->delete()){
             return response()->success();
         }else {
             Abort::Error('0040');
         }
-
     }
 }

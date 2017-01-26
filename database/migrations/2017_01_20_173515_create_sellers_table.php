@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMarketDetailsTable extends Migration
+class CreateSellersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,15 +12,11 @@ class CreateMarketDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('market_details', function (Blueprint $table) {
+        Schema::create('sellers', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('market_id');
-            $table->integer('category_id');
-            $table->integer('division_id');
-            $table->integer('sector_id');
             $table->string('name',30);
-            $table->string('data_number',20);
-            $table->boolean('is_active');
+            $table->double('rate',2,1)->unsigned();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -32,6 +28,6 @@ class CreateMarketDetailsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('market_details');
+        Schema::drop('sellers');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SectionMarketInfo;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -13,7 +14,7 @@ use GuzzleHttp\Client;
 
 use App\Models\Category;
 use App\Models\Division;
-use App\Models\Sector;
+use App\Models\Section;
 use App\Models\Market;
 
 use App\Classes\Snoopy;
@@ -136,12 +137,12 @@ class MarketController extends Controller
             'ours' => null,
         );
         if(!is_null($this->category_data)){
-            $sectors = Sector::wheremarket_category_id($this->category_data['Category']['CategoryCode'])->get();
-            if(isset($sectors[0])){
-                foreach( $sectors as $key => $value ){
-                    $result['ours']['sectors'][] = $value['id'];
+            $sections = SectionMarketInfo::wheremarket_category_id($this->category_data['Category']['CategoryCode'])->get();
+            if(isset($sections[0])){
+                foreach( $sections as $key => $value ){
+                    $result['ours']['sections'][] = $value->section['id'];
                 }
-            $division = Division::findOrFail($sectors[0]['parent_id']);
+            $division = Division::findOrFail($sections[0]->section['parent_id']);
             $category = Category::findOrFail($division['parent_id']);
             $result['ours']['divisionId'] = $division['id'];
             $result['ours']['categoryId'] = $category['id'];
@@ -155,7 +156,7 @@ class MarketController extends Controller
     public function splitWon($value){
         $explode = explode('원',$value);
         $result = str_replace(",","", $explode[0]);
-        return $result;
+        return (int)$result;
     }
 
     public function bindOption($option){

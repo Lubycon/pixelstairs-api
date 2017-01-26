@@ -16,7 +16,7 @@ trait StatusInfoTraits{
     public function forConfirm($status_code){
         if( $status_code == '0301' ){
             $sale = $this->productSale($this->product);
-            Log::info($sale);
+//            Log::info($sale);
             $this->startDateUpdate();
             return true;
         }

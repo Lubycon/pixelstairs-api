@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Exchange extends Model
+class Exchange extends BaseModel
 {
     use SoftDeletes;
 
