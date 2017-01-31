@@ -18,10 +18,13 @@ use App\Models\Section;
 use App\Models\Market;
 
 use App\Classes\Snoopy;
+use PHPHtmlParser\Dom;
 
 class MarketController extends Controller
 {
     public $client;
+    public $dom;
+
     public $url;
     public $market;
     public $product_number;
@@ -31,6 +34,7 @@ class MarketController extends Controller
 
     public function __construct(){
         $this->client = new Client();
+        $this->dom = new Dom;
     }
 
 //    /**
@@ -73,13 +77,66 @@ class MarketController extends Controller
 //     * )
 //     */
 
-    public function getBySnoopy(){
-        $snoopy = new Snoopy;
+    public function getBySnoopy(Request $request){
+//        11st
+//        $snoopy = new Snoopy;
+//
+//        $snoopy->fetch("http://deal.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=1254155722&trTypeCd=22&trCtgrNo=895019");
+//        $source = $snoopy->results;
+//        $res = iconv("euc-kr","UTF-8",$source);
+//        print_r($res);
 
-        $snoopy->fetch("http://deal.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=1254155722&trTypeCd=22&trCtgrNo=895019");
-        $source = $snoopy->results;
-        $res = iconv("euc-kr","UTF-8",$source);
-        print_r($res);
+        $query = $request->query();
+//        $this->market = Market::wherecode($query['marketId'])->first();
+        $this->url = urldecode($query['url']);
+        $parse_url = parse_url($this->url);
+        parse_str($parse_url['query'], $query_parse);
+        $url_paths = explode('/',$parse_url['path']);
+        $product_id = $url_paths[3];
+        $item_id = $query_parse['itemId'];
+
+
+        ob_start();
+        passthru("/usr/bin/python3.5 ".app_path()."/python/crawling.py $this->url");
+
+        # how to use function passthru
+        # passthru('python path .py script path parameter')
+        # generaly python execute file location is /usr/bin/python3
+        # and .py script is depend on you
+        # good luck
+        # by Martin
+
+        $output = ob_get_clean();
+        echo $output;
+
+//        $snoopy = new Snoopy;
+//        $snoopy->agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36";
+//        $snoopy->referer = "https://www.coupang.com/vp/products/2352117?itemId=10810962";
+//        $snoopy->rawheaders['If-Modified-Since'] = "Fri, 06 Jan 2017 10:01:28 GMT";
+//        $snoopy->rawheaders['Cache-Control'] = 'max-age=0';
+//
+//
+//
+//        $snoopy->rawheaders["Pragma"] = "no-cache";
+//
+//        // set some internal variables:
+//        $snoopy->maxredirs = 100;
+//        $snoopy->offsiteok = false;
+//        $snoopy->expandlinks = false;
+//
+//
+//
+//        if($snoopy->fetch("https://www.coupang.com/vp/products/2686976?itemId=48853462&q=아이브로우카라&itemsCount=36&searchId=e8b1e170afb64290b017fd986cd556e0&rank=1")){
+//            // other methods: fetch, fetchform, fetchlinks, submittext and submitlinks
+//
+//            // response code:
+//            print_r($snoopy->results);
+//
+//        }
+//        else {
+//            print "Snoopy: error while fetching document: ".$snoopy->error."\n";
+//        }
+
     }
 
     public function get(Request $request){

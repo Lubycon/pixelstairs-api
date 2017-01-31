@@ -11,7 +11,8 @@
         "barryvdh/laravel-cors": "^0.8.1",
         "pda/pheanstalk": "^3.1",
         "guzzlehttp/guzzle": "^6.2",
-        "zircote/swagger-php": "^2.0"
+        "zircote/swagger-php": "^2.0",
+        "paquettg/php-html-parser": "1.7.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
