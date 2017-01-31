@@ -39,6 +39,10 @@ class AuthController extends Controller
             Abort::Error('0040','Login Failed, check email,password');
         }
 
+        if( $request->getHost() == env('APP_PROVISION_ADMIN_URL') ){
+            if( Auth::user()->grade == 'normal' ) Abort::Error('0043');
+        }
+
         $this->dispatch(new LastSigninTimeCheckerJob(Auth::getUser()));
 
         if (Auth::user()->status == 'inactive'){
@@ -66,16 +70,16 @@ class AuthController extends Controller
     protected function signup(AuthSignupRequest $request)
     {
         $data = $request->json()->all();
-        $data['password'] = bcrypt(env('COMMON_PASSWORD'));
-        $credentialSignup = Credential::signup($data);
-        $credentialSignin = Credential::signin($data);
-        $token = '';
 
-        if(User::create($credentialSignup)){
-            if(Auth::once($credentialSignin)){
-                $id = Auth::user()->getAuthIdentifier();
-                $token = CheckContoller::insertRememberToken($id);
-            }
+        if( $request->getHost() == env('APP_PROVISION_ADMIN_URL') ){
+            $data['password'] = bcrypt(env('COMMON_PASSWORD'));
+        }
+
+        $credentialSignup = Credential::signup($data);
+
+        if( $user =  User::create($credentialSignup)){
+            $id = $user->getAuthIdentifier();
+            $token = CheckContoller::insertRememberToken($id);
             return response()->success([
                 "token" => $token
             ]);

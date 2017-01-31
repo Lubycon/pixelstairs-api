@@ -17,8 +17,6 @@ class User extends BaseModel implements AuthenticatableContract,
 {
     use Authenticatable, Authorizable, CanResetPassword ,SoftDeletes;
 
-    protected $table = 'users';
-
     protected $casts = [
         'id' => 'string',
     ];
@@ -36,6 +34,7 @@ class User extends BaseModel implements AuthenticatableContract,
 
     protected $fillable = [
         'email',
+        'phone',
         'name',
         'nickname',
         'password',

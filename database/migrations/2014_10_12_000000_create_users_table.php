@@ -19,9 +19,10 @@ class CreateUsersTable extends Migration
             $table->string('email',50)->unique()->nullable();
             $table->string('phone',30)->unique();
             $table->string('name',20)->unique();
-            $table->string('nickname',20)->unique();
+            $table->string('nickname',20)->unique()->nullable();
             $table->string('password', 60);
 //
+            $table->string('status',10);
             $table->enum('grade',['superAdmin','admin','normal'])->default('normal');
             $table->string('position',30)->nullable();
 
