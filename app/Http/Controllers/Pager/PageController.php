@@ -17,6 +17,7 @@ use Abort;
 
 use DB;
 use Log;
+use App\Models\Survey;
 
 class PageController extends Controller
 {
@@ -211,6 +212,15 @@ class PageController extends Controller
                     ]
                 ]);
                 $this->model = new Section; break;
+            case 'survey' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'users',
+                        "base_table_key_column" => "surveys.user_id",
+                        "join_table_key_column" => "id",
+                    ]
+                ]);
+                $this->model = new Survey; break;
             default : Abort::Error('0040','Unknown Model') ;break; //error point
         }
     }

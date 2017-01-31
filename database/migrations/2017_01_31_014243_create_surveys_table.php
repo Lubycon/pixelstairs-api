@@ -15,6 +15,15 @@ class CreateSurveysTable extends Migration
         Schema::create('surveys', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
+            $table->string('purchasing_factor',300);
+            $table->string('major_store',300);
+            $table->string('favorite_brand',300);
+            $table->string('connection_path',300);
+            $table->integer('interest_id_0');
+            $table->integer('interest_id_1')->nullable();
+            $table->integer('interest_id_2')->nullable();
+            $table->integer('interest_id_3')->nullable();
+            $table->integer('interest_id_4')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

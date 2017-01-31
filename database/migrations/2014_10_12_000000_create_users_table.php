@@ -17,25 +17,25 @@ class CreateUsersTable extends Migration
             $table->string('haitao_user_id',100)->nullbale();
 
             $table->string('email',50)->unique()->nullable();
-            $table->string('phone',30)->unique();
-            $table->string('name',20)->unique();
+            $table->string('phone',30)->unique()->nullable();
+            $table->string('name',20)->unique()->nullable();
             $table->string('nickname',20)->unique()->nullable();
             $table->string('password', 60);
 //
-            $table->string('status',10);
+            $table->string('status',10)->default('inactive');
             $table->enum('grade',['superAdmin','admin','normal'])->default('normal');
             $table->string('position',30)->nullable();
 
-            $table->integer('gender_id')->unsigned();
-            $table->timestamp('birthday');
+            $table->integer('gender_id')->unsigned()->nullable();
+            $table->timestamp('birthday')->nullable();
 
-            $table->integer('country_id');
-            $table->string('city',20);
-            $table->string('address1',30);
-            $table->string('address2',30);
-            $table->integer('post_code');
+            $table->integer('country_id')->nullable();
+            $table->string('city',20)->nullable();
+            $table->string('address1',30)->nullable();
+            $table->string('address2',30)->nullable();
+            $table->integer('post_code')->nullable();
 
-            $table->longText('thumbnail_url');
+            $table->longText('thumbnail_url')->nullable();
 
             $table->rememberToken();
             $table->timestamp('last_login_time')->nullable();
