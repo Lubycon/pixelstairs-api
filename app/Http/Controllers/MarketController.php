@@ -18,7 +18,9 @@ use App\Models\Section;
 use App\Models\Market;
 
 use App\Classes\Snoopy;
-use PHPHtmlParser\Dom;
+//use PHPHtmlParser\Dom;
+
+
 
 class MarketController extends Controller
 {
@@ -34,7 +36,7 @@ class MarketController extends Controller
 
     public function __construct(){
         $this->client = new Client();
-        $this->dom = new Dom;
+//        $this->dom = new Dom;
     }
 
 //    /**
@@ -97,7 +99,7 @@ class MarketController extends Controller
 
 
         ob_start();
-        passthru("/usr/bin/python3.5 ".app_path()."/python/crawling.py $this->url");
+        passthru("/usr/bin/python3 ".app_path()."/python/crawling.py $this->url");
 
         # how to use function passthru
         # passthru('python path .py script path parameter')
