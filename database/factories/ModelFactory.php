@@ -1,31 +1,5 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Model Factories
-|--------------------------------------------------------------------------
-|
-| Here you may define all of your model factories. Model factories give
-| you a convenient way to create models for testing and seeding your
-| database. Just tell the factory how a default model should look.
-|
-*/
-
-// $factory->define(App\Models\Category::class, function (Faker\Generator $faker) {
-//     return [
-//         'nickname' => $faker->name,
-//         'email' => $faker->safeEmail,
-//         'password' => bcrypt(str_random(10)),
-//         'remember_token' => str_random(10),
-//         'occupation_id' => mt_rand(1,5),
-//         'country_id' => mt_rand(1,240),
-//         'profile_img' => "http://lorempixel.com/640/640/",
-//         'status' => 'active',
-//         'newsletter' => mt_rand(0,1),
-//     ];
-// });
-
-
 $factory->define(App\Models\TranslateName::class, function (Faker\Generator $faker) {
     return [
         'original' => 'original_'.$faker->streetName,
@@ -36,10 +10,10 @@ $factory->define(App\Models\TranslateName::class, function (Faker\Generator $fak
 });
 $factory->define(App\Models\TranslateDescription::class, function (Faker\Generator $faker) {
     return [
-        'original' => 'original_'.$faker->streetName,
-        'chinese' => 'chinese_'.$faker->streetName,
-        'korean' => 'korean_'.$faker->streetName,
-        'english' => 'english_'.$faker->streetName,
+        'original' => 'original_'.$faker->paragraph,
+        'chinese' => 'chinese_'.$faker->paragraph,
+        'korean' => 'korean_'.$faker->paragraph,
+        'english' => 'english_'.$faker->paragraph,
     ];
 });
 
@@ -180,5 +154,68 @@ $factory->define(App\Models\Order::class, function (Faker\Generator $faker) {
         'status_code' => '0313',
         'quantity' => mt_rand(1,3),
         'order_date' => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
+    ];
+});
+
+$factory->define(App\Models\User::class, function (Faker\Generator $faker) {
+    return [
+        'haitao_user_id' => mt_rand(10000,100000),
+        'email' => null,
+        'phone' => $faker->phoneNumber,
+        'name' => $faker->name,
+        'nickname' => $faker->name,
+        'password' => bcrypt('qlalflqjsgh'),
+        'grade' => 'normal',
+        'position' => null,
+        'gender_id' => mt_rand(1,2),
+        'birthday' => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
+        'city' => $faker->city,
+        'address1' => $faker->address,
+        'address2' => $faker->streetAddress,
+        'post_code' => $faker->postcode,
+        'thumbnail_url' => $faker->imageUrl,
+    ];
+});
+
+$factory->define(App\Models\Interest::class, function (Faker\Generator $faker) {
+    $division = App\Models\Division::find(mt_rand(1,100));
+    $category = App\Models\Category::find($division['parent_id']);
+    return [
+        'user_id' => mt_rand(1,100),
+        'category_id' => $category['id'],
+        'division_id' => $division['id'],
+    ];
+});
+
+$factory->define(App\Models\Review::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => mt_rand(1,100),
+        'product_id' => mt_rand(1,100),
+        'title' => $faker->streetName,
+        'target' => mt_rand(0,1) == 0 ? 'award' : 'buy',
+        'image_group_id' => mt_rand(1,100),
+    ];
+});
+
+$factory->define(App\Models\ReviewQuestion::class, function (Faker\Generator $faker) {
+    return [
+        'division_id' => mt_rand(1,100),
+        'description' => $faker->paragraph,
+    ];
+});
+
+$factory->define(App\Models\ReviewAnswer::class, function (Faker\Generator $faker) {
+    return [
+        'review_id' => mt_rand(1,100),
+        'question_id' => mt_rand(1,100),
+        'description' => $faker->paragraph,
+    ];
+});
+
+$factory->define(App\Models\Award::class, function (Faker\Generator $faker) {
+    return [
+        'product_id' => mt_rand(1,100),
+        'user_id' => mt_rand(1,100),
+        'is_written_review' => mt_rand(0,1),
     ];
 });

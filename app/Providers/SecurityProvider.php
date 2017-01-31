@@ -1,4 +1,4 @@
-<!-- <?php namespace Barryvdh\Cors;
+<?php namespace Barryvdh\Cors;
 
 use Barryvdh\Cors\Stack\CorsService;
 use Illuminate\Contracts\Http\Kernel;
@@ -48,4 +48,4 @@ class ServiceProvider extends BaseServiceProvider
     {
         return __DIR__ . '/../config/cors.php';
     }
-} -->
+}

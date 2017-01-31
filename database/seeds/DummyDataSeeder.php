@@ -19,10 +19,6 @@ class DummyDataSeeder extends Seeder
      */
     public function run()
     {
-        //DB::table('users')->truncate(); run this code in admin seeder
-        // factory(App\Models\User::class, 100)->create();
-
-
         $faker = Faker::create();
 
         DB::table('categories')->truncate();
@@ -69,6 +65,23 @@ class DummyDataSeeder extends Seeder
 
         DB::table('orders')->truncate();
         factory(App\Models\Order::class, 100)->create();
+
+        factory(App\Models\User::class, 100)->create();
+
+        DB::table('interests')->truncate();
+        factory(App\Models\Interest::class, 100)->create();
+//
+        DB::table('reviews')->truncate();
+        factory(App\Models\Review::class, 100)->create();
+
+        DB::table('review_questions')->truncate();
+        factory(App\Models\ReviewQuestion::class, 100)->create();
+//
+        DB::table('review_answers')->truncate();
+        factory(App\Models\ReviewAnswer::class, 100)->create();
+
+        DB::table('awards')->truncate();
+        factory(App\Models\Award::class, 100)->create();
     }
 
     public function optionNameGenerate($faker){
