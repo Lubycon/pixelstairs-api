@@ -144,6 +144,7 @@ class PageController extends Controller
             case 'id' : return 'id';
             case 'haitaoProductId' : return 'products.haitao_product_id';
             case 'haitaoUserId' : return 'users.haitao_user_id';
+            case 'userId' : return 'users.id';
             case 'originTitle' : return 'translate_names.original';
             // order, product divide
             case 'stock' : return 'stock';
