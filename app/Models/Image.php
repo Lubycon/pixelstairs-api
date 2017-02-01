@@ -16,4 +16,8 @@ class Image extends BaseModel
         "index" => 'string',
         'image_group_id' => "string"
     ];
+
+    public function getUrl(){
+        return $this->attributes['is_mitty_own'] ? env('S3_PATH').$this->url : $this->url;
+    }
 }

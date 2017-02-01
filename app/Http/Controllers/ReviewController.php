@@ -10,6 +10,7 @@ use App\Http\Controllers\Pager\PageController;
 use App\Models\Review;
 use App\Models\Order;
 use App\Models\Award;
+use App\Models\ImageGroup;
 
 use Log;
 use Abort;
@@ -18,11 +19,13 @@ use App\Traits\GetUserModelTrait;
 use App\Traits\ReviewAnswerControllTraits;
 use App\Traits\OptionControllTraits;
 use App\Traits\ReviewQuestionControllTraits;
+use App\Traits\ImageControllTraits;
+use App\Traits\S3StorageControllTraits;
 
 
 class ReviewController extends Controller
 {
-    use GetUserModelTrait,ReviewAnswerControllTraits,OptionControllTraits,ReviewQuestionControllTraits;
+    use GetUserModelTrait,ReviewAnswerControllTraits,OptionControllTraits,ReviewQuestionControllTraits,ImageControllTraits,S3StorageControllTraits;
 
     public $review;
     public $language;
@@ -44,7 +47,7 @@ class ReviewController extends Controller
             "user" => [
                 "id" => $user['id'],
                 "name" => $user->name,
-                "profileImg" => $user->thumbnail_url,
+                "profileImg" => $user->image->getUrl(),
             ],
             "product" => [
                 "id" => $product->id,
@@ -55,11 +58,10 @@ class ReviewController extends Controller
                 "division" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
                 "section" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
                 "skuName" => $this->review->option->getTranslateResultByLanguage($this->review->option->translateName,$this->language),
-                "images" => $product->thumbnail_url,
             ],
             "title" => $this->review->title,
             "qa" => $this->getQnA($this->review->answer),
-            "image" => [],
+            "images" => $this->review->imageGroup->getImages(),
         ];
 
         return response()->success($response);
@@ -84,7 +86,7 @@ class ReviewController extends Controller
                 "user" => [
                     "id" => $user['id'],
                     "name" => $user->name,
-                    "profileImg" => $user->thumbnail_url,
+                    "profileImg" => $user->image->getUrl(),
                 ],
                 "product" => [
                     "id" => $product->id,
@@ -125,9 +127,12 @@ class ReviewController extends Controller
         $this->review->title = $request->title;
         $this->review->sku = $target['sku'];
         $this->review->target = $request->target;
+        $this->review->image_group_id = ImageGroup::create(['model_name'=>'review'])['id'];
 
         if ( !$this->review->save() ) Abort::Error("0040");
-        if ( $this->review->answer()->saveMany($this->setNewReviewAnswer($request['answers'])) ) return response()->success($this->review);
+        if ( $this->review->answer()->saveMany($this->setNewReviewAnswer($request['answers']))  &&
+             $this->review->imageGroup->image()->saveMany($this->createImageUploadArray($this->review,$request->detailImages))
+        ) return response()->success($this->review);
         Abort::Error("0040");
     }
     public function put(Request $request,$review_id){
@@ -136,6 +141,7 @@ class ReviewController extends Controller
         $this->updateAnswer($this->review,$request['answers']);
 
         if ( !$this->review->save() ) Abort::Error("0040");
-        return response()->success($this->review);
+        if($this->review->imageGroup->image()->saveMany($this->updateImageUploadArray($this->review,$request->detailImages))
+        )return response()->success($this->review);
     }
 }

@@ -60,7 +60,7 @@ class ProductController extends Controller
             "priceInfo" => $product->getPriceInfo(),
             "deliveryPrice" => $product["domestic_delivery_price"],
             "isFreeDelivery" => $product["is_free_delivery"],
-            "thumbnailUrl" => $product->image->url,
+            "thumbnailUrl" => $product->image->getUrl(),
             "images" => $product->imageGroup->getImages(),
             "url" => $product["url"],
             "safeStock" => $product->option[0]->safe_stock,
@@ -89,7 +89,7 @@ class ProductController extends Controller
             "categoryName" => $product->category->getTranslateResultByLanguage($product->category->translateName,$this->language),
             "divisionName" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
             "sections" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
-            "thumbnailUrl" => $product["thumbnail_url"],
+            "thumbnailUrl" => $product->image->getUrl(),
         );
 
         return response()->success($response);
@@ -114,7 +114,7 @@ class ProductController extends Controller
                 "description" => $product->getTranslateDescription($product),
                 "weight" => $product["weight"],
                 "priceInfo" => $product->getPriceInfo(),
-                "thumbnailUrl" => $product->image->url,
+                "thumbnailUrl" => $product->image->getUrl(),
                 "url" => $product["url"],
                 "safeStock" => $product->option[0]->safe_stock,
                 "statusCode" => $product["status_code"],

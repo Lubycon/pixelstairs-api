@@ -15,7 +15,7 @@ class ImageGroup extends BaseModel
         $images = $this->image;
         foreach( $images as $value ){
             $result[] = [
-                "url" => $value['url'],
+                "url" => $value['is_mitty_own'] ? env('S3_PATH').$value['url'] : $value['url'],
                 "index" => $value['index']
             ];
         }

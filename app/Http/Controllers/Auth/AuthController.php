@@ -155,7 +155,7 @@ class AuthController extends Controller
                 "nickname" => $findUser->nickname,
                 "position" => $findUser->position,
                 "grade" => $findUser->grade,
-                "profileImg" => $findUser->image->url,
+                "profileImg" => $findUser->image->getUrl(),
             ]);
         }else{
             Abort::Error('0040');
@@ -176,7 +176,7 @@ class AuthController extends Controller
                 $findUser->password = bcrypt($data['password']);
                 $findUser->position = $data['position'];
                 $findUser->grade = $data['grade'];
-                $findUser->image->update(["url"=>env('S3_PATH').$this->userThumbnailUpload($findUser,$data['profileImg'])]);
+                $findUser->image->update(["url"=>$this->userThumbnailUpload($findUser,$data['profileImg'])]);
                 if($findUser->save()){
                     return response()->success($findUser);
                 }
