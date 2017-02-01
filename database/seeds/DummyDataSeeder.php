@@ -21,6 +21,10 @@ class DummyDataSeeder extends Seeder
     {
         $faker = Faker::create();
 
+
+        DB::table('images')->truncate();
+        DB::table('image_groups')->truncate();
+
         DB::table('categories')->truncate();
         DB::table('divisions')->truncate();
         DB::table('sections')->truncate();
@@ -82,6 +86,8 @@ class DummyDataSeeder extends Seeder
 
         DB::table('awards')->truncate();
         factory(App\Models\Award::class, 100)->create();
+
+        factory(App\Models\Image::class, 300)->create();
     }
 
     public function optionNameGenerate($faker){
