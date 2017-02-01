@@ -28,8 +28,6 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Slack;
 
-use App\Jobs\ErrorSlackBotJob;
-
 class Handler extends ExceptionHandler
 {
     private $customCode;
