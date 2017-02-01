@@ -70,13 +70,12 @@ class DummyDataSeeder extends Seeder
 
         DB::table('interests')->truncate();
         factory(App\Models\Interest::class, 100)->create();
-//
-        DB::table('reviews')->truncate();
-        factory(App\Models\Review::class, 100)->create();
+
 
         DB::table('review_questions')->truncate();
         factory(App\Models\ReviewQuestion::class, 100)->create();
-//
+        
+        DB::table('reviews')->truncate();
         DB::table('review_answers')->truncate();
         factory(App\Models\ReviewAnswer::class, 100)->create();
 

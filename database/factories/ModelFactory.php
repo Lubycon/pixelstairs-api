@@ -210,7 +210,7 @@ $factory->define(App\Models\ReviewQuestion::class, function (Faker\Generator $fa
 
 $factory->define(App\Models\ReviewAnswer::class, function (Faker\Generator $faker) {
     return [
-        'review_id' => mt_rand(1,100),
+        'review_id' => factory(App\Models\Review::class)->create()->id,
         'question_id' => mt_rand(1,100),
         'score' => mt_rand(0,5),
         'description' => $faker->paragraph,
