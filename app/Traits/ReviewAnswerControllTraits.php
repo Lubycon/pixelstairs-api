@@ -30,8 +30,9 @@ trait ReviewAnswerControllTraits
                 "a" => [
                     "id" => $value->id,
                     "description" => $value->description,
-                    "score" => $value->score,
-                ]
+                ],
+                "qid" => $value->question->getTranslateResultByLanguage($value->question->translateName,$this->language),
+                "score" => $value->score,
             ];
         }
         return $result;
