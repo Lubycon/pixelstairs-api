@@ -31,7 +31,7 @@ trait ReviewAnswerControllTraits
                     "id" => $value->id,
                     "description" => $value->description,
                 ],
-                "qid" => $value->question->getTranslateResultByLanguage($value->question->translateName,$this->language),
+                "qKey" => $value->question->getTranslateResultByLanguage($value->question->translateName,$this->language),
                 "score" => $value->score,
             ];
         }
