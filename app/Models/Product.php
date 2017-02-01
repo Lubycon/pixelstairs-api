@@ -186,7 +186,7 @@ class Product extends BaseModel
     }
     public function imageGroup()
     {
-        return $this->hasOne('App\Models\ImageGroup','product_id','id');
+        return $this->hasOne('App\Models\ImageGroup','id','image_group_id');
     }
 
     // get reference data

@@ -115,7 +115,13 @@ $factory->define(App\Models\Image::class, function (Faker\Generator $faker) {
         'index' => mt_rand(0,5),
         'url' => $faker->imageUrl(),
         'is_mitty_own' => false,
-        'image_group_id' => mt_rand(1,10),
+        'image_group_id' => mt_rand(1,30),
+    ];
+});
+
+$factory->define(App\Models\ImageGroup::class, function (Faker\Generator $faker) {
+    return [
+        "model_name" => 'dummy',
     ];
 });
 
@@ -144,7 +150,7 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'domestic_delivery_price' => mt_rand(1000,2500),
         'is_free_delivery' => mt_rand(0,1),
         'image_id' => factory(App\Models\Image::class)->create()->id,
-        'image_group_id' => mt_rand(1,10),
+        'image_group_id' => factory(App\Models\ImageGroup::class)->create()->id,
         'url' => 'http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=333125048&trTypeCd=PW02&trCtgrNo=585021&lCtgrNo=1001452&mCtgrNo=1003081',
         'manufacturer_country_id' => factory(App\Models\Manufacturer::class)->create()->id,
         'status_code' => $statusCode,
@@ -206,7 +212,7 @@ $factory->define(App\Models\Review::class, function (Faker\Generator $faker) {
         'sku' => $product->option->first()['sku'],
         'title' => $faker->streetName,
         'target' => mt_rand(0,1) == 0 ? 'award' : 'buy',
-        'image_group_id' => mt_rand(1,10),
+        'image_group_id' => factory(App\Models\ImageGroup::class)->create()->id,
     ];
 });
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ImageGroup;
 use App\Models\SectionGroup;
 use App\Models\TranslateName;
 use Illuminate\Http\Request;
@@ -60,6 +61,7 @@ class ProductController extends Controller
             "deliveryPrice" => $product["domestic_delivery_price"],
             "isFreeDelivery" => $product["is_free_delivery"],
             "thumbnailUrl" => $product->image->url,
+            "images" => $product->imageGroup->getImages(),
             "url" => $product["url"],
             "safeStock" => $product->option[0]->safe_stock,
             "statusCode" => $product["status_code"],
@@ -149,6 +151,7 @@ class ProductController extends Controller
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
         $this->product->image_id = Image::create(["url" => $data["thumbnailUrl"]])['id'];
+        $this->product->image_group_id = ImageGroup::create(['model_name'=>'product'])['id'];
         $this->product->url = $data["url"];
         $this->product->status_code = "0300";
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
@@ -159,8 +162,7 @@ class ProductController extends Controller
 
         if ( !$this->product->save() ) Abort::Error("0040");
         if ( $this->product->option()->saveMany($this->setNewOption($data['options']['option'],$data['safeStock'],$optionCollection)) &&
-             $this->product->imageGroup()->create(['product_id'=>$this->product->id]) &&
-             $this->product->imageGroup->image()->saveMany($this->createExternalImageArray($this->product,$data['detailImages']))
+             $this->product->imageGroup->image()->saveMany($this->createExternalImageArray($data['detailImages']))
         ) return response()->success($this->product);
 
 

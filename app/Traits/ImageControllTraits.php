@@ -7,7 +7,7 @@ use Log;
 
 trait ImageControllTraits
 {
-    public function createExternalImageArray($product,$imageArray){
+    public function createExternalImageArray($imageArray){
         $result = [];
         foreach( $imageArray as $value ){
             $result[] = $image = new Image([
@@ -15,6 +15,7 @@ trait ImageControllTraits
                 "url" => $value['file'],
             ]);
         }
+        Log::info($result);
         return $result;
     }
     public function updateExternalImageArray($product,$imageArray){

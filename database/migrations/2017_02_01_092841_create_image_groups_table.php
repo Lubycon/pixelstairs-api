@@ -14,8 +14,7 @@ class CreateImageGroupsTable extends Migration
     {
         Schema::create('image_groups', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('review_id')->unsigned()->nullable();
-            $table->integer('product_id')->unsigned()->nullable();
+            $table->string('model_name',15);
             $table->timestamps();
         });
     }

@@ -55,7 +55,7 @@ class ReviewController extends Controller
                 "division" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
                 "section" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
                 "skuName" => $this->review->option->getTranslateResultByLanguage($this->review->option->translateName,$this->language),
-                "thumbnaiUrl" => $product->thumbnail_url,
+                "images" => $product->thumbnail_url,
             ],
             "title" => $this->review->title,
             "qa" => $this->getQnA($this->review->answer),

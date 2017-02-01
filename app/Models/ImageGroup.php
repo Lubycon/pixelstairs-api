@@ -2,11 +2,26 @@
 
 namespace App\Models;
 
+use Log;
+
 class ImageGroup extends BaseModel
 {
     protected $fillable = [
-        "id","review_id","product_id"
+        "id","model_name"
     ];
+
+    public function getImages(){
+        $result = [];
+        $images = $this->image;
+        foreach( $images as $value ){
+            $result[] = [
+                "url" => $value['url'],
+                "index" => $value['index']
+            ];
+        }
+        return $result;
+    }
+
     // get reference data
     // hasMany('remote_table_column_name','local_column_name');
     public function image()
