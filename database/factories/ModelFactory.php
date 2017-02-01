@@ -189,9 +189,11 @@ $factory->define(App\Models\Interest::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Models\Review::class, function (Faker\Generator $faker) {
+    $product = App\Models\Product::find(mt_rand(1,100));
     return [
         'user_id' => mt_rand(1,100),
-        'product_id' => mt_rand(1,100),
+        'product_id' => $product['id'],
+        'sku' => $product->option->first()['sku'],
         'title' => $faker->streetName,
         'target' => mt_rand(0,1) == 0 ? 'award' : 'buy',
         'image_group_id' => mt_rand(1,100),
@@ -209,13 +211,16 @@ $factory->define(App\Models\ReviewAnswer::class, function (Faker\Generator $fake
     return [
         'review_id' => mt_rand(1,100),
         'question_id' => mt_rand(1,100),
+        'score' => mt_rand(0,5),
         'description' => $faker->paragraph,
     ];
 });
 
 $factory->define(App\Models\Award::class, function (Faker\Generator $faker) {
+    $product = App\Models\Product::find(mt_rand(1,100));
     return [
-        'product_id' => mt_rand(1,100),
+        'product_id' => $product['id'],
+        'sku' => $product->option->first()['sku'],
         'user_id' => mt_rand(1,100),
         'is_written_review' => mt_rand(0,1),
     ];

@@ -51,7 +51,7 @@ class DummyDataSeeder extends Seeder
                         "MK0100" .
                         "CT" . $product['category_id'] .
                         "DV" . $product['division_id'] .
-                        "ST" . $product['section_id'] .
+                        "ST" . $product['section_group_id'] .
                         "PD" . $product['id'] .
                         "ID" . $i,
                     'translate_name_id' => TranslateName::create($this->optionArrayGenerate($optionName,$i))['id'],

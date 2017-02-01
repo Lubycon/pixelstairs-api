@@ -6,82 +6,143 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Pager\PageController;
+use App\Models\Review;
+use App\Models\Order;
+use App\Models\Award;
+
+use Log;
+use Abort;
+
+use App\Traits\GetUserModelTrait;
+use App\Traits\ReviewAnswerControllTraits;
+use App\Traits\OptionControllTraits;
+
 
 class ReviewController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
+    use GetUserModelTrait,ReviewAnswerControllTraits,OptionControllTraits;
+
+    public $review;
+    public $language;
+
+    public function __construct(){
+        $this->review = new review;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+
+    public function get(Request $request,$review_id){
+        $this->language = $request->header('X-mitty-language');
+        $this->review = Review::findOrFail($review_id);
+
+        $user = $this->review->user;
+        $product = $this->review->product;
+
+        $response = [
+            "id" => $this->review->id,
+            "user" => [
+                "id" => $user['id'],
+                "name" => $user->name,
+                "profileImg" => $user->thumbnail_url,
+            ],
+            "product" => [
+                "id" => $product->id,
+                "haitaoProductId" => $product->haitao_product_id,
+                "title" => $product->getTranslateResultByLanguage($product->translateName,$this->language),
+                "description" => $product->getTranslateResultByLanguage($product->translateDescription,$this->language),
+                "category" => $product->category->getTranslateResultByLanguage($product->category->translateName,$this->language),
+                "division" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
+                "section" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
+                "skuName" => $this->review->option->getTranslateResultByLanguage($this->review->option->translateName,$this->language),
+                "thumbnaiUrl" => $product->thumbnail_url,
+            ],
+            "title" => $this->review->title,
+            "qa" => $this->getQnA($this->review->answer),
+            "image" => [],
+        ];
+
+        return response()->success($response);
+    }
+    public function getList(Request $request){
+        $this->language = $request->header('X-mitty-language');
+        $query = $request->query();
+        $controller = new PageController('review',$query);
+        $collection = $controller->getCollection();
+
+        $result = (object)array(
+            "totalCount" => $controller->totalCount,
+            "currentPage" => $controller->currentPage,
+        );
+        foreach($collection as $review){
+            $this->review = Review::findOrFail($review['id']);
+            $user = $this->review->user;
+            $product = $this->review->product;
+
+            $result->review[] = (object)array(
+                "id" => $this->review->id,
+                "user" => [
+                    "id" => $user['id'],
+                    "name" => $user->name,
+                    "profileImg" => $user->thumbnail_url,
+                ],
+                "product" => [
+                    "id" => $product->id,
+                    "haitaoProductId" => $product->haitao_product_id,
+                    "title" => $product->getTranslateResultByLanguage($product->translateName,$this->language),
+                    "description" => $product->getTranslateResultByLanguage($product->translateDescription,$this->language),
+                    "category" => $product->category->getTranslateResultByLanguage($product->category->translateName,$this->language),
+                    "division" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
+                    "section" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
+                    "skuName" => $this->review->option->getTranslateResultByLanguage($this->review->option->translateName,$this->language),
+                    "thumbnaiUrl" => $product->thumbnail_url,
+                ],
+                "title" => $this->review->title,
+                "qa" => $this->getQnA($this->review->answer),
+                "image" => [],
+            );
+        };
+
+        if(!empty($result->review)){
+            return response()->success($result);
+        }else{
+            return response()->success();
+        }
+    }
+    public function getListByHaitaoProductId(Request $request,$haitao_product_id){
+        $requestDuplicate = $request->duplicate(['search' => "haitaoProductId:$haitao_product_id"]);
+        return $this->getList($requestDuplicate);
+    }
+    public function getListByHaitaoUserId(Request $request,$haitao_user_id){
+        $requestDuplicate = $request->duplicate(['search' => "haitaoUserId:$haitao_user_id"]);
+        return $this->getList($requestDuplicate);
+    }
+    public function post(Request $request,$target_id){
+        $target = $this->getReviewTarget($request,$target_id);
+
+
+        $this->review->user_id = $this->getUserByTokenRequestOrFail($request)['id'];
+        $this->review->product_id = $target['product_id'];
+        $this->review->title = $request->title;
+        $this->review->sku = $target['sku'];
+        $this->review->target = $request->target;
+
+        if ( !$this->review->save() ) Abort::Error("0040");
+        if ( $this->review->answer()->saveMany($this->setNewReviewAnswer($request['answers'])) ) return response()->success($this->review);
+        Abort::Error("0040");
+    }
+    public function put(Request $request,$review_id){
+        $this->review = Review::findOrFail($review_id);
+        $this->review->title = $request->title;
+        $this->updateAnswer($this->review,$request['answers']);
+
+        if ( !$this->review->save() ) Abort::Error("0040");
+        return response()->success($this->review);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+    protected function getReviewTarget($request,$target_id){
+        return $request['target'] == 'award'
+            ? Award::find($target_id)->first()
+            : Order::find($target_id)->first();
     }
 }

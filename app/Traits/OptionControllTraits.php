@@ -72,6 +72,25 @@ trait OptionControllTraits
         return $sku;
     }
 
+    private function getSkuDetailInfo($sku)
+    {
+        $matches = array();
+        preg_match('/MK(.*?)CT/s', $sku, $matches);
+        $info['market_id'] = $matches[1];
+        preg_match('/CT(.*?)DV/s', $sku, $matches);
+        $info['category_id'] = $matches[1];
+        preg_match('/DV(.*?)ST/s', $sku, $matches);
+        $info['division_id'] = $matches[1];
+        preg_match('/ST(.*?)PD/s', $sku, $matches);
+        $info['section_group_id'] = $matches[1];
+        preg_match('/PD(.*?)ID/s', $sku, $matches);
+        $info['product_id'] = $matches[1];
+        $explode = explode('ID',$sku);
+        $info['index'] = $explode[1];
+
+        return $info;
+    }
+
 //    private function bindOption($option){
 //        $response = [];
 //        foreach ($option as $key => $value) {

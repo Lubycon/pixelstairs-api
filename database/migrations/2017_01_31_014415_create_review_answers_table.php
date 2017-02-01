@@ -17,6 +17,7 @@ class CreateReviewAnswersTable extends Migration
             $table->integer('review_id')->unsigned();
             $table->integer('question_id')->unsigned();
             $table->string('description',100);
+            $table->integer('score')->unsigned();
             $table->softDeletes();
             $table->timestamps();
         });

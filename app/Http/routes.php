@@ -13,6 +13,11 @@ Route::group(['prefix' => '/v1'], function () {
             Route::post('', 'HaitaoController@orderStore');
             Route::put('{haitao_order_id}', 'HaitaoController@orderPut');
         });
+        Route::group(['prefix' => 'review/'], function () {
+            Route::get('product/{haitao_product_id}', 'ReviewController@getListByHaitaoProductId');
+            Route::get('user/{haitao_user_id}', 'ReviewController@getListByHaitaoUserId');
+        });
+
     });
     Route::group(['prefix' => '/members/'], function () {
         //authenicates
@@ -69,6 +74,12 @@ Route::group(['prefix' => '/v1'], function () {
     Route::group(['prefix' => '/survey/'], function () {
         Route::get('', 'SurveyController@getList');
         Route::post('{user_id}', 'SurveyController@post');
+    });
+    Route::group(['prefix' => '/reviews/'], function () {
+        Route::get('detail/{review_id}', 'ReviewController@get');
+        Route::get('', 'ReviewController@getList');
+        Route::post('{target_id}', 'ReviewController@post');
+        Route::put('{review_id}', 'ReviewController@put');
     });
 
 
