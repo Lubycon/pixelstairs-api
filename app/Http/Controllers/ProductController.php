@@ -37,6 +37,7 @@ class ProductController extends Controller
     public $market_id;
     public $market_product_id;
     public $market_category_id;
+    public $language;
 
     public function get(Request $request,$id){
         $product = Product::findOrFail($id);
@@ -67,6 +68,23 @@ class ProductController extends Controller
             "seller" => $product->getSeller(),
             "productGender" => $product->gender->id,
             "manufacturerCountryId" => $product->manufacturer['country_id'],
+        );
+
+        return response()->success($response);
+    }
+
+    public function getSimple(Request $request,$id){
+        $this->language = $request->header('X-mitty-language');
+        $product = Product::findOrFail($id);
+        $response = (object)array(
+            "id" => $product["id"],
+            "title" => $product->getTranslateResultByLanguage($product->translateName,$this->language),
+            "brand" => $product->brand->getTranslateResultByLanguage($product->brand->translateName,$this->language),
+            "description" => $product->getTranslateResultByLanguage($product->translateDescription,$this->language),
+            "categoryName" => $product->category->getTranslateResultByLanguage($product->category->translateName,$this->language),
+            "divisionName" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
+            "sections" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
+            "thumbnailUrl" => $product["thumbnail_url"],
         );
 
         return response()->success($response);
