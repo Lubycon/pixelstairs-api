@@ -94,17 +94,19 @@ class Handler extends ExceptionHandler
         }
     }
     protected function slackAlarm($request,Exception $e){
-        Slack::enableMarkdown()->send(
-            '*Url* = '.$request->path()."     ".
-            '*Method* = '.$request->method()."     ".
-            '*Ip* = '.$request->ip()."     ".
-            '*Input* = ```'.json_encode($request->json()->all())."```     ".
-            '*UserToken* = '.$request->header('X-mitty-token')."     ".
-            '*Code* = '.$e->getCode()."     ".
-            '*Line* = '.$e->getLine()."     ".
-            '*Message* = ```'.$e->getMessage().'```      '.
-            '*Time* = '.Carbon::now()->toDateTimeString()
-        );
+        if(env('SLACK_DEBUG_BOT')){
+            Slack::enableMarkdown()->send(
+                '*Url* = '.$request->path()."     ".
+                '*Method* = '.$request->method()."     ".
+                '*Ip* = '.$request->ip()."     ".
+                '*Input* = ```'.json_encode($request->json()->all())."```     ".
+                '*UserToken* = '.$request->header('X-mitty-token')."     ".
+                '*Code* = '.$e->getCode()."     ".
+                '*Line* = '.$e->getLine()."     ".
+                '*Message* = ```'.$e->getMessage().'```      '.
+                '*Time* = '.Carbon::now()->toDateTimeString()
+            );
+        }
     }
     protected function getJsonMessage($e){
         return method_exists($e, 'getMessage') ? $e->getMessage() : 500;

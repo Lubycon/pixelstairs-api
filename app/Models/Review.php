@@ -31,6 +31,17 @@ class Review extends BaseModel
     }
 
 
+
+    public function image()
+    {
+        return $this->hasOne('App\Models\Image','id','image_id');
+    }
+    public function imageGroup()
+    {
+        return $this->hasOne('App\Models\ImageGroup','id','image_group_id');
+    }
+
+
     // get reference data
     // hasMany('remote_table_column_name','local_column_name');
     public function answer()

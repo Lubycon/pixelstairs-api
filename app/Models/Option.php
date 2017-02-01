@@ -9,7 +9,7 @@ class Option extends BaseModel
     use SoftDeletes;
 
     protected $fillable = [
-        'product_id','sku','translate_name_id','price','stock','safe_stock','thumbnail_url','option_collection_id'
+        'product_id','sku','translate_name_id','price','stock','safe_stock','image_id','option_collection_id'
     ];
 
     protected $casts = [
@@ -30,6 +30,11 @@ class Option extends BaseModel
     public function optionCollection()
     {
         return $this->hasOne('App\Models\OptionCollection','id','option_collection_id');
+    }
+
+    public function image()
+    {
+        return $this->hasOne('App\Models\Image','id','image_id');
     }
 
     // get translate data

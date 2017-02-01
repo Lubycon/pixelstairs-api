@@ -71,6 +71,7 @@ $factory->define(App\Models\Option::class, function (Faker\Generator $faker) {
         'safe_stock' => 15,
         'price' => mt_rand(10000,50000),
         'option_collection_id' => factory(App\Models\OptionCollection::class)->create()->id,
+        'image_id' => factory(App\Models\Image::class)->create()->id,
     ];
 });
 
@@ -109,6 +110,14 @@ $factory->define(App\Models\Seller::class, function (Faker\Generator $faker) {
     ];
 });
 
+$factory->define(App\Models\Image::class, function (Faker\Generator $faker) {
+    return [
+        'index' => mt_rand(0,5),
+        'url' => $faker->imageUrl(),
+        'is_mitty_own' => false,
+        'image_group_id' => mt_rand(1,10),
+    ];
+});
 
 $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
     $statusCode = '030'.mt_rand(0,2);
@@ -134,7 +143,8 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'unit' => "KRW",
         'domestic_delivery_price' => mt_rand(1000,2500),
         'is_free_delivery' => mt_rand(0,1),
-        'thumbnail_url' => $faker->imageUrl,
+        'image_id' => factory(App\Models\Image::class)->create()->id,
+        'image_group_id' => mt_rand(1,10),
         'url' => 'http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=333125048&trTypeCd=PW02&trCtgrNo=585021&lCtgrNo=1001452&mCtgrNo=1003081',
         'manufacturer_country_id' => factory(App\Models\Manufacturer::class)->create()->id,
         'status_code' => $statusCode,
@@ -174,7 +184,7 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
         'address1' => $faker->address,
         'address2' => $faker->streetAddress,
         'post_code' => $faker->postcode,
-        'thumbnail_url' => $faker->imageUrl,
+        'image_id' => factory(App\Models\Image::class)->create()->id,
     ];
 });
 
@@ -196,7 +206,7 @@ $factory->define(App\Models\Review::class, function (Faker\Generator $faker) {
         'sku' => $product->option->first()['sku'],
         'title' => $faker->streetName,
         'target' => mt_rand(0,1) == 0 ? 'award' : 'buy',
-        'image_group_id' => mt_rand(1,100),
+        'image_group_id' => mt_rand(1,10),
     ];
 });
 

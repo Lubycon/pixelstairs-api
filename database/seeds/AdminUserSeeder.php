@@ -30,7 +30,7 @@ class AdminUserSeeder extends Seeder
                 'address1' => 'gangbuck',
                 'address2' => 'mia',
                 'post_code' => '12312',
-                'thumbnail_url' => 'http://www.4cne.com/files/attach/images/242/546/064/af11a79941394be61016f09628d1776e.jpg',
+                'image_id' => 2,
             ),
             array(
                 'email'=>'peter@mittycompany.com',
@@ -49,7 +49,7 @@ class AdminUserSeeder extends Seeder
                 'address1' => 'hap-jung',
                 'address2' => 'street',
                 'post_code' => '5483',
-                'thumbnail_url' => 'https://s-media-cache-ak0.pinimg.com/736x/26/c3/9d/26c39d418a99648a6c2cbbe4c5bd5d55.jpg',
+                'image_id' => 3,
             ),
         );
 

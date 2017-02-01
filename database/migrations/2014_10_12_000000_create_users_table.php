@@ -35,7 +35,7 @@ class CreateUsersTable extends Migration
             $table->string('address2',30)->nullable();
             $table->integer('post_code')->nullable();
 
-            $table->longText('thumbnail_url')->nullable();
+            $table->integer('image_id')->default(1);
 
             $table->rememberToken();
             $table->timestamp('last_login_time')->nullable();

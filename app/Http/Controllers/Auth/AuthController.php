@@ -20,6 +20,7 @@ use App\Http\Requests\Auth\AuthRetrieveRequest;
 use Abort;
 
 use App\Traits\GetUserModelTrait;
+use App\Traits\S3StorageControllTraits;
 
 use App\Jobs\LastSigninTimeCheckerJob;
 
@@ -28,7 +29,8 @@ use Log;
 class AuthController extends Controller
 {
     use ThrottlesLogins,
-        GetUserModelTrait;
+        GetUserModelTrait,
+        S3StorageControllTraits;
 
     protected function signin(AuthSigninRequest $request)
     {
@@ -152,7 +154,8 @@ class AuthController extends Controller
                 "name" => $findUser->name,
                 "nickname" => $findUser->nickname,
                 "position" => $findUser->position,
-                "grade" => $findUser->grade
+                "grade" => $findUser->grade,
+                "profileImg" => $findUser->image->url,
             ]);
         }else{
             Abort::Error('0040');
@@ -173,8 +176,9 @@ class AuthController extends Controller
                 $findUser->password = bcrypt($data['password']);
                 $findUser->position = $data['position'];
                 $findUser->grade = $data['grade'];
+                $findUser->image->update(["url"=>env('S3_PATH').$this->userThumbnailUpload($findUser,$data['profileImg'])]);
                 if($findUser->save()){
-                    return response()->success($data);
+                    return response()->success($findUser);
                 }
         }else{
             Abort::Error('0040');

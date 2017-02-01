@@ -59,6 +59,7 @@ class DummyDataSeeder extends Seeder
                     'safe_stock' => mt_rand(10, 50),
                     'price' => mt_rand(10000, 50000),
                     'option_collection_id' => $collectionNumber,
+                    'image_id' => factory(App\Models\Image::class)->create()->id,
                 ));
             }
         }

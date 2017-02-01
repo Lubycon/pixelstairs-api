@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
         Model::unguard();
 
         $this->call(AdminUserSeeder::class);
+        $this->call(ImageTableSeeder::class);
         $this->call(MarketTableSeeder::class);
         $this->call(CountryTableSeeder::class);
         $this->call(TranslateTableSeeder::class);

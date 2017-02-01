@@ -19,6 +19,7 @@ use App\Models\Product;
 use App\Models\Seller;
 use App\Models\Option;
 use App\Models\Manufacturer;
+use App\Models\Image;
 use Abort;
 
 use App\Traits\GetUserModelTrait;
@@ -27,10 +28,12 @@ use App\Traits\HaitaoRequestTraits;
 use App\Traits\StatusInfoTraits;
 use App\Traits\TranslateTraits;
 use App\Traits\SectionTrait;
+use App\Traits\ImageControllTraits;
+use App\Traits\S3StorageControllTraits;
 
 class ProductController extends Controller
 {
-    use GetUserModelTrait,OptionControllTraits,HaitaoRequestTraits,StatusInfoTraits,TranslateTraits,SectionTrait;
+    use GetUserModelTrait,OptionControllTraits,HaitaoRequestTraits,StatusInfoTraits,TranslateTraits,SectionTrait,ImageControllTraits,S3StorageControllTraits;
 
     public $product;
     public $product_id;
@@ -56,7 +59,7 @@ class ProductController extends Controller
             "priceInfo" => $product->getPriceInfo(),
             "deliveryPrice" => $product["domestic_delivery_price"],
             "isFreeDelivery" => $product["is_free_delivery"],
-            "thumbnailUrl" => $product["thumbnail_url"],
+            "thumbnailUrl" => $product->image->url,
             "url" => $product["url"],
             "safeStock" => $product->option[0]->safe_stock,
             "statusCode" => $product["status_code"],
@@ -109,7 +112,7 @@ class ProductController extends Controller
                 "description" => $product->getTranslateDescription($product),
                 "weight" => $product["weight"],
                 "priceInfo" => $product->getPriceInfo(),
-                "thumbnailUrl" => $product["thumbnail_url"],
+                "thumbnailUrl" => $product->image->url,
                 "url" => $product["url"],
                 "safeStock" => $product->option[0]->safe_stock,
                 "statusCode" => $product["status_code"],
@@ -145,7 +148,7 @@ class ProductController extends Controller
         $this->product->unit = $data["priceInfo"]['unit'];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
-        $this->product->thumbnail_url = $data["thumbnailUrl"];
+        $this->product->image_id = Image::create(["url" => $data["thumbnailUrl"]])['id'];
         $this->product->url = $data["url"];
         $this->product->status_code = "0300";
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
@@ -155,7 +158,12 @@ class ProductController extends Controller
         $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->product->option()->saveMany($this->setNewOption($data['options']['option'],$data['safeStock'],$optionCollection)) ) return response()->success($this->product);
+        if ( $this->product->option()->saveMany($this->setNewOption($data['options']['option'],$data['safeStock'],$optionCollection)) &&
+             $this->product->imageGroup()->create(['product_id'=>$this->product->id]) &&
+             $this->product->imageGroup->image()->saveMany($this->createExternalImageArray($this->product,$data['detailImages']))
+        ) return response()->success($this->product);
+
+
         Abort::Error("0040");
     }
 
@@ -180,7 +188,7 @@ class ProductController extends Controller
         $this->product->unit = $data["priceInfo"]['unit'];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
-        $this->product->thumbnail_url = $data["thumbnailUrl"];
+        $this->product->image_id = Image::create(["url" => $data["thumbnailUrl"]])['id'];
         $this->product->url = $data["url"];
         $this->product->status_code = "0300";
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
@@ -190,7 +198,9 @@ class ProductController extends Controller
         $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->updateOptions($data['options']['option'],$data['safeStock'],$optionCollection) ) return response()->success($this->product);
+        if ( $this->updateOptions($data['options']['option'],$data['safeStock'],$optionCollection) &&
+             $this->product->imageGroup->image()->saveMany($this->updateExternalImageArray($this->product,$data['detailImages']))
+        ) return response()->success($this->product);
         Abort::Error("0040");
     }
 
