@@ -11,6 +11,7 @@ class Division extends BaseModel
     protected $fillable = [
         'id',
         "parent_id",
+        'translate_name_id',
     ];
 
     protected $casts = [
@@ -27,6 +28,12 @@ class Division extends BaseModel
         return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
     }
 
+    // get reference data
+    // hasMany('remote_table_column_name','local_column_name');
+    public function reviewQuestion()
+    {
+        return $this->hasMany('App\Models\ReviewQuestion','division_id','id');
+    }
 
     // belongsTo
     // belongsTo('remote_table_column_name','local_column_name');

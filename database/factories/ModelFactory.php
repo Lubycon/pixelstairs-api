@@ -203,6 +203,7 @@ $factory->define(App\Models\Review::class, function (Faker\Generator $faker) {
 $factory->define(App\Models\ReviewQuestion::class, function (Faker\Generator $faker) {
     return [
         'division_id' => mt_rand(1,100),
+        'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
         'description' => $faker->paragraph,
     ];
 });

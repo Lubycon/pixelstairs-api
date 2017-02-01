@@ -8,7 +8,11 @@ class Review extends BaseModel
 {
     use SoftDeletes;
 
-
+    protected $casts = [
+        'id' => 'string',
+        'user_id' => 'string',
+        'product_id' => 'string',
+    ];
 
     // belongsTo
     // belongsTo('remote_table_column_name','local_column_name');
@@ -19,7 +23,7 @@ class Review extends BaseModel
     }
     public function user()
     {
-        return $this->belongsTo('App\Models\Product','user_id','id');
+        return $this->belongsTo('App\Models\User','user_id','id');
     }
     public function option()
     {

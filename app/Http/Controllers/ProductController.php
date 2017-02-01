@@ -188,11 +188,11 @@ class ProductController extends Controller
     public function status(Request $request,$status_name){
         $status = Status::with('translateName')->get()->where('translateName.english',$status_name)->first();
         $products = $request['products'];
+        $result = [];
         foreach( $products as $value ){
-            $this->product = Product::findOrFail($value);
-            $this->product->status_code = $this->statusUpdate($request,$status['code']);
-            $this->product->save();
+            $result[] = $product = $this->statusUpdate($request,Product::findOrFail($value),$status['code']);
+            $product->save();
         }
-        return response()->success();
+        return response()->success($result);
     }
 }

@@ -24,6 +24,7 @@ use Log;
 use App\Traits\OptionControllTraits;
 
 use App\Http\Requests\Order\OrderPostRequest;
+use App\Http\Requests\Order\OrderUpdateRequest;
 
 class HaitaoController extends Controller
 {

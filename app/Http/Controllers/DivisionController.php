@@ -43,7 +43,7 @@ class DivisionController extends Controller
     public function post(Request $request){
         $data = [
             "translate_name_id" => $this->createTranslateName($request['name'])['id'],
-            "parentId" => $request['parentId'],
+            "parent_id" => $request['parentId'],
         ];
         if( $hello = Division::firstOrCreate($data) ){
             return response()->success($hello);

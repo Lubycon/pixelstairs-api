@@ -42,7 +42,7 @@ trait ReviewAnswerControllTraits
         foreach( $answer as $value ){
             if( isset($value['aid']) ){
                 $result[] = $value['aid'];
-                $review->answer->find($value['aid'])->update([
+                $review->answer->findOrFail($value['aid'])->update([
                     "question_id" => $value['qid'],
                     "description" => $value['description'],
                     "score" => $value['score'],

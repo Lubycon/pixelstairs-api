@@ -8,6 +8,12 @@ class ReviewAnswer extends BaseModel
 {
     use SoftDeletes;
 
+    protected $casts = [
+        'id' => 'string',
+        'review_id' => 'string',
+        'qeustion_id' => 'string',
+    ];
+
     protected $fillable = [
         'question_id',
         'review_id',

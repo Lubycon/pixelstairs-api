@@ -17,11 +17,12 @@ use Abort;
 use App\Traits\GetUserModelTrait;
 use App\Traits\ReviewAnswerControllTraits;
 use App\Traits\OptionControllTraits;
+use App\Traits\ReviewQuestionControllTraits;
 
 
 class ReviewController extends Controller
 {
-    use GetUserModelTrait,ReviewAnswerControllTraits,OptionControllTraits;
+    use GetUserModelTrait,ReviewAnswerControllTraits,OptionControllTraits,ReviewQuestionControllTraits;
 
     public $review;
     public $language;
@@ -117,8 +118,7 @@ class ReviewController extends Controller
         return $this->getList($requestDuplicate);
     }
     public function post(Request $request,$target_id){
-        $target = $this->getReviewTarget($request,$target_id);
-
+        $target = $this->getReviewTargetByRequest($request,$target_id);
 
         $this->review->user_id = $this->getUserByTokenRequestOrFail($request)['id'];
         $this->review->product_id = $target['product_id'];
@@ -137,12 +137,5 @@ class ReviewController extends Controller
 
         if ( !$this->review->save() ) Abort::Error("0040");
         return response()->success($this->review);
-    }
-
-
-    protected function getReviewTarget($request,$target_id){
-        return $request['target'] == 'award'
-            ? Award::find($target_id)->first()
-            : Order::find($target_id)->first();
     }
 }

@@ -58,6 +58,9 @@ class BaseModel extends Model
         }
     }
     public function isTranslateName($value){
+        if( is_null($value) ) return NULL;
+
+
         if( !isset($value['original']['original']) ) return $value->translateName;
         return $value;
     }

@@ -81,6 +81,9 @@ Route::group(['prefix' => '/v1'], function () {
         Route::post('{target_id}', 'ReviewController@post');
         Route::put('{review_id}', 'ReviewController@put');
     });
+    Route::group(['prefix' => '/questions/'], function () {
+        Route::get('{target}/{target_id}', 'QuestionController@get');
+    });
 
 
 

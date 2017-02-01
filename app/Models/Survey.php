@@ -8,9 +8,10 @@ class Survey extends BaseModel
 {
     use SoftDeletes;
 
-
-    // get all reference data
-
+    protected $casts = [
+        'id' => 'string',
+        'user_id' => 'string',
+    ];
 
     // belongsTo
     // belongsTo('remote_table_column_name','local_column_name');
