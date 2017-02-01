@@ -8,7 +8,7 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
         "asm89/stack-cors": "dev-master as 0.2.2",
-        "barryvdh/laravel-cors": "^0.8.1",
+        "barryvdh/laravel-cors": "0.8.2",
         "pda/pheanstalk": "^3.1",
         "guzzlehttp/guzzle": "^6.2",
         "zircote/swagger-php": "^2.0",
