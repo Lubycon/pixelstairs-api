@@ -22,6 +22,7 @@ class Image extends BaseModel
             "id" => $this->id,
             "file" => $this->getUrl(),
             "index" => $this->index,
+            "deleted" => false,
         ];
     }
 
