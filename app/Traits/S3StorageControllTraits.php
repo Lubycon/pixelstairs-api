@@ -40,9 +40,6 @@ trait S3StorageControllTraits
 
     public function base64ImageDecode($base64){
         $explodeBase64 = explode('data:image/jpeg;base64,',$base64);
-
-        Log::info($base64);
-
         return base64_decode($explodeBase64[1]);
     }
     public function setRandomFileName($ext){
