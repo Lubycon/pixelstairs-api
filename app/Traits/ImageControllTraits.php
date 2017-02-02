@@ -44,7 +44,9 @@ trait ImageControllTraits
         foreach( $imageArray as $value ){
             $result[] = $image = new Image([
                 "index" => $value['index'],
-                "url" => $this->reviewThumbnailUpload($review,$value['file']),
+                "url" => $this->isBase64File( $value['file'] )
+                ? $this->reviewThumbnailUpload($review,$value['file'])
+                : $value['file'],
                 "is_mitty_own" => true,
             ]);
         }
@@ -59,7 +61,9 @@ trait ImageControllTraits
                 $currentImageIds[] = $value['id'];
                 Image::findOrFail($value['id'])->update([
                     "index" => $value['index'],
-                    "url" => $this->reviewThumbnailUpload($review,$value['file']),
+                    "url" => $this->isBase64File( $value['file'] )
+                        ? $this->reviewThumbnailUpload($review,$value['file'])
+                        : $value['file'],
                     "is_mitty_own" => true,
                 ]);
             }else{
@@ -74,6 +78,10 @@ trait ImageControllTraits
         $clear = $review->imageGroup->image()->whereIn('id',$diff)->delete();
         // storage image delete source needed
         return $result;
+    }
+
+    public function isBase64File($file){
+        return (bool) preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $file);
     }
 }
  ?>

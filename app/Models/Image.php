@@ -13,7 +13,6 @@ class Image extends BaseModel
 
     protected $casts = [
         "id" => 'string',
-        "index" => 'string',
         'image_group_id' => "string"
     ];
 
@@ -22,7 +21,7 @@ class Image extends BaseModel
             "id" => $this->id,
             "file" => $this->getUrl(),
             "index" => $this->index,
-            "deleted" => false,
+            "deleted" => false
         ];
     }
 
