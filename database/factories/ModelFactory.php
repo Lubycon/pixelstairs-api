@@ -210,7 +210,6 @@ $factory->define(App\Models\Review::class, function (Faker\Generator $faker) {
         'sku' => $product->option->first()['sku'],
         'title' => $faker->streetName,
         'target' => mt_rand(0,1) == 0 ? 'award' : 'buy',
-        'image_id' => factory(App\Models\Image::class)->create()->id,
         'image_group_id' => factory(App\Models\ImageGroup::class)->create()->id,
     ];
 });
