@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ImageGroup;
 use App\Models\SectionGroup;
 use App\Models\TranslateName;
 use Illuminate\Http\Request;
@@ -19,6 +20,7 @@ use App\Models\Product;
 use App\Models\Seller;
 use App\Models\Option;
 use App\Models\Manufacturer;
+use App\Models\Image;
 use Abort;
 
 use App\Traits\GetUserModelTrait;
@@ -27,16 +29,19 @@ use App\Traits\HaitaoRequestTraits;
 use App\Traits\StatusInfoTraits;
 use App\Traits\TranslateTraits;
 use App\Traits\SectionTrait;
+use App\Traits\ImageControllTraits;
+use App\Traits\S3StorageControllTraits;
 
 class ProductController extends Controller
 {
-    use GetUserModelTrait,OptionControllTraits,HaitaoRequestTraits,StatusInfoTraits,TranslateTraits,SectionTrait;
+    use GetUserModelTrait,OptionControllTraits,HaitaoRequestTraits,StatusInfoTraits,TranslateTraits,SectionTrait,ImageControllTraits,S3StorageControllTraits;
 
     public $product;
     public $product_id;
     public $market_id;
     public $market_product_id;
     public $market_category_id;
+    public $language;
 
     public function get(Request $request,$id){
         $product = Product::findOrFail($id);
@@ -55,7 +60,8 @@ class ProductController extends Controller
             "priceInfo" => $product->getPriceInfo(),
             "deliveryPrice" => $product["domestic_delivery_price"],
             "isFreeDelivery" => $product["is_free_delivery"],
-            "thumbnailUrl" => $product["thumbnail_url"],
+            "thumbnailUrl" => $product->image->getUrl(),
+            "images" => $product->imageGroup->getImages(),
             "url" => $product["url"],
             "safeStock" => $product->option[0]->safe_stock,
             "statusCode" => $product["status_code"],
@@ -67,6 +73,23 @@ class ProductController extends Controller
             "seller" => $product->getSeller(),
             "productGender" => $product->gender->id,
             "manufacturerCountryId" => $product->manufacturer['country_id'],
+        );
+
+        return response()->success($response);
+    }
+
+    public function getSimple(Request $request,$id){
+        $this->language = $request->header('X-mitty-language');
+        $product = Product::findOrFail($id);
+        $response = (object)array(
+            "id" => $product["id"],
+            "title" => $product->getTranslateResultByLanguage($product->translateName,$this->language),
+            "brand" => $product->brand->getTranslateResultByLanguage($product->brand->translateName,$this->language),
+            "description" => $product->getTranslateResultByLanguage($product->translateDescription,$this->language),
+            "categoryName" => $product->category->getTranslateResultByLanguage($product->category->translateName,$this->language),
+            "divisionName" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
+            "sections" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
+            "thumbnailUrl" => $product->image->getUrl(),
         );
 
         return response()->success($response);
@@ -91,7 +114,7 @@ class ProductController extends Controller
                 "description" => $product->getTranslateDescription($product),
                 "weight" => $product["weight"],
                 "priceInfo" => $product->getPriceInfo(),
-                "thumbnailUrl" => $product["thumbnail_url"],
+                "thumbnailUrl" => $product->image->getUrl(),
                 "url" => $product["url"],
                 "safeStock" => $product->option[0]->safe_stock,
                 "statusCode" => $product["status_code"],
@@ -127,7 +150,8 @@ class ProductController extends Controller
         $this->product->unit = $data["priceInfo"]['unit'];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
-        $this->product->thumbnail_url = $data["thumbnailUrl"];
+        $this->product->image_id = Image::create(["url" => $data["thumbnailUrl"]])['id'];
+        $this->product->image_group_id = ImageGroup::create(['model_name'=>'product'])['id'];
         $this->product->url = $data["url"];
         $this->product->status_code = "0300";
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
@@ -137,7 +161,11 @@ class ProductController extends Controller
         $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->product->option()->saveMany($this->setNewOption($data['options']['option'],$data['safeStock'],$optionCollection)) ) return response()->success($this->product);
+        if ( $this->product->option()->saveMany($this->setNewOption($data['options']['option'],$data['safeStock'],$optionCollection)) &&
+             $this->product->imageGroup->image()->saveMany($this->createExternalImageArray($data['detailImages']))
+        ) return response()->success($this->product);
+
+
         Abort::Error("0040");
     }
 
@@ -162,7 +190,7 @@ class ProductController extends Controller
         $this->product->unit = $data["priceInfo"]['unit'];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
-        $this->product->thumbnail_url = $data["thumbnailUrl"];
+        $this->product->image_id = Image::create(["url" => $data["thumbnailUrl"]])['id'];
         $this->product->url = $data["url"];
         $this->product->status_code = "0300";
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
@@ -172,7 +200,9 @@ class ProductController extends Controller
         $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->updateOptions($data['options']['option'],$data['safeStock'],$optionCollection) ) return response()->success($this->product);
+        if ( $this->updateOptions($data['options']['option'],$data['safeStock'],$optionCollection) &&
+             $this->product->imageGroup->image()->saveMany($this->updateExternalImageArray($this->product,$data['detailImages']))
+        ) return response()->success($this->product);
         Abort::Error("0040");
     }
 
@@ -188,11 +218,11 @@ class ProductController extends Controller
     public function status(Request $request,$status_name){
         $status = Status::with('translateName')->get()->where('translateName.english',$status_name)->first();
         $products = $request['products'];
+        $result = [];
         foreach( $products as $value ){
-            $this->product = Product::findOrFail($value);
-            $this->product->status_code = $this->statusUpdate($request,$status['code']);
-            $this->product->save();
+            $result[] = $product = $this->statusUpdate($request,Product::findOrFail($value),$status['code']);
+            $product->save();
         }
-        return response()->success();
+        return response()->success($result);
     }
 }

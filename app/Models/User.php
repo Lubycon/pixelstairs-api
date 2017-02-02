@@ -12,12 +12,10 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Log;
 
 class User extends BaseModel implements AuthenticatableContract,
-                                    AuthorizableContract,
-                                    CanResetPasswordContract
+    AuthorizableContract,
+    CanResetPasswordContract
 {
     use Authenticatable, Authorizable, CanResetPassword ,SoftDeletes;
-
-    protected $table = 'users';
 
     protected $casts = [
         'id' => 'string',
@@ -36,6 +34,7 @@ class User extends BaseModel implements AuthenticatableContract,
 
     protected $fillable = [
         'email',
+        'phone',
         'name',
         'nickname',
         'password',
@@ -44,4 +43,18 @@ class User extends BaseModel implements AuthenticatableContract,
     ];
 
     protected $hidden = ['password', 'remember_token'];
+
+
+    public function image()
+    {
+        return $this->hasOne('App\Models\Image','id','image_id');
+    }
+
+    // get reference data
+    // hasMany('remote_table_column_name','local_column_name');
+    public function interest()
+    {
+        return $this->hasMany('App\Models\Interest','user_id','id');
+    }
+
 }

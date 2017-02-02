@@ -40,7 +40,8 @@ class CreateProductsTable extends Migration
             $table->integer('weight')->unsigned()->nullable();
             $table->integer('safe_stock')->unsigned();
 
-            $table->longtext('thumbnail_url');
+            $table->integer('image_id')->unsigned();
+            $table->integer('image_group_id')->unsigned()->nullable();
             $table->longtext('url');
 
             $table->string('status_code')->default('0300');

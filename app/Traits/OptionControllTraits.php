@@ -1,6 +1,7 @@
 <?php
 namespace App\Traits;
 
+use App\Models\Image;
 use App\Models\Option;
 use App\Models\OptionCollection;
 use App\Models\OptionKey;
@@ -22,7 +23,7 @@ trait OptionControllTraits
                 "stock" => $option["stock"],
                 "safe_stock" => Option::absoluteSafeStockCkeck($safeStock),
                 "translate_name_id" => $this->createTranslateName($option['name'])['id'],
-//                "thumbnail_url" => $option["thumbnailUrl"],
+                "image_id" => Image::create(["url" => $option["thumbnailUrl"]])['id'],
                 "option_collection_id" => $optionCollection['id'],
             ]);
             $index++;
@@ -34,18 +35,19 @@ trait OptionControllTraits
         $this->isDirtyOption($options);
         foreach ($options as $key => $option) {
             $originalSku = $this->product->option[$key]->sku;
-            if($originalSku !== $option['sku']) Abort::Error('0040',"Diff SKU");
+//            if($originalSku !== $option['sku']) Abort::Error('0040',"Diff SKU");
                 $this->product->option[$key]->price = $option["price"];
                 $this->product->option[$key]->stock = $option["stock"];
                 $this->product->option[$key]->safe_stock = Option::absoluteSafeStockCkeck($safeStock);
                 $this->product->option[$key]->translate_name_id = $this->createTranslateName($option['name'])['id'];
+                $this->product->option[$key]->image->update(["url" => $option["thumbnailUrl"]]);
                 $this->product->option[$key]->option_collection_id = $optionCollection['id'];
                 if (!$this->product->option[$key]->update()) Abort::Error("0040","Option Update Fail");
         }
         return true;
     }
     private function isDirtyOption($options){
-        if ( count($this->product->option()->get()) !==  count($options)) Abort::Error("0040","Can not add option at update product");
+//        if ( count($this->product->option()->get()) !==  count($options)) Abort::Error("0040","Can not add option at update product");
         return;
     }
 
@@ -72,53 +74,24 @@ trait OptionControllTraits
         return $sku;
     }
 
-//    private function bindOption($option){
-//        $response = [];
-//        foreach ($option as $key => $value) {
-//            $response[] = array(
-//                "skuId" => $value->sku_id,
-//                "sku" => Sku::find($value->sku_id)->value("sku"),
-//                "name" => array(
-//                    "origin" => $value->original_name,
-//                    "zh" => $value->chinese_name,
-//                ),
-//                "price" => $value->price
-//            );
-//        }
-//        return $response;
-//    }
-//    private function bindOptionZh($option){
-//        $response = [];
-//        foreach ($option as $key => $value) {
-//            $response[] = array(
-//                "sku" => Sku::find($value->sku_id)->value("sku"),
-//                "name" => $value->chinese_name,
-//                "price" => $value->price
-//            );
-//        }
-//        return $response;
-//    }
-//
-//    private function setOption($options){
-//        $result = [];
-//        $index = 0;
-//        foreach ($options as $key => $option) {
-//            $result[] = array(
-//                "market_id" => $this->market_id,
-//                "product_id" => $this->product->id,
-//                "sku_id" => $this->createSku($option,$index),
-//                "original_name" => $option["name"]["origin"],
-//                "chinese_name" => $option["name"]["zh"],
-//                // "korean_name" => $option["name"]["ko"],
-//                // "english_name" => $option["name"]["en"],
-//                "price" => $option["price"],
-//                // "stock" => $option["stock"],
-//                // "safe_stock" => $option["safeStock"],
-//            );
-//            $index++;
-//        }
-//        return $result;
-//    }
+    private function getSkuDetailInfo($sku)
+    {
+        $matches = array();
+        preg_match('/MK(.*?)CT/s', $sku, $matches);
+        $info['market_id'] = $matches[1];
+        preg_match('/CT(.*?)DV/s', $sku, $matches);
+        $info['category_id'] = $matches[1];
+        preg_match('/DV(.*?)ST/s', $sku, $matches);
+        $info['division_id'] = $matches[1];
+        preg_match('/ST(.*?)PD/s', $sku, $matches);
+        $info['section_group_id'] = $matches[1];
+        preg_match('/PD(.*?)ID/s', $sku, $matches);
+        $info['product_id'] = $matches[1];
+        $explode = explode('ID',$sku);
+        $info['index'] = $explode[1];
+
+        return $info;
+    }
 
 }
  ?>

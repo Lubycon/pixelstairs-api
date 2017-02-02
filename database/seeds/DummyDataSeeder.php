@@ -19,11 +19,11 @@ class DummyDataSeeder extends Seeder
      */
     public function run()
     {
-        //DB::table('users')->truncate(); run this code in admin seeder
-        // factory(App\Models\User::class, 100)->create();
-
-
         $faker = Faker::create();
+
+
+        DB::table('images')->truncate();
+        DB::table('image_groups')->truncate();
 
         DB::table('categories')->truncate();
         DB::table('divisions')->truncate();
@@ -55,7 +55,7 @@ class DummyDataSeeder extends Seeder
                         "MK0100" .
                         "CT" . $product['category_id'] .
                         "DV" . $product['division_id'] .
-                        "ST" . $product['section_id'] .
+                        "ST" . $product['section_group_id'] .
                         "PD" . $product['id'] .
                         "ID" . $i,
                     'translate_name_id' => TranslateName::create($this->optionArrayGenerate($optionName,$i))['id'],
@@ -63,12 +63,44 @@ class DummyDataSeeder extends Seeder
                     'safe_stock' => mt_rand(10, 50),
                     'price' => mt_rand(10000, 50000),
                     'option_collection_id' => $collectionNumber,
+                    'image_id' => factory(App\Models\Image::class)->create()->id,
                 ));
             }
         }
 
         DB::table('orders')->truncate();
         factory(App\Models\Order::class, 100)->create();
+
+        factory(App\Models\User::class, 100)->create();
+
+        DB::table('interests')->truncate();
+        factory(App\Models\Interest::class, 100)->create();
+
+
+        DB::table('review_questions')->truncate();
+        factory(App\Models\ReviewQuestion::class, 100)->create();
+
+        DB::table('reviews')->truncate();
+        DB::table('review_answers')->truncate();
+        factory(App\Models\ReviewAnswer::class, 100)->create();
+
+        DB::table('awards')->truncate();
+        factory(App\Models\Award::class, 100)->create();
+
+        factory(App\Models\Image::class, 300)->create();
+
+        $imageGroup = App\Models\imageGroup::all();
+        foreach($imageGroup as $key => $value){
+            $rand = mt_rand(2,5);
+            for( $i=0;$i<$rand;$i++ ){
+                App\Models\Image::create([
+                    "index" => $i,
+                    "url" => $faker->imageUrl,
+                    "image_group_id" => $value['id'],
+                ]);
+            }
+
+        }
     }
 
     public function optionNameGenerate($faker){

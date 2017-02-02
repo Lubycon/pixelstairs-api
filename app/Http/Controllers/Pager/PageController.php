@@ -12,6 +12,8 @@ use App\Models\Order;
 use App\Models\Category;
 use App\Models\Division;
 use App\Models\Section;
+use App\Models\Survey;
+use App\Models\Review;
 
 use Abort;
 
@@ -141,6 +143,8 @@ class PageController extends Controller
         switch($string){
             case 'id' : return 'id';
             case 'haitaoProductId' : return 'products.haitao_product_id';
+            case 'haitaoUserId' : return 'users.haitao_user_id';
+            case 'userId' : return 'users.id';
             case 'originTitle' : return 'translate_names.original';
             // order, product divide
             case 'stock' : return 'stock';
@@ -211,6 +215,29 @@ class PageController extends Controller
                     ]
                 ]);
                 $this->model = new Section; break;
+            case 'survey' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'users',
+                        "base_table_key_column" => "surveys.user_id",
+                        "join_table_key_column" => "id",
+                    ]
+                ]);
+                $this->model = new Survey; break;
+            case 'review' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'users',
+                        "base_table_key_column" => "reviews.user_id",
+                        "join_table_key_column" => "id",
+                    ],
+                    [
+                        "join_table_name" => 'products',
+                        "base_table_key_column" => "reviews.product_id",
+                        "join_table_key_column" => "id",
+                    ]
+                ]);
+                $this->model = new Review; break;
             default : Abort::Error('0040','Unknown Model') ;break; //error point
         }
     }

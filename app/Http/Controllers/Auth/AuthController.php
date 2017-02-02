@@ -7,6 +7,7 @@ use DB;
 use Auth;
 
 use App\Models\User;
+use App\Models\Image;
 use App\Models\Credential;
 
 use Illuminate\Http\Request;
@@ -20,6 +21,7 @@ use App\Http\Requests\Auth\AuthRetrieveRequest;
 use Abort;
 
 use App\Traits\GetUserModelTrait;
+use App\Traits\S3StorageControllTraits;
 
 use App\Jobs\LastSigninTimeCheckerJob;
 
@@ -28,7 +30,8 @@ use Log;
 class AuthController extends Controller
 {
     use ThrottlesLogins,
-        GetUserModelTrait;
+        GetUserModelTrait,
+        S3StorageControllTraits;
 
     protected function signin(AuthSigninRequest $request)
     {
@@ -37,6 +40,10 @@ class AuthController extends Controller
 
         if(!Auth::once($credentials)){
             Abort::Error('0040','Login Failed, check email,password');
+        }
+
+        if( $request->getHost() == env('APP_PROVISION_ADMIN_URL') ){
+            if( Auth::user()->grade == 'normal' ) Abort::Error('0043');
         }
 
         $this->dispatch(new LastSigninTimeCheckerJob(Auth::getUser()));
@@ -66,16 +73,16 @@ class AuthController extends Controller
     protected function signup(AuthSignupRequest $request)
     {
         $data = $request->json()->all();
-        $data['password'] = bcrypt(env('COMMON_PASSWORD'));
-        $credentialSignup = Credential::signup($data);
-        $credentialSignin = Credential::signin($data);
-        $token = '';
 
-        if(User::create($credentialSignup)){
-            if(Auth::once($credentialSignin)){
-                $id = Auth::user()->getAuthIdentifier();
-                $token = CheckContoller::insertRememberToken($id);
-            }
+        if( $request->getHost() == env('APP_PROVISION_ADMIN_URL') ){
+            $data['password'] = bcrypt(env('COMMON_PASSWORD'));
+        }
+
+        $credentialSignup = Credential::signup($data);
+
+        if( $user =  User::create($credentialSignup)){
+            $id = $user->getAuthIdentifier();
+            $token = CheckContoller::insertRememberToken($id);
             return response()->success([
                 "token" => $token
             ]);
@@ -128,7 +135,8 @@ class AuthController extends Controller
                 "name" => $findUser->name,
                 "nickname" => $findUser->nickname,
                 "position" => $findUser->position,
-                "grade" => $findUser->grade
+                "grade" => $findUser->grade,
+                "profileImg" => $findUser->image->getObject(),
             );
             return response()->success($result);
         }else{
@@ -148,7 +156,8 @@ class AuthController extends Controller
                 "name" => $findUser->name,
                 "nickname" => $findUser->nickname,
                 "position" => $findUser->position,
-                "grade" => $findUser->grade
+                "grade" => $findUser->grade,
+                "profileImg" => $findUser->image->getObject(),
             ]);
         }else{
             Abort::Error('0040');
@@ -169,8 +178,9 @@ class AuthController extends Controller
                 $findUser->password = bcrypt($data['password']);
                 $findUser->position = $data['position'];
                 $findUser->grade = $data['grade'];
+                $findUser->image_id = Image::create(["is_mitty_own"=>true,"url"=>$this->userThumbnailUpload($findUser,$data['profileImg'])])['id'];
                 if($findUser->save()){
-                    return response()->success($data);
+                    return response()->success($findUser);
                 }
         }else{
             Abort::Error('0040');

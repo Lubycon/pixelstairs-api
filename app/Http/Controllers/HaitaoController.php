@@ -24,6 +24,7 @@ use Log;
 use App\Traits\OptionControllTraits;
 
 use App\Http\Requests\Order\OrderPostRequest;
+use App\Http\Requests\Order\OrderUpdateRequest;
 
 class HaitaoController extends Controller
 {
@@ -101,7 +102,7 @@ class HaitaoController extends Controller
             "priceUnit" => $product["unit"],
             "delivery_fee" => $product["domestic_delivery_price"],
             "manufacturer" => $product->manufacturer->country['name'],
-            "thumbnailUrl" => $product["thumbnail_url"],
+            "thumbnailUrl" => $product->image->getUrl(),
             "url" => $product["url"],
             "seller" => $product->getSeller(),
             "gender" => $product->gender->getTranslateResultByLanguage($product->gender->translateName,$this->language),

@@ -5,19 +5,28 @@ use Log;
 use Carbon\Carbon;
 
 trait StatusInfoTraits{
-    public function statusUpdate($request,$status_code){
+
+    private $targetProduct;
+
+    public function statusUpdate($request,$product,$status_code){
+        $this->targetProduct = $product;
         if( !$this->isSameStatus($status_code) ){
             $this->statusPermissionCheck($request);
             $this->forConfirm($status_code);
-            return $status_code;
+            $this->targetProduct->status_code = $status_code;
         }
-        return $this->product->status_code;
+        return $this->targetProduct;
     }
     public function forConfirm($status_code){
         if( $status_code == '0301' ){
-            $sale = $this->productSale($this->product);
-//            Log::info($sale);
+            //set after haito api
+//            $sale = $this->productSale($this->product);
             $this->startDateUpdate();
+            return true;
+        }else if( $status_code == '0302' ){
+            //set after haito api
+//            $sale = $this->productSale($this->product);
+            $this->endDateUpdate();
             return true;
         }
         return false;
@@ -30,13 +39,16 @@ trait StatusInfoTraits{
         Abort::Error("0043", "Can not change status");
     }
     private function isSameStatus($status_code){
-        if( $this->product->status_code == $status_code ){
+        if( $this->targetProduct->status_code == $status_code ){
             return true;
         }
         return false;
     }
     private function startDateUpdate(){
-        $this->product->start_date = Carbon::now()->toDateTimeString();
+        $this->targetProduct->start_date = Carbon::now()->toDateTimeString();
+    }
+    private function endDateUpdate(){
+        $this->targetProduct->end_date = Carbon::now()->toDateTimeString();
     }
 }
 ?>

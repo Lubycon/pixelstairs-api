@@ -11,6 +11,7 @@ use App\Http\Controllers\Pager\PageController;
 use App\Models\Category;
 
 use App\Traits\TranslateTraits;
+use Log;
 
 class CategoryController extends Controller
 {
@@ -158,6 +159,7 @@ class CategoryController extends Controller
         $data = [
             "translate_name_id" => $this->createTranslateName($request['name'])['id'],
         ];
+
         if( $cate = Category::firstOrCreate($data) ){
             return response()->success($cate);
         }else{

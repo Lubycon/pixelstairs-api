@@ -18,6 +18,7 @@ class SectionMarketInfo extends BaseModel
     protected $casts = [
         'section_id' => 'string',
         'parent_id' => 'string',
+        'market_category_id' => 'string',
     ];
 
     // belongsTo

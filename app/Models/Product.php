@@ -11,7 +11,7 @@ class Product extends BaseModel
     use SoftDeletes;
 
     protected $fillable = [
-        'translate_name_id','translate_description_id'
+        'translate_name_id','translate_description_id','image_id','image_group_id'
     ];
 
     protected $casts = [
@@ -179,6 +179,14 @@ class Product extends BaseModel
     public function manufacturer()
     {
         return $this->hasOne('App\Models\Manufacturer','id','manufacturer_country_id');
+    }
+    public function image()
+    {
+        return $this->hasOne('App\Models\Image','id','image_id');
+    }
+    public function imageGroup()
+    {
+        return $this->hasOne('App\Models\ImageGroup','id','image_group_id');
     }
 
     // get reference data

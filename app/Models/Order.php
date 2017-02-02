@@ -25,4 +25,8 @@ class Order extends BaseModel
     {
         return $this->belongsTo('App\Models\Product','product_id','id');
     }
+    public function option()
+    {
+        return $this->belongsTo('App\Models\Option','sku','sku');
+    }
 }
