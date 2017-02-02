@@ -215,8 +215,9 @@ $factory->define(App\Models\Review::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Models\ReviewQuestion::class, function (Faker\Generator $faker) {
+    $division = App\Models\Division::orderBy(\DB::raw('RAND()'))->first();
     return [
-        'division_id' => mt_rand(1,100),
+        'division_id' => $division['id'],
         'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
         'description' => $faker->paragraph,
     ];

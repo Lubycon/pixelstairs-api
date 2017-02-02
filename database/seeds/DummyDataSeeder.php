@@ -78,7 +78,7 @@ class DummyDataSeeder extends Seeder
 
 
         DB::table('review_questions')->truncate();
-        factory(App\Models\ReviewQuestion::class, 100)->create();
+        factory(App\Models\ReviewQuestion::class, 800)->create();
 
         DB::table('reviews')->truncate();
         DB::table('review_answers')->truncate();
