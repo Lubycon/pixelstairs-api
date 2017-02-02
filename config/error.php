@@ -94,6 +94,10 @@ return [
     "httpCode" => 404,
     "msg" => "Model Not Found"
 ),
+"0055" => (object)array(
+    "httpCode" => 405,
+    "msg" => "Method Not Allowed"
+),
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 //      4xx response
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
