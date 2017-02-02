@@ -80,8 +80,12 @@ trait ImageControllTraits
         return $result;
     }
 
-    public function isBase64File($file){
-        return (bool) preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $file);
+    function isBase64File($s){
+        if (!preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $s)) return false;
+        $decoded = base64_decode($s, true);
+        if(false === $decoded) return false;
+        if(base64_encode($decoded) != $s) return false;
+        return true;
     }
 }
  ?>
