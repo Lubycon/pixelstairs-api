@@ -48,7 +48,7 @@ class ReviewController extends Controller
             "user" => [
                 "id" => $user['id'],
                 "name" => $user->name,
-                "profileImg" => $user->image->getUrl(),
+                "profileImg" => $user->image->getObject(),
             ],
             "product" => [
                 "id" => $product->id,
@@ -87,7 +87,7 @@ class ReviewController extends Controller
                 "user" => [
                     "id" => $user['id'],
                     "name" => $user->name,
-                    "profileImg" => $user->image->getUrl(),
+                    "profileImg" => $user->image->getObject(),
                 ],
                 "product" => [
                     "id" => $product->id,
@@ -98,11 +98,11 @@ class ReviewController extends Controller
                     "division" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
                     "section" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
                     "skuName" => $this->review->option->getTranslateResultByLanguage($this->review->option->translateName,$this->language),
-                    "thumbnailUrl" => $product->image->getUrl(),
+                    "thumbnailUrl" => $product->image->getObject(),
                 ],
                 "title" => $this->review->title,
                 "qa" => $this->getQnA($this->review->answer),
-                "thumbnailUrl" => $this->review->image->getUrl(),
+                "thumbnailUrl" => $this->review->image->getObject(),
             );
         };
 
