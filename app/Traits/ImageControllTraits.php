@@ -22,13 +22,13 @@ trait ImageControllTraits
         $currentImageIds = [];
         $result = [];
         foreach( $imageArray as $value ){
-            if( isset($value['id']) && !$value['deleted'] ){
+            if( isset($value['id']) && $value['deleted'] == false ){
                 $currentImageIds[] = $value['id'];
                 Image::findOrFail($value['id'])->update([
                     "index" => $value['index'],
                     "url" => $value['file'],
                 ]);
-            }else{
+            }else if( $value['deleted'] == false ){
                 $result[] = new Image([
                     "index" => $value['index'],
                     "url" => $value['file'],
@@ -57,7 +57,10 @@ trait ImageControllTraits
         $currentImageIds = [];
         $result = [];
         foreach( $imageArray as $value ){
-            if( isset($value['id']) && !$value['deleted'] ){
+
+            Log::info( $this->isBase64File( $value['file'] ) );
+
+            if( isset($value['id']) && $value['deleted'] == false ){
                 $currentImageIds[] = $value['id'];
                 Image::findOrFail($value['id'])->update([
                     "index" => $value['index'],
@@ -66,7 +69,7 @@ trait ImageControllTraits
                         : $value['file'],
                     "is_mitty_own" => true,
                 ]);
-            }else{
+            }else if( $value['deleted'] == false ){
                 $result[] = new Image([
                     "index" => $value['index'],
                     "url" => $this->isBase64File( $value['file'] )

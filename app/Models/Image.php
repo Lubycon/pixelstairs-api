@@ -19,13 +19,9 @@ class Image extends BaseModel
     public function getObject(){
         return [
             "id" => $this->id,
-            "file" => $this->getUrl(),
+            "file" => $this->url,
             "index" => $this->index,
             "deleted" => false
         ];
-    }
-
-    public function getUrl(){
-        return $this->attributes['is_mitty_own'] ? env('S3_PATH').$this->url : $this->url;
     }
 }
