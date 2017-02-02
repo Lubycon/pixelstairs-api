@@ -128,7 +128,7 @@ class ReviewController extends Controller
         $this->review->title = $request->title;
         $this->review->sku = $target['sku'];
         $this->review->target = $request->target;
-        $this->review->image_id = Image::create(["url"=>$this->userThumbnailUpload($this->review,$request->thumbnailUrl)])['id'];
+        $this->review->image_id = Image::create(["is_mitty_own"=>true,"url"=>$this->reviewThumbnailUpload($this->review,$request->thumbnailUrl)])['id'];
         $this->review->image_group_id = ImageGroup::create(['model_name'=>'review'])['id'];
 
         if ( !$this->review->save() ) Abort::Error("0040");
@@ -140,7 +140,7 @@ class ReviewController extends Controller
     public function put(Request $request,$review_id){
         $this->review = Review::findOrFail($review_id);
         $this->review->title = $request->title;
-        $this->review->image->update(["url"=>$this->userThumbnailUpload($this->review,$request->thumbnailUrl)]);
+        $this->review->image->update(["is_mitty_own"=>true,"url"=>$this->reviewThumbnailUpload($this->review,$request->thumbnailUrl)]);
         $this->updateAnswer($this->review,$request['answers']);
 
         if ( !$this->review->save() ) Abort::Error("0040");

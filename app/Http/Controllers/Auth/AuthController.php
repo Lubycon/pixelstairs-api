@@ -178,7 +178,7 @@ class AuthController extends Controller
                 $findUser->password = bcrypt($data['password']);
                 $findUser->position = $data['position'];
                 $findUser->grade = $data['grade'];
-                $findUser->image_id = Image::create(["url"=>$this->userThumbnailUpload($findUser,$data['profileImg'])])['id'];
+                $findUser->image_id = Image::create(["is_mitty_own"=>true,"url"=>$this->userThumbnailUpload($findUser,$data['profileImg'])])['id'];
                 if($findUser->save()){
                     return response()->success($findUser);
                 }
