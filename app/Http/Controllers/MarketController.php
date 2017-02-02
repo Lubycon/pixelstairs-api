@@ -18,6 +18,7 @@ use App\Models\Section;
 use App\Models\Market;
 
 use App\Classes\Snoopy;
+use App\Crawlers\CoupangCrawler;
 //use PHPHtmlParser\Dom;
 
 
@@ -82,7 +83,6 @@ class MarketController extends Controller
     public function getBySnoopy(Request $request){
 //        11st
 //        $snoopy = new Snoopy;
-//
 //        $snoopy->fetch("http://deal.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=1254155722&trTypeCd=22&trCtgrNo=895019");
 //        $source = $snoopy->results;
 //        $res = iconv("euc-kr","UTF-8",$source);
@@ -93,8 +93,11 @@ class MarketController extends Controller
         $this->url = urldecode($query['url']);
         ob_start();
         passthru("/usr/bin/python3 ".app_path()."/python/crawling.py $this->url");
-        $output = ob_get_clean();
-        echo $output;
+        $market_data = json_decode(ob_get_clean());
+
+        $crawlClass = new CoupangCrawler($market_data);
+
+        return response()->success($crawlClass->getResult());
     }
 
 //    coupang function
