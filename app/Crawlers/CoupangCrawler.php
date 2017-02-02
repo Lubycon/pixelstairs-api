@@ -10,6 +10,7 @@ namespace App\Crawlers;
 
 use App\Classes\Snoopy;
 use PHPHtmlParser\Dom;
+use Log;
 
 class CoupangCrawler
 {
@@ -37,12 +38,14 @@ class CoupangCrawler
         $basicProductInfo = $this->basicProductInfo(); // product basic infomation
         $vendorProductInfo = $this->vendorProductInfo(); // product require info + product detail images
 
+
+
         $this->result = [
             "basicInfo" => $basicProductInfo,
             "vendorInfo" => [
-                "original" => $vendorProductInfo,
-                "requireInfo" => $this->dom->load($vendorProductInfo)->find('.product-item__detail'),
+                "requireInfo" => $vendorProductInfo['requireInfo'],
             ],
+            "detailImage" => $vendorProductInfo['detailImage']
         ];
     }
 
@@ -57,7 +60,35 @@ class CoupangCrawler
         $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/vendor-items/$this->vendor_id?isFixedVendorItem=true&type=sdp";
         $this->snoopy->fetch($requestUrl);
         $source = $this->snoopy->results;
-        return $source;
+        $source = str_replace(array("\r\n","\r","\n"),'',$source);
+        $dom = $this->dom->load($source);
+        $requireInfo = $this->getMergeText($dom,'.prod-item-attr-name');
+        $optionsImg = $this->getImageSrc($dom,'.lazy-img','data-src');
+
+
+        return [
+            "requireInfo" => $requireInfo,
+            "detailImage" => $optionsImg,
+        ];
+    }
+
+    public function getMergeText($dom,$findWord){
+        $requireDom = $dom->find($findWord);
+        $result = '';
+        foreach ($requireDom as $value)
+        {$result .= $value->text."\n";}
+        return $result;
+    }
+    public function getImageSrc($dom,$findAttr,$chooseAttr){
+        $requireDom = $dom->find($findAttr);
+        $result = [];
+        foreach ($requireDom as $value)
+        {
+            $src = $value->getAttribute($chooseAttr);
+            if( $src[0] == '/' ) $src = 'https:'.$src;
+            $result[] = $src;
+        }
+        return $result;
     }
 
 
