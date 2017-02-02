@@ -14,7 +14,6 @@ class ImageGroup extends BaseModel
         $result = [];
         $images = $this->image;
         foreach( $images as $value ){
-            Log::info(get_class($value));
             $result[] = $value->getObject();
         }
         return $result;
@@ -26,5 +25,4 @@ class ImageGroup extends BaseModel
     {
         return $this->hasMany('App\Models\Image','image_group_id','id');
     }
-
 }
