@@ -7,6 +7,7 @@ use DB;
 use Auth;
 
 use App\Models\User;
+use App\Models\Image;
 use App\Models\Credential;
 
 use Illuminate\Http\Request;
@@ -177,7 +178,7 @@ class AuthController extends Controller
                 $findUser->password = bcrypt($data['password']);
                 $findUser->position = $data['position'];
                 $findUser->grade = $data['grade'];
-                $findUser->image->update(["url"=>$this->userThumbnailUpload($findUser,$data['profileImg'])]);
+                $findUser->image_id = Image::create(["url"=>$this->userThumbnailUpload($findUser,$data['profileImg'])])['id'];
                 if($findUser->save()){
                     return response()->success($findUser);
                 }

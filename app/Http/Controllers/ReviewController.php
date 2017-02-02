@@ -10,6 +10,7 @@ use App\Http\Controllers\Pager\PageController;
 use App\Models\Review;
 use App\Models\Order;
 use App\Models\Award;
+use App\Models\Image;
 use App\Models\ImageGroup;
 
 use Log;
@@ -101,7 +102,7 @@ class ReviewController extends Controller
                 ],
                 "title" => $this->review->title,
                 "qa" => $this->getQnA($this->review->answer),
-                "image" => $this->review->image->getUrl(),
+                "thumbnailUrl" => $this->review->image->getUrl(),
             );
         };
 
@@ -127,6 +128,7 @@ class ReviewController extends Controller
         $this->review->title = $request->title;
         $this->review->sku = $target['sku'];
         $this->review->target = $request->target;
+        $this->review->image_id = Image::create(["url"=>$this->userThumbnailUpload($this->review,$request->thumbnailUrl)])['id'];
         $this->review->image_group_id = ImageGroup::create(['model_name'=>'review'])['id'];
 
         if ( !$this->review->save() ) Abort::Error("0040");
@@ -138,6 +140,7 @@ class ReviewController extends Controller
     public function put(Request $request,$review_id){
         $this->review = Review::findOrFail($review_id);
         $this->review->title = $request->title;
+        $this->review->image->update(["url"=>$this->userThumbnailUpload($this->review,$request->thumbnailUrl)]);
         $this->updateAnswer($this->review,$request['answers']);
 
         if ( !$this->review->save() ) Abort::Error("0040");
