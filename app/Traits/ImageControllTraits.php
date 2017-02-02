@@ -69,7 +69,9 @@ trait ImageControllTraits
             }else{
                 $result[] = new Image([
                     "index" => $value['index'],
-                    "url" => $this->reviewThumbnailUpload($review,$value['file']),
+                    "url" => $this->isBase64File( $value['file'] )
+                        ? $this->reviewThumbnailUpload($review,$value['file'])
+                        : $value['file'],
                     "is_mitty_own" => true,
                 ]);
             }
