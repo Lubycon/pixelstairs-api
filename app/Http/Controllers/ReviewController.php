@@ -132,7 +132,7 @@ class ReviewController extends Controller
 
         if ( !$this->review->save() ) Abort::Error("0040");
         if ( $this->review->answer()->saveMany($this->setNewReviewAnswer($request['answers']))  &&
-             $this->review->imageGroup->image()->saveMany($this->createImageUploadArray($this->review,$request->detailImages))
+             $this->review->imageGroup->image()->saveMany($this->createImageUploadArray($this->review,$request->images))
         ) return response()->success($this->review);
         Abort::Error("0040");
     }
@@ -142,7 +142,7 @@ class ReviewController extends Controller
         $this->updateAnswer($this->review,$request['answers']);
 
         if ( !$this->review->save() ) Abort::Error("0040");
-        if($this->review->imageGroup->image()->saveMany($this->updateImageUploadArray($this->review,$request->detailImages))
+        if($this->review->imageGroup->image()->saveMany($this->updateImageUploadArray($this->review,$request->images))
         )return response()->success($this->review);
     }
 }
