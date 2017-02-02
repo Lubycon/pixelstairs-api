@@ -21,8 +21,8 @@ class DummyDataSeeder extends Seeder
     {
         $faker = Faker::create();
 
-
-        DB::table('images')->truncate();
+//        in image table seeder truncate
+//        DB::table('images')->truncate();
         DB::table('image_groups')->truncate();
 
         DB::table('categories')->truncate();
