@@ -134,7 +134,8 @@ class AuthController extends Controller
                 "name" => $findUser->name,
                 "nickname" => $findUser->nickname,
                 "position" => $findUser->position,
-                "grade" => $findUser->grade
+                "grade" => $findUser->grade,
+                "profileImg" => $findUser->image->getUrl(),
             );
             return response()->success($result);
         }else{

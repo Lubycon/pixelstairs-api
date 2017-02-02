@@ -14,12 +14,13 @@ class CreateReviewsTable extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id');
-            $table->integer('product_id');
+            $table->integer('user_id')->unsigned();
+            $table->integer('product_id')->unsigned();
             $table->string('sku',100);
             $table->string('title',50);
             $table->string('target',15);
-            $table->integer('image_group_id');
+            $table->integer('image_id')->unsigned();
+            $table->integer('image_group_id')->unsigned();
             $table->softDeletes();
             $table->timestamps();
         });

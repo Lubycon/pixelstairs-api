@@ -112,10 +112,8 @@ $factory->define(App\Models\Seller::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Models\Image::class, function (Faker\Generator $faker) {
     return [
-        'index' => mt_rand(0,5),
         'url' => $faker->imageUrl(),
         'is_mitty_own' => false,
-        'image_group_id' => App\Models\ImageGroup::orderBy(\DB::raw('RAND()'))->first()['id'],
     ];
 });
 
@@ -212,6 +210,7 @@ $factory->define(App\Models\Review::class, function (Faker\Generator $faker) {
         'sku' => $product->option->first()['sku'],
         'title' => $faker->streetName,
         'target' => mt_rand(0,1) == 0 ? 'award' : 'buy',
+        'image_id' => factory(App\Models\Image::class)->create()->id,
         'image_group_id' => factory(App\Models\ImageGroup::class)->create()->id,
     ];
 });

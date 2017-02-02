@@ -88,6 +88,19 @@ class DummyDataSeeder extends Seeder
         factory(App\Models\Award::class, 100)->create();
 
         factory(App\Models\Image::class, 300)->create();
+
+        $imageGroup = App\Models\imageGroup::all();
+        foreach($imageGroup as $key => $value){
+            $rand = mt_rand(2,5);
+            for( $i=0;$i<$rand;$i++ ){
+                App\Models\Image::create([
+                    "index" => $i,
+                    "url" => $faker->imageUrl,
+                    "image_group_id" => $value['id'],
+                ]);
+            }
+
+        }
     }
 
     public function optionNameGenerate($faker){

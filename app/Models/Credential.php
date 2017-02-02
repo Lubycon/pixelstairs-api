@@ -29,18 +29,10 @@ class Credential
           'phone' => $data['phone'],
           'email' => $data['email'],
           'name' => $data['name'],
-          'nickname' => $data['nickname'],
+          'nickname' => isset($data['nickname']) ? $data['nickname'] : NULL,
           'password' => bcrypt($data['password']),
           'grade' => 'normal',
           'position' => isset($data['position']) ? $data['position'] : NULL ,
-          'gender_id' => $data['gender'],
-          'birthday' => Carbon::parse($data["birthday"])->timezone(config('app.timezone'))->toDateTimeString(),
-          'country_id' => $data['countryId'],
-          'city' => $data['city'],
-          'address1' => $data['address1'],
-          'address2' => $data['address2'],
-          'post_code' => $data['post_code'],
-          'profile' => null,
       ];
       return $credential;
 
