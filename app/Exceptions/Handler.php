@@ -85,7 +85,7 @@ class Handler extends ExceptionHandler
             case $e instanceof LengthRequiredHttpException:        return '0047';  break;
             case $e instanceof UnsupportedMediaTypeHttpException:  return '0050';  break;
             case $e instanceof UnprocessableEntityHttpException:   return '0051';  break;
-            case $e instanceof MethodNotAllowedHttpException:      return '0052';  break;
+            case $e instanceof MethodNotAllowedHttpException:      return '0055';  break;
             case $e instanceof TooManyRequestsHttpException:       return '0053';  break;
             case $e instanceof ModelNotFoundException:             return '0054';  break;
             case $e instanceof FatalErrorException:                $this->slackAlarm($request,$e); return '0070';  break;

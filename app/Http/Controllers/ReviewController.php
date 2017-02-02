@@ -55,10 +55,11 @@ class ReviewController extends Controller
                 "haitaoProductId" => $product->haitao_product_id,
                 "title" => $product->getTranslateResultByLanguage($product->translateName,$this->language),
                 "description" => $product->getTranslateResultByLanguage($product->translateDescription,$this->language),
-                "category" => $product->category->getTranslateResultByLanguage($product->category->translateName,$this->language),
-                "division" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
-                "section" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
+                "categoryName" => $product->category->getTranslateResultByLanguage($product->category->translateName,$this->language),
+                "divisionName" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
+                "sectionNames" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
                 "skuName" => $this->review->option->getTranslateResultByLanguage($this->review->option->translateName,$this->language),
+                "thumbnailUrl" => $product->image->getObject(),
             ],
             "title" => $this->review->title,
             "qa" => $this->getQnA($this->review->answer),
@@ -94,15 +95,15 @@ class ReviewController extends Controller
                     "haitaoProductId" => $product->haitao_product_id,
                     "title" => $product->getTranslateResultByLanguage($product->translateName,$this->language),
                     "description" => $product->getTranslateResultByLanguage($product->translateDescription,$this->language),
-                    "category" => $product->category->getTranslateResultByLanguage($product->category->translateName,$this->language),
-                    "division" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
-                    "section" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
+                    "categoryName" => $product->category->getTranslateResultByLanguage($product->category->translateName,$this->language),
+                    "divisionName" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
+                    "sectionNames" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
                     "skuName" => $this->review->option->getTranslateResultByLanguage($this->review->option->translateName,$this->language),
                     "thumbnailUrl" => $product->image->getObject(),
                 ],
                 "title" => $this->review->title,
                 "qa" => $this->getQnA($this->review->answer),
-                "thumbnailUrl" => $this->review->image->getObject(),
+                "images" => $this->review->imageGroup->getImages(),
             );
         };
 
@@ -128,23 +129,21 @@ class ReviewController extends Controller
         $this->review->title = $request->title;
         $this->review->sku = $target['sku'];
         $this->review->target = $request->target;
-        $this->review->image_id = Image::create(["is_mitty_own"=>true,"url"=>$this->reviewThumbnailUpload($this->review,$request->thumbnailUrl)])['id'];
         $this->review->image_group_id = ImageGroup::create(['model_name'=>'review'])['id'];
 
         if ( !$this->review->save() ) Abort::Error("0040");
         if ( $this->review->answer()->saveMany($this->setNewReviewAnswer($request['answers']))  &&
-             $this->review->imageGroup->image()->saveMany($this->createImageUploadArray($this->review,$request->detailImages))
+             $this->review->imageGroup->image()->saveMany($this->createImageUploadArray($this->review,$request->images))
         ) return response()->success($this->review);
         Abort::Error("0040");
     }
     public function put(Request $request,$review_id){
         $this->review = Review::findOrFail($review_id);
         $this->review->title = $request->title;
-        $this->review->image->update(["is_mitty_own"=>true,"url"=>$this->reviewThumbnailUpload($this->review,$request->thumbnailUrl)]);
         $this->updateAnswer($this->review,$request['answers']);
 
         if ( !$this->review->save() ) Abort::Error("0040");
-        if($this->review->imageGroup->image()->saveMany($this->updateImageUploadArray($this->review,$request->detailImages))
+        if($this->review->imageGroup->image()->saveMany($this->updateImageUploadArray($this->review,$request->images))
         )return response()->success($this->review);
     }
 }

@@ -20,7 +20,7 @@ class ImageTableSeeder extends Seeder
             ),
             array(
                 "id" => 2,
-                "url" => "http://www.4cne.com/files/attach/images/242/546/064/af11a79941394be61016f09628d1776e.jpg",
+                "url" => "http://cfile22.uf.tistory.com/image/234D193557557D87304A42",
                 "is_mitty_own" => false,
             ),
             array(

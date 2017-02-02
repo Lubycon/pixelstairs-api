@@ -19,7 +19,6 @@ class CreateReviewsTable extends Migration
             $table->string('sku',100);
             $table->string('title',50);
             $table->string('target',15);
-            $table->integer('image_id')->unsigned();
             $table->integer('image_group_id')->unsigned();
             $table->softDeletes();
             $table->timestamps();
