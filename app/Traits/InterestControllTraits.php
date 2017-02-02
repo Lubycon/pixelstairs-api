@@ -10,25 +10,22 @@ trait InterestControllTraits
 
     public function setNewInterest($interestsData)
     {
-        $result = [];
-        foreach ($interestsData as $key => $option) {
-            $result[] = new Interest([
-                "category_id" => $option['categoryId'],
-                "division_id" => $option['divisionId'],
-                "section_id" => isset($option['sectionId']) ? $option['sectionId'] : NULL,
-            ]);
-        }
+        $result = [
+            "category_id" => $interestsData['categoryId'],
+            "division_id" => $interestsData['divisionId'],
+            "section_id" => isset($option['sectionId']) ? $option['sectionId'] : NULL,
+        ];
         return $result;
     }
 
-    public function setInterestId($survey,$interests){
-        $index = 0;
-        foreach ($interests as $key => $option) {
-            $columnName = "interest_id_".$index;
-            $survey->$columnName = $option->id;
-            $index++;
-        }
-    }
+//    public function setInterestId($survey,$interests){
+//        $index = 0;
+//        foreach ($interests as $key => $option) {
+//            $columnName = "interest_id_".$index;
+//            $survey->$columnName = $option->id;
+//            $index++;
+//        }
+//    }
 
     public function getInterestAll($survey){
         $result = [];

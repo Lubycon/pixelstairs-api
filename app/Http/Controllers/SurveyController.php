@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Pager\PageController;
 use App\Models\User;
 use App\Models\Survey;
+use App\Models\Interest;
 
 use App\Traits\InterestControllTraits;
 
@@ -61,8 +62,7 @@ class SurveyController extends Controller
         $user->address1 = $request['user']['location']['address1'];
         $user->address2 = $request['user']['location']['address2'];
         $user->post_code = $request['user']['location']['postCode'];
-        $interest = $user->interest()->saveMany($this->setNewInterest($request['likeCategory']));
-        $this->setInterestId($survey,$interest);
+        $survey->interest_id_0 = Interest::create($this->setNewInterest($request['likeCategory']));
         $survey->purchasing_factor = $request['survey']['purchasingFactor'];
         $survey->major_store = $request['survey']['majorStore'];
         $survey->favorite_brand = $request['survey']['favoriteBrand'];
