@@ -19,6 +19,8 @@ class User extends BaseModel implements AuthenticatableContract,
 
     protected $casts = [
         'id' => 'string',
+        'post_code' => 'string',
+        'gender_id' => 'string',
     ];
 
     protected function rules(){
@@ -48,6 +50,10 @@ class User extends BaseModel implements AuthenticatableContract,
     public function image()
     {
         return $this->hasOne('App\Models\Image','id','image_id');
+    }
+    public function survey()
+    {
+        return $this->belongsTo('App\Models\Survey','id','user_id');
     }
 
     // get reference data

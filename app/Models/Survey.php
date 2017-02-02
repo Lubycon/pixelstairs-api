@@ -20,9 +20,9 @@ class Survey extends BaseModel
     {
         return $this->belongsTo('App\Models\User','user_id','id');
     }
-    public function interestByIndex($index)
+    public function interest()
     {
-        return $this->hasOne('App\Models\Interest','id','interest_id_'.$index);
+        return $this->hasOne('App\Models\Interest','id','interest_id');
     }
 
 }

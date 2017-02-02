@@ -73,6 +73,7 @@ Route::group(['prefix' => '/v1'], function () {
         Route::delete('{id}', 'SectionController@delete');
     });
     Route::group(['prefix' => '/surveys/'], function () {
+        Route::get('detail/{user_id}', 'SurveyController@get');
         Route::get('', 'SurveyController@getList');
         Route::post('{user_id}', 'SurveyController@post');
     });
