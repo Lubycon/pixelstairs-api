@@ -57,10 +57,10 @@ class SurveyController extends Controller
         $user->name = $request['user']['name'];
         $user->gender_id = $request['user']['gender'];
         $user->birthday = $request['user']['birthday'];
-        $user->city = $request['user']['city'];
-        $user->address1 = $request['user']['address1'];
-        $user->address2 = $request['user']['address2'];
-        $user->post_code = $request['user']['postCode'];
+        $user->city = $request['user']['location']['city'];
+        $user->address1 = $request['user']['location']['address1'];
+        $user->address2 = $request['user']['location']['address2'];
+        $user->post_code = $request['user']['location']['postCode'];
         $interest = $user->interest()->saveMany($this->setNewInterest($request['likeCategory']));
         $this->setInterestId($survey,$interest);
         $survey->purchasing_factor = $request['survey']['purchasingFactor'];
