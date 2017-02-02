@@ -17,7 +17,7 @@ trait S3StorageControllTraits
             $uploadPath = 'review/'.$review->id.'/'.$fileName;
             Storage::disk('s3')->put($uploadPath, file_get_contents($path), 'public');
             unlink($path);
-            return $uploadPath;
+            return env('S3_PATH').$uploadPath;
         }else{
             Abort::Error('0040','not base64');
         }
@@ -32,7 +32,7 @@ trait S3StorageControllTraits
             $uploadPath = 'user/'.$user->id.'/'.$fileName;
             Storage::disk('s3')->put($uploadPath, file_get_contents($path), 'public');
             unlink($path);
-            return $uploadPath;
+            return env('S3_PATH').$uploadPath;
         }else{
             return env('S3_PATH').env('USER_DEFAULT_IMG_URL');
         }

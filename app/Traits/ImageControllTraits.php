@@ -22,13 +22,13 @@ trait ImageControllTraits
         $currentImageIds = [];
         $result = [];
         foreach( $imageArray as $value ){
-            if( isset($value['id']) && !$value['deleted'] ){
+            if( isset($value['id']) && $value['deleted'] == false ){
                 $currentImageIds[] = $value['id'];
                 Image::findOrFail($value['id'])->update([
                     "index" => $value['index'],
                     "url" => $value['file'],
                 ]);
-            }else{
+            }else if( $value['deleted'] == false ){
                 $result[] = new Image([
                     "index" => $value['index'],
                     "url" => $value['file'],
@@ -44,7 +44,9 @@ trait ImageControllTraits
         foreach( $imageArray as $value ){
             $result[] = $image = new Image([
                 "index" => $value['index'],
-                "url" => $this->reviewThumbnailUpload($review,$value['file']),
+                "url" => $this->isBase64File( $value['file'] )
+                ? $this->reviewThumbnailUpload($review,$value['file'])
+                : $value['file'],
                 "is_mitty_own" => true,
             ]);
         }
@@ -55,17 +57,24 @@ trait ImageControllTraits
         $currentImageIds = [];
         $result = [];
         foreach( $imageArray as $value ){
-            if( isset($value['id']) && !$value['deleted'] ){
+
+            Log::info( $this->isBase64File( $value['file'] ) );
+
+            if( isset($value['id']) && $value['deleted'] == false ){
                 $currentImageIds[] = $value['id'];
                 Image::findOrFail($value['id'])->update([
                     "index" => $value['index'],
-                    "url" => $this->reviewThumbnailUpload($review,$value['file']),
+                    "url" => $this->isBase64File( $value['file'] )
+                        ? $this->reviewThumbnailUpload($review,$value['file'])
+                        : $value['file'],
                     "is_mitty_own" => true,
                 ]);
-            }else{
+            }else if( $value['deleted'] == false ){
                 $result[] = new Image([
                     "index" => $value['index'],
-                    "url" => $this->reviewThumbnailUpload($review,$value['file']),
+                    "url" => $this->isBase64File( $value['file'] )
+                        ? $this->reviewThumbnailUpload($review,$value['file'])
+                        : $value['file'],
                     "is_mitty_own" => true,
                 ]);
             }
@@ -74,6 +83,14 @@ trait ImageControllTraits
         $clear = $review->imageGroup->image()->whereIn('id',$diff)->delete();
         // storage image delete source needed
         return $result;
+    }
+
+    function isBase64File($s){
+        if (!preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $s)) return false;
+        $decoded = base64_decode($s, true);
+        if(false === $decoded) return false;
+        if(base64_encode($decoded) != $s) return false;
+        return true;
     }
 }
  ?>
