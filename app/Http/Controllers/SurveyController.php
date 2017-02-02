@@ -27,7 +27,7 @@ class SurveyController extends Controller
         );
         foreach($collection as $survey){
             $user = $survey->user;
-            $result->survey[] = (object)array(
+            $result->surveys[] = (object)array(
                 "id" => $survey["id"],
                 "user" => [
                     "name" => $user->name,
@@ -42,7 +42,7 @@ class SurveyController extends Controller
             );
         };
 
-        if(!empty($result->survey)){
+        if(!empty($result->surveys)){
             return response()->success($result);
         }else{
             return response()->success();
