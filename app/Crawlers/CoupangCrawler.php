@@ -58,29 +58,28 @@ class CoupangCrawler
         $categories = $this->categories(); // product title
 
         $this->result = [
-            "id" => $this->product_id,
-            "name" => $productAtf['productName'],
+            "id" => (int)$this->product_id,
+            "title" => (string)$productAtf['productName'],
             "priceInfo" => [
-                "price" => $basicProductInfWithStock['price'],
-                "lowestPrice" => $basicProductInfWithStock['price'],
+                "price" => (int)$basicProductInfWithStock['price'],
+                "lowestPrice" => (int)$basicProductInfWithStock['price'],
             ],
-            "deliveryPrice" => $basicProductInfWithStock['deliveryPrice'],
+            "deliveryPrice" => (int)$basicProductInfWithStock['deliveryPrice'],
             "options" => $optionSkuList,
-            "brand" => $productAtf['brandName'],
-            "manufacturer" => "",
+            "brand" => (string)$productAtf['brandName'],
+            "manufacturerCountryId" => "",
             "seller" => [
                 "name" => "coupang",
-                "rate" => "4.5",
+                "rate" => (int)4.5,
             ],
-            "totalStock" => $basicProductInfWithStock['totalStock'],
             "category" =>[
-                "id" => $categories['market_section']['id'],
-                "name" => $categories['market_section']['name'],
+                "id" => (int)$categories['market_section']['id'],
+                "name" => (string)$categories['market_section']['name'],
                 "ours" => $categories['ours'],
             ],
             "detailImages" => $vendorProductInfo['detailImage'],
-            "description" => $basicProductInfo.$vendorProductInfo['requireInfo'],
-            "thumbnailUrl" => $optionSkuList[0]["thumbnailUrl"],
+            "description" => (string)$basicProductInfo.$vendorProductInfo['requireInfo'],
+            "thumbnailUrl" => (string)$optionSkuList[0]["thumbnailUrl"],
 //            "optionCollection" => $optionCollection,
         ];
     }
@@ -121,12 +120,12 @@ class CoupangCrawler
 
             foreach( $dom->options as $eachOption ){
                 $result[] = [
-                    "order" => $key,
-                    "price" => $this->splitWon($eachOption->salesPrice),
-                    "name" => $eachOption->title,
-                    "stock" => $eachOption->remainCount,
-                    "isSoldout" => $eachOption->impendSoldOut,
-                    "thumbnailUrl" => $eachOption->imageUrl->displayImageUrl,
+                    "order" => (int)$key,
+                    "price" => (int)$this->splitWon($eachOption->salesPrice),
+                    "name" => (string)$eachOption->title,
+                    "stock" => (int)$eachOption->remainCount,
+                    "isSoldout" => (bool)$eachOption->impendSoldOut,
+                    "thumbnailUrl" => (string)$eachOption->imageUrl->displayImageUrl,
                 ];
             }
         }
@@ -141,13 +140,16 @@ class CoupangCrawler
         foreach( $options as $key => $value ){
             if( $value->getAttribute('data-option-img-src') == "" ) Abort::Error('0040',"Product Options Each Thumbnail Not Exist");
             $optionResult[] = [
-                "order" => $key,
-                "price" => $this->splitWon($this->getText($value,'.prod-txt-small')),
-                "name" => $value->getAttribute('data-option-title'),
-                "stock" => $this->maxBuyAble,
+                "order" => (int)$key,
+                "price" => (int)$this->splitWon($this->getText($value,'.prod-txt-small')),
+                "name" => (string)$value->getAttribute('data-option-title'),
+                "stock" => (int)$this->maxBuyAble,
                 "isLimited" => true,
                 "isSoldout" => (bool)strpos($value->getAttribute('class'),'soldout'),
-                "thumbnailUrl" => $value->getAttribute('data-option-img-src'),
+                "thumbnailUrl" => [
+                    "file" => (string)$value->getAttribute('data-option-img-src'),
+                    "index" => 0,
+                ],
             ];
         }
         return $optionResult;
@@ -202,7 +204,7 @@ class CoupangCrawler
         $requireInfo = $this->getMergeText($dom,'.prod-item-attr-name');
         $optionsImg = $this->getImageSrc($dom,'.lazy-img','data-src');
         return [
-            "requireInfo" => $requireInfo,
+            "requireInfo" => (string)$requireInfo,
             "detailImage" => $optionsImg,
         ];
     }
@@ -238,11 +240,14 @@ class CoupangCrawler
     public function getImageSrc($dom,$findAttr,$chooseAttr){
         $requireDom = $dom->find($findAttr);
         $result = [];
-        foreach ($requireDom as $value)
+        foreach ($requireDom as $key => $value)
         {
             $src = $value->getAttribute($chooseAttr);
             if( $src[0] == '/' ) $src = 'https:'.$src;
-            $result[] = $src;
+            $result[] = [
+                "file" => (string)$src,
+                "index" => $key,
+            ];
         }
         return $result;
     }

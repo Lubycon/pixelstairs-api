@@ -139,7 +139,7 @@ class ProductController extends Controller
         $this->product->market_product_id = $this->market_product_id;
         $this->product->category_id = $data["categoryId"];
         $this->product->division_id = $data["divisionId"];
-        $this->product->section_group_id = SectionGroup::firstOrCreate($this->setSectionGroup($data['section'],$this->product->division_id))['id'];
+        $this->product->section_group_id = SectionGroup::firstOrCreate($this->setSectionGroup($data['sections'],$this->product->division_id))['id'];
         $this->product->market_id = $data["marketId"];
         $this->product->brand_id = Brand::firstOrCreate($this->relationTranslateName($data['brandName']))['id'];
         $this->product->translate_name_id = $this->createTranslateName($data['title'])['id'];
