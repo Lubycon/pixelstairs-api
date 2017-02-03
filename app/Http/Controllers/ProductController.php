@@ -194,15 +194,15 @@ class ProductController extends Controller
         $this->product->is_free_delivery = $data["isFreeDelivery"];
         $this->product->image_id = Image::create($this->createExternalImage( $data["thumbnailUrl"] ))['id'];
         $this->product->url = $data["url"];
-        $this->product->status_code = "0300";
+        $this->product->isLimited = $data['isLimited'];
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
         $this->product->gender_id = $data['productGender'];
         $this->product->manufacturer_country_id = $data['manufacturerCountryId'];
         $this->product->seller_id = Seller::firstOrCreate($data['seller'])['id'];
-        $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
+        $optionCollection = $this->createOptionCollection($data['optionKeys']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->updateOptions($data['options']['option'],$data['safeStock'],$optionCollection) &&
+        if ( $this->updateOptions($data['options'],$data['safeStock'],$optionCollection) &&
              $this->product->imageGroup->image()->saveMany($this->updateExternalImageArray($this->product,$data['detailImages']))
         ) return response()->success($this->product);
         Abort::Error("0040");
