@@ -80,25 +80,25 @@ class MarketController extends Controller
 //     * )
 //     */
 
-    public function getBySnoopy(Request $request){
-//        11st
-//        $snoopy = new Snoopy;
-//        $snoopy->fetch("http://deal.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=1254155722&trTypeCd=22&trCtgrNo=895019");
-//        $source = $snoopy->results;
-//        $res = iconv("euc-kr","UTF-8",$source);
-//        print_r($res);
-
-        $query = $request->query();
-        $this->market = Market::wherecode($query['marketId'])->first();
-        $this->url = urldecode($query['url']);
-        ob_start();
-        passthru("/usr/bin/python3 ".app_path()."/python/crawling.py $this->url");
-        $market_data = json_decode(ob_get_clean());
-
-        $crawlClass = new CoupangCrawler($market_data);
-
-        return response()->success($crawlClass->getResult());
-    }
+//    public function getBySnoopy(Request $request){
+////        11st
+////        $snoopy = new Snoopy;
+////        $snoopy->fetch("http://deal.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=1254155722&trTypeCd=22&trCtgrNo=895019");
+////        $source = $snoopy->results;
+////        $res = iconv("euc-kr","UTF-8",$source);
+////        print_r($res);
+//
+//        $query = $request->query();
+//        $this->market = Market::wherecode($query['marketId'])->first();
+//        $this->url = urldecode($query['url']);
+//        ob_start();
+//        passthru("/usr/bin/python3 ".app_path()."/python/crawling.py $this->url");
+//        $market_data = json_decode(ob_get_clean());
+//
+//        $crawlClass = new CoupangCrawler($market_data);
+//
+//        return response()->success($crawlClass->getResult());
+//    }
 
     public function get(Request $request){
         $query = $request->query();
@@ -110,8 +110,6 @@ class MarketController extends Controller
             ob_start();
             passthru("/usr/bin/python3 ".app_path()."/python/crawling.py $this->url");
             $market_data = json_decode(ob_get_clean());
-
-            Log::info(var_dump($market_data));
 
             $crawlClass = new CoupangCrawler($market_data);
 

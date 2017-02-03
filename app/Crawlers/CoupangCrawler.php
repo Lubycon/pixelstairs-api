@@ -29,9 +29,7 @@ class CoupangCrawler
         $this->snoopy = new Snoopy;
         $this->dom = new Dom;
 
-        Log::info($idInfo->product_id);
-
-        if( is_null($idInfo) ) Abort::Error("0040","Unknown Product Url");
+//        if( is_null($idInfo) ) Abort::Error("0040","Unknown Product Url");
         $this->product_id = $idInfo->product_id;
         $this->item_id = $idInfo->data_item_id;
         $this->vendor_id = $idInfo->data_vendor_item_id;
