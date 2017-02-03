@@ -73,7 +73,7 @@ class CoupangCrawler
                 "rate" => (int)4.5,
             ],
             "category" =>[
-                "id" => (int)$categories['market_section']['id'],
+                "id" => (string)$categories['market_section']['id'],
                 "name" => (string)$categories['market_section']['name'],
                 "ours" => $categories['ours'],
             ],
@@ -275,12 +275,14 @@ class CoupangCrawler
         $sections = SectionMarketInfo::wheremarket_category_id($marketCategory['id'])->get();
         if(isset($sections[0])){
             foreach( $sections as $key => $value ){
-                $result['sections'][] = $value->section['id'];
+                $result['sections'][] = (string)$value->section['id'];
             }
             $division = Division::findOrFail($sections[0]->section['parent_id']);
             $category = Category::findOrFail($division['parent_id']);
-            $result['divisionId'] = $division['id'];
-            $result['categoryId'] = $category['id'];
+            $result['divisionId'] = (string)$division['id'];
+            $result['categoryId'] = (string)$category['id'];
+        }else{
+            $result = null;
         }
         return $result;
     }
