@@ -56,7 +56,7 @@ class ProductController extends Controller
             "description" => $product->getTranslateDescription($product),
             "categoryId" => $product["category_id"],
             "divisionId" => $product["division_id"],
-            "section" => $product->getSectionIds(),
+            "sections" => $product->getSectionIds(),
             "weight" => $product["weight"],
             "priceInfo" => $product->getPriceInfo(),
             "deliveryPrice" => $product["domestic_delivery_price"],
