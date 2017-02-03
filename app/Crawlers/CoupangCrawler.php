@@ -77,6 +77,7 @@ class CoupangCrawler
                 "name" => (string)$categories['market_section']['name'],
                 "ours" => $categories['ours'],
             ],
+            "isLimited" => is_null($this->maxBuyAble) ? false : true,
             "detailImages" => $vendorProductInfo['detailImage'],
             "description" => (string)$basicProductInfo.(string)$vendorProductInfo['requireInfo'],
             "thumbnailUrl" => $optionSkuList[0]["thumbnailUrl"],
@@ -144,7 +145,6 @@ class CoupangCrawler
                 "price" => (int)$this->splitWon($this->getText($value,'.prod-txt-small')),
                 "name" => (string)$value->getAttribute('data-option-title'),
                 "stock" => (int)$this->maxBuyAble,
-                "isLimited" => true,
                 "isSoldout" => (bool)strpos($value->getAttribute('class'),'soldout'),
                 "thumbnailUrl" => [
                     "file" => (string)$value->getAttribute('data-option-img-src'),
