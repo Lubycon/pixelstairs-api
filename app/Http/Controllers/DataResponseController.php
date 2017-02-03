@@ -94,7 +94,7 @@ class DataResponseController extends Controller
 
         if( !is_null($models) ){
             foreach($models as $modelName => $modelInfo){
-                if( count($modelInfo) ){}
+                if( count($modelInfo) == 0 ){}
                 else if( isset($modelInfo[0]['translate_name_id']) ){
                     foreach($modelInfo as $key => $value ){
                         $value['name'] = $value->getTranslateResultByLanguage($value->translateName,$this->language);
