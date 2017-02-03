@@ -111,6 +111,8 @@ class MarketController extends Controller
             passthru("/usr/bin/python3 ".app_path()."/python/crawling.py $this->url");
             $market_data = json_decode(ob_get_clean());
 
+            Log::info(var_dump($market_data));
+
             $crawlClass = new CoupangCrawler($market_data);
 
             return response()->success($crawlClass->getResult());
