@@ -54,25 +54,25 @@ class CoupangCrawler
         $this->result = [
             "id" => $this->product_id,
             "name" => $productAtf['productName'],
-            "section" => $categories['section'],
             "priceInfo" => [
                 "price" => $basicProductInfWithStock['price'],
                 "lowestPrice" => $basicProductInfWithStock['price'],
             ],
+            "deliveryPrice" => $basicProductInfWithStock['deliveryPrice'],
+            "options" => $optionSkuList,
             "brand" => $productAtf['brandName'],
             "manufacturer" => "",
             "seller" => [
                 "name" => "coupang",
                 "rate" => "4.5",
             ],
-            "deliveryPrice" => $basicProductInfWithStock['deliveryPrice'],
             "totalStock" => $basicProductInfWithStock['totalStock'],
             "maxBuyAble" => $basicProductInfWithStock['maxBuyAble'],
+            "section" => $categories['section'],
             "detailImages" => $vendorProductInfo['detailImage'],
             "description" => $basicProductInfo.$vendorProductInfo['requireInfo'],
             "thumbnailUrl" => $optionSkuList[0]["thumbnailUrl"],
 //            "optionCollection" => $optionCollection,
-            "options" => $optionSkuList,
         ];
     }
 

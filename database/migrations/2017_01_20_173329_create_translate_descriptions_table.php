@@ -16,8 +16,8 @@ class CreateTranslateDescriptionsTable extends Migration
             $table->increments('id');
             $table->string('original',500);
             $table->string('chinese',500);
-            $table->string('korean',500);
-            $table->string('english',500);
+            $table->string('korean',500)->nullable();
+            $table->string('english',500)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
