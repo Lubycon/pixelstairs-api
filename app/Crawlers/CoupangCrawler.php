@@ -68,7 +68,15 @@ class CoupangCrawler
             ],
             "totalStock" => $basicProductInfWithStock['totalStock'],
             "maxBuyAble" => $basicProductInfWithStock['maxBuyAble'],
-            "section" => $categories['section'],
+            "category" =>[
+                "id" => $categories['section']['id'],
+                "name" => $categories['section']['name'],
+                "ours" => [
+                    "categoryId",
+                    "divisionId",
+                    "sections",
+                ],
+            ],
             "detailImages" => $vendorProductInfo['detailImage'],
             "description" => $basicProductInfo.$vendorProductInfo['requireInfo'],
             "thumbnailUrl" => $optionSkuList[0]["thumbnailUrl"],

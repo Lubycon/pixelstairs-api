@@ -41,10 +41,10 @@ class BaseModel extends Model
         ];
     }
     public function getTranslateResultByLanguage($translate,$language){
+        if($language == 'ko' || $language == 'en') $language = "origin";
+
         if( is_array($translate) ){
             $result = [];
-
-
             foreach($translate as $key => $value){
                 $value = $this->isTranslateName($value);
                 $data = $this->getTranslateResult($value);
@@ -59,8 +59,6 @@ class BaseModel extends Model
     }
     public function isTranslateName($value){
         if( is_null($value) ) return NULL;
-
-
         if( !isset($value['original']['original']) ) return $value->translateName;
         return $value;
     }
