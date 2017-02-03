@@ -162,7 +162,7 @@ class ProductController extends Controller
         $optionCollection = $this->createOptionCollection($data['optionKeys']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->product->option()->saveMany($this->setNewOption($data['options']['option'],$data['safeStock'],$optionCollection)) &&
+        if ( $this->product->option()->saveMany($this->setNewOption($data['options'],$data['safeStock'],$optionCollection)) &&
              $this->product->imageGroup->image()->saveMany($this->createExternalImageArray($data['detailImages']))
         ) return response()->success($this->product);
 
