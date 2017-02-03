@@ -156,7 +156,7 @@ class ProductController extends Controller
         $this->product->status_code = "0300";
         $this->product->isLimited = $data['isLimited'];
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
-        $this->product->gender_id = $data['gender'];
+        $this->product->gender_id = $data['productGender'];
         $this->product->manufacturer_country_id = $data['manufacturerCountryId'];
         $this->product->seller_id = Seller::firstOrCreate($data['seller'])['id'];
         $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
@@ -195,7 +195,7 @@ class ProductController extends Controller
         $this->product->url = $data["url"];
         $this->product->status_code = "0300";
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
-        $this->product->gender_id = $data['gender'];
+        $this->product->gender_id = $data['productGender'];
         $this->product->manufacturer_country_id = $data['manufacturerCountryId'];
         $this->product->seller_id = Seller::firstOrCreate($data['seller'])['id'];
         $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
