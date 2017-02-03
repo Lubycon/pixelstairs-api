@@ -40,7 +40,7 @@ trait OptionControllTraits
                 $this->product->option[$key]->stock = $option["stock"];
                 $this->product->option[$key]->safe_stock = Option::absoluteSafeStockCkeck($safeStock);
                 $this->product->option[$key]->translate_name_id = $this->createTranslateName($option['name'])['id'];
-                $this->product->option[$key]->image->update(["url" => $option["thumbnailUrl"]]);
+                $this->product->option[$key]->image_id = Image::create($this->createExternalImage( $option["thumbnailUrl"] ))['id'];
                 $this->product->option[$key]->option_collection_id = $optionCollection['id'];
                 if (!$this->product->option[$key]->update()) Abort::Error("0040","Option Update Fail");
         }
