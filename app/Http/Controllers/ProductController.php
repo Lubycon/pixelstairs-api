@@ -118,8 +118,8 @@ class ProductController extends Controller
                 "thumbnailUrl" => $product->image->getObject(),
                 "url" => $product["url"],
                 "safeStock" => $product->option[0]->safe_stock,
-//                "statusCode" => $product["status_code"],
-//                "endDate" => $product["end_date"],
+                "statusCode" => $product["status_code"],
+                "endDate" => $product["end_date"],
             );
         };
 

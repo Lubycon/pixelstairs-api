@@ -12,18 +12,22 @@ class BaseModel extends Model
 {
     public function getTranslate($translate){
         $result = [];
-        if( count($translate) > 1 ){
+
+        if( is_array($translate) ){
             foreach( $translate as $key => $array ){
                 $result[] = $this->getTranslateResult($array->translateName);
             }
         }else{
+
+            Log::info($translate);
+
             $result = $this->getTranslateResult($translate->translateName);
         }
         return $result;
     }
     public function getTranslateDescription($translate){
         $result = [];
-        if( count($translate) > 1 ){
+        if( is_array($translate) ){
             foreach( $translate as $key => $array ){
                 $result[] = $this->getTranslateResult($array->translateDescription);
             }
