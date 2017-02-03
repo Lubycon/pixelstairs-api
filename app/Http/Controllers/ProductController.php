@@ -203,8 +203,8 @@ class ProductController extends Controller
         $optionCollection = $this->createOptionCollection($data['optionKeys']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->updateOptions($data['options'],$data['safeStock'],$optionCollection) &&
-             $this->product->imageGroup->image()->saveMany($this->updateExternalImageArray($this->product,$data['detailImages']))
+        if ( $this->updateOptions($data['options'],$data['safeStock'],$optionCollection)
+//            && $this->product->imageGroup->image()->saveMany($this->updateExternalImageArray($this->product,$data['detailImages']))
         ) return response()->success($this->product);
         Abort::Error("0040");
     }
