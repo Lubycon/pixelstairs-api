@@ -78,8 +78,8 @@ class CoupangCrawler
                 "ours" => $categories['ours'],
             ],
             "detailImages" => $vendorProductInfo['detailImage'],
-            "description" => (string)$basicProductInfo.$vendorProductInfo['requireInfo'],
-            "thumbnailUrl" => (string)$optionSkuList[0]["thumbnailUrl"],
+            "description" => (string)$basicProductInfo.(string)$vendorProductInfo['requireInfo'],
+            "thumbnailUrl" => $optionSkuList[0]["thumbnailUrl"],
 //            "optionCollection" => $optionCollection,
         ];
     }
