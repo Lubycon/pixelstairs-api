@@ -141,7 +141,7 @@ class ProductController extends Controller
         $this->product->division_id = $data["divisionId"];
         $this->product->section_group_id = SectionGroup::firstOrCreate($this->setSectionGroup($data['sections'],$this->product->division_id))['id'];
         $this->product->market_id = $data["marketId"];
-        $this->product->brand_id = Brand::firstOrCreate($this->relationTranslateName($data['brandName']))['id'];
+        $this->product->brand_id = Brand::firstOrCreate($this->relationTranslateName($data['brand']))['id'];
         $this->product->translate_name_id = $this->createTranslateName($data['title'])['id'];
         $this->product->translate_description_id = $this->createTranslateDescription($data['description'])['id'];
         $this->product->weight = $data["weight"];
@@ -182,7 +182,7 @@ class ProductController extends Controller
         $this->product->division_id = $data["divisionId"];
         $this->product->section_group_id = SectionGroup::firstOrCreate($this->setSectionGroup($data['section'],$this->product->division_id))['id'];
         $this->product->market_id = $data["marketId"];
-        $this->product->brand_id = Brand::firstOrCreate($this->relationTranslateName($data['brandName']))['id'];
+        $this->product->brand_id = Brand::firstOrCreate($this->relationTranslateName($data['brand']))['id'];
         $this->product->translate_name_id = $this->createTranslateName($data['title'])['id'];
         $this->product->translate_description_id = $this->createTranslateDescription($data['description'])['id'];
         $this->product->weight = $data["weight"];
