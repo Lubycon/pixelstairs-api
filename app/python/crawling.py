@@ -17,10 +17,11 @@ def crawling(url):
         data_reference = data.attrs['data-reference']
         json_data = json.loads(data_reference)
         try:
-            productId = json_data['productId']
+            product_id = json_data['productId']
             data_vendor_item_id = data.attrs['data-vendor-item-id']
             data_item_id = data.attrs['data-item-id']
-            result = json.dumps({'productId':productId, 'data_vendor_item_id': data_vendor_item_id, 'data_item_id':data_item_id})
+            data_sdp_style = data.find("div",{"id" : "product-contents-placeholder"}).attrs['data-sdp-style']
+            result = json.dumps({'product_id':product_id, 'data_vendor_item_id': data_vendor_item_id, 'data_item_id':data_item_id, 'data_sdp_style':data_sdp_style})
         except:
             result = False
         page += 1

@@ -11,6 +11,7 @@ namespace App\Crawlers;
 use App\Classes\Snoopy;
 use PHPHtmlParser\Dom;
 use Log;
+use Abort;
 
 class CoupangCrawler
 {
@@ -20,57 +21,148 @@ class CoupangCrawler
     private $product_id;
     private $item_id;
     private $vendor_id;
+    private $sdp_style;
 
     private $result;
-
-    //"productId": "11243305",
-    //"data_vendor_item_id": "3075639772",
-    //"data_item_id": "48593437"
 
     public function __construct($idInfo){
         $this->snoopy = new Snoopy;
         $this->dom = new Dom;
 
-        $this->product_id = $idInfo->productId;
+        if( is_null($idInfo) ) Abort::Error("0040","Unknown Product Url");
+        $this->product_id = $idInfo->product_id;
         $this->item_id = $idInfo->data_item_id;
         $this->vendor_id = $idInfo->data_vendor_item_id;
+        $this->sdp_style = $idInfo->data_sdp_style;
 
         $basicProductInfo = $this->basicProductInfo(); // product basic infomation
         $basicProductInfWithStock = $this->basicProductInfWithStock(); // product basic infomation with stock
         $vendorProductInfo = $this->vendorProductInfo(); // product require info + product detail images
-        $optionData = $this->optionData(); // product require info + product detail images
+        $optionCollection = '';
+        $optionSkuList = '';
+        if( $this->sdp_style == "NORMAL" ){
+            $optionSkuList = $this->loadOptions(); // product require info + product detail images
+        }else if( $this->sdp_style == "FASHION_STYLE_TWO_WAY" ){
+            $optionCollection = $this->optionAttribute(); // product require info + product detail images
+            $optionSkuList = $this->optionSkuList($optionCollection);
+        }else{
+            Abort::Error('0040',"Product option type not allowed");
+        }
         $productAtf = $this->productAtf(); // product title
-
+        $categories = $this->categories(); // product title
 
         $this->result = [
             "id" => $this->product_id,
-            "name" => $productAtf['name'],
-            "category" => [],
+            "name" => $productAtf['productName'],
+            "section" => $categories['section'],
             "priceInfo" => [
                 "price" => $basicProductInfWithStock['price'],
-                "lowestPrice" => 0
+                "lowestPrice" => $basicProductInfWithStock['price'],
+            ],
+            "brand" => $productAtf['brandName'],
+            "manufacturer" => "",
+            "seller" => [
+                "name" => "coupang",
+                "rate" => "4.5",
             ],
             "deliveryPrice" => $basicProductInfWithStock['deliveryPrice'],
-            "thumbnailUrl" => $optionData['options'][0]["thumbnailUrl"],
-            "optionKey" => $optionData['optionKey'],
-            "options" => $optionData['options'],
-            "original" => [
-                "name" => $productAtf['name'],
-                "basicInfo" => $basicProductInfo,
-                "requireInfo" => $vendorProductInfo['requireInfo'],
-                "detailImage" => $vendorProductInfo['detailImage'],
-                "basicProductInfWithStock" => $basicProductInfWithStock,
-                "options" => $optionData['options'],
-                "optionKey" => $optionData['optionKey'],
-            ],
+            "totalStock" => $basicProductInfWithStock['totalStock'],
+            "maxBuyAble" => $basicProductInfWithStock['maxBuyAble'],
+            "detailImages" => $vendorProductInfo['detailImage'],
+            "description" => $basicProductInfo.$vendorProductInfo['requireInfo'],
+            "thumbnailUrl" => $optionSkuList[0]["thumbnailUrl"],
+//            "optionCollection" => $optionCollection,
+            "options" => $optionSkuList,
         ];
     }
 
-    protected  function productAtf(){
+    private function optionAttribute(){
+        $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/brandsdp/attributes?itemId=$this->item_id&noAttribute=false&sdpStyle=FASHION_STYLE_TWO_WAY";
+        $dom = $this->getDomResult($requestUrl);
+        $eachOption = $dom->find('.each-prod-option');
+        $result = [];
+        foreach( $eachOption as $key => $value ){ // option depth
+            $result[] = [
+                "key" => $value->getAttribute('data-type-name'),
+                "values" => $this->getEachOptionAttributes($value),
+            ];
+        }
+        return $result;
+    }
+    private function getEachOptionAttributes($option){
+        $optionValue = $option->find('.prod-option-grid__item');
+        $result = [];
+        foreach( $optionValue as $key => $value ){
+            $result[] = [
+                "optionKey" => $value->getAttribute('data-option-key'),
+                "optionValue" => $value->getAttribute('data-option-value'),
+                "thumbnailUrl" => $value->getAttribute('data-option-img-src'),
+                "displayType" => $value->getAttribute('data-display-type'),
+            ];
+        }
+        return $result;
+    }
+    protected function optionSkuList($optionCollection){
+        $result = [];
+        $matchAttr = $this->splitAttrKey($optionCollection[1]['values'][0]['optionKey']);
+        foreach( $optionCollection[0]['values'] as $key => $value ){
+            $searchAttr = $this->splitAttrKey($value['optionKey']);
+            $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/brandsdp/options/0?attrTypeIds=$matchAttr->current&noAttribute=false&sdpStyle=FASHION_STYLE_TWO_WAY&selectedAttrTypeIds=$searchAttr->current&selectedAttrValueIds=$searchAttr->remote";
+            $dom = json_decode($this->getDomResult($requestUrl));
+
+            foreach( $dom->options as $eachOption ){
+                $result[] = [
+                    "order" => $key,
+                    "price" => $this->splitWon($eachOption->salesPrice),
+                    "name" => $eachOption->title,
+                    "stock" => $eachOption->remainCount,
+                    "isSoldout" => $eachOption->impendSoldOut,
+                    "thumbnailUrl" => $eachOption->imageUrl->displayImageUrl,
+                ];
+            }
+        }
+        return $result;
+    }
+    protected function loadOptions(){
+        $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/loadOptions?itemId=$this->item_id&vendorItemId=$this->vendor_id&&noAttribute=false";
+        $dom = $this->getDomResult($requestUrl);
+        $optionKey[] = $this->getText($dom,'.prod-option-name__button');
+        $options = $this->getElement($dom,'.prod-option-select__item');
+        $optionResult = [];
+        foreach( $options as $key => $value ){
+            if( $value->getAttribute('data-option-img-src') == "" ) Abort::Error('0040',"Product Options Each Thumbnail Not Exist");
+            $optionResult[] = [
+                "order" => $key,
+                "price" => $this->splitWon($this->getText($value,'.prod-txt-small')),
+                "name" => $value->getAttribute('data-option-title'),
+                "stock" => 0,
+                "isSoldout" => (bool)strpos($value->getAttribute('class'),'soldout'),
+                "thumbnailUrl" => $value->getAttribute('data-option-img-src'),
+            ];
+        }
+        return $optionResult;
+    }
+    protected function categories(){
+        $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/breadcrumb-gnbmenu";
+        $dom = $this->getDomResult($requestUrl);
+        $breadcrumb = $dom->find('#breadcrumb .breadcrumb-link');
+        $category = [];
+        foreach( $breadcrumb as $value ){
+            $category[] = [
+                "id" => $this->getLastSegment($value->getAttribute('href')),
+                "name" => $value->text,
+            ];
+        }
+        return [
+            "section" => end($category),
+        ];
+    }
+    protected function productAtf(){
         $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/product-atf?itemId=$this->item_id&vendorItemId=$this->vendor_id";
         $dom = $this->getDomResult($requestUrl);
         return [
-            "name" => $this->getText($dom,'.prod-buy-header__title'),
+            "brandName" => $this->getText($dom,'.prod-brand-name'),
+            "productName" => $this->getText($dom,'.prod-buy-header__title'),
         ];
     }
     protected function basicProductInfo(){
@@ -100,24 +192,6 @@ class CoupangCrawler
         return [
             "requireInfo" => $requireInfo,
             "detailImage" => $optionsImg,
-        ];
-    }
-    protected function optionData(){
-        $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/loadOptions?itemId=$this->item_id&vendorItemId=$this->vendor_id&&noAttribute=false";
-        $dom = $this->getDomResult($requestUrl);
-        $optionKey[] = $this->getText($dom,'.prod-option-name__button');
-        $options = $this->getElement($dom,'.prod-option-select__item');
-        $optionResult = [];
-        foreach( $options as $value ){
-            $optionResult[] = [
-                "name" => $value->getAttribute('data-option-title'),
-                "thumbnailUrl" => $value->getAttribute('data-option-img-src'),
-            ];
-        }
-
-        return [
-            "optionKey" => $optionKey,
-            "options" => $optionResult,
         ];
     }
 
@@ -159,6 +233,25 @@ class CoupangCrawler
             $result[] = $src;
         }
         return $result;
+    }
+
+
+
+    public function getLastSegment($url){
+        $segments = explode('/',$url);
+        return end($segments);
+    }
+    public function splitWon($value){
+        $explode = explode('원',$value);
+        $result = str_replace(",","", $explode[0]);
+        return (int)$result;
+    }
+    public function splitAttrKey($attrTypeIds){
+        $split = explode(':',$attrTypeIds);
+        return (object)array(
+            "current" => $split[0],
+            "remote" => $split[1],
+        );
     }
 
 
