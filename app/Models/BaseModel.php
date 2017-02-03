@@ -18,9 +18,6 @@ class BaseModel extends Model
                 $result[] = $this->getTranslateResult($array->translateName);
             }
         }else{
-
-            Log::info($translate);
-
             $result = $this->getTranslateResult($translate->translateName);
         }
         return $result;
