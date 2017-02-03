@@ -65,6 +65,7 @@ class ProductController extends Controller
             "images" => $product->imageGroup->getImages(),
             "url" => $product["url"],
             "safeStock" => $product->option[0]->safe_stock,
+            "isLimited" => $product['isLimited'],
             "statusCode" => $product["status_code"],
             "createDate" => Carbon::instance($product["created_at"])->toDateTimeString(),
             "startDate" => $product["start_date"],
