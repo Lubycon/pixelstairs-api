@@ -152,7 +152,6 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'url' => 'http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=333125048&trTypeCd=PW02&trCtgrNo=585021&lCtgrNo=1001452&mCtgrNo=1003081',
         'manufacturer_country_id' => factory(App\Models\Manufacturer::class)->create()->id,
         'status_code' => $statusCode,
-        'safe_stock' => mt_rand(15,100),
         'start_date' => $statusCode != '0300' ? date("Y-m-d H:i:s",rand(1262055681,1478304000)) : NULL ,
         'end_date' => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
     ];

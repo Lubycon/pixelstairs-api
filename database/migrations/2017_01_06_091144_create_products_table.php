@@ -38,7 +38,6 @@ class CreateProductsTable extends Migration
             $table->boolean('is_free_delivery')->unsigned();
 
             $table->integer('weight')->unsigned()->nullable();
-            $table->integer('safe_stock')->unsigned();
 
             $table->integer('image_id')->unsigned();
             $table->integer('image_group_id')->unsigned()->nullable();
