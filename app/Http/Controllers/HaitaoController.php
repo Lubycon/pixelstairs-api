@@ -102,7 +102,7 @@ class HaitaoController extends Controller
             "priceUnit" => $product["unit"],
             "delivery_fee" => $product["domestic_delivery_price"],
             "manufacturer" => $product->manufacturer->country['name'],
-            "thumbnailUrl" => $product->image->getUrl(),
+            "thumbnailUrl" => $product->image->url,
             "url" => $product["url"],
             "seller" => $product->getSeller(),
             "gender" => $product->gender->getTranslateResultByLanguage($product->gender->translateName,$this->language),

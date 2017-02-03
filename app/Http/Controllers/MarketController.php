@@ -17,9 +17,17 @@ use App\Models\Division;
 use App\Models\Section;
 use App\Models\Market;
 
+use App\Classes\Snoopy;
+use App\Crawlers\CoupangCrawler;
+use PHPHtmlParser\Dom;
+
+
+
 class MarketController extends Controller
 {
     public $client;
+    public $dom;
+
     public $url;
     public $market;
     public $product_number;
@@ -29,6 +37,7 @@ class MarketController extends Controller
 
     public function __construct(){
         $this->client = new Client();
+        $this->dom = new Dom;
     }
 
 //    /**
@@ -70,32 +79,67 @@ class MarketController extends Controller
 //     *     )
 //     * )
 //     */
+
+    public function getBySnoopy(Request $request){
+//        11st
+//        $snoopy = new Snoopy;
+//        $snoopy->fetch("http://deal.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=1254155722&trTypeCd=22&trCtgrNo=895019");
+//        $source = $snoopy->results;
+//        $res = iconv("euc-kr","UTF-8",$source);
+//        print_r($res);
+
+        $query = $request->query();
+        $this->market = Market::wherecode($query['marketId'])->first();
+        $this->url = urldecode($query['url']);
+        ob_start();
+        passthru("/usr/bin/python3 ".app_path()."/python/crawling.py $this->url");
+        $market_data = json_decode(ob_get_clean());
+
+        $crawlClass = new CoupangCrawler($market_data);
+
+        return response()->success($crawlClass->getResult());
+    }
+
     public function get(Request $request){
         $query = $request->query();
         $this->market = Market::wherecode($query['marketId'])->first();
         $this->url = urldecode($query['url']);
 
-        $parse_array = parse_url($this->url);
-        parse_str($parse_array['query'], $query_parse);
-        $this->product_number = $this->getProductNumber($query_parse);
-        $this->category_number = $this->getCategoryNumber($query_parse);
 
-        $productRequest = $this->requsetOpenApi('product');
-        $productXml = $this->getXmlOnBody($productRequest);
+        if( $this->market['code'] == '0103' ){
+            ob_start();
+            passthru("/usr/bin/python3 ".app_path()."/python/crawling.py $this->url");
+            $market_data = json_decode(ob_get_clean());
 
-        if (!is_null($this->category_number)) {
-            $categoryRequest = $this->requsetOpenApi('category');
-            $categoryXml = $this->getXmlOnBody($categoryRequest);
-            if ( $this->checkError($categoryXml) ) Abort::Error('0040');
-            $this->category_data = $this->xmlToJson($categoryXml);
+            $crawlClass = new CoupangCrawler($market_data);
+
+            return response()->success($crawlClass->getResult());
+        }else{
+            Abort::Error('0040',"This Market Code Not Allow");
         }
 
-        if ( $this->checkError($productXml) ) Abort::Error('0040');
-
-        $product_data = $this->xmlToJson($productXml);
-        $bindData = $this->bindXml($product_data);
-
-        return response()->success($bindData);
+//        11st
+//        $parse_array = parse_url($this->url);
+//        parse_str($parse_array['query'], $query_parse);
+//        $this->product_number = $this->getProductNumber($query_parse);
+//        $this->category_number = $this->getCategoryNumber($query_parse);
+//
+//        $productRequest = $this->requsetOpenApi('product');
+//        $productXml = $this->getXmlOnBody($productRequest);
+//
+//        if (!is_null($this->category_number)) {
+//            $categoryRequest = $this->requsetOpenApi('category');
+//            $categoryXml = $this->getXmlOnBody($categoryRequest);
+//            if ( $this->checkError($categoryXml) ) Abort::Error('0040');
+//            $this->category_data = $this->xmlToJson($categoryXml);
+//        }
+//
+//        if ( $this->checkError($productXml) ) Abort::Error('0040');
+//
+//        $product_data = $this->xmlToJson($productXml);
+//        $bindData = $this->bindXml($product_data);
+//
+//        return response()->success($bindData);
     }
 
     public function bindXml($product_data){
