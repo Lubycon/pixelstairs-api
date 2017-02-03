@@ -23,7 +23,7 @@ trait OptionControllTraits
                 "stock" => $option["stock"],
                 "safe_stock" => Option::absoluteSafeStockCkeck($safeStock),
                 "translate_name_id" => $this->createTranslateName($option['name'])['id'],
-                "image_id" => Image::create(["url" => $option["thumbnailUrl"]])['id'],
+                "image_id" => Image::create($this->createExternalImage( $option["thumbnailUrl"] ))['id'],
                 "option_collection_id" => $optionCollection['id'],
             ]);
             $index++;
