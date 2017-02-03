@@ -106,7 +106,7 @@ class Product extends BaseModel
                     "price" => $value->price,
                     "stock" => $value->stock,
                     "safeStock" => $value->safe_stock,
-                    "thumbnailUrl" => $value->thumbnail_url,
+                    "thumbnailUrl" => $value->image->getObject(),
                     "sku" => $value->sku,
                 );
             }
@@ -158,7 +158,7 @@ class Product extends BaseModel
     }
     public function market()
     {
-        return $this->hasOne('App\Models\Market','code','market_id');
+        return $this->hasOne('App\Models\Market','id','market_id');
     }
     public function brand()
     {

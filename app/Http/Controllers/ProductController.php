@@ -49,7 +49,7 @@ class ProductController extends Controller
             "id" => $product["id"],
             "marketProductId" => $product["market_product_id"],
             "haitaoProductId" => $product["haitao_product_id"],
-            "marketId" => $product["market_id"],
+            "marketId" => $product->market->code,
             "title" => $product->getTranslate($product),
             "brand" => $product->getTranslate($product->brand),
             "description" => $product->getTranslateDescription($product),
@@ -72,7 +72,7 @@ class ProductController extends Controller
             "options" => $product->getOption(),
             "seller" => $product->getSeller(),
             "productGender" => $product->gender->id,
-            "manufacturerCountryId" => $product->manufacturer['country_id'],
+            "manufacturerCountryId" => $product->manufacturer_country_id,
         );
 
         return response()->success($response);
@@ -150,10 +150,11 @@ class ProductController extends Controller
         $this->product->unit = $data["priceInfo"]['unit'];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
-        $this->product->image_id = Image::create(["url" => $data["thumbnailUrl"]])['id'];
+        $this->product->image_id = Image::create($this->createExternalImage( $data["thumbnailUrl"] ))['id'];
         $this->product->image_group_id = ImageGroup::create(['model_name'=>'product'])['id'];
         $this->product->url = $data["url"];
         $this->product->status_code = "0300";
+        $this->product->isLimited = $data['isLimited'];
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
         $this->product->gender_id = $data['gender'];
         $this->product->manufacturer_country_id = $data['manufacturerCountryId'];

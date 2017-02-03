@@ -7,9 +7,21 @@ use Log;
 
 trait ImageControllTraits
 {
-    public function createExternalImageArray($imageArray){
+    public function createExternalImage($image){
+        return [
+                "index" => $image['index'],
+                "url" => $image['file'],
+        ];
+    }
+    public function updateExternalImage($product,$image){
+        $result = $product->image->url->update(["url" => $image['file']]);
+        return $result;
+    }
+
+    public function createExternalImageArray($image){
+        if( isset($image['file']) )$image = [$image];
         $result = [];
-        foreach( $imageArray as $value ){
+        foreach( $image as $value ){
             $result[] = $image = new Image([
                 "index" => $value['index'],
                 "url" => $value['file'],
@@ -17,11 +29,11 @@ trait ImageControllTraits
         }
         return $result;
     }
-    public function updateExternalImageArray($product,$imageArray){
+    public function updateExternalImageArray($product,$image){
         $originalImageIds = $product->imageGroup->image->pluck('id')->toArray();
         $currentImageIds = [];
         $result = [];
-        foreach( $imageArray as $value ){
+        foreach( $image as $value ){
             if( isset($value['id']) && $value['deleted'] == false ){
                 $currentImageIds[] = $value['id'];
                 Image::findOrFail($value['id'])->update([
@@ -39,6 +51,7 @@ trait ImageControllTraits
         $clear = $product->imageGroup->image()->whereIn('id',$diff)->delete();
         return $result;
     }
+
     public function createImageUploadArray($review,$imageArray){
         $result = [];
         foreach( $imageArray as $value ){
