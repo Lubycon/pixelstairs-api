@@ -159,7 +159,7 @@ class ProductController extends Controller
         $this->product->gender_id = $data['productGender'];
         $this->product->manufacturer_country_id = $data['manufacturerCountryId'];
         $this->product->seller_id = Seller::firstOrCreate($data['seller'])['id'];
-        $optionCollection = $this->createOptionCollection($data['optionKeys']['name']);
+        $optionCollection = $this->createOptionCollection($data['optionKeys']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
         if ( $this->product->option()->saveMany($this->setNewOption($data['options']['option'],$data['safeStock'],$optionCollection)) &&
