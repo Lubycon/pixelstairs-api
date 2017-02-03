@@ -8,6 +8,10 @@
 
 namespace App\Crawlers;
 
+use App\Models\SectionMarketInfo;
+use App\Models\Division;
+use App\Models\Category;
+
 use App\Classes\Snoopy;
 use PHPHtmlParser\Dom;
 use Log;
@@ -22,6 +26,8 @@ class CoupangCrawler
     private $item_id;
     private $vendor_id;
     private $sdp_style;
+
+    private $maxBuyAble;
 
     private $result;
 
@@ -67,15 +73,10 @@ class CoupangCrawler
                 "rate" => "4.5",
             ],
             "totalStock" => $basicProductInfWithStock['totalStock'],
-            "maxBuyAble" => $basicProductInfWithStock['maxBuyAble'],
             "category" =>[
-                "id" => $categories['section']['id'],
-                "name" => $categories['section']['name'],
-                "ours" => [
-                    "categoryId",
-                    "divisionId",
-                    "sections",
-                ],
+                "id" => $categories['market_section']['id'],
+                "name" => $categories['market_section']['name'],
+                "ours" => $categories['ours'],
             ],
             "detailImages" => $vendorProductInfo['detailImage'],
             "description" => $basicProductInfo.$vendorProductInfo['requireInfo'],
@@ -143,7 +144,8 @@ class CoupangCrawler
                 "order" => $key,
                 "price" => $this->splitWon($this->getText($value,'.prod-txt-small')),
                 "name" => $value->getAttribute('data-option-title'),
-                "stock" => 0,
+                "stock" => $this->maxBuyAble,
+                "isLimited" => true,
                 "isSoldout" => (bool)strpos($value->getAttribute('class'),'soldout'),
                 "thumbnailUrl" => $value->getAttribute('data-option-img-src'),
             ];
@@ -161,8 +163,10 @@ class CoupangCrawler
                 "name" => $value->text,
             ];
         }
+
         return [
-            "section" => end($category),
+            "market_section" => end($category),
+            "ours" => $this->getCategoryData(end($category)),
         ];
     }
     protected function productAtf(){
@@ -182,6 +186,7 @@ class CoupangCrawler
     protected function basicProductInfWithStock(){
         $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/vendor-items/$this->vendor_id/sale-infos/sdp";
         $dom = $this->getDomResult($requestUrl);
+        $this->maxBuyAble = $this->getText($dom,'.prod-buyable-quantity');
         return [
             "isSoldOut" => $this->getElementAttribute($dom,'.prod-value-holder','data-is-sold-out'),
             "deliveryPrice" => $this->getElementAttribute($dom,'.prod-value-holder','data-shipping-fee') == ""
@@ -189,7 +194,6 @@ class CoupangCrawler
                 : $this->getElementAttribute($dom,'.prod-value-holder','data-shipping-fee'),
             "price" => $this->getElementAttribute($dom,'.prod-value-holder','data-sale-price'),
             "totalStock" => $this->getElementAttribute($dom,'.prod-value-holder','data-stock-quantity'),
-            "maxBuyAble" => $this->getText($dom,'.prod-buyable-quantity'),
         ];
     }
     protected function vendorProductInfo(){
@@ -260,6 +264,20 @@ class CoupangCrawler
             "current" => $split[0],
             "remote" => $split[1],
         );
+    }
+    public function getCategoryData($marketCategory){
+        $result = [];
+        $sections = SectionMarketInfo::wheremarket_category_id($marketCategory['id'])->get();
+        if(isset($sections[0])){
+            foreach( $sections as $key => $value ){
+                $result['sections'][] = $value->section['id'];
+            }
+            $division = Division::findOrFail($sections[0]->section['parent_id']);
+            $category = Category::findOrFail($division['parent_id']);
+            $result['divisionId'] = $division['id'];
+            $result['categoryId'] = $category['id'];
+        }
+        return $result;
     }
 
 
