@@ -127,7 +127,10 @@ class CoupangCrawler
                     "name" => (string)$eachOption->title,
                     "stock" => (int)$eachOption->remainCount,
                     "isSoldout" => (bool)$eachOption->impendSoldOut,
-                    "thumbnailUrl" => is_null($eachOption->imageUrl) ? NULL : (string)$eachOption->imageUrl->displayImageUrl,
+                    "thumbnailUrl" => [
+                        "file" => is_null($eachOption->imageUrl) ? NULL : (string)$eachOption->imageUrl->displayImageUrl,
+                        "index" => 0,
+                    ],
                 ];
             }
         }
@@ -185,7 +188,10 @@ class CoupangCrawler
         return [
             "brandName" => $this->getText($dom,'.prod-brand-name'),
             "productName" => $this->getText($dom,'.prod-buy-header__title'),
-            "thumbnailUrl" => $this->getElement($dom,'.prod-image__detail')->getAttribute('data-src'),
+            "thumbnailUrl" => [
+                "file" => $this->getElement($dom,'.prod-image__detail')->getAttribute('data-src'),
+                "index" => 0,
+            ],
         ];
     }
     protected function basicProductInfo(){
