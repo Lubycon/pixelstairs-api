@@ -9,8 +9,8 @@ class ReviewQuestionKey extends BaseModel
     use SoftDeletes;
 
 
-    public function translateDescription()
+    public function translateName()
     {
-        return $this->hasOne('App\Models\TranslateDescription','id','translate_description_id');
+        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
     }
 }

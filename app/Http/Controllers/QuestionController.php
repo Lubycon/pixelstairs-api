@@ -50,12 +50,21 @@ class QuestionController extends Controller
     {
         $this->division = Division::findOrFail($division_id);
         $questionKey = $this->division->reviewQuestionKey;
+        $commonQuestionKey = ReviewQuestionKey::whereis_common(1)->get();
 
         $result = [];
+        foreach( $commonQuestionKey as $value ){
+            $result[] = [
+                "id" => $value->id,
+                "qKey" => $value->getTranslate($value),
+                "isCommon" => true,
+            ];
+        }
         foreach( $questionKey as $value ){
             $result[] = [
                 "id" => $value->id,
-                "qKey" => $value->getTranslateDescription($value),
+                "qKey" => $value->getTranslate($value),
+                "isCommon" => false,
             ];
         }
         return response()->success($result);
@@ -64,7 +73,7 @@ class QuestionController extends Controller
     public function postKey(Request $request,$division_id){
         $questionKey = new ReviewQuestionKey;
         $questionKey->division_id = $division_id;
-        $questionKey->translate_description_id = $this->createTranslateDescription($request['qKey'])['id'];
+        $questionKey->translate_name_id = $this->createTranslateName($request['qKey'])['id'];
         $questionKey->is_common = $request['isCommon'];
 
         if ( !$questionKey->save() ) Abort::Error("0040");

@@ -223,11 +223,11 @@ $factory->define(App\Models\ReviewQuestion::class, function (Faker\Generator $fa
 });
 
 $factory->define(App\Models\ReviewQuestionKey::class, function (Faker\Generator $faker) {
-    $isCommon = mt_rand(0,1);
-    $division = !$isCommon ? App\Models\Division::orderBy(\DB::raw('RAND()'))->first()['id'] : NULL;
+    $isCommon = mt_rand(0,100) > 98 ? true : false;
+    $division = $isCommon ? NULL : App\Models\Division::orderBy(\DB::raw('RAND()'))->first()['id'];
     return [
         'division_id' => $division,
-        'translate_description_id' => factory(App\Models\TranslateDescription::class)->create()->id,
+        'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
         'is_common' => $isCommon,
     ];
 });

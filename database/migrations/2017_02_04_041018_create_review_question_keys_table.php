@@ -15,7 +15,7 @@ class CreateReviewQuestionKeysTable extends Migration
         Schema::create('review_question_keys', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('division_id')->unsigned()->nullable();
-            $table->integer('translate_description_id')->unsigned();
+            $table->integer('translate_name_id')->unsigned();
             $table->boolean('is_common')->default(false);
             $table->softDeletes();
             $table->timestamps();
