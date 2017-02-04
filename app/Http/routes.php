@@ -76,7 +76,7 @@ Route::group(['prefix' => '/v1'], function () {
     Route::group(['prefix' => '/surveys/'], function () {
         Route::get('detail/{user_id}', 'SurveyController@get');
         Route::get('', 'SurveyController@getList');
-        Route::post('{user_id}', 'SurveyController@post');
+        Route::post('', 'SurveyController@post');
     });
     Route::group(['prefix' => '/reviews/'], function () {
         Route::get('detail/{review_id}', 'ReviewController@get');

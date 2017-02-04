@@ -11,11 +11,15 @@ use App\Models\User;
 use App\Models\Survey;
 use App\Models\Interest;
 
+use Log;
+use Abort;
+
 use App\Traits\InterestControllTraits;
+use App\Traits\GetUserModelTrait;
 
 class SurveyController extends Controller
 {
-    use InterestControllTraits;
+    use InterestControllTraits,GetUserModelTrait;
 
     public function get(Request $request,$user_id){
         $user = User::findOrFail($user_id);
@@ -94,9 +98,11 @@ class SurveyController extends Controller
             return response()->success();
         }
     }
-    public function post(Request $request,$user_id){
-        $user = User::findOrFail($user_id);
+    public function post(Request $request){
+        $user = $this->getUserByTokenRequestOrFail($request);
         $survey = new Survey;
+
+        if( !is_null($user->survey) ) Abort::Error('0046',"Already Written Survey User");
 
         $survey->user_id = $user->id;
         $user->email = $request['user']['email'];
@@ -107,7 +113,7 @@ class SurveyController extends Controller
         $user->address1 = $request['user']['location']['address1'];
         $user->address2 = $request['user']['location']['address2'];
         $user->post_code = $request['user']['location']['postCode'];
-        $survey->interest_id = Interest::create($this->setNewInterest($request['likeCategory']))['id'];
+        $survey->interest_id = Interest::create($this->setNewInterest($user,$request['likeCategory']))['id'];
         $survey->purchasing_factor = $request['survey']['purchasingFactor'];
         $survey->major_store = $request['survey']['majorStore'];
         $survey->favorite_brand = $request['survey']['favoriteBrand'];

@@ -8,9 +8,10 @@ use Log;
 trait InterestControllTraits
 {
 
-    public function setNewInterest($interestsData)
+    public function setNewInterest($user,$interestsData)
     {
         $result = [
+            "user_id" => $user->id,
             "category_id" => $interestsData['categoryId'],
             "division_id" => $interestsData['divisionId'],
             "section_id" => isset($option['sectionId']) ? $option['sectionId'] : NULL,
