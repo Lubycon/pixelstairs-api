@@ -47,20 +47,26 @@ class BaseModel extends Model
         if( is_array($translate) ){
             $result = [];
             foreach($translate as $key => $value){
-                $value = $this->isTranslateName($value);
+                $value = $this->isTranslated($value);
                 $data = $this->getTranslateResult($value);
                 $result[] = $data[$language];
             }
             return $result;
         }else{
-            $translate = $this->isTranslateName($translate);
+            $translate = $this->isTranslated($translate);
             $data = $this->getTranslateResult($translate);
             return $data[$language];
         }
     }
-    public function isTranslateName($value){
+    public function isTranslated($value){
         if( is_null($value) ) return NULL;
-        if( !isset($value['original']['original']) ) return $value->translateName;
+
+        Log::info($value);
+
+        if( !isset($value['original']['original']) ){
+            if( isset( $value['translate_name_id'] ) ) return $value->translateName;
+            if( isset( $value['translate_description_id'] ) ) return $value->translateDescription;
+        }
         return $value;
     }
 }

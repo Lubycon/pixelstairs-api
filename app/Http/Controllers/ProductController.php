@@ -102,6 +102,7 @@ class ProductController extends Controller
             "divisionName" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
             "sections" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
             "thumbnailUrl" => $product->image->getObject(),
+            "questions" => $product->getQuestionsByLanguage($this->language),
         );
 
         return response()->success($response);

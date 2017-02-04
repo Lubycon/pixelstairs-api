@@ -8,6 +8,7 @@ use Auth;
 
 use App\Models\User;
 use App\Models\Image;
+use App\Models\Interest;
 use App\Models\Credential;
 
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ use Abort;
 
 use App\Traits\GetUserModelTrait;
 use App\Traits\S3StorageControllTraits;
+use App\Traits\InterestControllTraits;
 
 use App\Jobs\LastSigninTimeCheckerJob;
 
@@ -31,6 +33,7 @@ class AuthController extends Controller
 {
     use ThrottlesLogins,
         GetUserModelTrait,
+        InterestControllTraits,
         S3StorageControllTraits;
 
     protected function signin(AuthSigninRequest $request)
@@ -157,6 +160,13 @@ class AuthController extends Controller
                 "nickname" => $findUser->nickname,
                 "position" => $findUser->position,
                 "grade" => $findUser->grade,
+                "location" => [
+                    "city" => $findUser->city,
+                    "address1" => $findUser->address1,
+                    "address2" => $findUser->address2,
+                    "postCode" => $findUser->post_code,
+                ],
+                "likeCategory" => $findUser->getInterest(),
                 "profileImg" => $findUser->image->getObject(),
             ]);
         }else{
@@ -177,8 +187,13 @@ class AuthController extends Controller
                 $findUser->name = $data['name'];
                 $findUser->password = bcrypt($data['password']);
                 $findUser->position = $data['position'];
-                $findUser->grade = $data['grade'];
-                $findUser->image_id = Image::create(["is_mitty_own"=>true,"url"=>$this->userThumbnailUpload($findUser,$data['profileImg'])])['id'];
+                $findUser->city = $data['location']['city'];
+                $findUser->address1 = $data['location']['address1'];
+                $findUser->address2 = $data['location']['address2'];
+                $findUser->post_code = $data['location']['postCode'];
+                Interest::firstOrCreate($this->setNewInterest($findUser,$request['likeCategory']));
+
+                $findUser->image_id = Image::create(["is_mitty_own"=>true,"url"=>$this->userThumbnailUpload($findUser,$data['profileImg']['file'])])['id'];
                 if($findUser->save()){
                     return response()->success($findUser);
                 }

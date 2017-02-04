@@ -15,7 +15,7 @@ return [
     ],
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'],
-    'requiredHeader' => ['*'],
+    'requiredHeader' => ["x-mitty-language"],
     'exposedHeaders' => [],
     'maxAge' => 0,
     'hosts' => [],

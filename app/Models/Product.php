@@ -154,6 +154,20 @@ class Product extends BaseModel
         }
         return $result;
     }
+    public function getQuestionsByLanguage($language){
+        $result = [];
+        $questions = $this->reviewQuestion;
+        foreach($questions as $question){
+            $questionKey = $question->questionKey;
+            $result[] = [
+                "id" => (int)$question->id,
+                "qKeyId" => $questionKey->id,
+                "qKey" => $questionKey->getTranslateResultByLanguage($questionKey,$language),
+                "description" => $question->getTranslateResultByLanguage($question,$language),
+            ];
+        }
+        return $result;
+    }
 
     // get reference data
     // hasOne('remote_table_column_name','local_column_name');

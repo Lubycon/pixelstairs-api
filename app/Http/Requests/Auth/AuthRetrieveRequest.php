@@ -20,7 +20,18 @@ class AuthRetrieveRequest extends Request
             'email' => 'required',
             'password' => 'required',
             'position' => 'required',
-            'grade' => 'required|in:normal,admin,super_admin',
+            'location' => 'array|required',
+            'location.city' => 'string|required',
+            'location.address1' => 'string|required',
+            'location.address2' => 'string|required',
+            'location.postCode' => 'string|required',
+            'likeCategory' => 'array|required',
+            'likeCategory.categoryId' => 'integer|required',
+            'likeCategory.divisionId' => 'integer|required',
+            'profileImg' => 'required',
+            'profileImg.id' => 'string',
+            'profileImg.file' => 'required',
+            'profileImg.index' => 'integer',
         ];
 
         return $requiredRule;

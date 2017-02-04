@@ -47,6 +47,18 @@ class User extends BaseModel implements AuthenticatableContract,
     protected $hidden = ['password', 'remember_token'];
 
 
+    public function getInterest(){
+        $result = [];
+        $interests = $this->interest;
+        foreach ($interests as $interest) {
+            $result[] = [
+                "categoryId" => $interest->category_id,
+                "divisionId" => $interest->division_id,
+            ];
+        }
+        return $result;
+    }
+
     public function image()
     {
         return $this->hasOne('App\Models\Image','id','image_id');
