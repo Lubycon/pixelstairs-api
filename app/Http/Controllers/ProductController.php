@@ -180,12 +180,14 @@ class ProductController extends Controller
         $this->product->manufacturer_country_id = $data['manufacturerCountryId'];
         $this->product->seller_id = Seller::firstOrCreate($data['seller'])['id'];
         $optionCollection = $this->createOptionCollection($data['optionKeys']);
-        $reviewQuestions = $this->createReviewQuestions($data['questions']);
+
+        if( !is_null( $data['questions'] ) ){$reviewQuestions = null;
+        }else{$reviewQuestions= $this->createReviewQuestions($data['questions']);}
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->product->option()->saveMany($this->setNewOption($data['options'],$data['safeStock'],$optionCollection)) &&
-             $this->product->reviewQuestion()->saveMany( $reviewQuestions )
-        ) return response()->success($this->product);
+        if ( $this->product->option()->saveMany($this->setNewOption($data['options'],$data['safeStock'],$optionCollection)) ){
+            if( !is_null($reviewQuestions) ) $this->product->reviewQuestion()->saveMany( $reviewQuestions );
+        }return response()->success($this->product);
 
 
         Abort::Error("0040");

@@ -73,7 +73,7 @@ class ProductPostRequest extends Request
 
             'productGender' => 'required',
             'manufacturerCountryId' => 'required',
-            'questions' => 'required|array',
+            'questions' => 'array',
         ];
 
         return $requiredRule;
