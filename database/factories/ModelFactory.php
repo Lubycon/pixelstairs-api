@@ -135,7 +135,7 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'category_id' => $category['id'],
         'division_id' => $division['id'],
         'section_group_id' => $sectionGroup['id'],
-        'market_id' => "0100",
+        'market_id' => 4,
         'brand_id' => factory(App\Models\Brand::class)->create()->id,
         'seller_id' => factory(App\Models\Seller::class)->create()->id,
         'gender_id' => mt_rand(0,2),
