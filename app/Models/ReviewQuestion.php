@@ -16,9 +16,14 @@ class ReviewQuestion extends BaseModel
     // get reference data
     // hasOne('remote_table_column_name','local_column_name');
 
-    public function translateName()
+    public function translateDescription()
     {
-        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+        return $this->hasOne('App\Models\TranslateDescription','id','translate_description_id');
+    }
+
+    public function questionKey()
+    {
+        return $this->hasOne('App\Models\ReviewQuestionKey','id','question_key_id');
     }
 
     // get reference data

@@ -17,7 +17,7 @@ class CreateAwardsTable extends Migration
             $table->integer('product_id')->unsigned();
             $table->string('sku',100);
             $table->integer('user_id')->unsigned();
-            $table->boolean('is_written_review');
+            $table->boolean('is_written_review')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

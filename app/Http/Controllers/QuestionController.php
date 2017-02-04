@@ -8,12 +8,16 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Traits\ReviewQuestionControllTraits;
+use App\Traits\TranslateTraits;
+
+use App\Models\Division;
+use App\Models\ReviewQuestionKey;
 
 use Log;
 
 class QuestionController extends Controller
 {
-    use ReviewQuestionControllTraits;
+    use ReviewQuestionControllTraits,TranslateTraits;
 
     public $target;
     public $product;
@@ -26,8 +30,7 @@ class QuestionController extends Controller
         $this->language = $request->header('X-mitty-language');
         $this->target = $this->getReviewTarget($target,$target_id);
         $this->product = $this->target->product;
-        $this->division = $this->product->division;
-        $this->question = isset($this->division->reviewQuestion) ? $this->division->reviewQuestion : [];
+        $this->question = isset($this->product->reviewQuestion) ? $this->product->reviewQuestion : [];
 
         $result = [
             "skuName" => $this->target->option->getTranslateResultByLanguage($this->target->option->translateName,$this->language),
@@ -36,10 +39,35 @@ class QuestionController extends Controller
         foreach( $this->question as $value ){
             $result["q"][] = [
                 "id" => $value->id,
-                "qKey" => $value->getTranslateResultByLanguage($value->translateName,$this->language),
-                "description" => $value->description,
+                "qKey" => $value->questionKey->getTranslateResultByLanguage($value->questionKey->translateDescription,$this->language),
+                "description" => $value->getTranslateResultByLanguage($value->translateDescription,$this->language),
             ];
         }
         return response()->success($result);
+    }
+
+    public function getKeys(Request $request,$division_id)
+    {
+        $this->division = Division::findOrFail($division_id);
+        $questionKey = $this->division->reviewQuestionKey;
+
+        $result = [];
+        foreach( $questionKey as $value ){
+            $result[] = [
+                "id" => $value->id,
+                "qKey" => $value->getTranslateDescription($value),
+            ];
+        }
+        return response()->success($result);
+    }
+
+    public function postKey(Request $request,$division_id){
+        $questionKey = new ReviewQuestionKey;
+        $questionKey->division_id = $division_id;
+        $questionKey->translate_description_id = $this->createTranslateDescription($request['qKey'])['id'];
+        $questionKey->is_common = $request['isCommon'];
+
+        if ( !$questionKey->save() ) Abort::Error("0040");
+        return response()->success($questionKey);
     }
 }

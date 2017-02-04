@@ -30,9 +30,9 @@ class Division extends BaseModel
 
     // get reference data
     // hasMany('remote_table_column_name','local_column_name');
-    public function reviewQuestion()
+    public function reviewQuestionKey()
     {
-        return $this->hasMany('App\Models\ReviewQuestion','division_id','id');
+        return $this->hasMany('App\Models\ReviewQuestionKey','division_id','id');
     }
 
     // belongsTo

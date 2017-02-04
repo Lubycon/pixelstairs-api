@@ -32,10 +32,19 @@ use App\Traits\TranslateTraits;
 use App\Traits\SectionTrait;
 use App\Traits\ImageControllTraits;
 use App\Traits\S3StorageControllTraits;
+use App\Traits\ReviewQuestionControllTraits;
 
 class ProductController extends Controller
 {
-    use GetUserModelTrait,OptionControllTraits,HaitaoRequestTraits,StatusInfoTraits,TranslateTraits,SectionTrait,ImageControllTraits,S3StorageControllTraits;
+    use GetUserModelTrait,
+        OptionControllTraits,
+        HaitaoRequestTraits,
+        StatusInfoTraits,
+        TranslateTraits,
+        SectionTrait,
+        ImageControllTraits,
+        S3StorageControllTraits,
+        ReviewQuestionControllTraits;
 
     public $product;
     public $product_id;
@@ -154,6 +163,7 @@ class ProductController extends Controller
         $this->product->is_free_delivery = $data["isFreeDelivery"];
         $this->product->image_id = Image::create($this->createExternalImage( $data["thumbnailUrl"] ))['id'];
         $this->product->image_group_id = ImageGroup::create(['model_name'=>'product'])['id'];
+        $this->product->imageGroup->image()->saveMany($this->createExternalImageArray($data['detailImages']));
         $this->product->url = $data["url"];
         $this->product->status_code = "0300";
         $this->product->isLimited = $data['isLimited'];
@@ -162,10 +172,11 @@ class ProductController extends Controller
         $this->product->manufacturer_country_id = $data['manufacturerCountryId'];
         $this->product->seller_id = Seller::firstOrCreate($data['seller'])['id'];
         $optionCollection = $this->createOptionCollection($data['optionKeys']);
+        $reviewQuestions = $this->createReviewQuestions($data['questions']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
         if ( $this->product->option()->saveMany($this->setNewOption($data['options'],$data['safeStock'],$optionCollection)) &&
-             $this->product->imageGroup->image()->saveMany($this->createExternalImageArray($data['detailImages']))
+             $this->product->reviewQuestion()->saveMany( $reviewQuestions )
         ) return response()->success($this->product);
 
 

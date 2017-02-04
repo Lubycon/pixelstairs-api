@@ -195,6 +195,10 @@ class Product extends BaseModel
     {
         return $this->hasMany('App\Models\Option','product_id','id');
     }
+    public function reviewQuestion()
+    {
+        return $this->hasMany('App\Models\ReviewQuestion','product_id','id');
+    }
 
 
     // get translate data

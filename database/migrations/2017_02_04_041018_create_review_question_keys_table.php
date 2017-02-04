@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateReviewQuestionsTable extends Migration
+class CreateReviewQuestionKeysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,11 @@ class CreateReviewQuestionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('review_questions', function (Blueprint $table) {
+        Schema::create('review_question_keys', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('question_key_id')->unsigned();
-            $table->integer('product_id')->unsigned();
+            $table->integer('division_id')->unsigned()->nullable();
             $table->integer('translate_description_id')->unsigned();
+            $table->boolean('is_common')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -29,6 +29,6 @@ class CreateReviewQuestionsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('review_questions');
+        Schema::drop('review_question_keys');
     }
 }

@@ -214,11 +214,21 @@ $factory->define(App\Models\Review::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Models\ReviewQuestion::class, function (Faker\Generator $faker) {
-    $division = App\Models\Division::orderBy(\DB::raw('RAND()'))->first();
+    $product = App\Models\Product::orderBy(\DB::raw('RAND()'))->first();
     return [
-        'division_id' => $division['id'],
-        'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
-        'description' => $faker->paragraph,
+        'question_key_id' => factory(App\Models\ReviewQuestionKey::class)->create()->id,
+        'product_id' => $product['id'],
+        'translate_description_id' => factory(App\Models\TranslateDescription::class)->create()->id,
+    ];
+});
+
+$factory->define(App\Models\ReviewQuestionKey::class, function (Faker\Generator $faker) {
+    $isCommon = mt_rand(0,1);
+    $division = !$isCommon ? App\Models\Division::orderBy(\DB::raw('RAND()'))->first()['id'] : NULL;
+    return [
+        'division_id' => $division,
+        'translate_description_id' => factory(App\Models\TranslateDescription::class)->create()->id,
+        'is_common' => $isCommon,
     ];
 });
 
