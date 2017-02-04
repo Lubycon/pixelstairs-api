@@ -193,7 +193,6 @@ class ProductController extends Controller
         $this->product->unit = $data["priceInfo"]['unit'];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
-        $this->product->image_id = Image::create($this->createExternalImage( $data["thumbnailUrl"] ))['id'];
         $this->product->url = $data["url"];
         $this->product->isLimited = $data['isLimited'];
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
