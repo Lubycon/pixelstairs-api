@@ -24,8 +24,8 @@ class CategoryPostRequest extends Request
             "name" => "array|required",
             "name.origin" => "required",
             "name.zh" => "required",
-            "name.ko" => "required",
-            "name.en" => "required",
+//            "name.ko" => "required",
+//            "name.en" => "required",
         ];
 
         return $requiredRule;

@@ -27,20 +27,20 @@ class ProductPutRequest extends Request
             'title' => 'required|array',
             'title.origin' => 'required',
             'title.zh' => 'required',
-            'title.ko' => 'required',
-            'title.en' => 'required',
+//            'title.ko' => 'required',
+//            'title.en' => 'required',
 
             'brand' => 'array|required',
             'brand.origin' => 'required',
             'brand.zh' => 'required',
-            'brand.ko' => 'required',
-            'brand.en' => 'required',
+//            'brand.ko' => 'required',
+//            'brand.en' => 'required',
 
             'description' => 'array|required',
             'description.origin' => 'required',
             'description.zh' => 'required',
-            'description.ko' => 'required',
-            'description.en' => 'required',
+//            'description.ko' => 'required',
+//            'description.en' => 'required',
 
             'weight' => "required",
 

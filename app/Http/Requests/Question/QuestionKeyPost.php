@@ -25,8 +25,8 @@ class QuestionKeyPost extends Request
             'qKey' => 'required|array',
             'qKey.origin' => 'required',
             'qKey.zh' => 'required',
-            'qKey.ko' => 'required',
-            'qKey.en' => 'required',
+//            'qKey.ko' => 'required',
+//            'qKey.en' => 'required',
             'isCommon' => 'required',
         ];
 
