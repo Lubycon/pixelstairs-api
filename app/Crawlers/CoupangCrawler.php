@@ -13,9 +13,11 @@ use App\Models\Division;
 use App\Models\Category;
 
 use App\Classes\Snoopy;
+use Illuminate\Foundation\Testing\HttpException;
 use PHPHtmlParser\Dom;
 use Log;
 use Abort;
+use PHPHtmlParser\Exceptions\EmptyCollectionException;
 
 class CoupangCrawler
 {
@@ -80,8 +82,7 @@ class CoupangCrawler
             "isLimited" => is_null($this->maxBuyAble) ? false : true,
             "detailImages" => $vendorProductInfo['detailImage'],
             "description" => (string)$basicProductInfo.(string)$vendorProductInfo['requireInfo'],
-            "thumbnailUrl" => $optionSkuList[0]["thumbnailUrl"],
-//            "optionCollection" => $optionCollection,
+            "thumbnailUrl" => $productAtf["thumbnailUrl"],
         ];
     }
 
@@ -126,7 +127,7 @@ class CoupangCrawler
                     "name" => (string)$eachOption->title,
                     "stock" => (int)$eachOption->remainCount,
                     "isSoldout" => (bool)$eachOption->impendSoldOut,
-                    "thumbnailUrl" => (string)$eachOption->imageUrl->displayImageUrl,
+                    "thumbnailUrl" => is_null($eachOption->imageUrl) ? NULL : (string)$eachOption->imageUrl->displayImageUrl,
                 ];
             }
         }
@@ -139,18 +140,26 @@ class CoupangCrawler
         $options = $this->getElement($dom,'.prod-option-select__item');
         $optionResult = [];
         foreach( $options as $key => $value ){
-            if( $value->getAttribute('data-option-img-src') == "" ) Abort::Error('0040',"Product Options Each Thumbnail Not Exist");
-            $optionResult[] = [
-                "order" => (int)$key,
-                "price" => (int)$this->splitWon($this->getText($value,'.prod-txt-small')),
-                "name" => (string)$value->getAttribute('data-option-title'),
-                "stock" => (int)$this->maxBuyAble,
-                "isSoldout" => (bool)strpos($value->getAttribute('class'),'soldout'),
-                "thumbnailUrl" => [
-                    "file" => (string)$value->getAttribute('data-option-img-src'),
-                    "index" => 0,
-                ],
-            ];
+            $detailUrl = $value->getAttribute('data-request-uri');
+            if( $detailUrl != '' ){ // option has more request
+                $parseUrl = 'https://www.coupang.com'.str_replace("amp;",'',$detailUrl);
+                $detailDom = $this->getDomResult($parseUrl);
+                $getElement = $this->getElement($detailDom,'.prod-option-select__item');
+                $justPrice = (int)$this->splitWon($this->getText($getElement,'.prod-txt-small'));
+            }
+            if( (string)$value->getAttribute('data-option-title') != '병행수입' ){ // exception
+                $optionResult[] = [
+                    "order" => (int)$key,
+                    "price" => isset($justPrice) ? $justPrice : (int)$this->splitWon($this->getText($value,'.prod-txt-small')),
+                    "name" => (string)$value->getAttribute('data-option-title'),
+                    "stock" => (int)$this->maxBuyAble,
+                    "isSoldout" => (bool)strpos($value->getAttribute('class'),'soldout'),
+                    "thumbnailUrl" => [
+                        "file" => (string)$value->getAttribute('data-option-img-src'),
+                        "index" => 0,
+                    ],
+                ];
+            }
         }
         return $optionResult;
     }
@@ -165,9 +174,8 @@ class CoupangCrawler
                 "name" => $value->text,
             ];
         }
-
         return [
-            "market_section" => end($category),
+            "market_section" => end($category) == '쿠팡 홈' ? NULL : end($category),
             "ours" => $this->getCategoryData(end($category)),
         ];
     }
@@ -177,6 +185,7 @@ class CoupangCrawler
         return [
             "brandName" => $this->getText($dom,'.prod-brand-name'),
             "productName" => $this->getText($dom,'.prod-buy-header__title'),
+            "thumbnailUrl" => $this->getElement($dom,'.prod-image__detail')->getAttribute('data-src'),
         ];
     }
     protected function basicProductInfo(){
@@ -199,7 +208,7 @@ class CoupangCrawler
         ];
     }
     protected function vendorProductInfo(){
-        $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/vendor-items/$this->vendor_id?isFixedVendorItem=true&type=sdp";
+        $requestUrl = "http://www.coupang.com/vp/products/$this->product_id/vendor-items/$this->vendor_id?isFixedVendorItem=true&type=sdp";
         $dom = $this->getDomResult($requestUrl);
         $requireInfo = $this->getMergeText($dom,'.prod-item-attr-name');
         $optionsImg = $this->getImageSrc($dom,'.lazy-img','data-src');
@@ -219,8 +228,13 @@ class CoupangCrawler
         return $this->dom->load($source);
     }
     public function getText($dom,$findWord){
-        $requireDom = $dom->find($findWord)->text;
-        return $requireDom;
+        try{
+            $requireDom = $dom->find($findWord)->text;
+            return $requireDom;
+        }catch(EmptyCollectionException $e){
+            Log::info("$findWord Data not found");
+            return null;
+        }
     }
     public function getMergeText($dom,$findWord){
         $requireDom = $dom->find($findWord);
