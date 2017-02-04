@@ -8,11 +8,13 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Pager\PageController;
 
+use App\Http\Requests\Order\OrderGetRequest;
+
 use Log;
 
 class OrderController extends Controller
 {
-    public function getList(Request $request){
+    public function getList(OrderGetRequest $request){
         $query = $request->query();
         $controller = new PageController('order',$query);
         $collection = $controller->getCollection();

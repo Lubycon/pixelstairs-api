@@ -9,6 +9,10 @@ use App\Exceptions\UserNotFound;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Validation\ValidationException;
+
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
+
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -80,6 +84,7 @@ class Handler extends ExceptionHandler
             case $e instanceof BadRequestHttpException:            return '0040';  break;
             case $e instanceof UnauthorizedHttpException:          return '0041';  break;
             case $e instanceof AccessDeniedHttpException:          return '0043';  break;
+            case $e instanceof AuthorizesRequests:              return '9999';  break;
             case $e instanceof NotFoundHttpException:              return '0044';  break;
             case $e instanceof ConflictHttpException:              return '0046';  break;
             case $e instanceof LengthRequiredHttpException:        return '0047';  break;

@@ -102,9 +102,12 @@ class MarketController extends Controller
 
     public function get(Request $request){
         $query = $request->query();
+
+        if(!isset($query['marketId'])) Abort::Error('0040',"Can not search Querystring 'marketId'");
+        if(!isset($query['url'])) Abort::Error('0040',"Can not search Querystring 'url'");
+
         $this->market = Market::wherecode($query['marketId'])->first();
         $this->url = urldecode($query['url']);
-
 
         if( $this->market['code'] == '0103' ){
             ob_start();

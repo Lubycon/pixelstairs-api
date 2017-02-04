@@ -17,6 +17,8 @@ use Abort;
 use App\Traits\InterestControllTraits;
 use App\Traits\GetUserModelTrait;
 
+use App\Http\Requests\Survey\SurveyPostRequest;
+
 class SurveyController extends Controller
 {
     use InterestControllTraits,GetUserModelTrait;
@@ -98,11 +100,11 @@ class SurveyController extends Controller
             return response()->success();
         }
     }
-    public function post(Request $request){
+    public function post(SurveyPostRequest $request){
         $user = $this->getUserByTokenRequestOrFail($request);
         $survey = new Survey;
 
-        if( !is_null($user->survey) ) Abort::Error('0046',"Already Written Survey User");
+        if( !is_null($user->survey) ) Abort::Error('0046',"Already Survey Written User");
 
         $survey->user_id = $user->id;
         $user->email = $request['user']['email'];

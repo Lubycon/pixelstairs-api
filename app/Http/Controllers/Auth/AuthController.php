@@ -18,7 +18,7 @@ use Illuminate\Foundation\Auth\ThrottlesLogins;
 use App\Http\Requests\Auth\AuthSigninRequest;
 use App\Http\Requests\Auth\AuthSignupRequest;
 use App\Http\Requests\Auth\AuthSigndropRequest;
-use App\Http\Requests\Auth\AuthRetrieveRequest;
+use App\Http\Requests\Auth\AuthPostRetrieveRequest;
 use Abort;
 
 use App\Traits\GetUserModelTrait;
@@ -173,7 +173,7 @@ class AuthController extends Controller
             Abort::Error('0040');
         }
     }
-    public function postRetrieve(AuthRetrieveRequest $request,$id)
+    public function postRetrieve(AuthPostRetrieveRequest $request,$id)
     {
         $data = $request->json()->all();
         $tokenData = CheckContoller::checkToken($request);

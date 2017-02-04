@@ -34,6 +34,12 @@ use App\Traits\ImageControllTraits;
 use App\Traits\S3StorageControllTraits;
 use App\Traits\ReviewQuestionControllTraits;
 
+use App\Http\Requests\Product\ProductPostRequest;
+use App\Http\Requests\Product\ProductPutRequest;
+use App\Http\Requests\Product\ProductDeleteRequest;
+use App\Http\Requests\Product\ProductStatusRequest;
+
+
 class ProductController extends Controller
 {
     use GetUserModelTrait,
@@ -142,7 +148,7 @@ class ProductController extends Controller
         }
     }
 
-    public function post(Request $request){
+    public function post(ProductPostRequest $request){
         $data = $request->json()->all();
 
         $this->market_product_id = $data["marketProductId"];
@@ -185,7 +191,7 @@ class ProductController extends Controller
         Abort::Error("0040");
     }
 
-    public function put(Request $request,$id){
+    public function put(ProductPutRequest $request,$id){
         $data = $request->json()->all();
 
         $this->product = Product::findOrFail($id);
@@ -221,7 +227,7 @@ class ProductController extends Controller
         Abort::Error("0040");
     }
 
-    public function delete(Request $request,$id){
+    public function delete(ProductDeleteRequest $request,$id){
         $this->product = Product::findOrFail($id);
         $this->product->option()->delete();
         if($this->product->delete()){
@@ -230,7 +236,7 @@ class ProductController extends Controller
             Abort::Error('0040');
         }
     }
-    public function status(Request $request,$status_name){
+    public function status(ProductStatusRequest $request,$status_name){
         $status = Status::with('translateName')->get()->where('translateName.english',$status_name)->first();
         $products = $request['products'];
         $result = [];

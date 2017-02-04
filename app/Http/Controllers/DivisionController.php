@@ -11,6 +11,10 @@ use App\Http\Controllers\Pager\PageController;
 use App\Models\Division;
 use App\Traits\TranslateTraits;
 
+use App\Http\Requests\Division\DivisionPostRequest;
+use App\Http\Requests\Division\DivisionPutRequest;
+use App\Http\Requests\Division\DivisionDeleteRequest;
+
 class DivisionController extends Controller
 {
     use TranslateTraits;
@@ -40,7 +44,7 @@ class DivisionController extends Controller
             return response()->success();
         }
     }
-    public function post(Request $request){
+    public function post(DivisionPostRequest $request){
         $data = [
             "translate_name_id" => $this->createTranslateName($request['name'])['id'],
             "parent_id" => $request['parentId'],
@@ -51,7 +55,7 @@ class DivisionController extends Controller
             Abort::Error('0040');
         }
     }
-    public function put(Request $request,$id){
+    public function put(DivisionPutRequest $request,$id){
         $this->division = Division::findOrFail($id);
         $this->division->translate_name_id = $this->createTranslateName($request['name'])['id'];
         if( $this->division->save() ){
@@ -60,7 +64,7 @@ class DivisionController extends Controller
             Abort::Error('0040');
         }
     }
-    public function delete(Request $request,$id){
+    public function delete(DivisionDeleteRequest $request,$id){
         $this->division = Division::findOrFail($id);
         if($this->division->delete()){
             return response()->success();

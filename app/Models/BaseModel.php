@@ -60,9 +60,6 @@ class BaseModel extends Model
     }
     public function isTranslated($value){
         if( is_null($value) ) return NULL;
-
-        Log::info($value);
-
         if( !isset($value['original']['original']) ){
             if( isset( $value['translate_name_id'] ) ) return $value->translateName;
             if( isset( $value['translate_description_id'] ) ) return $value->translateDescription;

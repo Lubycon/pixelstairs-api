@@ -3,21 +3,29 @@
 namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Request;
-use App\Models\User;
+use App\Traits\GetUserModelTrait;
+use App\Traits\AuthorizesRequestsOverLoad;
+use Log;
 
-class AuthRetrieveRequest extends Request
+class AuthPostRetrieveRequest extends Request
 {
+    use AuthorizesRequestsOverLoad,
+        GetUserModelTrait;
+
     public function authorize()
     {
-        return true;
+        $routeParam = $this->route()->parameters()['id'];
+        $user = $this->getUserByTokenOrFail($this->header('x-mitty-token'));
+
+        return $user->id === $routeParam;
     }
 
     public function rules()
     {
         $requiredRule = [
-            'name' => 'required',
-            'nickname' => 'required',
-            'email' => 'required',
+            'name' => 'required|unique:users,name',
+            'nickname' => 'unique:users,nickname',
+            'email' => 'unique:users,email|email',
             'password' => 'required',
             'position' => 'required',
             'location' => 'array|required',

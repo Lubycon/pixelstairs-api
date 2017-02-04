@@ -13,6 +13,10 @@ use App\Models\Category;
 use App\Traits\TranslateTraits;
 use Log;
 
+use App\Http\Requests\Category\CategoryPostRequest;
+use App\Http\Requests\Category\CategoryPutRequest;
+use App\Http\Requests\Category\CategoryDeleteRequest;
+
 class CategoryController extends Controller
 {
     use TranslateTraits;
@@ -155,7 +159,7 @@ class CategoryController extends Controller
 //     *     )
 //     * )
 //     */
-    public function post(Request $request){
+    public function post(CategoryPostRequest $request){
         $data = [
             "translate_name_id" => $this->createTranslateName($request['name'])['id'],
         ];
@@ -166,7 +170,7 @@ class CategoryController extends Controller
             Abort::Error('0040');
         }
     }
-    public function put(Request $request,$id){
+    public function put(CategoryPutRequest $request,$id){
         $this->category = Category::findOrFail($id);
         $this->category->translate_name_id = $this->createTranslateName($request['name'])['id'];
         if( $this->category->save() ){
@@ -175,7 +179,7 @@ class CategoryController extends Controller
             Abort::Error('0040');
         }
     }
-    public function delete(Request $request,$id){
+    public function delete(CategoryDeleteRequest $request,$id){
         $this->category = Category::findOrFail($id);
         if($this->category->delete()){
             return response()->success();

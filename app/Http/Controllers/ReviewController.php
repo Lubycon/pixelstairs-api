@@ -23,6 +23,9 @@ use App\Traits\ReviewQuestionControllTraits;
 use App\Traits\ImageControllTraits;
 use App\Traits\S3StorageControllTraits;
 
+use App\Http\Requests\Review\ReviewPostRequest;
+use App\Http\Requests\Review\ReviewPutRequest;
+
 
 class ReviewController extends Controller
 {
@@ -121,7 +124,7 @@ class ReviewController extends Controller
         $requestDuplicate = $request->duplicate(['search' => "haitaoUserId:$haitao_user_id"]);
         return $this->getList($requestDuplicate);
     }
-    public function post(Request $request,$target_id){
+    public function post(ReviewPostRequest $request,$target_id){
         $target = $this->getReviewTargetByRequest($request,$target_id);
 
         $this->review->user_id = $this->getUserByTokenRequestOrFail($request)['id'];
@@ -137,7 +140,7 @@ class ReviewController extends Controller
         ) return response()->success($this->review);
         Abort::Error("0040");
     }
-    public function put(Request $request,$review_id){
+    public function put(ReviewPutRequest $request,$review_id){
         $this->review = Review::findOrFail($review_id);
         $this->review->title = $request->title;
         $this->updateAnswer($this->review,$request['answers']);

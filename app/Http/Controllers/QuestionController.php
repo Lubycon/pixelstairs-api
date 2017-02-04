@@ -13,6 +13,8 @@ use App\Traits\TranslateTraits;
 use App\Models\Division;
 use App\Models\ReviewQuestionKey;
 
+use App\Http\Requests\Question\QuestionKeyPost;
+
 use Log;
 
 class QuestionController extends Controller
@@ -39,7 +41,7 @@ class QuestionController extends Controller
         foreach( $this->question as $value ){
             $result["q"][] = [
                 "id" => $value->id,
-                "qKey" => $value->questionKey->getTranslateResultByLanguage($value->questionKey->translateDescription,$this->language),
+                "qKey" => $value->questionKey->getTranslateResultByLanguage($value->questionKey->translateName,$this->language),
                 "description" => $value->getTranslateResultByLanguage($value->translateDescription,$this->language),
             ];
         }
@@ -70,7 +72,7 @@ class QuestionController extends Controller
         return response()->success($result);
     }
 
-    public function postKey(Request $request,$division_id){
+    public function postKey(QuestionKeyPost $request,$division_id){
         $questionKey = new ReviewQuestionKey;
         $questionKey->division_id = $division_id;
         $questionKey->translate_name_id = $this->createTranslateName($request['qKey'])['id'];

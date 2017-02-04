@@ -18,10 +18,12 @@ class AuthSignupRequest extends Request
     {
         $requiredRule = [
             'haitaoUserId' => "integer",
-            'phone' => 'required|unique:users,phone',
             'name' => 'required|unique:users,name',
             'nickname' => 'unique:users,nickname',
             'email' => 'unique:users,email|email',
+            'phone' => 'required|unique:users,phone',
+            'password' => 'string',
+            'position' => "string"
         ];
 
         return $requiredRule;

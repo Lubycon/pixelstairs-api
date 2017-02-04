@@ -46,6 +46,9 @@ class User extends BaseModel implements AuthenticatableContract,
 
     protected $hidden = ['password', 'remember_token'];
 
+    public function isAdmin(){
+        return $this->grade !== 'normal';
+    }
 
     public function getInterest(){
         $result = [];

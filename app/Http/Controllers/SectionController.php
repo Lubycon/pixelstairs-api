@@ -13,6 +13,10 @@ use App\Models\Section;
 use Log;
 use App\Traits\TranslateTraits;
 
+use App\Http\Requests\Section\SectionPostRequest;
+use App\Http\Requests\Section\SectionPutRequest;
+use App\Http\Requests\Section\SectionDeleteRequest;
+
 class SectionController extends Controller
 {
     use TranslateTraits;
@@ -45,7 +49,7 @@ class SectionController extends Controller
             return response()->success();
         }
     }
-    public function post(Request $request){
+    public function post(SectionPostRequest $request){
         $result = [];
         foreach( $request['name'] as $key => $value ){
             $section = Section::firstOrCreate(array(
@@ -61,7 +65,7 @@ class SectionController extends Controller
         }
         return response()->success($result);
     }
-    public function put(Request $request,$id){
+    public function put(SectionPutRequest $request,$id){
         $this->section = Section::findOrFail($id);
         $this->section->translate_name_id = $this->createTranslateName($request['name'])['id'];
         $this->section->parent_id = $request['parentId'];
@@ -73,7 +77,7 @@ class SectionController extends Controller
             Abort::Error('0040');
         }
     }
-    public function delete(Request $request,$id){
+    public function delete(SectionDeleteRequest $request,$id){
         $this->section = Section::findOrFail($id);
         if($this->section->delete()){
             return response()->success();
