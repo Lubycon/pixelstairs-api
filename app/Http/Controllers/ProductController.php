@@ -181,7 +181,7 @@ class ProductController extends Controller
         $this->product->seller_id = Seller::firstOrCreate($data['seller'])['id'];
         $optionCollection = $this->createOptionCollection($data['optionKeys']);
 
-        if( !is_null( $data['questions'] ) ){$reviewQuestions = null;
+        if( is_null( $data['questions'] ) ){$reviewQuestions = null;
         }else{$reviewQuestions= $this->createReviewQuestions($data['questions']);}
 
         if ( !$this->product->save() ) Abort::Error("0040");
