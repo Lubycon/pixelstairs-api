@@ -14,16 +14,14 @@ class CreateOptionsTable extends Migration
     {
         Schema::create('options', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('market_id',4);
-            $table->integer('product_id');
-            $table->integer('sku_id');
-            $table->string('original_name',300);
-            $table->string('chinese_name',300);
-            $table->string('korean_name',300)->nullable();
-            $table->string('english_name',300)->nullable();
-            $table->integer('price');
-            $table->integer('stock')->nullable();
-            $table->integer('safe_stock')->nullable();
+            $table->integer('product_id')->unsigned();
+            $table->string('sku',100);
+            $table->integer('translate_name_id')->unsigned();
+            $table->integer('price')->unsigned();
+            $table->integer('stock')->unsigned();
+            $table->integer('safe_stock')->unsigned();
+            $table->integer('option_collection_id')->unsigned();
+            $table->integer('image_id')->unsigned()->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

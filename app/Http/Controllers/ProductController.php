@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ImageGroup;
+use App\Models\SectionGroup;
+use App\Models\TranslateName;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -11,116 +14,101 @@ use App\Http\Controllers\Pager\PageController;
 use Carbon\Carbon;
 use Log;
 
-use App\Models\Category;
-use App\Models\Division;
-use App\Models\Sector;
-
 use App\Models\Status;
-use App\Models\Market;
 use App\Models\Brand;
 use App\Models\Product;
+use App\Models\Seller;
 use App\Models\Option;
-use App\Models\Sku;
+use App\Models\Manufacturer;
+use App\Models\Image;
+use App\Models\Market;
 use Abort;
+
 use App\Traits\GetUserModelTrait;
+use App\Traits\OptionControllTraits;
+use App\Traits\HaitaoRequestTraits;
+use App\Traits\StatusInfoTraits;
+use App\Traits\TranslateTraits;
+use App\Traits\SectionTrait;
+use App\Traits\ImageControllTraits;
+use App\Traits\S3StorageControllTraits;
+use App\Traits\ReviewQuestionControllTraits;
+
+use App\Http\Requests\Product\ProductPostRequest;
+use App\Http\Requests\Product\ProductPutRequest;
+use App\Http\Requests\Product\ProductDeleteRequest;
+use App\Http\Requests\Product\ProductStatusRequest;
+
 
 class ProductController extends Controller
 {
-    use GetUserModelTrait;
+    use GetUserModelTrait,
+        OptionControllTraits,
+        HaitaoRequestTraits,
+        StatusInfoTraits,
+        TranslateTraits,
+        SectionTrait,
+        ImageControllTraits,
+        S3StorageControllTraits,
+        ReviewQuestionControllTraits;
 
     public $product;
     public $product_id;
     public $market_id;
+    public $market_product_id;
     public $market_category_id;
-
-    public function haitaoData(Request $request){
-        $product = Product::findOrFail(501);
-
-        $response = (object)array(
-            "mittyProductId" => $product["id"],
-            "marketProductId" => $product["product_id"],
-            "haitaoProductId" => "haitao present",
-            "market" => (object)array(
-                "id" => $product["market_id"],
-                "name" => Market::wherecode($product["market_id"])->value("name"),
-            ),
-            "category" => array(
-                "id" => $product["category_id"],
-                "origin" => Category::find($product["category_id"])["original_name"],
-                "zh" => Category::find($product["category_id"])["chinese_name"],
-            ),
-            "division" => array(
-                "id" => $product["division_id"],
-                "origin" => Division::find($product["division_id"])["original_name"],
-                "zh" => Division::find($product["division_id"])["chinese_name"],
-            ),
-            "sector" => $product->sectorsDetail(),
-            "title" => (object)array(
-                "origin" => $product["original_title"],
-                "zh" => $product["chinese_title"],
-            ),
-            "brand" => array(
-                'origin' => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])->value("original_name"),
-                'zh' => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])->value("chinese_name"),
-            ),
-            "description" =>array(
-                'origin' => $product["original_description"],
-                'zh' => $product["chinese_description"],
-            ),
-            "price" => $product["price"],
-            "deliveryPrice" => $product["domestic_delivery_price"],
-            "isFreeDelivery" => $product["is_free_delivery"],
-            "stock" => $product["stock"],
-            "safeStock" => $product["safe_stock"],
-            "url" => $product["url"],
-            "status" => array(
-                "code" => $product["status_code"],
-                "kr" => Status::wherecode($product["status_code"])->value("korean_name"),
-                "en" => Status::wherecode($product["status_code"])->value("english_name"),
-                "zh" => Status::wherecode($product["status_code"])->value("chinese_name"),
-            ),
-            "createDate" => Carbon::instance($product["created_at"])->toDateTimeString(),
-            "startDate" => $product["start_date"],
-            "endDate" => $product["end_date"],
-            "options" => $this->bindOption(Option::whereproduct_id($product["id"])->get())
-        );
-
-        return response()->success($response);
-    }
+    public $language;
 
     public function get(Request $request,$id){
         $product = Product::findOrFail($id);
         $response = (object)array(
             "id" => $product["id"],
-            "marketProductId" => $product["product_id"],
-            "haitaoId" => $product["haitao_product_id"],
-            "marketId" => $product["market_id"],
+            "marketProductId" => $product["market_product_id"],
+            "haitaoProductId" => $product["haitao_product_id"],
+            "marketId" => $product->market->code,
+            "title" => $product->getTranslate($product),
+            "brand" => $product->getTranslate($product->brand),
+            "description" => $product->getTranslateDescription($product),
             "categoryId" => $product["category_id"],
             "divisionId" => $product["division_id"],
-            "sector" => $product->sectors(),
-            "title" => (object)array(
-                "origin" => $product["original_title"],
-                "zh" => $product["chinese_title"],
-            ),
-            "brand" => array(
-                'origin' => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])->value("original_name"),
-                'zh' => is_null($product["brand_id"]) ? NULL : Brand::find($product["brand_id"])->value("chinese_name"),
-            ),
-            "description" =>array(
-                'origin' => $product["original_description"],
-                'zh' => $product["chinese_description"],
-            ),
-            "price" => $product["price"],
+            "sections" => $product->getSectionIds(),
+            "weight" => $product["weight"],
+            "priceInfo" => $product->getPriceInfo(),
             "deliveryPrice" => $product["domestic_delivery_price"],
             "isFreeDelivery" => $product["is_free_delivery"],
-            "stock" => $product["stock"],
-            "safeStock" => $product["safe_stock"],
+            "thumbnailUrl" => $product->getImageObject($product),
+            "images" => $product->getImageGroupObject($product),
             "url" => $product["url"],
+            "safeStock" => $product->option[0]->safe_stock,
+            "isLimited" => $product['isLimited'],
             "statusCode" => $product["status_code"],
             "createDate" => Carbon::instance($product["created_at"])->toDateTimeString(),
             "startDate" => $product["start_date"],
             "endDate" => $product["end_date"],
-            "options" => $this->bindOption(Option::whereproduct_id($product["id"])->get())
+            "optionKeys" => $product->getTranslate($product->getOptionKey()),
+            "options" => $product->getOption(),
+            "seller" => $product->getSeller(),
+            "productGender" => $product->gender->id,
+            "manufacturerCountryId" => $product->manufacturer_country_id,
+            "questions" => $product->getQuestions(),
+        );
+
+        return response()->success($response);
+    }
+
+    public function getSimple(Request $request,$id){
+        $this->language = $request->header('X-mitty-language');
+        $product = Product::findOrFail($id);
+        $response = (object)array(
+            "id" => $product["id"],
+            "title" => $product->getTranslateResultByLanguage($product->translateName,$this->language),
+            "brand" => $product->brand->getTranslateResultByLanguage($product->brand->translateName,$this->language),
+            "description" => $product->getTranslateResultByLanguage($product->translateDescription,$this->language),
+            "categoryName" => $product->category->getTranslateResultByLanguage($product->category->translateName,$this->language),
+            "divisionName" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
+            "sections" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
+            "thumbnailUrl" => $product->getImageObject($product),
+            "questions" => $product->getQuestionsByLanguage($this->language),
         );
 
         return response()->success($response);
@@ -135,31 +123,21 @@ class ProductController extends Controller
             "totalCount" => $controller->totalCount,
             "currentPage" => $controller->currentPage,
         );
-        foreach($collection as $array){
+        foreach($collection as $product){
             $result->products[] = (object)array(
-                "id" => $array["id"],
-                "marketProductId" => $array["product_id"],
-                "haitaoId" => $array["haitao_product_id"],
-                "title" => (object)array(
-                    "origin" => $array["original_title"],
-                    // "ko" => $array["korean_title"],
-                    // "en" => $array["english_title"],
-                    "zh" => $array["chinese_title"],
-                ),
-                "brand" => array(
-                    'origin' => is_null($array["brand_id"]) ? NULL : Brand::find($array["brand_id"])["original_name"],
-                    'zh' => is_null($array["brand_id"]) ? NULL : Brand::find($array["brand_id"])["chinese_name"],
-                ),
-                "description" =>array(
-                    'origin' => $array["original_description"],
-                    'zh' => $array["chinese_description"],
-                ),
-                "price" => $array["price"],
-                "stock" => $array["stock"],
-                "safeStock" => $array["safe_stock"],
-                "url" => $array["url"],
-                "statusCode" => $array["status_code"],
-                "endDate" => $array["end_date"],
+                "id" => $product["id"],
+                "marketProductId" => $product["market_product_id"],
+                "haitaoProductId" => $product["haitao_product_id"],
+                "title" => $product->getTranslate($product),
+                "brand" => $product->getTranslate($product->brand),
+                "description" => $product->getTranslateDescription($product),
+                "weight" => $product["weight"],
+                "priceInfo" => $product->getPriceInfo(),
+                "thumbnailUrl" => $product->getImageObject($product),
+                "url" => $product["url"],
+                "safeStock" => $product->option[0]->safe_stock,
+                "statusCode" => $product["status_code"],
+                "endDate" => $product["end_date"],
             );
         };
 
@@ -170,234 +148,105 @@ class ProductController extends Controller
         }
     }
 
-    public function post(Request $request){
+    public function post(ProductPostRequest $request){
         $data = $request->json()->all();
 
-        $this->product_id = $data["marketProductId"];
+        $this->market_product_id = $data["marketProductId"];
         $this->market_id = $data["marketId"];
-//        $this->market_category_id = $data["marketDivisionId"];
 
         $this->product = new Product;
-        $this->product->product_id = $this->product_id;
+        $this->product->market_product_id = $this->market_product_id;
         $this->product->category_id = $data["categoryId"];
         $this->product->division_id = $data["divisionId"];
-        $this->product->sector_id_0 = $data["sector"][0];
-        $this->product->sector_id_1 = isset($data["sector"][1]) ? $data["sector"][1] : NULL;
-        $this->product->sector_id_2 = isset($data["sector"][2]) ? $data["sector"][2] : NULL;
-        $this->product->market_id = $data["marketId"];
-        $this->product->brand_id = $this->getBrandId($data["brand"]);
-        $this->product->original_title = $data["title"]["origin"];
-        $this->product->chinese_title = $data["title"]["zh"];
-        $this->product->original_description = $data["description"]['origin'];
-        $this->product->chinese_description = $data["description"]['zh'];
-        $this->product->price = $data["price"];
+        $this->product->section_group_id = SectionGroup::firstOrCreate($this->setSectionGroup($data['sections'],$this->product->division_id))['id'];
+        $this->product->market_id = Market::wherecode($data["marketId"])->first()['id'];
+        $this->product->brand_id = Brand::firstOrCreate($this->relationTranslateName($data['brand']))['id'];
+        $this->product->translate_name_id = $this->createTranslateName($data['title'])['id'];
+        $this->product->translate_description_id = $this->createTranslateDescription($data['description'])['id'];
+        $this->product->weight = $data["weight"];
+        $this->product->original_price = $data["priceInfo"]['price'];
+        $this->product->lower_price = $data["priceInfo"]['lowestPrice'];
+        $this->product->unit = $data["priceInfo"]['unit'];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
-        $this->product->stock = $data["stock"];
-        $this->product->safe_stock = $data["safeStock"];
+        $this->product->image_id = Image::create($this->createExternalImage( $data["thumbnailUrl"] ))['id'];
+        $this->product->image_group_id = ImageGroup::create(['model_name'=>'product'])['id'];
+        $this->product->imageGroup->image()->saveMany($this->createExternalImageArray($data['detailImages']));
         $this->product->url = $data["url"];
         $this->product->status_code = "0300";
+        $this->product->isLimited = $data['isLimited'];
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
-        if ( !$this->product->save() ) Abort::Error("0040");
+        $this->product->gender_id = $data['productGender'];
+        $this->product->manufacturer_country_id = $data['manufacturerCountryId'];
+        $this->product->seller_id = Seller::firstOrCreate($data['seller'])['id'];
+        $optionCollection = $this->createOptionCollection($data['optionKeys']);
 
-        if ( Option::insert($this->setOption($data["options"])) ) return response()->success($this->product);
+        if( is_null( $data['questions'] ) ){$reviewQuestions = null;
+        }else{$reviewQuestions= $this->createReviewQuestions($data['questions']);}
+
+        if ( !$this->product->save() ) Abort::Error("0040");
+        if ( $this->product->option()->saveMany($this->setNewOption($data['options'],$data['safeStock'],$optionCollection)) ){
+            if( !is_null($reviewQuestions) ) $this->product->reviewQuestion()->saveMany( $reviewQuestions );
+        }return response()->success($this->product);
+
+
         Abort::Error("0040");
     }
 
-    public function put(Request $request,$id){
+    public function put(ProductPutRequest $request,$id){
         $data = $request->json()->all();
 
         $this->product = Product::findOrFail($id);
-        $options = $data["options"];
-
         $this->market_id = $this->product->market_id;
-        $this->product->product_id = $data["marketProductId"];
+        $this->market_product_id = $this->product->market_product_id;
+
+        $this->product->market_product_id = $this->market_product_id;
         $this->product->category_id = $data["categoryId"];
         $this->product->division_id = $data["divisionId"];
-        $this->product->sector_id_0 = $data["sector"][0];
-        $this->product->sector_id_1 = isset($data["sector"][1]) ? $data["sector"][1] : NULL;
-        $this->product->sector_id_2 = isset($data["sector"][2]) ? $data["sector"][2] : NULL;
-        $this->product->market_id = $data["marketId"];
-        $this->product->brand_id = $this->getBrandId($data["brand"]);
-        $this->product->original_title = $data["title"]["origin"];
-        $this->product->chinese_title = $data["title"]["zh"];
-        $this->product->original_description = $data["description"]['origin'];
-        $this->product->chinese_description = $data["description"]['zh'];
-        $this->product->price = $data["price"];
+        $this->product->section_group_id = SectionGroup::firstOrCreate($this->setSectionGroup($data['sections'],$this->product->division_id))['id'];
+        $this->product->market_id = Market::wherecode($data["marketId"])->first()['id'];
+        $this->product->brand_id = Brand::firstOrCreate($this->relationTranslateName($data['brand']))['id'];
+        $this->product->translate_name_id = $this->createTranslateName($data['title'])['id'];
+        $this->product->translate_description_id = $this->createTranslateDescription($data['description'])['id'];
+        $this->product->weight = $data["weight"];
+        $this->product->original_price = $data["priceInfo"]['price'];
+        $this->product->lower_price = $data["priceInfo"]['lowestPrice'];
+        $this->product->unit = $data["priceInfo"]['unit'];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
-        $this->product->stock = $data["stock"];
-        $this->product->safe_stock = $data["safeStock"];
         $this->product->url = $data["url"];
-        $this->product->status_code = $this->statusUpdate($request,$request['statusCode']);
+        $this->product->isLimited = $data['isLimited'];
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
-
+        $this->product->gender_id = $data['productGender'];
+        $this->product->manufacturer_country_id = $data['manufacturerCountryId'];
+        $this->product->seller_id = Seller::firstOrCreate($data['seller'])['id'];
+        $optionCollection = $this->createOptionCollection($data['optionKeys']);
+        $this->updateReviewQuestions($this->product,$data['questions']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->updateOptions($data['options']) ) return response()->success($this->product);
+        if ( $this->updateOptions($data['options'],$data['safeStock'],$optionCollection)
+//            && $this->product->imageGroup->image()->saveMany($this->updateExternalImageArray($this->product,$data['detailImages']))
+        ) return response()->success($this->product);
         Abort::Error("0040");
     }
 
-    public function delete(Request $request,$id){
+    public function delete(ProductDeleteRequest $request,$id){
         $this->product = Product::findOrFail($id);
+        $this->product->option()->delete();
         if($this->product->delete()){
             return response()->success();
         }else {
             Abort::Error('0040');
         }
     }
-    public function status(Request $request,$status_name){
-        $status = Status::whereenglish_name($status_name)->firstOrFail();
+    public function status(ProductStatusRequest $request,$status_name){
+        $status = Status::with('translateName')->get()->where('translateName.english',$status_name)->first();
         $products = $request['products'];
-        foreach( $products as $value ){
-            $this->product = Product::findOrFail($value);
-            $this->product->status_code = $this->statusUpdate($request,$status['code']);
-            $this->product->save();
-        }
-        return response()->success();
-    }
-    public function statusUpdate($request,$status_code){
-        if( !$this->isSameStatus($status_code) ){
-            $this->statusPermissionCheck($request);
-            $this->forConfirm($status_code);
-            return $status_code;
-        }
-        return $this->product->status_code;
-    }
-    public function forConfirm($status_code){
-        if( $status_code == '0301' ){
-            $this->startDateUpdate();
-            return true;
-        }
-        return false;
-    }
-    private function statusPermissionCheck($request){
-        $user = $this->getUserByTokenRequestOrFail($request);
-        if ($user->grade == "superAdmin" || $user->grade == "admin"){
-            return true;
-        }
-        Abort::Error("0043", "Can not change status");
-    }
-    private function isSameStatus($status_code){
-        if( $this->product->status_code == $status_code ){
-            return true;
-        }
-        return false;
-    }
-    private function startDateUpdate(){
-        $this->product->start_date = Carbon::now()->toDateTimeString();
-    }
-    private function getBrandId($brand){
-        return is_null($brand['origin'])
-            ? null
-            : Brand::firstOrCreate(array(
-                "original_name" => $brand['origin'],
-                "chinese_name" => $brand['zh'],
-            ))->id;
-    }
-
-    private function bindOption($option){
-        $response = [];
-        foreach ($option as $key => $value) {
-            $response[] = array(
-                "skuId" => $value->sku_id,
-                "sku" => Sku::find($value->sku_id)->value("sku"),
-                "name" => array(
-                    "origin" => $value->original_name,
-                    "zh" => $value->chinese_name,
-                ),
-                "price" => $value->price
-            );
-        }
-        return $response;
-    }
-
-    private function setOption($options){
         $result = [];
-        $index = 0;
-        foreach ($options as $key => $option) {
-            $result[] = array(
-                "market_id" => $this->market_id,
-                "product_id" => $this->product->id,
-                "sku_id" => $this->createSku($option,$index),
-                "original_name" => $option["name"]["origin"],
-                "chinese_name" => $option["name"]["zh"],
-                // "korean_name" => $option["name"]["ko"],
-                // "english_name" => $option["name"]["en"],
-                "price" => $option["price"],
-                // "stock" => $option["stock"],
-                // "safe_stock" => $option["safeStock"],
-            );
-            $index++;
+        foreach( $products as $value ){
+            $result[] = $product = $this->statusUpdate($request,Product::findOrFail($value),$status['code']);
+            $product->save();
         }
-        return $result;
+        return response()->success($result);
     }
-    private function updateOptions($options){
-        $this->isDirdyOption($options);
-        $checkedArray = [];
-        foreach ($options as $key => $value) {
-            $targetOption = Option::wheresku_id($value["skuId"])->firstOrFail();
-            $targetOption["original_name"] = $value["name"]["origin"];
-            $targetOption["chinese_name"] = $value["name"]["zh"];
-            $targetOption["price"] = $value["price"];
-            if (!$targetOption->save()) Abort::Error("0040","Option Update Fail");
-
-            $targetSku = Sku::whereid($targetOption["sku_id"])->whereproduct_id($this->product->id)->firstOrFail();
-            $targetSku["description"] = $value["name"]["origin"];
-            if (!$targetSku->save()) Abort::Error("0040","Sku Update Fail");
-        }
-        return true;
-    }
-    private function isDirdyOption($options){
-        if ( count($this->product->option()->get()) !==  count($options)) Abort::Error("0040","Can not add option at update product");
-        return false;
-    }
-    private function createSku($option,$index){
-        $sku = array(
-            "market_id" => $this->market_id,
-            "product_id" => $this->product->id,
-            "sku" =>
-                "MK".$this->market_id.
-                "CT".$this->product->category_id.
-                "DV".$this->product->division_id.
-                "ST".$this->product->sector_id.
-                "PD".$this->product_id.
-                "ID".$index,
-            "description" => $option["name"]["origin"],
-        );
-        $id = Sku::firstOrCreate($sku)->id;
-        return $id;
-    }
-
-//    private function getCategoryId($category){
-//        return is_array($category)
-//        ? Category::firstOrCreate(
-//            array(
-//                "original_name" => $category["origin"],
-//                "chinese_name" => $category["zh"],
-//            ))["id"]
-//        : Category::findOrFail($category)->value("id");
-//    }
-//    private function getDivisionId($division){
-//        return is_array($division)
-//        ? Division::firstOrCreate(
-//            array(
-//                "parent_id" => $this->product->category_id,
-//                "original_name" => $division["origin"],
-//                "chinese_name" => $division["zh"],
-//            ))["id"]
-//        : Division::findOrFail($division)->value("id");
-//    }
-//    private function getSectorId($division){
-//        return is_array($division)
-//            ? Sector::firstOrCreate(
-//                array(
-//                    "parent_id" => $this->product->category_id,
-//                    "market_id" => $this->market_id,
-//                    "market_category_id" => $this->market_category_id,
-//                    "original_name" => $division["origin"],
-//                    "chinese_name" => $division["zh"],
-//                ))["id"]
-//            : Sector::findOrFail($division)->value("id");
-//    }
 }

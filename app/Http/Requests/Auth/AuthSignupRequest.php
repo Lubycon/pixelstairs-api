@@ -17,11 +17,13 @@ class AuthSignupRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            'email' => 'required|unique:users,email|email',
+            'haitaoUserId' => "integer",
             'name' => 'required|unique:users,name',
-            'nickname' => 'required|unique:users,nickname',
-            'position' => 'required',
-            'grade' => 'required|in:normal,admin,superAdmin',
+            'nickname' => 'unique:users,nickname',
+            'email' => 'unique:users,email|email',
+            'phone' => 'required|unique:users,phone',
+            'password' => 'string',
+            'position' => "string"
         ];
 
         return $requiredRule;

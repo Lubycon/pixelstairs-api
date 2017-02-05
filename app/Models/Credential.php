@@ -2,33 +2,43 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 use Log;
 use Abort;
+use \Carbon\Carbon;
 
-class Credential extends Model
+class Credential
 {
-    protected static function signin($data){
-
-      $credential = [
-          'email'    => $data['email'],
-          'password' => $data['password']
-      ];
-
+    public static function signin($data){
+        if( Credential::isAdmin($data) ){
+            $credential = [
+                'email'    => $data['id'],
+                'password' => $data['password']
+            ];
+        }else{
+            $credential = [
+                'phone'    => $data['id'],
+                'password' => $data['password']
+            ];
+        }
       return $credential;
     }
 
-    protected static function signup($data){
+    public static function signup($data){
       $credential = [
+          'haitao_user_id' => isset($data['haitaoUserId']) ? $data['haitaoUserId'] : NULL ,
+          'phone' => $data['phone'],
           'email' => $data['email'],
           'name' => $data['name'],
-          'nickname' => $data['nickname'],
+          'nickname' => isset($data['nickname']) ? $data['nickname'] : NULL,
           'password' => bcrypt($data['password']),
           'grade' => 'normal',
-          'position' => $data['position'],
+          'position' => isset($data['position']) ? $data['position'] : NULL ,
       ];
       return $credential;
 
+    }
+
+    public static function isAdmin($data){
+        return strpos($data['id'],'@');
     }
 }

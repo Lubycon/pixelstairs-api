@@ -7,6 +7,8 @@ use DB;
 use Auth;
 
 use App\Models\User;
+use App\Models\Image;
+use App\Models\Interest;
 use App\Models\Credential;
 
 use Illuminate\Http\Request;
@@ -16,10 +18,12 @@ use Illuminate\Foundation\Auth\ThrottlesLogins;
 use App\Http\Requests\Auth\AuthSigninRequest;
 use App\Http\Requests\Auth\AuthSignupRequest;
 use App\Http\Requests\Auth\AuthSigndropRequest;
-use App\Http\Requests\Auth\AuthRetrieveRequest;
+use App\Http\Requests\Auth\AuthPostRetrieveRequest;
 use Abort;
 
 use App\Traits\GetUserModelTrait;
+use App\Traits\S3StorageControllTraits;
+use App\Traits\InterestControllTraits;
 
 use App\Jobs\LastSigninTimeCheckerJob;
 
@@ -28,15 +32,22 @@ use Log;
 class AuthController extends Controller
 {
     use ThrottlesLogins,
-        GetUserModelTrait;
+        GetUserModelTrait,
+        InterestControllTraits,
+        S3StorageControllTraits;
 
     protected function signin(AuthSigninRequest $request)
     {
+
         $data = $request->json()->all();
         $credentials = Credential::signin($data);
 
         if(!Auth::once($credentials)){
             Abort::Error('0040','Login Failed, check email,password');
+        }
+
+        if( $request->getHost() == env('APP_PROVISION_ADMIN_URL') ){
+            if( Auth::user()->grade == 'normal' ) Abort::Error('0043');
         }
 
         $this->dispatch(new LastSigninTimeCheckerJob(Auth::getUser()));
@@ -66,16 +77,18 @@ class AuthController extends Controller
     protected function signup(AuthSignupRequest $request)
     {
         $data = $request->json()->all();
-        $credentialSignup = Credential::signup($data);
-        $credentialSignin = Credential::signin($data);
 
-        if(User::create($credentialSignup)){
-            if(Auth::once($credentialSignin)){
-                $id = Auth::user()->getAuthIdentifier();
-                $rememberToken = CheckContoller::insertRememberToken($id);
-            }
+        if( $request->getHost() == env('APP_PROVISION_ADMIN_URL') ){
+            $data['password'] = bcrypt(env('COMMON_PASSWORD'));
+        }
+
+        $credentialSignup = Credential::signup($data);
+
+        if( $user =  User::create($credentialSignup)){
+            $id = $user->getAuthIdentifier();
+            $token = CheckContoller::insertRememberToken($id);
             return response()->success([
-                "token" => $rememberToken
+                "token" => $token
             ]);
         }
     }
@@ -126,7 +139,8 @@ class AuthController extends Controller
                 "name" => $findUser->name,
                 "nickname" => $findUser->nickname,
                 "position" => $findUser->position,
-                "grade" => $findUser->grade
+                "grade" => $findUser->grade,
+                "profileImg" => $findUser->getImageObject($findUser),
             );
             return response()->success($result);
         }else{
@@ -146,13 +160,21 @@ class AuthController extends Controller
                 "name" => $findUser->name,
                 "nickname" => $findUser->nickname,
                 "position" => $findUser->position,
-                "grade" => $findUser->grade
+                "grade" => $findUser->grade,
+                "location" => [
+                    "city" => $findUser->city,
+                    "address1" => $findUser->address1,
+                    "address2" => $findUser->address2,
+                    "postCode" => $findUser->post_code,
+                ],
+                "likeCategory" => $findUser->getInterest(),
+                "profileImg" => $findUser->getImageObject($findUser),
             ]);
         }else{
             Abort::Error('0040');
         }
     }
-    public function postRetrieve(AuthRetrieveRequest $request,$id)
+    public function postRetrieve(AuthPostRetrieveRequest $request,$id)
     {
         $data = $request->json()->all();
         $tokenData = CheckContoller::checkToken($request);
@@ -166,9 +188,15 @@ class AuthController extends Controller
                 $findUser->name = $data['name'];
                 $findUser->password = bcrypt($data['password']);
                 $findUser->position = $data['position'];
-                $findUser->grade = $data['grade'];
+                $findUser->city = $data['location']['city'];
+                $findUser->address1 = $data['location']['address1'];
+                $findUser->address2 = $data['location']['address2'];
+                $findUser->post_code = $data['location']['postCode'];
+                Interest::firstOrCreate($this->setNewInterest($findUser,$request['likeCategory']));
+
+                $findUser->image_id = Image::create(["is_mitty_own"=>true,"url"=>$this->userThumbnailUpload($findUser,$data['profileImg']['file'])])['id'];
                 if($findUser->save()){
-                    return response()->success($data);
+                    return response()->success($findUser);
                 }
         }else{
             Abort::Error('0040');

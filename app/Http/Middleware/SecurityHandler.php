@@ -32,23 +32,22 @@ class SecurityHandler
 			Abort::Error('0043','Check Origin');
 		}
 
-        // if( !$this->isOptionMethod($request) ){
-        //
-        //     if ( $this->devPassKey($request) !== $this->devPassValue() ) {
-        //         Abort::Error('0043','Check Dev Pass');
-        //     }
-        //     if ( !$this->apiUrlVersionCheck($request) || !$this->apiVersionCheck($request) ) {
-        //         Abort::Error('0073','Check Current API version');
-        //     }
-        //     if ( $this->isProvision() ) {
-        //         if ( !$this->checkProvisionFront($request) ) {
-        //             Abort::Error('0073');
-        //         }
-        //     }
-        //     if ( !$this->requiredHeaderCheck($request) ) {
-        //         Abort::Error('0047');
-        //     }
-        // }
+         if( !$this->isOptionMethod($request) ){
+             if ( $this->devPassKey($request) !== $this->devPassValue() ) {
+                 Abort::Error('0043','Check Dev Pass');
+             }
+             if ( !$this->apiUrlVersionCheck($request) || !$this->apiVersionCheck($request) ) {
+                 Abort::Error('0073','Check Current API version');
+             }
+             if ( $this->isProvision() ) {
+                 if ( !$this->checkProvisionFront($request) ) {
+                     Abort::Error('0073');
+                 }
+             }
+             if ( !$this->requiredHeaderCheck($request) ) {
+                 Abort::Error('0047');
+             }
+         }
 
 		$response = $next($request);
 
@@ -73,7 +72,7 @@ class SecurityHandler
         return $request->segment(1) == env('API_URL_VERSION');
     }
     protected function apiVersionCheck($request){
-        return $request->header('X-lubycon-version') == env('API_VERSION');
+        return $request->header('X-mitty-version') == env('API_VERSION');
     }
     protected function isProvision(){
         return env('APP_ENV') === 'provision';
@@ -85,7 +84,7 @@ class SecurityHandler
         $requiredHeader = config('cors.requiredHeader');
         $requestHeader = $request->header();
         foreach ($requiredHeader as $key => $value) {
-            if( !array_key_exists($value,$requestHeader) ) return false;
+            if( !array_key_exists($value,$requestHeader) )return false;
         }
         return true;
     }

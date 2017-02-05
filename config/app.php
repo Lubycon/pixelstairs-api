@@ -141,6 +141,7 @@ return [
         // Lubycon added Providers
         Barryvdh\Cors\ServiceProvider::class,
         App\Providers\ResponseMacroServiceProvider::class,
+        Maknz\Slack\SlackServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -198,7 +199,8 @@ return [
         'View'      => Illuminate\Support\Facades\View::class,
 
         'Abort'     => App\Classes\Abort::class,
-        'Pusher'     => App\Classes\Pusher::class,
+        'BaseModel'      => App\Models\BaseModel::class,
+        'Slack' => Maknz\Slack\Facades\Slack::class,
         //'AWS'       => Aws\Laravel\AwsFacade::class,
 
     ],

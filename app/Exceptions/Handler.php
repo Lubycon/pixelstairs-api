@@ -9,6 +9,10 @@ use App\Exceptions\UserNotFound;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Validation\ValidationException;
+
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
+
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -26,6 +30,7 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Carbon\Carbon;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Slack;
 
 class Handler extends ExceptionHandler
 {
@@ -47,7 +52,7 @@ class Handler extends ExceptionHandler
         if(env('APP_DEBUG')){ //for develop
             return parent::render($request , $e);
         }else{ //for provision
-            $getCustom = $this->getCustomCode($e);
+            $getCustom = $this->getCustomCode($request,$e);
             if(!is_null($getCustom)){
                 $customCode = is_object($getCustom) ? $getCustom->customCode : $getCustom;
                 $devMsg = is_object($getCustom) ? $getCustom->devMsg : null;
@@ -73,23 +78,39 @@ class Handler extends ExceptionHandler
         return response()->error($status);
     }
 
-    private function getCustomCode($e){
+    private function getCustomCode($request,$e){
         switch ($e) {
             case $e instanceof CustomException:                    return json_decode($e->getMessage()); break;
             case $e instanceof BadRequestHttpException:            return '0040';  break;
             case $e instanceof UnauthorizedHttpException:          return '0041';  break;
             case $e instanceof AccessDeniedHttpException:          return '0043';  break;
+            case $e instanceof AuthorizesRequests:              return '9999';  break;
             case $e instanceof NotFoundHttpException:              return '0044';  break;
             case $e instanceof ConflictHttpException:              return '0046';  break;
             case $e instanceof LengthRequiredHttpException:        return '0047';  break;
             case $e instanceof UnsupportedMediaTypeHttpException:  return '0050';  break;
             case $e instanceof UnprocessableEntityHttpException:   return '0051';  break;
-            case $e instanceof MethodNotAllowedHttpException:      return '0052';  break;
+            case $e instanceof MethodNotAllowedHttpException:      return '0055';  break;
             case $e instanceof TooManyRequestsHttpException:       return '0053';  break;
             case $e instanceof ModelNotFoundException:             return '0054';  break;
-            case $e instanceof FatalErrorException:                return '0070';  break;
+            case $e instanceof FatalErrorException:                $this->slackAlarm($request,$e); return '0070';  break;
             case $e instanceof ServiceUnavailableHttpException:    return '0074';  break;
             default: return null; break;
+        }
+    }
+    protected function slackAlarm($request,Exception $e){
+        if(env('SLACK_DEBUG_BOT')){
+            Slack::enableMarkdown()->send(
+                '*Url* = '.$request->path()."     ".
+                '*Method* = '.$request->method()."     ".
+                '*Ip* = '.$request->ip()."     ".
+                '*Input* = ```'.json_encode($request->json()->all())."```     ".
+                '*UserToken* = '.$request->header('X-mitty-token')."     ".
+                '*Code* = '.$e->getCode()."     ".
+                '*Line* = '.$e->getLine()."     ".
+                '*Message* = ```'.$e->getMessage().'```      '.
+                '*Time* = '.Carbon::now()->toDateTimeString()
+            );
         }
     }
     protected function getJsonMessage($e){

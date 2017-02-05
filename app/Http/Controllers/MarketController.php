@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SectionMarketInfo;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -13,12 +14,20 @@ use GuzzleHttp\Client;
 
 use App\Models\Category;
 use App\Models\Division;
-use App\Models\Sector;
+use App\Models\Section;
 use App\Models\Market;
+
+use App\Classes\Snoopy;
+use App\Crawlers\CoupangCrawler;
+use PHPHtmlParser\Dom;
+
+
 
 class MarketController extends Controller
 {
     public $client;
+    public $dom;
+
     public $url;
     public $market;
     public $product_number;
@@ -28,34 +37,112 @@ class MarketController extends Controller
 
     public function __construct(){
         $this->client = new Client();
+        $this->dom = new Dom;
     }
+
+//    /**
+//     * @SWG\Get(
+//     *     path="/market",
+//     *     summary="Get Openmarket Data",
+//     *     description="get openmarket data from url",
+//     *     operationId="get_market",
+//     *     produces={"application/json"},
+//     *     tags={"market"},
+//     *     @SWG\Parameter(
+//     *         name="marketId",
+//     *         in="query",
+//     *         description="",
+//     *         required=true,
+//     *         type="array",
+//     *         @SWG\Items(
+//     *             type="string",
+//     *             enum={"0100", "0101", "0102"},
+//     *             default="0100"
+//     *         ),
+//     *         collectionFormat="multi"
+//     *     ),
+//     *     @SWG\Parameter(
+//     *         name="url",
+//     *         in="query",
+//     *         description="",
+//     *         required=true,
+//     *         type="string",
+//     *         default="http://deal.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=1648381925&trTypeCd=38&trCtgrNo=947548"
+//     *     ),
+//     *     @SWG\Response(
+//     *         response=200,
+//     *         description="successful operation",
+//     *     ),
+//     *     @SWG\Response(
+//     *         response="400",
+//     *         description="Unexpected data value",
+//     *     )
+//     * )
+//     */
+
+//    public function getBySnoopy(Request $request){
+////        11st
+////        $snoopy = new Snoopy;
+////        $snoopy->fetch("http://deal.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=1254155722&trTypeCd=22&trCtgrNo=895019");
+////        $source = $snoopy->results;
+////        $res = iconv("euc-kr","UTF-8",$source);
+////        print_r($res);
+//
+//        $query = $request->query();
+//        $this->market = Market::wherecode($query['marketId'])->first();
+//        $this->url = urldecode($query['url']);
+//        ob_start();
+//        passthru("/usr/bin/python3 ".app_path()."/python/crawling.py $this->url");
+//        $market_data = json_decode(ob_get_clean());
+//
+//        $crawlClass = new CoupangCrawler($market_data);
+//
+//        return response()->success($crawlClass->getResult());
+//    }
 
     public function get(Request $request){
         $query = $request->query();
+
+        if(!isset($query['marketId'])) Abort::Error('0040',"Can not search Querystring 'marketId'");
+        if(!isset($query['url'])) Abort::Error('0040',"Can not search Querystring 'url'");
+
         $this->market = Market::wherecode($query['marketId'])->first();
-        $this->url = $query['url'];
+        $this->url = urldecode($query['url']);
 
-        $parse_array = parse_url($this->url);
-        parse_str($parse_array['query'], $query_parse);
-        $this->product_number = $this->getProductNumber($query_parse);
-        $this->category_number = $this->getCategoryNumber($query_parse);
+        if( $this->market['code'] == '0103' ){
+            ob_start();
+            passthru("/usr/bin/python3 ".app_path()."/python/crawling.py $this->url");
+            $market_data = json_decode(ob_get_clean());
 
-        $productRequest = $this->requsetOpenApi('product');
-        $productXml = $this->getXmlOnBody($productRequest);
+            $crawlClass = new CoupangCrawler($market_data);
 
-        if (!is_null($this->category_number)) {
-            $categoryRequest = $this->requsetOpenApi('category');
-            $categoryXml = $this->getXmlOnBody($categoryRequest);
-            if ( $this->checkError($categoryXml) ) Abort::Error('0040');
-            $this->category_data = $this->xmlToJson($categoryXml);
+            return response()->success($crawlClass->getResult());
+        }else{
+            Abort::Error('0040',"This Market Code Not Allow");
         }
 
-        if ( $this->checkError($productXml) ) Abort::Error('0040');
-
-        $product_data = $this->xmlToJson($productXml);
-        $bindData = $this->bindXml($product_data);
-
-        return response()->success($bindData);
+//        11st
+//        $parse_array = parse_url($this->url);
+//        parse_str($parse_array['query'], $query_parse);
+//        $this->product_number = $this->getProductNumber($query_parse);
+//        $this->category_number = $this->getCategoryNumber($query_parse);
+//
+//        $productRequest = $this->requsetOpenApi('product');
+//        $productXml = $this->getXmlOnBody($productRequest);
+//
+//        if (!is_null($this->category_number)) {
+//            $categoryRequest = $this->requsetOpenApi('category');
+//            $categoryXml = $this->getXmlOnBody($categoryRequest);
+//            if ( $this->checkError($categoryXml) ) Abort::Error('0040');
+//            $this->category_data = $this->xmlToJson($categoryXml);
+//        }
+//
+//        if ( $this->checkError($productXml) ) Abort::Error('0040');
+//
+//        $product_data = $this->xmlToJson($productXml);
+//        $bindData = $this->bindXml($product_data);
+//
+//        return response()->success($bindData);
     }
 
     public function bindXml($product_data){
@@ -73,6 +160,7 @@ class MarketController extends Controller
                 'lowestPrice' => $this->splitWon($product_data['Product']['ProductPrice']['LowestPrice']),
             ),
             'deliveryPrice' => $this->splitWon($product_data['Product']['ShipFee']),
+            'thumbnail_url' => $product_data['Product']['BasicImage'],
             'options' => $this->bindOption( $product_data ),
         ];
     }
@@ -84,12 +172,12 @@ class MarketController extends Controller
             'ours' => null,
         );
         if(!is_null($this->category_data)){
-            $sectors = Sector::wheremarket_category_id($this->category_data['Category']['CategoryCode'])->get();
-            if(isset($sectors[0])){
-                foreach( $sectors as $key => $value ){
-                    $result['ours']['sectors'][] = $value['id'];
+            $sections = SectionMarketInfo::wheremarket_category_id($this->category_data['Category']['CategoryCode'])->get();
+            if(isset($sections[0])){
+                foreach( $sections as $key => $value ){
+                    $result['ours']['sections'][] = $value->section['id'];
                 }
-            $division = Division::findOrFail($sectors[0]['parent_id']);
+            $division = Division::findOrFail($sections[0]->section['parent_id']);
             $category = Category::findOrFail($division['parent_id']);
             $result['ours']['divisionId'] = $division['id'];
             $result['ours']['categoryId'] = $category['id'];
@@ -103,7 +191,7 @@ class MarketController extends Controller
     public function splitWon($value){
         $explode = explode('원',$value);
         $result = str_replace(",","", $explode[0]);
-        return $result;
+        return (int)$result;
     }
 
     public function bindOption($option){
@@ -114,17 +202,21 @@ class MarketController extends Controller
 
 
         if ( isset($optionList['Order']) ) {
-            $recodeList['order'] = $optionList['Order'];
-            $recodeList['price'] = $this->splitWon($optionList['Price']);
-            $recodeList['valueName'] = $optionList['ValueName'];
+            $recodeList[] = $this->setOptionArray($optionList);
         }else{
             foreach ($optionList as $key => $value) {
-                $recodeList[$key]['order'] = $value['Order'];
-                $recodeList[$key]['price'] = $this->splitWon($value['Price']);
-                $recodeList[$key]['name'] = $value['ValueName'];
+                $recodeList[] = $this->setOptionArray($value);
             }
         }
         return $recodeList;
+    }
+
+    public function setOptionArray($option){
+        return array(
+            "order" => $option['Order'],
+            'price' => $this->splitWon($option['Price']),
+            'valueName' => $option['ValueName'],
+        );
     }
 
     public function getProductNumber($query_array){

@@ -15,20 +15,15 @@ class DatabaseSeeder extends Seeder
         Model::unguard();
 
         $this->call(AdminUserSeeder::class);
-         $this->call(MarketTableSeeder::class);
-        // $this->call(MarketCategoryTableSeeder::class);
-        // $this->call(MarketDivisionTableSeeder::class);
+        $this->call(ImageTableSeeder::class);
+        $this->call(MarketTableSeeder::class);
         $this->call(CountryTableSeeder::class);
-        $this->call(DummyDataSeeder::class);
+        $this->call(TranslateTableSeeder::class);
         $this->call(StatusTableSeeder::class);
-        $this->call(RealProductSeed::class);
-        // $this->call(CountryTableSeeder::class);
-        // $this->call(OccupationsTableSeeder::class);
-        // $this->call(BoardsTableSeeder::class);
-        // $this->call(PostSortTableSeeder::class);
-        // $this->call(ContentSortTableSeeder::class);
-        // $this->call(ContentCategoryTableSeeder::class);
-        // $this->call(LicenseTableSeeder::class);
+        $this->call(GenderTableSeeder::class);
+
+        $this->call(ProvisionCategorySeeder::class);
+        $this->call(DummyDataSeeder::class);
 
         Model::reguard();
     }
