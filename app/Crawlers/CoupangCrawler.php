@@ -33,6 +33,8 @@ class CoupangCrawler
 
     private $result;
 
+    private $optionTitleBlackList = ['병행수입','수입유형','수입'];
+
     public function __construct($idInfo){
         $this->snoopy = new Snoopy;
         $this->dom = new Dom;
@@ -150,7 +152,7 @@ class CoupangCrawler
                 $getElement = $this->getElement($detailDom,'.prod-option-select__item');
                 $justPrice = (int)$this->splitWon($this->getText($getElement,'.prod-txt-small'));
             }
-            if( (string)$value->getAttribute('data-option-title') != '병행수입' ){ // exception
+            if( $this->isAllowOptionTitle($value->getAttribute('data-option-title')) ){ // exception
                 $optionResult[] = [
                     "order" => (int)$key,
                     "price" => isset($justPrice) ? $justPrice : (int)$this->splitWon($this->getText($value,'.prod-txt-small')),
@@ -166,6 +168,9 @@ class CoupangCrawler
         }
         return $optionResult;
     }
+
+
+
     protected function categories(){
         $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/breadcrumb-gnbmenu";
         $dom = $this->getDomResult($requestUrl);
@@ -274,6 +279,9 @@ class CoupangCrawler
 
 
 
+    protected function isAllowOptionTitle($value){
+        return !in_array($value,$this->optionTitleBlackList);
+    }
     public function getLastSegment($url){
         $segments = explode('/',$url);
         return end($segments);
