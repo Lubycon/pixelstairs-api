@@ -27,19 +27,13 @@ class Kernel extends ConsoleKernel
     {
 //        $schedule->command('inspire')
 //                 ->hourly();
-//        Log::info('Database Dump Succses');
-//
-//
-//        $schedule
-//            ->call('App\Http\Controllers\BackupController@DatabaseBackup')
-////            ->call(function(){
-////                $fileName = date('Y-d-m_ahi')."_backup.sql";
-////                $filePath = "public/".$fileName;
-////                exec("mysqldump -u ".env('DB_USERNAME')." --password=".env('DB_PASSWORD')." ".env('DB_DATABASE')." > "."$filePath ");
-////                $this->databaseBackup($fileName);
-////            })
-////            ->exec("mysqldump -u ".env('DB_USERNAME')." --password=".env('DB_PASSWORD')." ".env('DB_DATABASE')." > "."$filePath ")
-//            ->everyMinute();
+        Log::info('Database Dump Success');
+
+        $fileName = date('Y-d-m_ahi')."_backup.sql";
+        $path = "sql/".$fileName;
+        $schedule
+            ->exec("mysqldump -u ".env('DB_USERNAME')." --password=".env('DB_PASSWORD')." ".env('DB_DATABASE')." > ".$path )
+            ->daily();
     }
 
 }

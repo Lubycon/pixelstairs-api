@@ -5,6 +5,11 @@ Route::group(['prefix' => '/v1'], function () {
 //    Route::get('/division','insertSectionController@divisionActive');
 //    Route::get('/insert','insertSectionController@check');
 
+
+
+    Route::get('test', 'BackupController@DatabaseBackup'); // get detail example
+
+
     Route::group(['prefix' => '/haitao/'], function () {
         Route::group(['prefix' => 'product/'], function () {
             Route::get('{haitao_product_id}', 'HaitaoController@productDetailGet'); // get detail example
