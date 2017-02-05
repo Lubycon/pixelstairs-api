@@ -145,7 +145,7 @@ class Product extends BaseModel
         ];
     }
     public function getQuestions(){
-        $result = [];
+        $result = null;
         $questions = $this->reviewQuestion;
         foreach($questions as $question){
             $questionKey = $question->questionKey;
