@@ -219,7 +219,7 @@ class CoupangCrawler
         ];
     }
     protected function vendorProductInfo(){
-        $requestUrl = "http://www.coupang.com/vp/products/$this->product_id/vendor-items/$this->vendor_id?isFixedVendorItem=true&type=sdp";
+        $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/vendor-items/$this->vendor_id?isFixedVendorItem=true&type=sdp";
         $dom = $this->getDomResult($requestUrl);
         $requireInfo = $this->getMergeText($dom,'.prod-item-attr-name');
         $optionsImg = $this->getImageSrc($dom,'.lazy-img','data-src');
@@ -264,6 +264,7 @@ class CoupangCrawler
     }
     public function getImageSrc($dom,$findAttr,$chooseAttr){
         $requireDom = $dom->find($findAttr);
+
         $result = [];
         foreach ($requireDom as $key => $value)
         {
