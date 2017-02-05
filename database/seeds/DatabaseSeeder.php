@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
         $this->call(TranslateTableSeeder::class);
         $this->call(StatusTableSeeder::class);
         $this->call(GenderTableSeeder::class);
+
+        $this->call(ProvisionCategorySeeder::class);
         $this->call(DummyDataSeeder::class);
 
         Model::reguard();

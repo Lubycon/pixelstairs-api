@@ -25,8 +25,8 @@ class DummyDataSeeder extends Seeder
 //        DB::table('images')->truncate();
         DB::table('image_groups')->truncate();
 
-        DB::table('categories')->truncate();
-        DB::table('divisions')->truncate();
+//        DB::table('categories')->truncate();
+//        DB::table('divisions')->truncate();
         DB::table('sections')->truncate();
         DB::table('section_groups')->truncate();
         DB::table('section_market_infos')->truncate();
