@@ -221,6 +221,7 @@ class ProductController extends Controller
         $this->product->manufacturer_country_id = $data['manufacturerCountryId'];
         $this->product->seller_id = Seller::firstOrCreate($data['seller'])['id'];
         $optionCollection = $this->createOptionCollection($data['optionKeys']);
+        $this->updateReviewQuestions($this->product,$data['questions']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
         if ( $this->updateOptions($data['options'],$data['safeStock'],$optionCollection)
