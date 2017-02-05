@@ -27,7 +27,6 @@ class Kernel extends ConsoleKernel
     {
 //        $schedule->command('inspire')
 //                 ->hourly();
-        Log::info('Database Dump Success');
 
         $fileName = date('Y-d-m_ahi')."_backup.sql";
         $path = "sql/".$fileName;
