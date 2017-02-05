@@ -19,8 +19,11 @@ class User extends BaseModel implements AuthenticatableContract,
 
     protected $casts = [
         'id' => 'string',
+        'haitao_user_id' => 'string',
         'post_code' => 'string',
         'gender_id' => 'string',
+        'country_id' => 'string',
+        'image_id' => 'string',
     ];
 
     protected function rules(){

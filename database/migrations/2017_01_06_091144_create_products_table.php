@@ -36,8 +36,7 @@ class CreateProductsTable extends Migration
             $table->string('unit',10);
             $table->integer('domestic_delivery_price')->unsigned();
             $table->boolean('is_free_delivery')->unsigned();
-
-            $table->integer('weight')->unsigned()->nullable();
+            $table->double('weight',8,1)->unsigned();
 
             $table->integer('image_id')->unsigned();
             $table->integer('image_group_id')->unsigned()->nullable();

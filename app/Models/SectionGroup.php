@@ -16,6 +16,14 @@ class SectionGroup extends BaseModel
         'section_id_2',
     ];
 
+    protected $casts = [
+        'id' => 'string',
+        'parent_id' => 'string',
+        'section_id_0' => 'string',
+        'section_id_1' => 'string',
+        'section_id_2' => 'string',
+    ];
+
     // get reference data
     // hasOne('remote_table_column_name','local_column_name');
 

@@ -20,12 +20,16 @@ class Product extends BaseModel
         'haitao_product_id' => 'string',
         'category_id' => 'string',
         'division_id' => 'string',
+        'section_group_id' => 'string',
         'market_id' => 'string',
         'brand_id' => 'string',
         'seller_id' => 'string',
         'gender_id' => 'string',
         // find way section id to string
-        'weight' => 'int',
+        'weight' => 'double',
+        'manufacturer_id' => 'string',
+        'image_id' => 'string',
+        'image_group_id' => 'string',
         'status_code' => 'string',
     ];
 

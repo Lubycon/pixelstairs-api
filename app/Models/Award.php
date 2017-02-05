@@ -11,6 +11,7 @@ class Award extends BaseModel
     protected $casts = [
         'id' => 'string',
         'product_id' => 'string',
+        'sku' => 'string',
         'user_id' => 'string',
     ];
 

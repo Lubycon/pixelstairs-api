@@ -9,6 +9,9 @@ class ImageGroup extends BaseModel
     protected $fillable = [
         "id","model_name"
     ];
+    protected $casts = [
+        "id" => 'string',
+    ];
 
     public function getObjects(){
         $result = [];

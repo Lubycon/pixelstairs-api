@@ -12,6 +12,14 @@ class OptionCollection extends BaseModel
         'option_key_id_0','option_key_id_1','option_key_id_2','option_key_id_3'
     ];
 
+    protected $casts = [
+        'id' => 'string',
+        'option_key_id_0' => 'string',
+        'option_key_id_1' => 'string',
+        'option_key_id_2' => 'string',
+        'option_key_id_3' => 'string',
+    ];
+
 
     // get reference data
     // hasOne('remote_table_column_name','local_column_name');

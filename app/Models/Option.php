@@ -16,6 +16,8 @@ class Option extends BaseModel
         'id' => 'string',
         'product_id' => 'string',
         'sku' => 'string',
+        'image_id' => 'string',
+        'option_collection_id' => 'string',
     ];
 
     public static $absoluteSafeStock = 15;

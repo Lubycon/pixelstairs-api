@@ -72,7 +72,7 @@ class CoupangCrawler
             "manufacturerCountryId" => "",
             "seller" => [
                 "name" => "coupang",
-                "rate" => (int)4.5,
+                "rate" => 4.5,
             ],
             "category" =>[
                 "id" => (string)$categories['market_section']['id'],

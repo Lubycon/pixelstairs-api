@@ -12,6 +12,8 @@ class Review extends BaseModel
         'id' => 'string',
         'user_id' => 'string',
         'product_id' => 'string',
+        'image_id' => 'string',
+        'image_group_id' => 'string',
     ];
 
     // belongsTo

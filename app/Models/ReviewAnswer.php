@@ -11,7 +11,7 @@ class ReviewAnswer extends BaseModel
     protected $casts = [
         'id' => 'string',
         'review_id' => 'string',
-        'qeustion_id' => 'string',
+        'question_id' => 'string',
     ];
 
     protected $fillable = [

@@ -12,6 +12,10 @@ class OptionKey extends BaseModel
         'translate_name_id'
     ];
 
+    protected $casts = [
+        'id' => 'string',
+    ];
+
     // get translate data
     public function translateName()
     {

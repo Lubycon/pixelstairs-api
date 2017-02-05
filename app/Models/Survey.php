@@ -8,11 +8,10 @@ class Survey extends BaseModel
 {
     use SoftDeletes;
 
-
-
     protected $casts = [
         'id' => 'string',
         'user_id' => 'string',
+        'interest_id' => 'string',
     ];
 
     // belongsTo

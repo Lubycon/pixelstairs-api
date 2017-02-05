@@ -10,6 +10,7 @@ class ReviewQuestion extends BaseModel
 
     protected $casts = [
         'id' => 'string',
+        'question_key_id' => 'string',
         'division_id' => 'string',
     ];
 
