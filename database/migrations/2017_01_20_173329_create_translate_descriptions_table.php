@@ -14,10 +14,10 @@ class CreateTranslateDescriptionsTable extends Migration
     {
         Schema::create('translate_descriptions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('original',500);
-            $table->string('chinese',500);
-            $table->string('korean',500)->nullable();
-            $table->string('english',500)->nullable();
+            $table->longText('original');
+            $table->longText('chinese');
+            $table->longText('korean')->nullable();
+            $table->longText('english')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

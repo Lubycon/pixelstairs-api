@@ -38,6 +38,7 @@ class AuthController extends Controller
 
     protected function signin(AuthSigninRequest $request)
     {
+
         $data = $request->json()->all();
         $credentials = Credential::signin($data);
 

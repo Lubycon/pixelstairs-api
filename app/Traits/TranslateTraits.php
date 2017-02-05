@@ -9,6 +9,8 @@ namespace App\Traits;
  */
 use App\Models\TranslateName;
 use App\Models\TranslateDescription;
+use Abort;
+use Log;
 
 trait TranslateTraits{
 
@@ -28,9 +30,9 @@ trait TranslateTraits{
 
     public function setTranslateArray($data){
         return[
-            "original" => $data['origin'],
+            "original" => !is_null($data['origin']) ? $data['origin'] :Abort::Error("0040","Translate Info was NULL"),
+            "chinese" => !is_null($data['zh']) ? $data['zh'] :Abort::Error("0040","Translate Info was NULL"),
             "korean" => $data['ko'],
-            "chinese" => $data['zh'],
             "english" => $data['en'],
         ];
     }

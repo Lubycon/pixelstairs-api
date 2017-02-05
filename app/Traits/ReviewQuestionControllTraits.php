@@ -23,6 +23,7 @@ trait ReviewQuestionControllTraits
     protected function createReviewQuestions($questions){
         $result = [];
         foreach ($questions as $question) {
+            if( is_null($question['qKeyId']) ) Abort::Error('0040',"Question Key was NULL");
             $result[] = $item = new ReviewQuestion();
             $item->question_key_id = $question['qKeyId'];
             $item->translate_description_id = $this->createTranslateDescription($question['description'])['id'];
