@@ -27,7 +27,7 @@ class Product extends BaseModel
         'gender_id' => 'string',
         // find way section id to string
         'weight' => 'double',
-        'manufacturer_id' => 'string',
+        'manufacturer_country_id' => 'string',
         'image_id' => 'string',
         'image_group_id' => 'string',
         'status_code' => 'string',
