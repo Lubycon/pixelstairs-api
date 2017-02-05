@@ -50,6 +50,17 @@ trait S3StorageControllTraits
     }
 
 
+    public function databaseBackupToS3($fileName){
+        if( !is_null($fileName) ){
+            $uploadPath = 'database_backup/'.$fileName;
+            Storage::disk('s3')->put($uploadPath, file_get_contents($fileName), 'public');
+            unlink($fileName);
+            return env('S3_PATH').$uploadPath;
+        }else{
+            Abort::Error('0040','not base64');
+        }
+    }
+
 
 }
  ?>

@@ -33,6 +33,7 @@ class CoupangCrawler
 
     private $result;
 
+    private $coupangUrl = "https://www.coupang.com";
     private $optionTitleBlackList = ['병행수입','수입유형','수입'];
 
     public function __construct($idInfo){
@@ -89,7 +90,7 @@ class CoupangCrawler
     }
 
     private function optionAttribute(){
-        $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/brandsdp/attributes?itemId=$this->item_id&noAttribute=false&sdpStyle=FASHION_STYLE_TWO_WAY";
+        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/brandsdp/attributes?itemId=$this->item_id&noAttribute=false&sdpStyle=FASHION_STYLE_TWO_WAY";
         $dom = $this->getDomResult($requestUrl);
         $eachOption = $dom->find('.each-prod-option');
         $result = [];
@@ -119,7 +120,7 @@ class CoupangCrawler
         $matchAttr = $this->splitAttrKey($optionCollection[1]['values'][0]['optionKey']);
         foreach( $optionCollection[0]['values'] as $key => $value ){
             $searchAttr = $this->splitAttrKey($value['optionKey']);
-            $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/brandsdp/options/0?attrTypeIds=$matchAttr->current&noAttribute=false&sdpStyle=FASHION_STYLE_TWO_WAY&selectedAttrTypeIds=$searchAttr->current&selectedAttrValueIds=$searchAttr->remote";
+            $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/brandsdp/options/0?attrTypeIds=$matchAttr->current&noAttribute=false&sdpStyle=FASHION_STYLE_TWO_WAY&selectedAttrTypeIds=$searchAttr->current&selectedAttrValueIds=$searchAttr->remote";
             $dom = json_decode($this->getDomResult($requestUrl));
 
             foreach( $dom->options as $eachOption ){
@@ -139,7 +140,7 @@ class CoupangCrawler
         return $result;
     }
     protected function loadOptions(){
-        $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/loadOptions?itemId=$this->item_id&vendorItemId=$this->vendor_id&&noAttribute=false";
+        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/loadOptions?itemId=$this->item_id&vendorItemId=$this->vendor_id&&noAttribute=false";
         $dom = $this->getDomResult($requestUrl);
         $optionKey[] = $this->getText($dom,'.prod-option-name__button');
         $options = $this->getElement($dom,'.prod-option-select__item');
@@ -147,7 +148,7 @@ class CoupangCrawler
         foreach( $options as $key => $value ){
             $detailUrl = $value->getAttribute('data-request-uri');
             if( $detailUrl != '' ){ // option has more request
-                $parseUrl = 'https://www.coupang.com'.str_replace("amp;",'',$detailUrl);
+                $parseUrl = '$this->coupangUrl'.str_replace("amp;",'',$detailUrl);
                 $detailDom = $this->getDomResult($parseUrl);
                 $getElement = $this->getElement($detailDom,'.prod-option-select__item');
                 $justPrice = (int)$this->splitWon($this->getText($getElement,'.prod-txt-small'));
@@ -172,7 +173,7 @@ class CoupangCrawler
 
 
     protected function categories(){
-        $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/breadcrumb-gnbmenu";
+        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/breadcrumb-gnbmenu";
         $dom = $this->getDomResult($requestUrl);
         $breadcrumb = $dom->find('#breadcrumb .breadcrumb-link');
         $category = [];
@@ -188,7 +189,7 @@ class CoupangCrawler
         ];
     }
     protected function productAtf(){
-        $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/product-atf?itemId=$this->item_id&vendorItemId=$this->vendor_id";
+        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/product-atf?itemId=$this->item_id&vendorItemId=$this->vendor_id";
         $dom = $this->getDomResult($requestUrl);
         return [
             "brandName" => $this->getText($dom,'.prod-brand-name'),
@@ -200,13 +201,13 @@ class CoupangCrawler
         ];
     }
     protected function basicProductInfo(){
-        $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/vendor-items/$this->vendor_id/selling-infos?itemId=$this->item_id";
+        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/vendor-items/$this->vendor_id/selling-infos?itemId=$this->item_id";
         $this->snoopy->fetchtext($requestUrl);
         $dom = $this->snoopy->results;
         return $dom;
     }
     protected function basicProductInfWithStock(){
-        $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/vendor-items/$this->vendor_id/sale-infos/sdp";
+        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/vendor-items/$this->vendor_id/sale-infos/sdp";
         $dom = $this->getDomResult($requestUrl);
         $this->maxBuyAble = $this->getText($dom,'.prod-buyable-quantity');
         return [
@@ -219,7 +220,7 @@ class CoupangCrawler
         ];
     }
     protected function vendorProductInfo(){
-        $requestUrl = "https://www.coupang.com/vp/products/$this->product_id/vendor-items/$this->vendor_id?isFixedVendorItem=true&type=sdp";
+        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/vendor-items/$this->vendor_id?isFixedVendorItem=true&type=sdp";
         $dom = $this->getDomResult($requestUrl);
         $requireInfo = $this->getMergeText($dom,'.prod-item-attr-name');
         $optionsImg = $this->getImageSrc($dom,'.lazy-img','data-src');
@@ -228,8 +229,6 @@ class CoupangCrawler
             "detailImage" => $optionsImg,
         ];
     }
-
-
 
 
     public function getDomResult($requestUrl){
