@@ -106,7 +106,7 @@ class Product extends BaseModel
                     "price" => $value->price,
                     "stock" => $value->stock,
                     "safeStock" => $value->safe_stock,
-                    "thumbnailUrl" => $value->image->getObject(),
+                    "thumbnailUrl" => $this->getImageObject($value),
                     "sku" => $value->sku,
                 );
             }

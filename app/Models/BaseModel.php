@@ -66,4 +66,21 @@ class BaseModel extends Model
         }
         return $value;
     }
+
+    public function getImageObject($model){
+        if( $model->image == null ){
+            return null;
+        }else{
+            return $model->image->getObject();
+        }
+    }
+
+    public function getImageGroupObject($model){
+        if( $model->imageGroup == null ){
+            return null;
+        }else{
+            return $model->imageGroup->getObjects();
+        }
+    }
+
 }

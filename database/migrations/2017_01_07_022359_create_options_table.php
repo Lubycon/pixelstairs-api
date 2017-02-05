@@ -21,7 +21,7 @@ class CreateOptionsTable extends Migration
             $table->integer('stock')->unsigned();
             $table->integer('safe_stock')->unsigned();
             $table->integer('option_collection_id')->unsigned();
-            $table->integer('image_id')->unsigned();
+            $table->integer('image_id')->unsigned()->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

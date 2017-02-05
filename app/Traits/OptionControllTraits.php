@@ -16,6 +16,8 @@ trait OptionControllTraits
         $result = [];
         $index = 0;
         foreach ($options as $key => $option) {
+            $image_id = null;
+            if( !is_null($option["thumbnailUrl"]['file']) ) $image_id = Image::create($this->createExternalImage( $option["thumbnailUrl"] ))['id'];
             $result[] = new Option([
                 "product_id" => $this->product->id,
                 "sku" => $this->createSku($index),
@@ -23,7 +25,7 @@ trait OptionControllTraits
                 "stock" => $option["stock"],
                 "safe_stock" => Option::absoluteSafeStockCkeck($safeStock),
                 "translate_name_id" => $this->createTranslateName($option['name'])['id'],
-                "image_id" => Image::create($this->createExternalImage( $option["thumbnailUrl"] ))['id'],
+                'image_id' => $image_id,
                 "option_collection_id" => $optionCollection['id'],
             ]);
             $index++;

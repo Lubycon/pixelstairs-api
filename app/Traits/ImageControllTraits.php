@@ -21,11 +21,13 @@ trait ImageControllTraits
     public function createExternalImageArray($image){
         if( isset($image['file']) )$image = [$image];
         $result = [];
-        foreach( $image as $value ){
-            $result[] = $image = new Image([
-                "index" => $value['index'],
-                "url" => $value['file'],
-            ]);
+        if( count($image) ){
+            foreach( $image as $value ){
+                $result[] = $image = new Image([
+                    "index" => $value['index'],
+                    "url" => $value['file'],
+                ]);
+            }
         }
         return $result;
     }

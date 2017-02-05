@@ -10,7 +10,7 @@ class ImageGroup extends BaseModel
         "id","model_name"
     ];
 
-    public function getImages(){
+    public function getObjects(){
         $result = [];
         $images = $this->image;
         foreach( $images as $value ){

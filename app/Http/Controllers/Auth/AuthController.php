@@ -139,7 +139,7 @@ class AuthController extends Controller
                 "nickname" => $findUser->nickname,
                 "position" => $findUser->position,
                 "grade" => $findUser->grade,
-                "profileImg" => $findUser->image->getObject(),
+                "profileImg" => $findUser->getImageObject($findUser),
             );
             return response()->success($result);
         }else{
@@ -167,7 +167,7 @@ class AuthController extends Controller
                     "postCode" => $findUser->post_code,
                 ],
                 "likeCategory" => $findUser->getInterest(),
-                "profileImg" => $findUser->image->getObject(),
+                "profileImg" => $findUser->getImageObject($findUser),
             ]);
         }else{
             Abort::Error('0040');

@@ -51,7 +51,7 @@ class ReviewController extends Controller
             "user" => [
                 "id" => $user['id'],
                 "name" => $user->name,
-                "profileImg" => $user->image->getObject(),
+                "profileImg" => $user->getImageObject($user),
             ],
             "product" => [
                 "id" => $product->id,
@@ -62,11 +62,11 @@ class ReviewController extends Controller
                 "divisionName" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
                 "sectionNames" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
                 "skuName" => $this->review->option->getTranslateResultByLanguage($this->review->option->translateName,$this->language),
-                "thumbnailUrl" => $product->image->getObject(),
+                "thumbnailUrl" => $product->getImageObject($product),
             ],
             "title" => $this->review->title,
             "qa" => $this->getQnA($this->review->answer),
-            "images" => $this->review->imageGroup->getImages(),
+            "images" => $this->review->getImageGroupObject($this->review),
         ];
 
         return response()->success($response);
@@ -91,7 +91,7 @@ class ReviewController extends Controller
                 "user" => [
                     "id" => $user['id'],
                     "name" => $user->name,
-                    "profileImg" => $user->image->getObject(),
+                    "profileImg" => $user->getImageObject($user),
                 ],
                 "product" => [
                     "id" => $product->id,
@@ -102,11 +102,11 @@ class ReviewController extends Controller
                     "divisionName" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
                     "sectionNames" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
                     "skuName" => $this->review->option->getTranslateResultByLanguage($this->review->option->translateName,$this->language),
-                    "thumbnailUrl" => $product->image->getObject(),
+                    "thumbnailUrl" => $product->getImageObject($product),
                 ],
                 "title" => $this->review->title,
                 "qa" => $this->getQnA($this->review->answer),
-                "images" => $this->review->imageGroup->getImages(),
+                "images" => $this->review->getImageGroupObject($this->review),
             );
         };
 
