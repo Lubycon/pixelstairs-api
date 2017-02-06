@@ -138,6 +138,7 @@ class AuthController extends Controller
                 "email" => $findUser->email,
                 "name" => $findUser->name,
                 "nickname" => $findUser->nickname,
+                "phone" => $findUser->phone,
                 "position" => $findUser->position,
                 "grade" => $findUser->grade,
                 "profileImg" => $findUser->getImageObject($findUser),
@@ -159,6 +160,7 @@ class AuthController extends Controller
                 "email" => $findUser->email,
                 "name" => $findUser->name,
                 "nickname" => $findUser->nickname,
+                "phone" => $findUser->phone,
                 "position" => $findUser->position,
                 "grade" => $findUser->grade,
                 "location" => [

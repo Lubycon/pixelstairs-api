@@ -81,14 +81,13 @@ class Product extends BaseModel
                 $result[] = [
                     "name" => $this->getTranslateResultByLanguage($optionKeys->optionKey($i)->first(),$language),
                     "values" => $optionDivide[$i],
-//                    "thumbnailUrl" => null,
                 ];
             }
         }
         return $result;
     }
     public function optionDivide($options){
-        $result =[];
+        $result = [];
         foreach($options as $key=>$value){
             $explode = explode(',',$value['name']);
             foreach($explode as $int=>$name){
@@ -117,26 +116,26 @@ class Product extends BaseModel
         }
         return $result;
     }
-//    public function getProvisionOption($language,$priceUnit){
-//        $result = [];
-//        if (count($this->option)) {
-//            $optionKeys = $this->option;
-//            foreach ($optionKeys as $key => $value) {
-//                if( $value->stock > $value->safe_stock ){
-//                    $result[] = array(
-//                        "name" => $this->getTranslateResultByLanguage($value,$language),
-//                        "price" => $value->price,
-//                        "priceUnit" => $priceUnit,
-//                        "stock" => $value->stock,
-//                        "safeStock" => $value->safe_stock,
-////                    "thumbnailUrl" => $value->thumbnail_url,
-//                        "sku" => $value->sku,
-//                    );
-//                }
-//            }
-//        }
-//        return $result;
-//    }
+    public function getProvisionOption($language,$priceUnit){
+        $result = [];
+        if (count($this->option)) {
+            $optionKeys = $this->option;
+            foreach ($optionKeys as $key => $value) {
+                if( $value->stock > $value->safe_stock ){
+                    $result[] = array(
+                        "name" => $this->getTranslateResultByLanguage($value,$language),
+                        "price" => $value->price,
+                        "priceUnit" => $priceUnit,
+                        "stock" => $value->stock,
+                        "safeStock" => $value->safe_stock,
+                        "thumbnailUrl" => $value->image->url,
+                        "sku" => $value->sku,
+                    );
+                }
+            }
+        }
+        return $result;
+    }
     public function getSeller(){
         $seller = $this->seller;
         return [
