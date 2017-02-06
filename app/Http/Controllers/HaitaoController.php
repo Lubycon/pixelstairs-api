@@ -217,9 +217,10 @@ class HaitaoController extends Controller
      *          required=true,
      *          @SWG\Schema(
      *              required={"product_id"},
-     *              @SWG\Property(property="order_id",type="string",default="31247853"),
-     *              @SWG\Property(property="user_id",type="string",default="12341"),
+     *              @SWG\Property(property="haitaoOrderId",type="string",default="31247853"),
+     *              @SWG\Property(property="haitaoUserId",type="string",default="12341"),
      *              @SWG\Property(property="quantity",type="string",default="5"),
+     *              @SWG\Property(property="orderDate",type="datetime",default="2017-10-27 12:50:12"),
      *              @SWG\Property(property="sku",type="string",default="MK0100CT4DV8ST146PD108786628ID"),
      *          ),
      *     ),
@@ -243,6 +244,8 @@ class HaitaoController extends Controller
      */
 
     public function orderStore(OrderPostRequest $request){
+
+
         $order = new Order;
         $findOption = Option::wheresku($request['sku'])->firstOrFail();
 
@@ -259,7 +262,6 @@ class HaitaoController extends Controller
         return response()->success($order);
     }
     public function orderPut(OrderUpdateRequest $request,$haitao_order_id){
-
         return response()->success();
     }
 }

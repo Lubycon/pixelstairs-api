@@ -2,7 +2,7 @@
 
 return [
     'supportsCredentials' => false,
-    'allowedOrigins' => ['*'],
+    'allowedOrigins' => json_decode(env("ALLOW_ORIGIN")),
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'],
     'requiredHeader' => ["x-mitty-language"],
