@@ -9,7 +9,7 @@ use Log;
 
 class CategoryPostRequest extends Request
 {
-    use AuthorizesRequests,
+    use AuthorizesRequestsOverLoad,
         GetUserModelTrait;
 
     public function authorize()

@@ -10,7 +10,7 @@ use Log;
 
 class CategoryDeleteRequest extends Request
 {
-    use AuthorizesRequests,
+    use AuthorizesRequestsOverLoad,
         GetUserModelTrait;
 
     public function authorize()
