@@ -30,6 +30,7 @@ class CoupangCrawler
     private $sdp_style;
 
     private $maxBuyAble;
+    private $optionResult;
 
     private $result;
 
@@ -52,7 +53,8 @@ class CoupangCrawler
         $optionCollection = '';
         $optionSkuList = '';
         if( $this->sdp_style == "NORMAL" ){
-            $optionSkuList = $this->loadOptions(); // product require info + product detail images
+            $optionSkuList = $this->pagedOption(0); // product require info + product detail images
+//            $optionSkuList = $this->loadOptions(); // product require info + product detail images
         }else if( $this->sdp_style == "FASHION_STYLE_TWO_WAY" ){
             $optionCollection = $this->optionAttribute(); // product require info + product detail images
             $optionSkuList = $this->optionSkuList($optionCollection);
@@ -139,35 +141,64 @@ class CoupangCrawler
         }
         return $result;
     }
-    protected function loadOptions(){
-        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/loadOptions?itemId=$this->item_id&vendorItemId=$this->vendor_id&&noAttribute=false";
+//    protected function loadOptions(){
+//        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/loadOptions?itemId=$this->item_id&vendorItemId=$this->vendor_id&&noAttribute=false";
+//        $dom = $this->getDomResult($requestUrl);
+//        $optionKey[] = $this->getText($dom,'.prod-option-name__button');
+//        $options = $this->getElement($dom,'.prod-option-select__item');
+//        $optionResult = [];
+//        foreach( $options as $key => $value ){
+//            $detailUrl = $value->getAttribute('data-request-uri');
+//            if( $detailUrl != '' ){ // option has more request
+//                $parseUrl = '$this->coupangUrl'.str_replace("amp;",'',$detailUrl);
+//                $detailDom = $this->getDomResult($parseUrl);
+//                $getElement = $this->getElement($detailDom,'.prod-option-select__item');
+//                $justPrice = (int)$this->splitWon($this->getText($getElement,'.prod-txt-small'));
+//            }
+//            if( $this->isAllowOptionTitle($value->getAttribute('data-option-title')) ){ // exception
+//                $optionResult[] = [
+//                    "order" => (int)$key,
+//                    "price" => isset($justPrice) ? $justPrice : (int)$this->splitWon($this->getText($value,'.prod-txt-small')),
+//                    "name" => (string)$value->getAttribute('data-option-title'),
+//                    "stock" => (int)$this->maxBuyAble,
+//                    "isSoldout" => (bool)strpos($value->getAttribute('class'),'soldout'),
+//                    "thumbnailUrl" => [
+//                        "file" => (string)$value->getAttribute('data-option-img-src'),
+//                        "index" => 0,
+//                    ],
+//                ];
+//            }
+//        }
+//        return $optionResult;
+//    }
+    protected function pagedOption($pageNumber){
+        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/paged-options?page=$pageNumber";
         $dom = $this->getDomResult($requestUrl);
-        $optionKey[] = $this->getText($dom,'.prod-option-name__button');
+        $nextPage = $this->getElementAttribute($dom,'.next-url','data-next-url');
+        $nextNumber = $pageNumber + 1;
         $options = $this->getElement($dom,'.prod-option-select__item');
-        $optionResult = [];
         foreach( $options as $key => $value ){
             $detailUrl = $value->getAttribute('data-request-uri');
             if( $detailUrl != '' ){ // option has more request
-                $parseUrl = '$this->coupangUrl'.str_replace("amp;",'',$detailUrl);
+                $parseUrl = $this->coupangUrl.str_replace("amp;",'',$detailUrl);
                 $detailDom = $this->getDomResult($parseUrl);
                 $getElement = $this->getElement($detailDom,'.prod-option-select__item');
                 $justPrice = (int)$this->splitWon($this->getText($getElement,'.prod-txt-small'));
             }
-            if( $this->isAllowOptionTitle($value->getAttribute('data-option-title')) ){ // exception
-                $optionResult[] = [
-                    "order" => (int)$key,
-                    "price" => isset($justPrice) ? $justPrice : (int)$this->splitWon($this->getText($value,'.prod-txt-small')),
-                    "name" => (string)$value->getAttribute('data-option-title'),
-                    "stock" => (int)$this->maxBuyAble,
-                    "isSoldout" => (bool)strpos($value->getAttribute('class'),'soldout'),
-                    "thumbnailUrl" => [
-                        "file" => (string)$value->getAttribute('data-option-img-src'),
-                        "index" => 0,
-                    ],
-                ];
-            }
+            $this->optionResult[] = [
+                "order" => (int)$key,
+                "price" => isset($justPrice) ? $justPrice : (int)$this->splitWon($this->getText($value,'.prod-txt-small')),
+                "name" => (string)$value->getAttribute('data-option-title'),
+                "stock" => (int)$this->maxBuyAble,
+                "isSoldout" => (bool)strpos($value->getAttribute('class'),'soldout'),
+                "thumbnailUrl" => [
+                    "file" => (string)$value->getAttribute('data-option-img-src'),
+                    "index" => 0,
+                ],
+            ];
         }
-        return $optionResult;
+        if( $nextPage != '' ) $this->pagedOption($nextNumber);
+        return $this->optionResult;
     }
 
 
