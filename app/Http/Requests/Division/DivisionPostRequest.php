@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Division;
 
 use App\Http\Requests\Request;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use App\Traits\AuthorizesRequestsOverLoad;
 use App\Traits\GetUserModelTrait;
 use Log;
 
