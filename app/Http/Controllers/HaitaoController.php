@@ -46,8 +46,24 @@ class HaitaoController extends Controller
      *     produces={"application/json"},
      *     tags={"Product"},
      *     @SWG\Parameter(
+     *         name="X-mitty-language",
+     *         default="zh",
+     *         in="header",
+     *         description="Translate language",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         name="X-mitty-version",
+     *         default="1.0.0",
+     *         in="header",
+     *         description="App version",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
      *         name="haitao_product_id",
-     *         default="100000000",
+     *         default="101577081",
      *         in="path",
      *         description="product's data you want item id",
      *         required=true,
@@ -68,6 +84,10 @@ class HaitaoController extends Controller
      *     @SWG\Response(
      *         response="404",
      *         description="Not found product",
+     *     ),
+     *     @SWG\Response(
+     *         response="411",
+     *         description="require header not exist",
      *     ),
      *     @SWG\Response(
      *         response="500",
@@ -175,6 +195,22 @@ class HaitaoController extends Controller
      *     description="Push order data to mitty",
      *     produces={"application/json"},
      *     tags={"Order"},
+     *     @SWG\Parameter(
+     *         name="X-mitty-language",
+     *         default="zh",
+     *         in="header",
+     *         description="Translate language",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         name="X-mitty-version",
+     *         default="1.0.0",
+     *         in="header",
+     *         description="App version",
+     *         required=true,
+     *         type="string"
+     *     ),
      *     @SWG\Parameter(
      *          name="body",
      *          in="body",

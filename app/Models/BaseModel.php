@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\TranslateName;
 use App\Models\TranslateDescription;
 use Log;
+use Abort;
 use Symfony\Component\HttpFoundation\HeaderBag;
 
 class BaseModel extends Model
@@ -42,6 +43,7 @@ class BaseModel extends Model
         ];
     }
     public function getTranslateResultByLanguage($translate,$language){
+        if( is_null($language) ) Abort::Error("0047");
         if($language == 'ko' || $language == 'en') $language = "origin";
 
         if( is_array($translate) ){
