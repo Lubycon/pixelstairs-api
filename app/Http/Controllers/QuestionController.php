@@ -74,7 +74,7 @@ class QuestionController extends Controller
 
     public function postKey(QuestionKeyPost $request){
         $questionKey = new ReviewQuestionKey;
-        $questionKey->division_id = $request['divisionId'];
+        $questionKey->division_id = isset($request['divisionId']) ? $request['divisionId'] : null;
         $questionKey->translate_name_id = $this->createTranslateName($request['qKey'])['id'];
         $questionKey->is_common = $request['isCommon'];
 

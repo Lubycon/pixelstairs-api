@@ -21,7 +21,6 @@ class QuestionKeyPost extends Request
     public function rules()
     {
         $requiredRule = [
-            'divisionId' => 'required',
             'qKey' => 'required|array',
             'qKey.origin' => 'required',
             'qKey.zh' => 'required',
