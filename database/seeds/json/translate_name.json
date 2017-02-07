@@ -1083,5 +1083,201 @@
     "chinese": "花/蛋糕送货",
     "korean": "",
     "english": ""
+  },
+  {
+    "id": 156,
+    "original": "피부타입",
+    "chinese": "皮肤类型",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 157,
+    "original": "향",
+    "chinese": "香",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 158,
+    "original": "자극도",
+    "chinese": "刺激度",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 159,
+    "original": "도포감",
+    "chinese": "涂布感",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 160,
+    "original": "백탁현상",
+    "chinese": "白灼现象",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 161,
+    "original": "발색정도",
+    "chinese": "显色度",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 162,
+    "original": "커버력",
+    "chinese": "覆盖力",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 163,
+    "original": "수분감",
+    "chinese": "保湿感",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 164,
+    "original": "색상",
+    "chinese": "颜色",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 165,
+    "original": "발림",
+    "chinese": "涂抹感",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 166,
+    "original": "세정력",
+    "chinese": "洗洁度",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 167,
+    "original": "보습력",
+    "chinese": "保湿度",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 168,
+    "original": "효과",
+    "chinese": "效果",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 169,
+    "original": "스타일링",
+    "chinese": "造型度",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 170,
+    "original": "장점",
+    "chinese": "优点",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 171,
+    "original": "단점",
+    "chinese": "缺点",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 172,
+    "original": "개선점",
+    "chinese": "改善点",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 173,
+    "original": "끈적임",
+    "chinese": "粘稠度",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 174,
+    "original": "편리성",
+    "chinese": "便利度",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 175,
+    "original": "용기 디자인",
+    "chinese": "容器式样",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 176,
+    "original": "사이즈",
+    "chinese": "大小",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 177,
+    "original": "디자인",
+    "chinese": "式样",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 178,
+    "original": "사이즈",
+    "chinese": "尺寸",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 179,
+    "original": "재질",
+    "chinese": "材质",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 180,
+    "original": "발볼",
+    "chinese": "脚面宽度",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 181,
+    "original": "수납",
+    "chinese": "收纳空间",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 182,
+    "original": "착용감",
+    "chinese": "穿着感",
+    "korean": null,
+    "english": null
+  },
+  {
+    "id": 183,
+    "original": "품질",
+    "chinese": "品质",
+    "korean": null,
+    "english": null
   }
 ]
