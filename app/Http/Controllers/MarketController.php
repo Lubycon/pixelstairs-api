@@ -17,6 +17,8 @@ use App\Crawlers\CoupangCrawler;
 
 use App\Traits\OptionControllTraits;
 
+use Slack;
+
 
 class MarketController extends Controller
 {
@@ -287,4 +289,45 @@ class MarketController extends Controller
             Abort::Error('0040', "This Market Code Not Allow");
         }
     }
+
+    public function updateScheduling(Request $request)
+    {
+        $products = Product::wherestatus_code('0301')->get();
+        $successLog = [];
+        $finishLog = [];
+        $failLog = [];
+
+        foreach( $products as $value ){
+            $update = $this->updateStock($request,$value->id)->getData();
+
+            Log::info("processing ".$value->id);
+
+            if( $update->status->code == "0000" ){
+                if( $update->status->code == "0056" ){
+                    $finishLog[] = ["id" => $value->id];
+                }else{
+                    $successLog[] = ["id" => $value->id];
+                }
+
+            }else if( $update->status->code == "0040" ){$failLog[] = ["id" => $value->id,"code" => "0040"];
+            }else{$failLog[] = ["id" => $value->id,"code" => "9999"];}
+
+
+            Log::info($successLog);
+            Log::info($failLog);
+
+            sleep(mt_rand(3,10));
+        }
+
+        Slack::to('#product_update_log')->enableMarkdown()->send(
+            'success update = '.json_encode($successLog).
+            'finish sale = '.json_encode($finishLog).
+            'failed update = '.json_encode($failLog)
+        );
+
+
+        return response()->success($products);
+    }
+
+
 }

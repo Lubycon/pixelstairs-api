@@ -98,6 +98,10 @@ return [
     "httpCode" => 405,
     "msg" => "Method Not Allowed"
 ),
+"0056" => (object)array(
+    "httpCode" => 404,
+    "msg" => "Crawling Data Not Found"
+),
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 //      4xx response
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑

@@ -27,6 +27,9 @@ class Kernel extends ConsoleKernel
     {
 //        $schedule->command('inspire')
 //                 ->hourly();
+        $schedule->call('App\Http\Controllers\MarketController@updateScheduling')
+            ->dailyAt('01:00');
+
 
         $fileName = date('Y-d-m_ahi')."_backup.sql";
         $path = "sql/".$fileName;

@@ -5,13 +5,13 @@ namespace App\Exceptions;
 use Log;
 use Exception;
 
-use App\Exceptions\UserNotFound;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Validation\ValidationException;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
+use App\Exceptions\UserNotFound;
 
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\HttpKernel\Exception\HttpException;

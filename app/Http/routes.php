@@ -56,7 +56,12 @@ Route::group(['prefix' => '/v1'], function () {
     });
     Route::group(['prefix' => '/markets/'], function () {
         Route::get('product', 'MarketController@get');
+        Route::put('product/stock/schedule', 'MarketController@updateScheduling');
         Route::put('product/stock/{product_id}', 'MarketController@updateStock');
+
+
+
+
     });
     Route::group(['prefix' => '/categories/'], function () {
         Route::get('', 'CategoryController@getList');
