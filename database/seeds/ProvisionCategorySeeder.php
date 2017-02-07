@@ -14,11 +14,11 @@ class ProvisionCategorySeeder extends Seeder
         DB::table('categories')->truncate();
         DB::table('divisions')->truncate();
 
-        $json = File::get("database/seeds/json/category.json");
-        $category = json_decode($json,true);
+        $jsonCate = File::get("database/seeds/json/category.json");
+        $category = json_decode($jsonCate,true);
 
-        $json = File::get("database/seeds/json/division.json");
-        $division = json_decode($json,true);
+        $jsonDivi = File::get("database/seeds/json/division.json");
+        $division = json_decode($jsonDivi,true);
 
 
         DB::table('categories')->insert($category);
