@@ -20,7 +20,7 @@
 
 @setup
   $username = 'deployer';                       // username at the server
-  $remote = 'https://bboyzepot@bitbucket.org/waltermitty/mitty-web-app-api.git';
+  $remote = 'https://bboyzepot:a59846207@bitbucket.org/waltermitty/mitty-web-app-api.git';
   // $remote = 'git@github.com:appkr/envoy.git';   // github repository to clone
   $base_dir = "/home/{$username}/www";          // document that holds projects
   $project_root = "{$base_dir}/mitty/api";       // project root
