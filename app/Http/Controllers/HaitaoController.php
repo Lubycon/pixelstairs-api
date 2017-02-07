@@ -46,8 +46,24 @@ class HaitaoController extends Controller
      *     produces={"application/json"},
      *     tags={"Product"},
      *     @SWG\Parameter(
+     *         name="X-mitty-language",
+     *         default="zh",
+     *         in="header",
+     *         description="Translate language",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         name="X-mitty-version",
+     *         default="1.0.0",
+     *         in="header",
+     *         description="App version",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
      *         name="haitao_product_id",
-     *         default="100000000",
+     *         default="101577081",
      *         in="path",
      *         description="product's data you want item id",
      *         required=true,
@@ -68,6 +84,10 @@ class HaitaoController extends Controller
      *     @SWG\Response(
      *         response="404",
      *         description="Not found product",
+     *     ),
+     *     @SWG\Response(
+     *         response="411",
+     *         description="require header not exist",
      *     ),
      *     @SWG\Response(
      *         response="500",
@@ -176,14 +196,31 @@ class HaitaoController extends Controller
      *     produces={"application/json"},
      *     tags={"Order"},
      *     @SWG\Parameter(
+     *         name="X-mitty-language",
+     *         default="zh",
+     *         in="header",
+     *         description="Translate language",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         name="X-mitty-version",
+     *         default="1.0.0",
+     *         in="header",
+     *         description="App version",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
      *          name="body",
      *          in="body",
      *          required=true,
      *          @SWG\Schema(
      *              required={"product_id"},
-     *              @SWG\Property(property="order_id",type="string",default="31247853"),
-     *              @SWG\Property(property="user_id",type="string",default="12341"),
+     *              @SWG\Property(property="haitaoOrderId",type="string",default="31247853"),
+     *              @SWG\Property(property="haitaoUserId",type="string",default="12341"),
      *              @SWG\Property(property="quantity",type="string",default="5"),
+     *              @SWG\Property(property="orderDate",type="datetime",default="2017-10-27 12:50:12"),
      *              @SWG\Property(property="sku",type="string",default="MK0100CT4DV8ST146PD108786628ID"),
      *          ),
      *     ),
@@ -207,6 +244,8 @@ class HaitaoController extends Controller
      */
 
     public function orderStore(OrderPostRequest $request){
+
+
         $order = new Order;
         $findOption = Option::wheresku($request['sku'])->firstOrFail();
 
@@ -223,7 +262,6 @@ class HaitaoController extends Controller
         return response()->success($order);
     }
     public function orderPut(OrderUpdateRequest $request,$haitao_order_id){
-
         return response()->success();
     }
 }

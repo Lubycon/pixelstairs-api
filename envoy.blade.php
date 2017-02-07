@@ -15,7 +15,7 @@
 #--------------------------------------------------------------------------
 ##
 
-@servers(['vm' => 'aws-mitty-api-deploy'])
+@servers(['vm' => 'aws-mitty-provision-test'])
 
 
 @setup
