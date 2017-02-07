@@ -93,7 +93,7 @@ Route::group(['prefix' => '/v1'], function () {
         Route::get('list/{target}/{target_id}', 'QuestionController@get');
         Route::group(['prefix' => 'key/'], function () {
             Route::get('{division_id}', 'QuestionController@getKeys');
-            Route::post('{division_id}', 'QuestionController@postKey');
+            Route::post('', 'QuestionController@postKey');
         });
     });
 
