@@ -5,9 +5,7 @@ Route::group(['prefix' => '/v1'], function () {
 //    Route::get('/division','insertSectionController@divisionActive');
 //    Route::get('/insert','insertSectionController@check');
 
-
-
-    Route::get('test', 'BackupController@DatabaseBackup'); // get detail example
+//    Route::get('test', 'BackupController@DatabaseBackup'); // get detail example
 
 
     Route::group(['prefix' => '/haitao/'], function () {
@@ -57,8 +55,8 @@ Route::group(['prefix' => '/v1'], function () {
         Route::put('{order_id}', 'OrderController@put');
     });
     Route::group(['prefix' => '/markets/'], function () {
-        Route::get('snoopy', 'MarketController@getBySnoopy');
         Route::get('product', 'MarketController@get');
+        Route::put('product/stock/{product_id}', 'MarketController@updateStock');
     });
     Route::group(['prefix' => '/categories/'], function () {
         Route::get('', 'CategoryController@getList');

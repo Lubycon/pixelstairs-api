@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SectionMarketInfo;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -10,34 +9,23 @@ use App\Http\Controllers\Controller;
 
 use Abort;
 use Log;
-use GuzzleHttp\Client;
 
-use App\Models\Category;
-use App\Models\Division;
-use App\Models\Section;
 use App\Models\Market;
+use App\Models\Product;
 
-use App\Classes\Snoopy;
 use App\Crawlers\CoupangCrawler;
-use PHPHtmlParser\Dom;
 
+use App\Traits\OptionControllTraits;
 
 
 class MarketController extends Controller
 {
-    public $client;
-    public $dom;
+    use OptionControllTraits;
 
     public $url;
     public $market;
-    public $product_number;
-    public $category_number;
-
-    public $category_data;
 
     public function __construct(){
-        $this->client = new Client();
-        $this->dom = new Dom;
     }
 
 //    /**
@@ -100,6 +88,7 @@ class MarketController extends Controller
 //        return response()->success($crawlClass->getResult());
 //    }
 
+
     public function get(Request $request){
         $query = $request->query();
 
@@ -110,12 +99,7 @@ class MarketController extends Controller
         $this->url = urldecode($query['url']);
 
         if( $this->market['code'] == '0103' ){
-            ob_start();
-            passthru("/usr/bin/python3 ".app_path()."/python/crawling.py $this->url");
-            $market_data = json_decode(ob_get_clean());
-
-            $crawlClass = new CoupangCrawler($market_data);
-
+            $crawlClass = new CoupangCrawler($this->url);
             return response()->success($crawlClass->getResult());
         }else{
             Abort::Error('0040',"This Market Code Not Allow");
@@ -145,131 +129,162 @@ class MarketController extends Controller
 //        return response()->success($bindData);
     }
 
-    public function bindXml($product_data){
-        $category_data = $this->getCategoryData();
-        return $data = [
-            'id' => $product_data['Product']['ProductCode'],
-            'name' => $product_data['Product']['ProductName'],
-            'category' => array(
-                "id" => $category_data['market_category_id'],
-                "name" => $category_data['market_category_name'],
-                "ours" => $category_data['ours'],
-            ),
-            'priceInfo' => (object)array(
-                'price' => $this->splitWon($product_data['Product']['ProductPrice']['Price']),
-                'lowestPrice' => $this->splitWon($product_data['Product']['ProductPrice']['LowestPrice']),
-            ),
-            'deliveryPrice' => $this->splitWon($product_data['Product']['ShipFee']),
-            'thumbnail_url' => $product_data['Product']['BasicImage'],
-            'options' => $this->bindOption( $product_data ),
-        ];
-    }
 
-    public function getCategoryData(){
-        $result = array(
-            'market_category_id' => $this->category_data['Category']['CategoryCode'],
-            'market_category_name' => $this->category_data['Category']['CategoryName'],
-            'ours' => null,
-        );
-        if(!is_null($this->category_data)){
-            $sections = SectionMarketInfo::wheremarket_category_id($this->category_data['Category']['CategoryCode'])->get();
-            if(isset($sections[0])){
-                foreach( $sections as $key => $value ){
-                    $result['ours']['sections'][] = $value->section['id'];
+
+//
+//    public function bindXml($product_data){
+//        $category_data = $this->getCategoryData();
+//        return $data = [
+//            'id' => $product_data['Product']['ProductCode'],
+//            'name' => $product_data['Product']['ProductName'],
+//            'category' => array(
+//                "id" => $category_data['market_category_id'],
+//                "name" => $category_data['market_category_name'],
+//                "ours" => $category_data['ours'],
+//            ),
+//            'priceInfo' => (object)array(
+//                'price' => $this->splitWon($product_data['Product']['ProductPrice']['Price']),
+//                'lowestPrice' => $this->splitWon($product_data['Product']['ProductPrice']['LowestPrice']),
+//            ),
+//            'deliveryPrice' => $this->splitWon($product_data['Product']['ShipFee']),
+//            'thumbnail_url' => $product_data['Product']['BasicImage'],
+//            'options' => $this->bindOption( $product_data ),
+//        ];
+//    }
+//
+//    public function getCategoryData(){
+//        $result = array(
+//            'market_category_id' => $this->category_data['Category']['CategoryCode'],
+//            'market_category_name' => $this->category_data['Category']['CategoryName'],
+//            'ours' => null,
+//        );
+//        if(!is_null($this->category_data)){
+//            $sections = SectionMarketInfo::wheremarket_category_id($this->category_data['Category']['CategoryCode'])->get();
+//            if(isset($sections[0])){
+//                foreach( $sections as $key => $value ){
+//                    $result['ours']['sections'][] = $value->section['id'];
+//                }
+//            $division = Division::findOrFail($sections[0]->section['parent_id']);
+//            $category = Category::findOrFail($division['parent_id']);
+//            $result['ours']['divisionId'] = $division['id'];
+//            $result['ours']['categoryId'] = $category['id'];
+//            }
+//        }
+//
+//
+//        return $result;
+//    }
+//
+//    public function splitWon($value){
+//        $explode = explode('원',$value);
+//        $result = str_replace(",","", $explode[0]);
+//        return (int)$result;
+//    }
+//
+//    public function bindOption($option){
+//        if ( !isset($option['ProductOption']) ) return NULL;
+//        $valueList = $option['ProductOption']['OptionList']['Option']['ValueList'];
+//        $optionList = $valueList['Value'];
+//        $recodeList = [];
+//
+//
+//        if ( isset($optionList['Order']) ) {
+//            $recodeList[] = $this->setOptionArray($optionList);
+//        }else{
+//            foreach ($optionList as $key => $value) {
+//                $recodeList[] = $this->setOptionArray($value);
+//            }
+//        }
+//        return $recodeList;
+//    }
+//
+//    public function setOptionArray($option){
+//        return array(
+//            "order" => $option['Order'],
+//            'price' => $this->splitWon($option['Price']),
+//            'valueName' => $option['ValueName'],
+//        );
+//    }
+//
+//    public function getProductNumber($query_array){
+//        $product_number_name = 'prdNo';
+//        return $query_array[$product_number_name];
+//    }
+//    public function getCategoryNumber($query_array){
+//        $category_name = ['dispCtgrNo','mCtgrNo','lCtgrNo','trCtgrNo'];
+//        foreach ($category_name as $key => $value) {
+//            if ( isset($query_array[$value]) ) return $query_array[$value];
+//        }
+//    }
+//
+//    public function xmlToJson($xml){
+//        $json = json_encode($xml);
+//        $array = json_decode($json,TRUE);
+//
+//        return $array;
+//    }
+//    public function requsetOpenApi($kind){
+//        $response = $this->client->request('GET', 'http://openapi.11st.co.kr/openapi/OpenApiService.tmall', [
+//            'query' => $this->apiSetting($kind)
+//        ])->getBody()->getContents();
+//
+//        return $response;
+//    }
+//    public function apiSetting($kind){
+//        switch ($kind) {
+//            case 'product':
+//            $result = [
+//                'key' => '079b465d19c823b1582f605532755f3c',
+//                'apiCode' => 'ProductInfo',
+//                'productCode' => $this->product_number,
+//                'option' => 'SemiReviews,PdOption'
+//            ];
+//            break;
+//            case 'category':
+//            $result = [
+//                'key' => '079b465d19c823b1582f605532755f3c',
+//                'apiCode' => 'CategoryInfo',
+//                'categoryCode' => $this->category_number,
+//            ];
+//            break;
+//
+//            default: Abort::Error('0040'); break;
+//        }
+//        return $result;
+//    }
+//    public function getXmlOnBody($response){
+//        return simplexml_load_string($response, 'SimpleXMLElement', LIBXML_NOCDATA);
+//    }
+//    public function checkError($responseXml){
+//        $check = isset($responseXml->ErrorCode);
+//        return $check;
+//    }
+
+    public function updateStock(Request $request,$product_id)
+    {
+        $product = Product::findOrFail($product_id);
+
+        $this->market = $product->market;
+        $this->url = urldecode($product->url);
+
+        if ($this->market['code'] == '0103') {
+            $crawlClass = new CoupangCrawler($this->url);
+            $crawlData = $crawlClass->getResult();
+
+            $productOption = $product->option;
+            $newOption = $crawlData['options'];
+            foreach( $productOption as $key => $value ){
+                if( $value->translateName->original != $newOption[$key]['name'] ) Abort::Error('0040','diffrent option name!');
+                $productOption[$key]['price'] = $newOption[$key]['price'];
+                if( !$product->isLimited ){
+                    $productOption[$key]['stock'] = $newOption[$key]['stock'];
                 }
-            $division = Division::findOrFail($sections[0]->section['parent_id']);
-            $category = Category::findOrFail($division['parent_id']);
-            $result['ours']['divisionId'] = $division['id'];
-            $result['ours']['categoryId'] = $category['id'];
             }
+            $this->updateStocks($product,$productOption);
+
+            return response()->success($product);
+        } else {
+            Abort::Error('0040', "This Market Code Not Allow");
         }
-
-
-        return $result;
-    }
-
-    public function splitWon($value){
-        $explode = explode('원',$value);
-        $result = str_replace(",","", $explode[0]);
-        return (int)$result;
-    }
-
-    public function bindOption($option){
-        if ( !isset($option['ProductOption']) ) return NULL;
-        $valueList = $option['ProductOption']['OptionList']['Option']['ValueList'];
-        $optionList = $valueList['Value'];
-        $recodeList = [];
-
-
-        if ( isset($optionList['Order']) ) {
-            $recodeList[] = $this->setOptionArray($optionList);
-        }else{
-            foreach ($optionList as $key => $value) {
-                $recodeList[] = $this->setOptionArray($value);
-            }
-        }
-        return $recodeList;
-    }
-
-    public function setOptionArray($option){
-        return array(
-            "order" => $option['Order'],
-            'price' => $this->splitWon($option['Price']),
-            'valueName' => $option['ValueName'],
-        );
-    }
-
-    public function getProductNumber($query_array){
-        $product_number_name = 'prdNo';
-        return $query_array[$product_number_name];
-    }
-    public function getCategoryNumber($query_array){
-        $category_name = ['dispCtgrNo','mCtgrNo','lCtgrNo','trCtgrNo'];
-        foreach ($category_name as $key => $value) {
-            if ( isset($query_array[$value]) ) return $query_array[$value];
-        }
-    }
-
-    public function xmlToJson($xml){
-        $json = json_encode($xml);
-        $array = json_decode($json,TRUE);
-
-        return $array;
-    }
-    public function requsetOpenApi($kind){
-        $response = $this->client->request('GET', 'http://openapi.11st.co.kr/openapi/OpenApiService.tmall', [
-            'query' => $this->apiSetting($kind)
-        ])->getBody()->getContents();
-
-        return $response;
-    }
-    public function apiSetting($kind){
-        switch ($kind) {
-            case 'product':
-            $result = [
-                'key' => '079b465d19c823b1582f605532755f3c',
-                'apiCode' => 'ProductInfo',
-                'productCode' => $this->product_number,
-                'option' => 'SemiReviews,PdOption'
-            ];
-            break;
-            case 'category':
-            $result = [
-                'key' => '079b465d19c823b1582f605532755f3c',
-                'apiCode' => 'CategoryInfo',
-                'categoryCode' => $this->category_number,
-            ];
-            break;
-
-            default: Abort::Error('0040'); break;
-        }
-        return $result;
-    }
-    public function getXmlOnBody($response){
-        return simplexml_load_string($response, 'SimpleXMLElement', LIBXML_NOCDATA);
-    }
-    public function checkError($responseXml){
-        $check = isset($responseXml->ErrorCode);
-        return $check;
     }
 }

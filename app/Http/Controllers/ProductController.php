@@ -224,7 +224,7 @@ class ProductController extends Controller
         $this->updateReviewQuestions($this->product,$data['questions']);
 
         if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->updateOptions($data['options'],$data['safeStock'],$optionCollection)
+        if ( $this->updateOptions($this->product,$data['options'],$data['safeStock'],$optionCollection)
 //            && $this->product->imageGroup->image()->saveMany($this->updateExternalImageArray($this->product,$data['detailImages']))
         ) return response()->success($this->product);
         Abort::Error("0040");

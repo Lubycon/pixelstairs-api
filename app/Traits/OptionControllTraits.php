@@ -33,23 +33,40 @@ trait OptionControllTraits
         return $result;
     }
 
-    private function updateOptions($options,$safeStock,$optionCollection){
-        $this->isDirtyOption($options);
+    private function updateOptions($product,$options,$safeStock,$optionCollection){
+        $this->isDirtyOption($product,$options);
         foreach ($options as $key => $option) {
-            $originalSku = $this->product->option[$key]->sku;
+            $originalSku = $product->option[$key]->sku;
             if($originalSku !== $option['sku']) Abort::Error('0040',"Diff SKU");
-                $this->product->option[$key]->price = $option["price"];
-                $this->product->option[$key]->stock = $option["stock"];
-                $this->product->option[$key]->safe_stock = Option::absoluteSafeStockCkeck($safeStock);
-                $this->product->option[$key]->translate_name_id = $this->createTranslateName($option['name'])['id'];
-//                $this->product->option[$key]->image_id = Image::create( $this->createExternalImage( $option["thumbnailUrl"] ))['id'];
-                $this->product->option[$key]->option_collection_id = $optionCollection['id'];
-                if (!$this->product->option[$key]->update()) Abort::Error("0040","Option Update Fail");
+                $product->option[$key]->price = $option["price"];
+                $product->option[$key]->stock = $option["stock"];
+                $product->option[$key]->safe_stock = Option::absoluteSafeStockCkeck($safeStock);
+                $product->option[$key]->translate_name_id = $this->createTranslateName($option['name'])['id'];
+//                $product->option[$key]->image_id = Image::create( $this->createExternalImage( $option["thumbnailUrl"] ))['id'];
+                $product->option[$key]->option_collection_id = $optionCollection['id'];
+                if (!$product->option[$key]->update()) Abort::Error("0040","Option Update Fail");
         }
         return true;
     }
-    private function isDirtyOption($options){
-        if ( count($this->product->option()->get()) !==  count($options)) Abort::Error("0040","Can not add option at update product");
+
+    private function updateStocks($product,$options){
+        $this->isDirtyOption($product,$options);
+        foreach ($options as $key => $option) {
+            $originalSku = $product->option[$key]->sku;
+            if($originalSku !== $option['sku']) Abort::Error('0040',"Diff SKU");
+            $product->option[$key]->price = $option["price"];
+            $product->option[$key]->stock = $option["stock"];
+            if (!$product->option[$key]->update()) Abort::Error("0040","Option Update Fail");
+        }
+        return true;
+    }
+
+
+
+
+
+    private function isDirtyOption($product,$options){
+        if ( count($product->option()->get()) !==  count($options)) Abort::Error("0040","Can not add option at update product");
         return;
     }
 
@@ -76,24 +93,24 @@ trait OptionControllTraits
         return $sku;
     }
 
-    private function getSkuDetailInfo($sku)
-    {
-        $matches = array();
-        preg_match('/MK(.*?)CT/s', $sku, $matches);
-        $info['market_id'] = $matches[1];
-        preg_match('/CT(.*?)DV/s', $sku, $matches);
-        $info['category_id'] = $matches[1];
-        preg_match('/DV(.*?)ST/s', $sku, $matches);
-        $info['division_id'] = $matches[1];
-        preg_match('/ST(.*?)PD/s', $sku, $matches);
-        $info['section_group_id'] = $matches[1];
-        preg_match('/PD(.*?)ID/s', $sku, $matches);
-        $info['product_id'] = $matches[1];
-        $explode = explode('ID',$sku);
-        $info['index'] = $explode[1];
-
-        return $info;
-    }
+//    private function getSkuDetailInfo($sku)
+//    {
+//        $matches = array();
+//        preg_match('/MK(.*?)CT/s', $sku, $matches);
+//        $info['market_id'] = $matches[1];
+//        preg_match('/CT(.*?)DV/s', $sku, $matches);
+//        $info['category_id'] = $matches[1];
+//        preg_match('/DV(.*?)ST/s', $sku, $matches);
+//        $info['division_id'] = $matches[1];
+//        preg_match('/ST(.*?)PD/s', $sku, $matches);
+//        $info['section_group_id'] = $matches[1];
+//        preg_match('/PD(.*?)ID/s', $sku, $matches);
+//        $info['product_id'] = $matches[1];
+//        $explode = explode('ID',$sku);
+//        $info['index'] = $explode[1];
+//
+//        return $info;
+//    }
 
 }
  ?>

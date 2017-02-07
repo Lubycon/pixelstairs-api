@@ -37,7 +37,9 @@ class CoupangCrawler
     private $coupangUrl = "https://www.coupang.com";
     private $optionTitleBlackList = ['병행수입','수입유형','수입'];
 
-    public function __construct($idInfo){
+    public function __construct($url){
+        $idInfo = $this->getProductIds($url);
+
         $this->snoopy = new Snoopy;
         $this->dom = new Dom;
 
@@ -65,7 +67,7 @@ class CoupangCrawler
         $categories = $this->categories(); // product title
 
         $this->result = [
-            "id" => (int)$this->product_id,
+            "id" => (string)$this->product_id,
             "title" => (string)$productAtf['productName'],
             "priceInfo" => [
                 "price" => (int)$basicProductInfWithStock['price'],
@@ -80,8 +82,8 @@ class CoupangCrawler
                 "rate" => 4.5,
             ],
             "category" =>[
-                "id" => (string)$categories['market_section']['id'],
-                "name" => (string)$categories['market_section']['name'],
+                "id" => $categories['market_section']['id'],
+                "name" => $categories['market_section']['name'],
                 "ours" => $categories['ours'],
             ],
             "isLimited" => is_null($this->maxBuyAble) ? false : true,
@@ -89,6 +91,12 @@ class CoupangCrawler
             "description" => (string)$basicProductInfo.(string)$vendorProductInfo['requireInfo'],
             "thumbnailUrl" => $productAtf["thumbnailUrl"],
         ];
+    }
+
+    private function getProductIds($url){
+        ob_start();
+        passthru("/usr/bin/python3 ".app_path()."/python/crawling.py $url");
+        return json_decode(ob_get_clean());
     }
 
     private function optionAttribute(){
@@ -210,12 +218,12 @@ class CoupangCrawler
         $category = [];
         foreach( $breadcrumb as $value ){
             $category[] = [
-                "id" => $this->getLastSegment($value->getAttribute('href')),
-                "name" => $value->text,
+                "id" => (string)$this->getLastSegment($value->getAttribute('href')),
+                "name" => (string)$value->text,
             ];
         }
         return [
-            "market_section" => end($category) == '쿠팡 홈' ? NULL : end($category),
+            "market_section" => end($category)['name'] == '쿠팡 홈' ? null : end($category),
             "ours" => $this->getCategoryData(end($category)),
         ];
     }
