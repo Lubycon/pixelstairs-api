@@ -1,0 +1,1087 @@
+[
+  {
+    "id": 1,
+    "original": "11번가",
+    "chinese": "11街",
+    "korean": "11번가",
+    "english": "11st"
+  },
+  {
+    "id": 2,
+    "original": "Gmarket",
+    "chinese": "G-市场",
+    "korean": "지마켓",
+    "english": "Gmarket"
+  },
+  {
+    "id": 3,
+    "original": "Auction",
+    "chinese": "拍卖",
+    "korean": "옥션",
+    "english": "Auction"
+  },
+  {
+    "id": 4,
+    "original": "관리자 미 승인 상품",
+    "chinese": "我们的产品经理批准",
+    "korean": "관리자 미 승인 상품",
+    "english": "notConfirm"
+  },
+  {
+    "id": 5,
+    "original": "판매 진행 상품",
+    "chinese": "产品销售收入",
+    "korean": "판매 진행 상품",
+    "english": "confirm"
+  },
+  {
+    "id": 6,
+    "original": "판매 종료 상품",
+    "chinese": "停产产品",
+    "korean": "판매 종료 상품",
+    "english": "terminate"
+  },
+  {
+    "id": 7,
+    "original": "주문 완료",
+    "chinese": "为了完成",
+    "korean": "주문 완료",
+    "english": "orderComplete"
+  },
+  {
+    "id": 8,
+    "original": "주문 취소",
+    "chinese": "订单取消",
+    "korean": "주문 취소",
+    "english": "orderCancel"
+  },
+  {
+    "id": 9,
+    "original": "결제 완료",
+    "chinese": "完成支付",
+    "korean": "결제 완료",
+    "english": "paymentComplete"
+  },
+  {
+    "id": 10,
+    "original": "결제 취소",
+    "chinese": "付款已取消",
+    "korean": "결제 취소",
+    "english": "paymentCancel"
+  },
+  {
+    "id": 11,
+    "original": "배송 준비중",
+    "chinese": "装运准备",
+    "korean": "배송 준비중",
+    "english": "shippingPreparation"
+  },
+  {
+    "id": 12,
+    "original": "배송 중",
+    "chinese": "交付",
+    "korean": "배송 중",
+    "english": "shipping"
+  },
+  {
+    "id": 13,
+    "original": "배송 완료",
+    "chinese": "运",
+    "korean": "배송 완료",
+    "english": "shippingComplete"
+  },
+  {
+    "id": 14,
+    "original": "구매 확정",
+    "chinese": "购买确认",
+    "korean": "구매 확정",
+    "english": "purchaseConfirm"
+  },
+  {
+    "id": 15,
+    "original": "환불 신청",
+    "chinese": "退",
+    "korean": "환불 신청",
+    "english": "refundApplication"
+  },
+  {
+    "id": 16,
+    "original": "환불 완료",
+    "chinese": "退款",
+    "korean": "환불 완료",
+    "english": "refundComplete"
+  },
+  {
+    "id": 17,
+    "original": "남녀공용",
+    "chinese": "男女皆宜的",
+    "korean": "남녀공용",
+    "english": "unisex"
+  },
+  {
+    "id": 18,
+    "original": "남성용",
+    "chinese": "只有男人",
+    "korean": "남성용",
+    "english": "male"
+  },
+  {
+    "id": 19,
+    "original": "여성용",
+    "chinese": "只有女人",
+    "korean": "여성용",
+    "english": "female"
+  },
+  {
+    "id": 20,
+    "original": "KRW",
+    "chinese": "韩元",
+    "korean": "원",
+    "english": "won"
+  },
+  {
+    "id": 21,
+    "original": "CNY",
+    "chinese": "人民幣",
+    "korean": "위안",
+    "english": "rmb"
+  },
+  {
+    "id": 22,
+    "original": "USD",
+    "chinese": "美元",
+    "korean": "달러",
+    "english": "dollar"
+  },
+  {
+    "id": 23,
+    "original": "쿠팡",
+    "chinese": "coopang",
+    "korean": "쿠팡",
+    "english": "coopang"
+  },
+  {
+    "id": 24,
+    "original": "패션의류",
+    "chinese": "服装",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 25,
+    "original": "패션잡화",
+    "chinese": "杂货",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 26,
+    "original": "화장품/미용",
+    "chinese": "化妆品/美容",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 27,
+    "original": "디지털/가전",
+    "chinese": "数码/家电",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 28,
+    "original": "가구/인테리어",
+    "chinese": "家具/室内装饰",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 29,
+    "original": "출산/육아",
+    "chinese": "生育/育儿",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 30,
+    "original": "식품",
+    "chinese": "食品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 31,
+    "original": "스포츠/레저",
+    "chinese": "运动/休闲",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 32,
+    "original": "생활/건강",
+    "chinese": "生活/健康",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 33,
+    "original": "여행/문화",
+    "chinese": "旅游/文化",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 34,
+    "original": "여성의류",
+    "chinese": "女装",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 35,
+    "original": "남성의류",
+    "chinese": "男装",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 36,
+    "original": "아동의류",
+    "chinese": "童装",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 37,
+    "original": "여성언더웨어/잠옷",
+    "chinese": "女内衣/睡衣",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 38,
+    "original": "남성언더웨어/잠옷",
+    "chinese": "男内衣/睡衣",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 39,
+    "original": "아동언더웨어/잠옷",
+    "chinese": "儿童内衣/睡衣",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 40,
+    "original": "여성신발",
+    "chinese": "女鞋",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 41,
+    "original": "남성신발",
+    "chinese": "男鞋",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 42,
+    "original": "여성가방",
+    "chinese": "女包",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 43,
+    "original": "남성가방",
+    "chinese": "男包",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 44,
+    "original": "여행용 가방/소품",
+    "chinese": "旅行包/旅行用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 45,
+    "original": "지갑",
+    "chinese": "钱包",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 46,
+    "original": "시계",
+    "chinese": "表",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 47,
+    "original": "주얼리",
+    "chinese": "配饰",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 48,
+    "original": "모자",
+    "chinese": "帽子",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 49,
+    "original": "기타잡화",
+    "chinese": "其他杂货",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 50,
+    "original": "스킨케어",
+    "chinese": "面部护肤",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 51,
+    "original": "선케어",
+    "chinese": "防晒",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 52,
+    "original": "베이스메이크업",
+    "chinese": "打底装",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 53,
+    "original": "색조메이크업",
+    "chinese": "彩妆",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 54,
+    "original": "클렌징",
+    "chinese": "洁面",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 55,
+    "original": "마스크/팩",
+    "chinese": "面膜",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 56,
+    "original": "헤어케어",
+    "chinese": "护发",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 57,
+    "original": "헤어스타일링",
+    "chinese": "发型",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 58,
+    "original": "바디케어",
+    "chinese": "身体护肤",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 59,
+    "original": "네일케어",
+    "chinese": "美甲护理",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 60,
+    "original": "남성화장품",
+    "chinese": "男士化妆品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 61,
+    "original": "향수",
+    "chinese": "香水",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 62,
+    "original": "뷰티소품",
+    "chinese": "美容道具",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 63,
+    "original": "휴대폰",
+    "chinese": "手机",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 64,
+    "original": "카메라/캠코더 용품",
+    "chinese": "照相机/摄像机用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 65,
+    "original": "영상가전",
+    "chinese": "影像家电",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 66,
+    "original": "생활가전",
+    "chinese": "生活家电",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 67,
+    "original": "주방가전",
+    "chinese": "厨房家电",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 68,
+    "original": "휴대폰 액세서리",
+    "chinese": "手机小品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 69,
+    "original": "게임/타이틀",
+    "chinese": "游戏/游戏软件",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 70,
+    "original": "음향가전",
+    "chinese": "音响设备",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 71,
+    "original": "이미용가전",
+    "chinese": "美容家电",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 72,
+    "original": "계절가전",
+    "chinese": "季节家电",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 73,
+    "original": "노트북",
+    "chinese": "笔记本电脑",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 74,
+    "original": "태블릿PC",
+    "chinese": "平板电脑",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 75,
+    "original": "PC",
+    "chinese": "PC",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 76,
+    "original": "모니터",
+    "chinese": "显示器",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 77,
+    "original": "저장장치",
+    "chinese": "存储器",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 78,
+    "original": "네트워크 장비",
+    "chinese": "网络设备",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 79,
+    "original": "PC 주변기기",
+    "chinese": "PC外部设备",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 80,
+    "original": "자동차기기",
+    "chinese": "汽车机器",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 81,
+    "original": "침실가구",
+    "chinese": "卧室家具",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 82,
+    "original": "주방가구",
+    "chinese": "厨房家具",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 83,
+    "original": "수납가구",
+    "chinese": "收纳家具",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 84,
+    "original": "침구단품",
+    "chinese": "床上用品单品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 85,
+    "original": "커튼/블라인드",
+    "chinese": "窗帘/百叶窗",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 86,
+    "original": "거실가구",
+    "chinese": "客厅家具",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 87,
+    "original": "서재/사무용가구",
+    "chinese": "书房/办公用家具",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 88,
+    "original": "DIY자재/용품",
+    "chinese": "DIY材料/用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 89,
+    "original": "침구세트",
+    "chinese": "穿上用品套装",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 90,
+    "original": "홈데코",
+    "chinese": "家庭装饰",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 91,
+    "original": "아동/주니어가구",
+    "chinese": "儿童家具",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 92,
+    "original": "아웃도어가구",
+    "chinese": "户外家具",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 93,
+    "original": "인테리어소품",
+    "chinese": "室内装饰小品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 94,
+    "original": "솜류",
+    "chinese": "棉花类",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 95,
+    "original": "수예",
+    "chinese": "手艺",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 96,
+    "original": "카페트/러그",
+    "chinese": "地毯",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 97,
+    "original": "분유",
+    "chinese": "奶粉",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 98,
+    "original": "기저귀",
+    "chinese": "尿布",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 99,
+    "original": "물티슈",
+    "chinese": "湿巾",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 100,
+    "original": "이유식",
+    "chinese": "断奶期食品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 101,
+    "original": "간식/건강식품",
+    "chinese": "零食/保健食品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 102,
+    "original": "수유용품",
+    "chinese": "哺乳用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 103,
+    "original": "유모차",
+    "chinese": "婴儿车",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 104,
+    "original": "카시트",
+    "chinese": "安全座椅",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 105,
+    "original": "외출용품",
+    "chinese": "外出用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 106,
+    "original": "목욕용품",
+    "chinese": "沐浴用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 107,
+    "original": "스킨/바디용품",
+    "chinese": "护肤品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 108,
+    "original": "위생/건강용품",
+    "chinese": "卫生/健康用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 109,
+    "original": "구강/청결용품",
+    "chinese": "口腔/清洁用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 110,
+    "original": "소독/살균용품",
+    "chinese": "消毒/杀菌用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 111,
+    "original": "유아가구",
+    "chinese": "儿童家具",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 112,
+    "original": "이유식용품",
+    "chinese": "断奶期食品用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 113,
+    "original": "임부복",
+    "chinese": "孕妇服",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 114,
+    "original": "유아의류",
+    "chinese": "儿童服装",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 115,
+    "original": "안전용품",
+    "chinese": "安全用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 116,
+    "original": "축산",
+    "chinese": "畜产",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 117,
+    "original": "수산",
+    "chinese": "水产",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 118,
+    "original": "농산물",
+    "chinese": "农产品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 119,
+    "original": "반찬",
+    "chinese": "小菜",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 120,
+    "original": "김치",
+    "chinese": "泡菜",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 121,
+    "original": "음료",
+    "chinese": "饮料",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 122,
+    "original": "과자",
+    "chinese": "饼干",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 123,
+    "original": "아이스크림/빙수",
+    "chinese": "冰淇淋/冰沙",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 124,
+    "original": "가공식품",
+    "chinese": "加工食品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 125,
+    "original": "냉동/간편조리식품",
+    "chinese": "冷冻/简单烹饪食品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 126,
+    "original": "건강식품",
+    "chinese": "保健食品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 127,
+    "original": "다이어트식품",
+    "chinese": "减肥食品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 128,
+    "original": "등산",
+    "chinese": "爬山",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 129,
+    "original": "캠핑",
+    "chinese": "野营",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 130,
+    "original": "골프",
+    "chinese": "高尔夫球",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 131,
+    "original": "자전거",
+    "chinese": "自行车",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 132,
+    "original": "스키/보드",
+    "chinese": "滑雪/单板",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 133,
+    "original": "낚시",
+    "chinese": "钓鱼",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 134,
+    "original": "수영",
+    "chinese": "游泳",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 135,
+    "original": "헬스",
+    "chinese": "健身",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 136,
+    "original": "스케이트/보드/롤러",
+    "chinese": "滑冰/滑板/旱冰",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 137,
+    "original": "요가/필라테스",
+    "chinese": "瑜伽/彼拉提斯",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 138,
+    "original": "오토바이/스쿠터",
+    "chinese": "摩托车/轻便摩托车",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 139,
+    "original": "자동차용품",
+    "chinese": "汽车用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 140,
+    "original": "주방용품",
+    "chinese": "厨房用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 141,
+    "original": "세탁용품",
+    "chinese": "洗衣用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 142,
+    "original": "수납/정리용품",
+    "chinese": "收纳/整理用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 143,
+    "original": "문구/사무용품",
+    "chinese": "文具/办公用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 144,
+    "original": "생활용품",
+    "chinese": "生活用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 145,
+    "original": "공구",
+    "chinese": "工具",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 146,
+    "original": "화방용품",
+    "chinese": "画房用品",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 147,
+    "original": "악기",
+    "chinese": "乐器",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 148,
+    "original": "애완",
+    "chinese": "宠物",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 149,
+    "original": "공연/티켓",
+    "chinese": "表演/票",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 150,
+    "original": "모바일쿠폰/상품권",
+    "chinese": "移动券/购物优惠券",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 151,
+    "original": "지류/카드상품권",
+    "chinese": "纸类/卡购物优惠券",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 152,
+    "original": "여행/항공권",
+    "chinese": "旅游/飞机票",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 153,
+    "original": "e컨텐츠",
+    "chinese": "e-contents",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 154,
+    "original": "레저이용권",
+    "chinese": "休闲使用权",
+    "korean": "",
+    "english": ""
+  },
+  {
+    "id": 155,
+    "original": "꽃/케이크 배달",
+    "chinese": "花/蛋糕送货",
+    "korean": "",
+    "english": ""
+  }
+]
