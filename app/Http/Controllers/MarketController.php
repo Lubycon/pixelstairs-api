@@ -308,7 +308,6 @@ class MarketController extends Controller
                 }else{
                     $successLog[] = ["id" => $value->id];
                 }
-
             }else if( $update->status->code == "0040" ){$failLog[] = ["id" => $value->id,"code" => "0040"];
             }else{$failLog[] = ["id" => $value->id,"code" => "9999"];}
 
@@ -320,7 +319,6 @@ class MarketController extends Controller
             'finish sale = '.json_encode($finishLog).
             'failed update = '.json_encode($failLog)
         );
-
 
         return response()->success($products);
     }

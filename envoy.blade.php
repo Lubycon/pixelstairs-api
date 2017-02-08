@@ -15,7 +15,7 @@
 #--------------------------------------------------------------------------
 ##
 
-@servers(['pro' => 'aws-mitty-provision-test','dev' => 'aws-mitty-dev-test'])
+@servers(['pro' => 'aws-mitty-provision','dev' => 'aws-mitty-dev'])
 
 
 @setup
@@ -149,7 +149,7 @@ cp -R {{ $release_dir }}/{{ $distname }}/bootstrap/cache {{ $shared_dir }};
 {{--Run composer install--}}
 cd {{ $release_dir }}/{{ $distname }} && \
 [ -f ./composer.json ] && \
-composer install --prefer-dist --no-scripts --no-dev;
+composer install --prefer-dist;
 
 {{--Any additional command here--}}
 {{--e.g. php artisan clear-compiled;--}}
@@ -170,6 +170,7 @@ php {{ $base_dir }}/officer.php deploy {{ $release_dir }}/{{ $distname }};
 {{--Restart web server.--}}
 sudo service nginx restart;
 sudo service php7.0-fpm restart;
+sudo service mysql restart;
 @endtask
 
 
