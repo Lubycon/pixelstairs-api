@@ -13,6 +13,9 @@ use App\Models\Credential;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
+use App\Classes\FileUpload;
+
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 
 use App\Http\Requests\Auth\AuthSigninRequest;
@@ -178,10 +181,18 @@ class AuthController extends Controller
     }
     public function postRetrieve(AuthPostRetrieveRequest $request,$id)
     {
+
+
         $data = $request->json()->all();
         $tokenData = CheckContoller::checkToken($request);
 
         $findUser = User::find($tokenData->id);
+
+
+        $fileUpload = new FileUpload( $findUser,$data['profileImg'],'image' );
+        return response()->success($fileUpload);
+
+
         $userExist = CheckContoller::checkUserExistById($tokenData->id);
 
         if($userExist && $id == $findUser->id){

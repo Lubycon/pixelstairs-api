@@ -138,10 +138,11 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         //Aws\Laravel\AwsServiceProvider::class,
 
-        // Lubycon added Providers
+        // mitty added Providers
         Barryvdh\Cors\ServiceProvider::class,
         App\Providers\ResponseMacroServiceProvider::class,
         Maknz\Slack\SlackServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -201,7 +202,7 @@ return [
         'Abort'     => App\Classes\Abort::class,
         'BaseModel'      => App\Models\BaseModel::class,
         'Slack' => Maknz\Slack\Facades\Slack::class,
-        //'AWS'       => Aws\Laravel\AwsFacade::class,
+        'Image' => Intervention\Image\Facades\Image::class,
 
     ],
 
