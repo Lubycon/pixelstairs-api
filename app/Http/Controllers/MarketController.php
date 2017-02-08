@@ -298,16 +298,19 @@ class MarketController extends Controller
         $failLog = [];
 
         foreach( $products as $value ) {
-            $update = $this->getUpdateStockResponse($request, $value)->getData();
+            $update = $this->getUpdateStockResponse($request, $value);
 
             Log::info("processing " . $value->id);
-            if( $update == "finish" ){
+            if( $update == "finish" ) {
                 $finishLog[] = ["id" => $value->id];
                 $value->status_code = "0302";
                 $value->save();
-            }else if( $update->status->code == "0000" ){$successLog[] = ["id" => $value->id];
-            }else if( $update->status->code == "0040" ){$failLog[] = ["id" => $value->id,"code" => "0040"];
-            }else{$failLog[] = ["id" => $value->id,"code" => "9999"];}
+            }else{
+                $update = $update->getData();
+                if( $update->status->code == "0000" ){$successLog[] = ["id" => $value->id];
+                }else if( $update->status->code == "0040" ){$failLog[] = ["id" => $value->id,"code" => "0040"];
+                }else{$failLog[] = ["id" => $value->id,"code" => "9999"];}
+            }
 
             sleep(mt_rand(3,10));
         }
