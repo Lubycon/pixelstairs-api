@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(GenderTableSeeder::class);
 
         $this->call(ProvisionCategorySeeder::class);
-//        $this->call(DummyDataSeeder::class);
+        $this->call(DummyDataSeeder::class);
 
         Model::reguard();
     }

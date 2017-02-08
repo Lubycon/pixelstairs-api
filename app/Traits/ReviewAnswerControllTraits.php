@@ -25,13 +25,13 @@ trait ReviewAnswerControllTraits
             $result[] = [
                 "q" => [
                     "id" => $value->question->id,
-                    "description" => $value->question->description,
+                    "description" => $value->question->getTranslateResultByLanguage($value->question->translateDescription,$this->language),
                 ],
                 "a" => [
                     "id" => $value->id,
                     "description" => $value->description,
                 ],
-                "qKey" => $value->question->getTranslateResultByLanguage($value->question->translateName,$this->language),
+                "description" => $value->question->questionKey->getTranslateResultByLanguage($value->question->questionKey->translateName,$this->language),
                 "score" => $value->score,
             ];
         }

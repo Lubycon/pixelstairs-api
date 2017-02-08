@@ -18,22 +18,23 @@ $factory->define(App\Models\TranslateDescription::class, function (Faker\Generat
 });
 
 
-$factory->define(App\Models\Category::class, function (Faker\Generator $faker) {
-    return [
-        'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
-    ];
-});
-
-$factory->define(App\Models\Division::class, function (Faker\Generator $faker) {
-    return [
-        'parent_id' => factory(App\Models\Category::class)->create()->id,
-        'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
-    ];
-});
+//$factory->define(App\Models\Category::class, function (Faker\Generator $faker) {
+//    return [
+//        'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
+//    ];
+//});
+//
+//$factory->define(App\Models\Division::class, function (Faker\Generator $faker) {
+//    return [
+//        'parent_id' => factory(App\Models\Category::class)->create()->id,
+//        'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
+//    ];
+//});
 
 $factory->define(App\Models\SectionGroup::class, function (Faker\Generator $faker) {
+    $division = App\Models\Division::orderBy(\DB::raw('RAND()'))->first();
     return [
-        'parent_id' => factory(App\Models\Division::class)->create()->id,
+        'parent_id' => $division->id,
         'section_id_0' => factory(App\Models\SectionMarketInfo::class)->create()->section_id,
         'section_id_1' => mt_rand(0,100) < 7 ? factory(App\Models\SectionMarketInfo::class)->create()->section_id : NULL,
         'section_id_2' => NULL,
@@ -41,8 +42,9 @@ $factory->define(App\Models\SectionGroup::class, function (Faker\Generator $fake
 });
 
 $factory->define(App\Models\Section::class, function (Faker\Generator $faker) {
+    $division = App\Models\Division::orderBy(\DB::raw('RAND()'))->first();
     return [
-        'parent_id' => factory(App\Models\Division::class)->create()->id,
+        'parent_id' => $division->id,
         'translate_name_id' => factory(App\Models\TranslateName::class)->create()->id,
     ];
 });
@@ -125,7 +127,7 @@ $factory->define(App\Models\ImageGroup::class, function (Faker\Generator $faker)
 
 $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
     $statusCode = '030'.mt_rand(0,2);
-    $sectionGroup = App\Models\SectionGroup::find(mt_rand(1,100));
+    $sectionGroup = App\Models\SectionGroup::orderBy(\DB::raw('RAND()'))->first();
     $division = App\Models\Division::find($sectionGroup['parent_id']);
     $category = App\Models\Category::find($division['parent_id']);
 
@@ -192,7 +194,7 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Models\Interest::class, function (Faker\Generator $faker) {
-    $division = App\Models\Division::find(mt_rand(1,100));
+    $division = App\Models\Division::orderBy(\DB::raw('RAND()'))->first();
     $category = App\Models\Category::find($division['parent_id']);
     return [
         'user_id' => mt_rand(1,100),

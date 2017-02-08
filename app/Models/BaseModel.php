@@ -51,13 +51,13 @@ class BaseModel extends Model
             foreach($translate as $key => $value){
                 $value = $this->isTranslated($value);
                 $data = $this->getTranslateResult($value);
-                $result[] = $data[$language];
+                $result[] = isset($data[$language]) ? $data[$language] : $data['origin'];
             }
             return $result;
         }else{
             $translate = $this->isTranslated($translate);
             $data = $this->getTranslateResult($translate);
-            return $data[$language];
+            return isset($data[$language]) ? $data[$language] : $data['origin'];
         }
     }
     public function isTranslated($value){

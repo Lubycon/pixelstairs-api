@@ -78,6 +78,7 @@ class Product extends BaseModel
             $optionKeys = $this->option->first()->optionCollection;
             for ($i = 0; $i < 4; $i++) {
                 if (is_null($optionKeys['option_key_id_' . $i])) return $result;
+
                 $result[] = [
                     "name" => $this->getTranslateResultByLanguage($optionKeys->optionKey($i)->first(),$language),
                     "values" => $optionDivide[$i],

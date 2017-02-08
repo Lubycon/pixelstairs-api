@@ -312,10 +312,6 @@ class MarketController extends Controller
             }else if( $update->status->code == "0040" ){$failLog[] = ["id" => $value->id,"code" => "0040"];
             }else{$failLog[] = ["id" => $value->id,"code" => "9999"];}
 
-
-            Log::info($successLog);
-            Log::info($failLog);
-
             sleep(mt_rand(3,10));
         }
 
