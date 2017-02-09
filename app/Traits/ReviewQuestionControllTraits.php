@@ -33,18 +33,20 @@ trait ReviewQuestionControllTraits
 
     public function updateReviewQuestions($product,$question){
         $result = [];
-        foreach( $question as $value ){
-            if( isset($value['id']) ){
-                $result[] = $value['id'];
-                $product->reviewQuestion()->findOrFail($value['id'])->update([
-                    "question_key_id" => $value['qKeyId'],
-                    "translate_description_id" => $this->createTranslateDescription($value['description'])['id'],
-                ]);
-            }else{
-                $result[] = $product->reviewQuestion()->create([
-                    "question_key_id" => $value['qKeyId'],
-                    "translate_description_id" => $this->createTranslateDescription($value['description'])['id'],
-                ])['id'];
+        if( !is_null($question) ){
+            foreach( $question as $value ){
+                if( isset($value['id']) ){
+                    $result[] = $value['id'];
+                    $product->reviewQuestion()->findOrFail($value['id'])->update([
+                        "question_key_id" => $value['qKeyId'],
+                        "translate_description_id" => $this->createTranslateDescription($value['description'])['id'],
+                    ]);
+                }else{
+                    $result[] = $product->reviewQuestion()->create([
+                        "question_key_id" => $value['qKeyId'],
+                        "translate_description_id" => $this->createTranslateDescription($value['description'])['id'],
+                    ])['id'];
+                }
             }
         }
         $diff = array_diff($product->reviewQuestion->pluck('id')->toArray(),$result);

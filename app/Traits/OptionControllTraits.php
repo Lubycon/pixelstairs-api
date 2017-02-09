@@ -8,6 +8,8 @@ use App\Models\OptionKey;
 use Abort;
 use Log;
 
+use App\Classes\FileUpload;
+
 trait OptionControllTraits
 {
 
@@ -17,7 +19,10 @@ trait OptionControllTraits
         $index = 0;
         foreach ($options as $key => $option) {
             $image_id = null;
-            if( !is_null($option["thumbnailUrl"]['file']) ) $image_id = Image::create($this->createExternalImage( $option["thumbnailUrl"] ))['id'];
+            if( !is_null($option["thumbnailUrl"]['file']) ){
+                $fileUpload = new FileUpload( $this->product,$option["thumbnailUrl"] ,'image' );
+                $image_id = $fileUpload->getResult();
+            }
             $result[] = new Option([
                 "product_id" => $this->product->id,
                 "sku" => $this->createSku($index),
@@ -38,11 +43,16 @@ trait OptionControllTraits
         foreach ($options as $key => $option) {
             $originalSku = $product->option[$key]->sku;
             if($originalSku !== $option['sku']) Abort::Error('0040',"Diff SKU");
+//                $image_id = null;
+//                if( !is_null($option["thumbnailUrl"]['file']) ){
+//                    $fileUpload = new FileUpload( $this->product,$option["thumbnailUrl"] ,'image' );
+//                    $image_id = $fileUpload->getResult();
+//                }
                 $product->option[$key]->price = $option["price"];
                 $product->option[$key]->stock = $option["stock"];
                 $product->option[$key]->safe_stock = Option::absoluteSafeStockCkeck($safeStock);
                 $product->option[$key]->translate_name_id = $this->createTranslateName($option['name'])['id'];
-//                $product->option[$key]->image_id = Image::create( $this->createExternalImage( $option["thumbnailUrl"] ))['id'];
+//                $product->option[$key]->image_id = $image_id;
                 $product->option[$key]->option_collection_id = $optionCollection['id'];
                 if (!$product->option[$key]->update()) Abort::Error("0040","Option Update Fail");
         }
@@ -61,15 +71,10 @@ trait OptionControllTraits
         return true;
     }
 
-
-
-
-
     private function isDirtyOption($product,$options){
         if ( count($product->option()->get()) !==  count($options)) Abort::Error("0040","Can not add option at update product");
         return;
     }
-
 
     public function createOptionCollection($optionKeys)
     {

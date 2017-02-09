@@ -171,10 +171,6 @@ class ProductController extends Controller
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
 
-        $fileUpload = new FileUpload( $this->product,$data["thumbnailUrl"] ,'image' );
-        $this->product->image_id = $fileUpload->getResult();
-        $fileUpload = new FileUpload( $this->product,$data['detailImages'] ,'image' );
-        $this->product->image_group_id = $fileUpload->getResult();
 
         $this->product->url = $data["url"];
         $this->product->status_code = "0300";
@@ -188,13 +184,18 @@ class ProductController extends Controller
         if( is_null( $data['questions'] ) ){$reviewQuestions = null;
         }else{$reviewQuestions= $this->createReviewQuestions($data['questions']);}
 
-        if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->product->option()->saveMany($this->setNewOption($data['options'],$data['safeStock'],$optionCollection)) ){
+        if ( $this->product->save() ){
+            $this->product->option()->saveMany($this->setNewOption($data['options'],$data['safeStock'],$optionCollection));
+            $fileUpload = new FileUpload( $this->product,$data["thumbnailUrl"] ,'image' );
+            $this->product->image_id = $fileUpload->getResult();
+            $fileUpload = new FileUpload( $this->product,$data['detailImages'] ,'image' );
+            $this->product->image_group_id = $fileUpload->getResult();
+            $this->product->save();
             if( !is_null($reviewQuestions) ) $this->product->reviewQuestion()->saveMany( $reviewQuestions );
-        }return response()->success($this->product);
-
-
-        Abort::Error("0040");
+            return response()->success($this->product);
+        }else{
+            Abort::Error("0040");
+        }
     }
 
     public function put(ProductPutRequest $request,$id){
@@ -229,11 +230,17 @@ class ProductController extends Controller
         $optionCollection = $this->createOptionCollection($data['optionKeys']);
         $this->updateReviewQuestions($this->product,$data['questions']);
 
-        if ( !$this->product->save() ) Abort::Error("0040");
-        if ( $this->updateOptions($this->product,$data['options'],$data['safeStock'],$optionCollection)
-//            && $this->product->imageGroup->image()->saveMany($this->updateExternalImageArray($this->product,$data['detailImages']))
-        ) return response()->success($this->product);
-        Abort::Error("0040");
+        if ( $this->product->save() ){
+            $this->updateOptions($this->product,$data['options'],$data['safeStock'],$optionCollection);
+//            $fileUpload = new FileUpload( $this->product,$data["thumbnailUrl"] ,'image' );
+//            $this->product->image_id = $fileUpload->getResult();
+//            $fileUpload = new FileUpload( $this->product,$data['detailImages'] ,'image' );
+//            $this->product->image_group_id = $fileUpload->getResult();
+//            $this->product->save();
+            return response()->success($this->product);
+        }else{
+            Abort::Error("0040");
+        }
     }
 
     public function delete(ProductDeleteRequest $request,$id){

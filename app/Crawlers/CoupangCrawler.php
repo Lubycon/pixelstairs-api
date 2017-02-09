@@ -200,7 +200,7 @@ class CoupangCrawler
                 "stock" => (int)$this->maxBuyAble,
                 "isSoldout" => (bool)strpos($value->getAttribute('class'),'soldout'),
                 "thumbnailUrl" => [
-                    "file" => (string)$value->getAttribute('data-option-img-src'),
+                    "file" => is_null($value->getAttribute('data-option-img-src')) == "" ? NULL : $value->getAttribute('data-option-img-src'),
                     "index" => 0,
                 ],
             ];

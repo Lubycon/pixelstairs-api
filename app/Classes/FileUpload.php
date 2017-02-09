@@ -42,13 +42,12 @@ class FileUpload
         $this->inputFile = $this->fileTypeCheck($this->inputFile);
         $this->inputFile = $this->uploadS3($this->inputFile);
         $this->createModel = $this->createImageModel($this->inputFile);
-
-
         return $this->getResult();
     }
 
     private function uploadS3($inputFile){
         foreach($inputFile as $key => $value){
+            if( is_null($value['type']) ) unset($inputFile[$key]); // null image
             if( isset( $value['id'] ) ){ //update or delete
                 if( $value['deleted'] ){ // delete
                     if( $value['isMittyOwn'] && $value['type'] == 'url' ) $this->responsiveDeleteUrl($value['file']);
@@ -181,6 +180,7 @@ class FileUpload
         $file = $value['file'];
         if( $this->isBase64($file) ){ return "base64"; }
         else if( $this->isUrl($file) ){ return "url"; }
+        else if( is_null($file) ){ return null; }
         else{ Abort::Error('0050',"Unknown file data"); }
     }
     protected function isBase64($file){
