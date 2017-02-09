@@ -19,7 +19,7 @@ class FileUpload
     private $model;
     private $inputFile;
     private $fileExt;
-    private $responsiveResolution = ['1920','720','360'];
+    private $responsiveResolution = ['1920','640','320'];
 
 //    private $modelName;
 //    private $modelId;
