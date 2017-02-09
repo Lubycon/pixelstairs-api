@@ -24,4 +24,10 @@ class Image extends BaseModel
             "deleted" => false
         ];
     }
+
+
+    public function imageGroup()
+    {
+        return $this->belongsTo('App\Models\ImageGroup','image_group_id','id');
+    }
 }

@@ -202,7 +202,7 @@ return [
         'Abort'     => App\Classes\Abort::class,
         'BaseModel'      => App\Models\BaseModel::class,
         'Slack' => Maknz\Slack\Facades\Slack::class,
-        'Image' => Intervention\Image\Facades\Image::class,
+        'Intervention' => Intervention\Image\Facades\Image::class,
 
     ],
 
