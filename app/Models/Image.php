@@ -21,6 +21,7 @@ class Image extends BaseModel
             "id" => $this->id,
             "file" => $this->url,
             "index" => $this->index,
+            "isMittyOwn" => $this->is_mitty_own,
             "deleted" => false
         ];
     }

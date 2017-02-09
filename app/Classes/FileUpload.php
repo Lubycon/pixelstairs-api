@@ -44,18 +44,18 @@ class FileUpload
         $this->createModel = $this->createImageModel($this->inputFile);
 
 
-        $this->result = $this->getResult();
+        return $this->getResult();
     }
 
     private function uploadS3($inputFile){
         foreach($inputFile as $key => $value){
             if( isset( $value['id'] ) ){ //update or delete
                 if( $value['deleted'] ){ // delete
-                    if( $value['is_mitty_own'] && $value['type'] == 'url' ) $this->responsiveDeleteUrl($value['file']);
+                    if( $value['isMittyOwn'] && $value['type'] == 'url' ) $this->responsiveDeleteUrl($value['file']);
                     Image::find($value['id'])->delete();
                     unset($inputFile[$key]);
                 }else{ // update
-                    if( $value['is_mitty_own'] ){
+                    if( $value['isMittyOwn'] ){
                         if( $value['type'] == 'base64' ) $newUrl = $this->responsiveUploadUrl($value['file']);
                     }
                     $inputFile[$key]['url'] = isset($newUrl) ? $newUrl : $value['file'];
@@ -71,25 +71,38 @@ class FileUpload
         $modelId = null;
         $images = [];
         foreach($inputFile as $key => $value ){
-            $is_mitty_own = $value['type'] == 'url' ? false : true;
+            $isMittyOwn = $this->isMittyOwn($value);
             if( isset($value['id']) ){
                 $images[] = Image::findOrFail($value['id'])->update([
                     "index" => $value['index'],
                     "url" => $value['url'],
-                    "is_mitty_own" => $is_mitty_own,
+                    "is_mitty_own" => $isMittyOwn,
                     "image_group_id" => $this->isGroup ? $this->groupModel['id'] : null,
                 ]);
             }else{
                 $images[] = Image::create([
                     "index" => $value['index'],
                     "url" => $value['url'],
-                    "is_mitty_own" => $is_mitty_own,
+                    "is_mitty_own" => $isMittyOwn,
                     "image_group_id" => $this->isGroup ? $this->groupModel['id'] : null,
                 ]);
             }
         }
         return $this->isGroup ? $this->groupModel : $images[0] ;
     }
+
+    protected function isMittyOwn($fileObj){
+        $isMittyOwn = null;
+        if( isset($fileObj['isMittyOwn']) ){
+            $isMittyOwn = $fileObj['isMittyOwn'] ? true : false ;
+        }else if( $fileObj['type'] == 'base64' ){
+            $isMittyOwn = true;
+        }else{
+            $isMittyOwn = false;
+        }
+        return $isMittyOwn;
+    }
+
     protected function createImageGroupModel($inputFile){
         if( $this->isGroup ){
             if( $groupId = $this->findGroupExist($inputFile) ){
@@ -191,7 +204,7 @@ class FileUpload
     protected function isGrouping($inputFile){
         return !isset($inputFile['file']);
     }
-    protected function getResult(){
+    public function getResult(){
         return $this->createModel['id'];
     }
 }

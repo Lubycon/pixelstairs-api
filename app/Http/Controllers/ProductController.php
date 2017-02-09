@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Pager\PageController;
+use App\Classes\FileUpload;
 
 use Carbon\Carbon;
 use Log;
@@ -169,9 +170,12 @@ class ProductController extends Controller
         $this->product->unit = $data["priceInfo"]['unit'];
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
-        $this->product->image_id = Image::create($this->createExternalImage( $data["thumbnailUrl"] ))['id'];
-        $this->product->image_group_id = ImageGroup::create(['model_name'=>'product'])['id'];
-        $this->product->imageGroup->image()->saveMany($this->createExternalImageArray($data['detailImages']));
+
+        $fileUpload = new FileUpload( $this->product,$data["thumbnailUrl"] ,'image' );
+        $this->product->image_id = $fileUpload->getResult();
+        $fileUpload = new FileUpload( $this->product,$data['detailImages'] ,'image' );
+        $this->product->image_group_id = $fileUpload->getResult();
+
         $this->product->url = $data["url"];
         $this->product->status_code = "0300";
         $this->product->isLimited = $data['isLimited'];
@@ -194,6 +198,8 @@ class ProductController extends Controller
     }
 
     public function put(ProductPutRequest $request,$id){
+        // product put method dose not have any image update logic
+
         $data = $request->json()->all();
 
         $this->product = Product::findOrFail($id);

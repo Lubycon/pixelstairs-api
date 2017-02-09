@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Pager\PageController;
+use App\Classes\FileUpload;
+
 use App\Models\Review;
 use App\Models\Order;
 use App\Models\Award;
@@ -127,26 +129,37 @@ class ReviewController extends Controller
     public function post(ReviewPostRequest $request,$target_id){
         $target = $this->getReviewTargetByRequest($request,$target_id);
 
+        $this->review = new Review;
+
         $this->review->user_id = $this->getUserByTokenRequestOrFail($request)['id'];
         $this->review->product_id = $target['product_id'];
         $this->review->title = $request->title;
         $this->review->sku = $target['sku'];
         $this->review->target = $request->target;
-        $this->review->image_group_id = ImageGroup::create(['model_name'=>'review'])['id'];
 
-        if ( !$this->review->save() ) Abort::Error("0040");
-        if ( $this->review->answer()->saveMany($this->setNewReviewAnswer($request['answers']))  &&
-             $this->review->imageGroup->image()->saveMany($this->createImageUploadArray($this->review,$request->images))
-        ) return response()->success($this->review);
-        Abort::Error("0040");
+
+        if ( $this->review->save() ){
+            $this->review->answer()->saveMany($this->setNewReviewAnswer($request['answers']));
+            $fileUpload = new FileUpload( $this->review, $request->images ,'image' );
+            $this->review->image_group_id = $fileUpload->getResult();
+            $this->review->save();
+            return response()->success($this->review);
+        }else{
+            Abort::Error("0040");
+        }
     }
     public function put(ReviewPutRequest $request,$review_id){
         $this->review = Review::findOrFail($review_id);
         $this->review->title = $request->title;
         $this->updateAnswer($this->review,$request['answers']);
 
-        if ( !$this->review->save() ) Abort::Error("0040");
-        if($this->review->imageGroup->image()->saveMany($this->updateImageUploadArray($this->review,$request->images))
-        )return response()->success($this->review);
+        if ( $this->review->save() ){
+            $fileUpload = new FileUpload( $this->review, $request->images ,'image' );
+            $this->review->image_group_id = $fileUpload->getResult();
+            $this->review->save();
+            return response()->success($this->review);
+        }else{
+            Abort::Error("0040");
+        }
     }
 }

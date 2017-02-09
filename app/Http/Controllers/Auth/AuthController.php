@@ -181,18 +181,9 @@ class AuthController extends Controller
     }
     public function postRetrieve(AuthPostRetrieveRequest $request,$id)
     {
-
-
         $data = $request->json()->all();
         $tokenData = CheckContoller::checkToken($request);
-
         $findUser = User::find($tokenData->id);
-
-
-        $fileUpload = new FileUpload( $findUser,$data['profileImg'],'image' );
-        return response()->success($fileUpload);
-
-
         $userExist = CheckContoller::checkUserExistById($tokenData->id);
 
         if($userExist && $id == $findUser->id){
@@ -206,8 +197,8 @@ class AuthController extends Controller
                 $findUser->address2 = $data['location']['address2'];
                 $findUser->post_code = $data['location']['postCode'];
                 Interest::firstOrCreate($this->setNewInterest($findUser,$request['likeCategory']));
-
-                $findUser->image_id = Image::create(["is_mitty_own"=>true,"url"=>$this->userThumbnailUpload($findUser,$data['profileImg']['file'])])['id'];
+                $fileUpload = new FileUpload( $findUser,$data['profileImg'] ,'image' );
+                $findUser->image_id = $fileUpload->getResult();
                 if($findUser->save()){
                     return response()->success($findUser);
                 }

@@ -36,10 +36,10 @@ class AuthPostRetrieveRequest extends Request
             'likeCategory' => 'array|required',
             'likeCategory.categoryId' => 'integer|required',
             'likeCategory.divisionId' => 'integer|required',
-//            'profileImg' => 'required',
-//            'profileImg.id' => 'string',
-//            'profileImg.file' => 'required',
-//            'profileImg.index' => 'integer',
+            'profileImg' => 'required',
+            'profileImg.id' => 'string',
+            'profileImg.file' => 'required',
+            'profileImg.index' => 'integer',
         ];
 
         return $requiredRule;
