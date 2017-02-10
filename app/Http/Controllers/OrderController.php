@@ -35,7 +35,7 @@ class OrderController extends Controller
                 ],
                 "sku" => $order['sku'],
                 "quantity" => $order['quantity'],
-                "statusCode" => $order['status_code'],
+                "orderStatusCode" => $order['order_status_code'],
                 "orderDate" => $order['order_date'],
             );
         };

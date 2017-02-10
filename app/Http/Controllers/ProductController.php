@@ -82,7 +82,7 @@ class ProductController extends Controller
             "url" => $product["url"],
             "safeStock" => $product->option[0]->safe_stock,
             "isLimited" => $product['isLimited'],
-            "statusCode" => $product["status_code"],
+            "productStatusCode" => $product["product_status_code"],
             "createDate" => Carbon::instance($product["created_at"])->toDateTimeString(),
             "startDate" => $product["start_date"],
             "endDate" => $product["end_date"],
@@ -137,7 +137,7 @@ class ProductController extends Controller
                 "thumbnailUrl" => $product->getImageObject($product),
                 "url" => $product["url"],
                 "safeStock" => $product->option[0]->safe_stock,
-                "statusCode" => $product["status_code"],
+                "productStatusCode" => $product["product_status_code"],
                 "endDate" => $product["end_date"],
             );
         };
@@ -173,8 +173,8 @@ class ProductController extends Controller
 
 
         $this->product->url = $data["url"];
-        $this->product->status_code = "0300";
-        $this->product->isLimited = $data['isLimited'];
+        $this->product->product_status_code = "0300";
+        $this->product->is_limited = $data['isLimited'];
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
         $this->product->gender_id = $data['productGender'];
         $this->product->manufacturer_country_id = $data['manufacturerCountryId'];
@@ -222,7 +222,7 @@ class ProductController extends Controller
         $this->product->domestic_delivery_price = $data["deliveryPrice"];
         $this->product->is_free_delivery = $data["isFreeDelivery"];
         $this->product->url = $data["url"];
-        $this->product->isLimited = $data['isLimited'];
+        $this->product->is_limited = $data['isLimited'];
         $this->product->end_date = Carbon::parse($data["endDate"])->timezone(config('app.timezone'))->toDateTimeString();
         $this->product->gender_id = $data['productGender'];
         $this->product->manufacturer_country_id = $data['manufacturerCountryId'];

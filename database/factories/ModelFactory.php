@@ -153,7 +153,7 @@ $factory->define(App\Models\Product::class, function (Faker\Generator $faker) {
         'image_id' => factory(App\Models\Image::class)->create()->id,
         'url' => 'http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=333125048&trTypeCd=PW02&trCtgrNo=585021&lCtgrNo=1001452&mCtgrNo=1003081',
         'manufacturer_country_id' => factory(App\Models\Manufacturer::class)->create()->id,
-        'status_code' => $statusCode,
+        'product_status_code' => $statusCode,
         'start_date' => $statusCode != '0300' ? date("Y-m-d H:i:s",rand(1262055681,1478304000)) : NULL ,
         'end_date' => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
     ];
@@ -166,7 +166,7 @@ $factory->define(App\Models\Order::class, function (Faker\Generator $faker) {
         'haitao_user_id' => mt_rand(10000,100000),
         'product_id' => $option['product_id'],
         'sku' => $option['sku'],
-        'status_code' => '0313',
+        'order_status_code' => '0313',
         'quantity' => mt_rand(1,3),
         'order_date' => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
     ];

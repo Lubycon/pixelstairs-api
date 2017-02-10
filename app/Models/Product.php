@@ -30,7 +30,7 @@ class Product extends BaseModel
         'manufacturer_country_id' => 'string',
         'image_id' => 'string',
         'image_group_id' => 'string',
-        'status_code' => 'string',
+        'product_status_code' => 'string',
     ];
 
 
@@ -206,7 +206,7 @@ class Product extends BaseModel
     }
     public function status()
     {
-        return $this->hasOne('App\Models\Status','code','status_code');
+        return $this->hasOne('App\Models\Status','code','product_status_code');
     }
     public function manufacturer()
     {

@@ -149,7 +149,7 @@ class PageController extends Controller
             // order, product divide
             case 'stock' : return 'stock';
             case 'safeStock' : return 'safe_stock';
-            case 'statusCode' : return 'status_code';
+            case 'productStatusCode' : return 'product_status_code';
             case 'createDate' : return 'created_at';
             case 'endDate' : return 'end_date';
             case 'marketCategoryId' : return 'section_market_infos.market_category_id';

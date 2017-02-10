@@ -8,22 +8,22 @@ trait StatusInfoTraits{
 
     private $targetProduct;
 
-    public function statusUpdate($request,$product,$status_code){
+    public function statusUpdate($request,$product,$product_status_code){
         $this->targetProduct = $product;
-        if( !$this->isSameStatus($status_code) ){
+        if( !$this->isSameStatus($product_status_code) ){
             $this->statusPermissionCheck($request);
-            $this->forConfirm($status_code);
-            $this->targetProduct->status_code = $status_code;
+            $this->forConfirm($product_status_code);
+            $this->targetProduct->status_code = $product_status_code;
         }
         return $this->targetProduct;
     }
-    public function forConfirm($status_code){
-        if( $status_code == '0301' ){
+    public function forConfirm($product_status_code){
+        if( $product_status_code == '0301' ){
             //set after haito api
 //            $sale = $this->productSale($this->product);
             $this->startDateUpdate();
             return true;
-        }else if( $status_code == '0302' ){
+        }else if( $product_status_code == '0302' ){
             //set after haito api
 //            $sale = $this->productSale($this->product);
             $this->endDateUpdate();
@@ -38,8 +38,8 @@ trait StatusInfoTraits{
         }
         Abort::Error("0043", "Can not change status");
     }
-    private function isSameStatus($status_code){
-        if( $this->targetProduct->status_code == $status_code ){
+    private function isSameStatus($product_status_code){
+        if( $this->targetProduct->product_status_code == $product_status_code ){
             return true;
         }
         return false;

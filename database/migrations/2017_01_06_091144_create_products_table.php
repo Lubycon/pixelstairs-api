@@ -42,8 +42,8 @@ class CreateProductsTable extends Migration
             $table->integer('image_group_id')->unsigned()->nullable();
             $table->longtext('url');
 
-            $table->boolean('isLimited')->default(false);
-            $table->string('status_code')->default('0300');
+            $table->boolean('is_limited')->default(false);
+            $table->string('product_status_code')->default('0300');
 
             $table->datetime('start_date')->nullable();
             $table->datetime('end_date')->nullable();

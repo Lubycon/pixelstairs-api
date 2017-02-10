@@ -278,7 +278,7 @@ class MarketController extends Controller
             foreach( $productOption as $key => $value ){
                 if( $value->translateName->original != $newOption[$key]['name'] ) Abort::Error('0040','diffrent option name!');
                 $productOption[$key]['price'] = $newOption[$key]['price'];
-                if( !$product->isLimited ){
+                if( !$product->is_limited ){
                     $productOption[$key]['stock'] = $newOption[$key]['stock'];
                 }
             }
@@ -292,7 +292,7 @@ class MarketController extends Controller
 
     public function updateScheduling(Request $request)
     {
-        $products = Product::wherestatus_code('0301')->get();
+        $products = Product::whereproduct_status_code('0301')->get();
         $successLog = [];
         $finishLog = [];
         $failLog = [];
@@ -303,7 +303,7 @@ class MarketController extends Controller
             Log::info("processing " . $value->id);
             if( $update == "finish" ) {
                 $finishLog[] = ["id" => $value->id];
-                $value->status_code = "0302";
+                $value->product_status_code = "0302";
                 $value->save();
             }else{
                 $update = $update->getData();

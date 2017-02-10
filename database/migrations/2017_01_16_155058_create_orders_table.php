@@ -19,7 +19,7 @@ class CreateOrdersTable extends Migration
             $table->integer('product_id')->unsigned();
             $table->string('sku',100);
             $table->integer('quantity')->unsigned();
-            $table->string('status_code',4);
+            $table->string('order_status_code',4);
             $table->timestamp('order_date')->nullable();
             $table->timestamp('cancel_date')->nullable();
             $table->softDeletes();

@@ -100,7 +100,7 @@ class HaitaoController extends Controller
         $this->language = $request->header('X-mitty-language');
         $product = Product::wherehaitao_product_id($haitao_product_id)->firstOrFail();
 
-        if( $product->status_code != '0301' ) Abort::Error('0043',"Ended sale product");
+        if( $product->product_status_code != '0301' ) Abort::Error('0043',"Ended sale product");
 
         $options = $product->getProvisionOption($this->language,$product["unit"]);
 
@@ -255,7 +255,7 @@ class HaitaoController extends Controller
         $order->product_id = $findOption['product_id'];
         $order->sku = $findOption['sku'];
         $order->order_date = $request['orderDate'];
-        $order->status_code = '0313';
+        $order->order_status_code = '0313';
 
         if(!$order->save()) Abort::Error('0040','Check Request');
 
