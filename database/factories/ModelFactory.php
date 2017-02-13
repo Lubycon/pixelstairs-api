@@ -257,3 +257,13 @@ $factory->define(App\Models\Award::class, function (Faker\Generator $faker) {
         'expire_date' => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
     ];
 });
+
+
+$factory->define(App\Models\GiveProduct::class, function (Faker\Generator $faker) {
+    $review = App\Models\Review::find(mt_rand(1,100));
+    return [
+        'review_id' => $review['id'],
+        'apply_user_id' => mt_rand(1,100),
+        'accept_user_id' => $review->user_id,
+    ];
+});

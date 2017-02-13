@@ -94,6 +94,8 @@ class DummyDataSeeder extends Seeder
                 "product_id" => $value['id'],
                 "stock_per_each" => mt_rand(1,3),
             ]);
+            $value->free_gift_group_id = $giftGroup['id'];
+            $value->save();
             $rand = mt_rand(6,10);
 
             for( $i=0;$i<$rand;$i++ ){
@@ -105,9 +107,10 @@ class DummyDataSeeder extends Seeder
             }
         }
 
+        DB::table('give_products')->truncate();
+        factory(App\Models\GiveProduct::class, 100)->create();
 
         factory(App\Models\Image::class, 300)->create();
-
         $imageGroup = App\Models\imageGroup::all();
         foreach($imageGroup as $key => $value){
             $rand = mt_rand(2,5);
@@ -119,7 +122,6 @@ class DummyDataSeeder extends Seeder
                 ]);
             }
         }
-
 
         DB::table('awards')->truncate();
         factory(App\Models\Award::class, 100)->create();
