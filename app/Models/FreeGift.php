@@ -13,4 +13,8 @@ class FreeGift extends BaseModel
         'option_id' => 'string',
         'group_id' => 'string',
     ];
+
+    protected $fillable = [
+        'option_id','group_id','stock'
+    ];
 }

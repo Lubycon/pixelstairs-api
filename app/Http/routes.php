@@ -49,6 +49,11 @@ Route::group(['prefix' => '/v1'], function () {
         Route::delete('detail/{id}', 'ProductController@delete');
 
         Route::put('status/{status_name}', 'ProductController@status');
+
+        Route::group(['prefix' => 'freegift/'], function () {
+            Route::post('{product_id}', 'FreeGiftController@post');
+        });
+
     });
     Route::group(['prefix' => '/orders/'], function () {
         Route::get('', 'OrderController@getList');
@@ -94,6 +99,19 @@ Route::group(['prefix' => '/v1'], function () {
             Route::get('{division_id}', 'QuestionController@getKeys');
             Route::post('', 'QuestionController@postKey');
         });
+    });
+
+
+    Route::group(['prefix' => '/give/'], function () {
+        Route::group(['prefix' => 'apply/'], function () {
+            Route::get('{user_id}', 'GiveApplyController@getList');
+            Route::post('{review_id}', 'GiveApplyController@post');
+        });
+        Route::group(['prefix' => 'accept/'], function () {
+            Route::get('{review_id}', 'GiveAcceptController@getList');
+            Route::post('{review_id}', 'GiveAcceptController@post');
+        });
+
     });
 
 

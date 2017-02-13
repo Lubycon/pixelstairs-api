@@ -17,7 +17,7 @@ class CreateGiveProductsTable extends Migration
             $table->integer('review_id');
             $table->integer('apply_user_id');
             $table->integer('accept_user_id');
-            $table->string('give_status_code',4);
+            $table->string('give_status_code',4)->default('0400');
             $table->integer('award_id');
             $table->timestamps();
             $table->softDeletes();

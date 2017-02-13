@@ -15,4 +15,14 @@ class GiveProduct extends BaseModel
         'accept_user_id' => 'string',
         'award_id' => 'string',
     ];
+
+    protected $fillable = [
+        'review_id','apply_user_id','accept_user_id','give_status_code','award_id'
+    ];
+
+
+    public function review()
+    {
+        return $this->belongsTo('App\Models\Review','review_id','id');
+    }
 }

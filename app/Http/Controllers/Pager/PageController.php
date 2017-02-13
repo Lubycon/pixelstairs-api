@@ -14,6 +14,7 @@ use App\Models\Division;
 use App\Models\Section;
 use App\Models\Survey;
 use App\Models\Review;
+use App\Models\GiveProduct;
 
 use Abort;
 
@@ -142,9 +143,16 @@ class PageController extends Controller
     private function stringToKeyChecker($string){
         switch($string){
             case 'id' : return 'id';
+
+            case 'applyUserId' : return 'give_products.apply_user_id';
+            case 'acceptUserId' : return 'give_products.accept_user_id';
+
             case 'haitaoProductId' : return 'products.haitao_product_id';
             case 'haitaoUserId' : return 'users.haitao_user_id';
+
             case 'userId' : return 'users.id';
+            case 'reviewId' : return 'reviews.id';
+
             case 'originTitle' : return 'translate_names.original';
             // order, product divide
             case 'stock' : return 'stock';
@@ -238,6 +246,15 @@ class PageController extends Controller
                     ]
                 ]);
                 $this->model = new Review; break;
+            case 'give_product' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'reviews',
+                        "base_table_key_column" => "give_products.review_id",
+                        "join_table_key_column" => "id",
+                    ]
+                ]);
+                $this->model = new GiveProduct; break;
             default : Abort::Error('0040','Unknown Model') ;break; //error point
         }
     }

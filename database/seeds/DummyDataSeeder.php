@@ -87,8 +87,24 @@ class DummyDataSeeder extends Seeder
         DB::table('review_answers')->truncate();
         factory(App\Models\ReviewAnswer::class, 100)->create();
 
-        DB::table('awards')->truncate();
-        factory(App\Models\Award::class, 100)->create();
+
+        $products = App\Models\Product::all();
+        foreach($products as $key => $value){
+            $giftGroup = App\Models\FreeGiftGroup::create([
+                "product_id" => $value['id'],
+                "stock_per_each" => mt_rand(1,3),
+            ]);
+            $rand = mt_rand(6,10);
+
+            for( $i=0;$i<$rand;$i++ ){
+                App\Models\FreeGift::create([
+                    "group_id" => $giftGroup['id'],
+                    "option_id" => $value->option()->orderBy(\DB::raw('RAND()'))->first()['id'],
+                    "stock" => $giftGroup['stock_per_each'] * $rand,
+                ]);
+            }
+        }
+
 
         factory(App\Models\Image::class, 300)->create();
 
@@ -105,19 +121,8 @@ class DummyDataSeeder extends Seeder
         }
 
 
-        $products = App\Models\Product::all();
-        foreach($products as $key => $value){
-            $giftGroup = $value->freeGiftGroup;
-            $rand = mt_rand(6,10);
-
-            for( $i=0;$i<$rand;$i++ ){
-                App\Models\FreeGift::create([
-                    "group_id" => $giftGroup['id'],
-                    "option_id" => $value->option()->orderBy(\DB::raw('RAND()'))->first()['id'],
-                    "stock" => $giftGroup->stock_per_each * $rand,
-                ]);
-            }
-        }
+        DB::table('awards')->truncate();
+        factory(App\Models\Award::class, 100)->create();
 
 
     }
