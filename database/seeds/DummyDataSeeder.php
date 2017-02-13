@@ -32,6 +32,8 @@ class DummyDataSeeder extends Seeder
         DB::table('section_market_infos')->truncate();
         factory(App\Models\SectionGroup::class, 100)->create();
 
+        DB::table('free_gifts')->truncate();
+        DB::table('free_gift_groups')->truncate();
         DB::table('brands')->truncate();
         DB::table('sellers')->truncate();
         DB::table('products')->truncate();
@@ -48,7 +50,7 @@ class DummyDataSeeder extends Seeder
             $collectionNumber = $value['id'];
             $product = Product::find($value['id']);
             $optionName = $this->optionNameGenerate($faker);
-            for( $i=0;$i<mt_rand(0,500);$i++ ) {
+            for( $i=0;$i<mt_rand(1,500);$i++ ) {
                 Option::create(array(
                     'product_id' => $product['id'],
                     'sku' =>
@@ -100,8 +102,24 @@ class DummyDataSeeder extends Seeder
                     "image_group_id" => $value['id'],
                 ]);
             }
-
         }
+
+
+        $products = App\Models\Product::all();
+        foreach($products as $key => $value){
+            $giftGroup = $value->freeGiftGroup;
+            $rand = mt_rand(6,10);
+
+            for( $i=0;$i<$rand;$i++ ){
+                App\Models\FreeGift::create([
+                    "group_id" => $giftGroup['id'],
+                    "option_id" => $value->option()->orderBy(\DB::raw('RAND()'))->first()['id'],
+                    "stock" => $giftGroup->stock_per_each * $rand,
+                ]);
+            }
+        }
+
+
     }
 
     public function optionNameGenerate($faker){

@@ -1279,5 +1279,34 @@
     "chinese": "品质",
     "korean": null,
     "english": null
+  },
+  {
+    "id": 184,
+    "original": "프리기프트",
+    "chinese": "赠品",
+    "korean": "프리기프트",
+    "english": "freegift"
+  },
+  {
+    "id": 185,
+    "original": "기브 대기중",
+    "chinese": "给等待",
+    "korean": "기브미 주문 대기중",
+    "english": "give apply"
+  },
+  {
+    "id": 186,
+    "original": "기브미 당첨",
+    "chinese": "给优胜者",
+    "korean": "기브미 당첨",
+    "english": "give winner"
+  },
+  {
+    "id": 187,
+    "original": "기브미 선정 실패",
+    "chinese": "给失败",
+    "korean": "기브미 선정 실패",
+    "english": "give fail"
   }
+
 ]

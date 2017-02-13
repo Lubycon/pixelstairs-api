@@ -45,6 +45,8 @@ class CreateProductsTable extends Migration
             $table->boolean('is_limited')->default(false);
             $table->string('product_status_code')->default('0300');
 
+            $table->string('free_gift_group_id')->nullable();
+
             $table->datetime('start_date')->nullable();
             $table->datetime('end_date')->nullable();
 

@@ -26,6 +26,10 @@ class StatusTableSeeder extends Seeder
                 'translate_name_id' => 6,
             ),
             array(
+                'code' => '0303',
+                'translate_name_id' => 184,
+            ),
+            array(
                 'code' => '0310',
                 'translate_name_id' => 7,
             ),
@@ -65,7 +69,18 @@ class StatusTableSeeder extends Seeder
                 'code' => '0319',
                 'translate_name_id' => 16,
             ),
-
+            array(
+                'code' => '0400',
+                'translate_name_id' => 185,
+            ),
+            array(
+                'code' => '0401',
+                'translate_name_id' => 186,
+            ),
+            array(
+                'code' => '0402',
+                'translate_name_id' => 187,
+            ),
         );
 
         DB::table('statuses')->insert($data);

@@ -18,6 +18,9 @@ class CreateAwardsTable extends Migration
             $table->string('sku',100);
             $table->integer('user_id')->unsigned();
             $table->boolean('is_written_review')->default(false);
+            $table->string('target',20);
+            $table->integer('give_stock')->unsigned()->nullable();
+            $table->datetime('expire_date');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -220,6 +220,10 @@ class Product extends BaseModel
     {
         return $this->hasOne('App\Models\ImageGroup','id','image_group_id');
     }
+    public function freeGiftGroup()
+    {
+        return $this->hasOne('App\Models\FreeGiftGroup','id','free_gift_group_id');
+    }
 
     // get reference data
     // hasMany('remote_table_column_name','local_column_name');

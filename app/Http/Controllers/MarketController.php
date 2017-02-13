@@ -292,7 +292,7 @@ class MarketController extends Controller
 
     public function updateScheduling(Request $request)
     {
-        $products = Product::whereproduct_status_code('0301')->get();
+        $products = Product::whereproduct_status_code('0301')->whereis_limited(false)->get();
         $successLog = [];
         $finishLog = [];
         $failLog = [];
