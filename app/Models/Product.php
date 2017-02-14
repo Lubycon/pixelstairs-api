@@ -106,6 +106,7 @@ class Product extends BaseModel
             $optionKeys = $this->option;
             foreach ($optionKeys as $key => $value) {
                 $result[] = array(
+                    "id" => $value->id,
                     "name" => $this->getTranslate($value),
                     "price" => $value->price,
                     "stock" => $value->stock,
