@@ -90,6 +90,7 @@ class ReviewController extends Controller
             $product = $this->review->product;
 
             $result->review[] = (object)array(
+                "type" => "review",
                 "id" => $this->review->id,
                 "user" => [
                     "id" => $user['id'],
