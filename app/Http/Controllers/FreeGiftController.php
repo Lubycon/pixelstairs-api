@@ -26,37 +26,59 @@ class FreeGiftController extends Controller
 {
     protected $product;
 
-    public function getList(FreeGiftGetRequest $request, $product_id){
-        $this->language = $request->header('X-mitty-language');
-        $query = $request->query();
-        $query['search'] = "productId:".$product_id;
-        $controller = new PageController('free_gift_group',$query);
-        $collection = $controller->getCollection();
+    public function get(FreeGiftGetRequest $request, $product_id){
+        $this->product = Product::findOrFail($product_id);
+        if( is_null($this->product->free_gift_group_id) ) Abort::Error('0040','This product has no free gifts');
 
-        $result = (object)array(
-            "totalCount" => $controller->totalCount,
-            "currentPage" => $controller->currentPage,
-        );
-        $freeGift = $collection[0];
+        $result = [];
         $totalStock = 0;
-        foreach($freeGift->freeGift as $freeGiftOption){
-            $result->options[] = (object)array(
+        $freeGift = $this->product->freeGiftGroup;
+        foreach($freeGift->freeGift as $freeGiftOption) {
+            $result['options'][] = [
                 "id" => $freeGiftOption->id,
                 "name" => $freeGiftOption->option->getTranslate($freeGiftOption->option),
                 "stock" => $freeGiftOption->stock,
-            );
+            ];
             $totalStock += $freeGiftOption->stock;
         };
-        $result->stockPerEach = $freeGift->stock_per_each;
-        $result->firstDeployCount = $freeGift->first_deploy_count;
-        $result->totalStock = $totalStock;
+        $result['stockPerEach'] = $freeGift->stock_per_each;
+        $result['firstDeployCount'] = $freeGift->first_deploy_count;
+        $result['totalStock'] = $totalStock;
 
-        if(!empty($result->options)){
-            return response()->success($result);
-        }else{
-            return response()->success();
-        }
+        return response()->success($result);
     }
+
+//    public function getList(FreeGiftGetRequest $request, $product_id){
+//        $this->language = $request->header('X-mitty-language');
+//        $query = $request->query();
+//        $query['search'] = "productId:".$product_id;
+//        $controller = new PageController('free_gift_group',$query);
+//        $collection = $controller->getCollection();
+//
+//        $result = (object)array(
+//            "totalCount" => $controller->totalCount,
+//            "currentPage" => $controller->currentPage,
+//        );
+//        $freeGift = $collection[0];
+//        $totalStock = 0;
+//        foreach($freeGift->freeGift as $freeGiftOption){
+//            $result->options[] = (object)array(
+//                "id" => $freeGiftOption->id,
+//                "name" => $freeGiftOption->option->getTranslate($freeGiftOption->option),
+//                "stock" => $freeGiftOption->stock,
+//            );
+//            $totalStock += $freeGiftOption->stock;
+//        };
+//        $result->stockPerEach = $freeGift->stock_per_each;
+//        $result->firstDeployCount = $freeGift->first_deploy_count;
+//        $result->totalStock = $totalStock;
+//
+//        if(!empty($result->options)){
+//            return response()->success($result);
+//        }else{
+//            return response()->success();
+//        }
+//    }
 
     public function post(FreeGiftPostRequest $request,$product_id){
         $this->product = Product::findOrFail($product_id);
@@ -65,10 +87,11 @@ class FreeGiftController extends Controller
         $this->product->free_gift_group_id = $this->product->freeGiftGroup()->create([
             "product_id" => $this->product->id,
             "stock_per_each" => $request->stockPerEach,
+            "first_deploy_count" => $request->firstDeployCount,
         ])['id'];
+        $this->product->freeGiftGroup->freeGift()->saveMany($this->product->freeGiftGroup->createGroupObject($request->options));
         $this->product->product_status_code = "0303";
         $this->product->save();
-        $this->product->freeGiftGroup->freeGift()->saveMany($this->product->freeGiftGroup->createGroupObject($request->options));
         return response()->success($this->product->freeGiftGroup);
     }
 
