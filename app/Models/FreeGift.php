@@ -17,4 +17,14 @@ class FreeGift extends BaseModel
     protected $fillable = [
         'option_id','group_id','stock'
     ];
+
+    public function option()
+    {
+        return $this->hasOne('App\Models\Option','id','option_id');
+    }
+    // get translate data
+    public function translateName()
+    {
+        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+    }
 }

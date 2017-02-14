@@ -16,6 +16,7 @@ class CreateFreeGiftGroupsTable extends Migration
             $table->increments('id');
             $table->integer('product_id');
             $table->integer('stock_per_each');
+            $table->integer('first_deploy_count');
             $table->timestamps();
             $table->softDeletes();
         });

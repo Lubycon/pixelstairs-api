@@ -14,6 +14,9 @@ use App\Models\User;
 
 use App\Traits\GetUserModelTrait;
 
+use App\Http\Requests\GiveApply\GiveApplyPostRequest;
+use App\Http\Requests\GiveApply\GiveApplyGetRequest;
+
 use Log;
 use Abort;
 
@@ -25,7 +28,7 @@ class GiveApplyController extends Controller
     protected $user;
     protected $language;
 
-    public function getList(Request $request, $user_id){
+    public function getList( GiveApplyGetRequest $request, $user_id){
         $this->language = $request->header('X-mitty-language');
         $query = $request->query();
         $query['search'] = "applyUserId:".$user_id;
@@ -67,7 +70,7 @@ class GiveApplyController extends Controller
         }
     }
 
-    public function post( Request $request , $review_id ){
+    public function post( GiveApplyPostRequest $request , $review_id ){
         $this->user = $this->getUserByTokenRequestOrFail($request);
         $this->review = Review::findOrFail($review_id);
         $create = $this->review->applyProduct($this->user);

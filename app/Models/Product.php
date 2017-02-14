@@ -223,7 +223,7 @@ class Product extends BaseModel
     }
     public function freeGiftGroup()
     {
-        return $this->hasOne('App\Models\FreeGiftGroup','product_id','free_gift_group_id');
+        return $this->hasOne('App\Models\FreeGiftGroup','id','free_gift_group_id');
     }
 
     // get reference data

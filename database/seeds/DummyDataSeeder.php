@@ -93,6 +93,7 @@ class DummyDataSeeder extends Seeder
             $giftGroup = App\Models\FreeGiftGroup::create([
                 "product_id" => $value['id'],
                 "stock_per_each" => mt_rand(1,3),
+                "first_deploy_count" => mt_rand(5,10),
             ]);
             $value->free_gift_group_id = $giftGroup['id'];
             $value->save();

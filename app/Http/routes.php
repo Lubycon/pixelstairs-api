@@ -51,6 +51,7 @@ Route::group(['prefix' => '/v1'], function () {
         Route::put('status/{status_name}', 'ProductController@status');
 
         Route::group(['prefix' => 'freegift/'], function () {
+            Route::get('{product_id}', 'FreeGiftController@getList');
             Route::post('{product_id}', 'FreeGiftController@post');
         });
 
@@ -100,8 +101,6 @@ Route::group(['prefix' => '/v1'], function () {
             Route::post('', 'QuestionController@postKey');
         });
     });
-
-
     Route::group(['prefix' => '/give/'], function () {
         Route::group(['prefix' => 'apply/'], function () {
             Route::get('{user_id}', 'GiveApplyController@getList');

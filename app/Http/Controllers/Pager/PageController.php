@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Pager;
 
+use App\Models\FreeGiftGroup;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -152,6 +153,7 @@ class PageController extends Controller
 
             case 'userId' : return 'users.id';
             case 'reviewId' : return 'reviews.id';
+            case 'productId' : return 'products.id';
 
             case 'originTitle' : return 'translate_names.original';
             // order, product divide
@@ -255,6 +257,15 @@ class PageController extends Controller
                     ]
                 ]);
                 $this->model = new GiveProduct; break;
+            case 'free_gift_group' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'products',
+                        "base_table_key_column" => "free_gift_groups.product_id",
+                        "join_table_key_column" => "id",
+                    ]
+                ]);
+                $this->model = new FreeGiftGroup; break;
             default : Abort::Error('0040','Unknown Model') ;break; //error point
         }
     }

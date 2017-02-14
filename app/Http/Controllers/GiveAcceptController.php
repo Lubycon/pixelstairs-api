@@ -17,6 +17,9 @@ use App\Traits\GetUserModelTrait;
 use Log;
 use Abort;
 
+use App\Http\Requests\GiveAccept\GiveAcceptGetRequest;
+use App\Http\Requests\GiveAccept\GiveAcceptPostRequest;
+
 class GiveAcceptController extends Controller
 {
     use GetUserModelTrait;
@@ -25,7 +28,7 @@ class GiveAcceptController extends Controller
     protected $user;
     protected $language;
 
-    public function getList(Request $request, $review_id){
+    public function getList(GiveAcceptGetRequest $request, $review_id){
         $this->user = $this->getUserByTokenRequestOrFail($request);
         $this->language = $request->header('X-mitty-language');
         $query = $request->query();
@@ -57,7 +60,7 @@ class GiveAcceptController extends Controller
         }
     }
 
-    public function post( Request $request , $review_id ){
+    public function post( GiveAcceptPostRequest $request , $review_id ){
         $this->user = $this->getUserByTokenRequestOrFail($request);
         $this->review = Review::findOrFail($review_id);
         $acceptApply = $this->review->acceptUser($request->applyUserId);

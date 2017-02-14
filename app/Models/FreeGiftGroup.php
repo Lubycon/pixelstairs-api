@@ -19,9 +19,6 @@ class FreeGiftGroup extends BaseModel
 
     public function createGroupObject($options){
         $optionModels = [];
-
-        Log::info($this);
-
         foreach( $options as $key => $value ){
             $optionModels[] = new FreeGift([
                 "group_id" => $this->id,
