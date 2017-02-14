@@ -23,7 +23,9 @@ class DatabaseSeeder extends Seeder
         $this->call(GenderTableSeeder::class);
 
         $this->call(ProvisionCategorySeeder::class);
-        $this->call(DummyDataSeeder::class);
+        if( env('APP_ENV') != 'provision' ){
+            $this->call(DummyDataSeeder::class);
+        }
 
         Model::reguard();
     }
