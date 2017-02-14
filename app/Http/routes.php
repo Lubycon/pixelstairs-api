@@ -108,6 +108,9 @@ Route::group(['prefix' => '/v1'], function () {
             Route::post('', 'QuestionController@postKey');
         });
     });
+    Route::group(['prefix' => '/awards/'], function () {
+        Route::get('', 'AwardController@getList');
+    });
     Route::group(['prefix' => '/give/'], function () {
         Route::group(['prefix' => 'apply/'], function () {
             Route::get('{user_id}', 'GiveApplyController@getList');

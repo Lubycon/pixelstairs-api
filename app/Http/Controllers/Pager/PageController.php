@@ -16,6 +16,7 @@ use App\Models\Section;
 use App\Models\Survey;
 use App\Models\Review;
 use App\Models\GiveProduct;
+use App\Models\Award;
 
 use Abort;
 
@@ -266,6 +267,8 @@ class PageController extends Controller
                     ]
                 ]);
                 $this->model = new FreeGiftGroup; break;
+            case 'award' :
+                $this->model = new Award; break;
             default : Abort::Error('0040','Unknown Model') ;break; //error point
         }
     }
