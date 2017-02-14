@@ -30,6 +30,7 @@ class SurveyController extends Controller
         $result = [
             "id" => $survey->id,
             "user" => [
+                "id" => $user->id,
                 "email" => $user->email,
                 "name" => $user->name,
                 "gender" => $user->gender_id,
@@ -70,6 +71,7 @@ class SurveyController extends Controller
             $result->surveys[] = (object)array(
                 "id" => $survey["id"],
                 "user" => [
+                    "id" => $user->id,
                     "email" => $user->email,
                     "name" => $user->name,
                     "gender" => $user->gender_id,
