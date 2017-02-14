@@ -60,6 +60,7 @@ class FreeGiftController extends Controller
 
     public function post(FreeGiftPostRequest $request,$product_id){
         $this->product = Product::findOrFail($product_id);
+        if($this->product->product_status_code != '0300') Abort::Error('0040',"You can change Free Gift only not confirmed product");
         if($this->product->freeGiftGroup()->count() >= 1) Abort::Error('0052',"Already registered at product");
         $this->product->free_gift_group_id = $this->product->freeGiftGroup()->create([
             "product_id" => $this->product->id,

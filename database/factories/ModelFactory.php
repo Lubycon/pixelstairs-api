@@ -253,7 +253,7 @@ $factory->define(App\Models\Award::class, function (Faker\Generator $faker) {
         'user_id' => mt_rand(1,100),
         'target' => 'give',
         'is_written_review' => mt_rand(0,1),
-        'give_stock' => $product->freeGiftGroup->stock_per_each,
+//        'give_stock' => $product->freeGiftGroup->stock_per_each,
         'expire_date' => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
     ];
 });
