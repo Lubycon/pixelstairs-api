@@ -88,28 +88,28 @@ class DummyDataSeeder extends Seeder
         factory(App\Models\ReviewAnswer::class, 100)->create();
 
 
-        $products = App\Models\Product::all();
-        foreach($products as $key => $value){
-            $giftGroup = App\Models\FreeGiftGroup::create([
-                "product_id" => $value['id'],
-                "stock_per_each" => mt_rand(1,3),
-                "first_deploy_count" => mt_rand(5,10),
-            ]);
-            $value->free_gift_group_id = $giftGroup['id'];
-            $value->save();
-            $rand = mt_rand(6,10);
+//        $products = App\Models\Product::all();
+//        foreach($products as $key => $value){
+//            $giftGroup = App\Models\FreeGiftGroup::create([
+//                "product_id" => $value['id'],
+//                "stock_per_each" => mt_rand(1,3),
+//                "first_deploy_count" => mt_rand(5,10),
+//            ]);
+//            $value->free_gift_group_id = $giftGroup['id'];
+//            $value->save();
+//            $rand = mt_rand(6,10);
+//
+//            for( $i=0;$i<$rand;$i++ ){
+//                App\Models\FreeGift::create([
+//                    "group_id" => $giftGroup['id'],
+//                    "option_id" => $value->option()->orderBy(\DB::raw('RAND()'))->first()['id'],
+//                    "stock" => $giftGroup['stock_per_each'] * $rand,
+//                ]);
+//            }
+//        }
 
-            for( $i=0;$i<$rand;$i++ ){
-                App\Models\FreeGift::create([
-                    "group_id" => $giftGroup['id'],
-                    "option_id" => $value->option()->orderBy(\DB::raw('RAND()'))->first()['id'],
-                    "stock" => $giftGroup['stock_per_each'] * $rand,
-                ]);
-            }
-        }
-
-        DB::table('give_products')->truncate();
-        factory(App\Models\GiveProduct::class, 100)->create();
+//        DB::table('give_products')->truncate();
+//        factory(App\Models\GiveProduct::class, 100)->create();
 
         factory(App\Models\Image::class, 300)->create();
         $imageGroup = App\Models\imageGroup::all();

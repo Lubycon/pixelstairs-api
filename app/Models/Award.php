@@ -15,6 +15,10 @@ class Award extends BaseModel
         'user_id' => 'string',
     ];
 
+    protected $fillable = [
+        'product_id','sku','user_id','target','is_review_written','give_stock','expire_date'
+    ];
+
 
     // belongsTo
     // belongsTo('remote_table_column_name','local_column_name');
