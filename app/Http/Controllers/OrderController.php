@@ -32,8 +32,10 @@ class OrderController extends Controller
                     'id' => $order->product['id'],
                     "title" => $order->getTranslate($order->product),
                     'url' => $order->product['url']
+
+
                 ],
-                "sku" => $order['sku'],
+                "sku" => $order->option['sku'],
                 "quantity" => $order['quantity'],
                 "orderStatusCode" => $order['order_status_code'],
                 "orderDate" => $order['order_date'],

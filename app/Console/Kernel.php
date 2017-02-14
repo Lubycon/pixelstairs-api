@@ -31,6 +31,10 @@ class Kernel extends ConsoleKernel
             ->dailyAt('01:00');
 
 
+        $schedule->call('App\Http\Controllers\ReviewController@expire')
+            ->dailyAt('01:00');
+
+
         $fileName = date('Y-d-m_ahi')."_backup.sql";
         $path = "sql/".$fileName;
         $schedule

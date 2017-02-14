@@ -11,12 +11,12 @@ class Award extends BaseModel
     protected $casts = [
         'id' => 'string',
         'product_id' => 'string',
-        'sku' => 'string',
+        'option_id' => 'string',
         'user_id' => 'string',
     ];
 
     protected $fillable = [
-        'product_id','sku','user_id','target','is_review_written','give_stock','expire_date'
+        'product_id','option_id','user_id','target','is_review_written','give_stock','expire_date'
     ];
 
 
@@ -29,6 +29,6 @@ class Award extends BaseModel
     }
     public function option()
     {
-        return $this->belongsTo('App\Models\Option','sku','sku');
+        return $this->belongsTo('App\Models\Option','option_id','id');
     }
 }

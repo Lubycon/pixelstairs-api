@@ -7,6 +7,8 @@ use App\Traits\AuthorizesRequestsOverLoad;
 use App\Traits\GetUserModelTrait;
 use Log;
 
+use App\Models\Award;
+
 class ReviewPostRequest extends Request
 {
     use AuthorizesRequestsOverLoad,
@@ -14,8 +16,10 @@ class ReviewPostRequest extends Request
 
     public function authorize()
     {
+        $award = Award::findOrFail($this->route()->parameters()['award_id']);
         $user = $this->getUserByTokenOrFail($this->header('x-mitty-token'));
-        return !is_null($user);
+
+        return $user->id === $award->user_id;
     }
 
     public function rules()
@@ -24,7 +28,6 @@ class ReviewPostRequest extends Request
             'title' => 'required',
             'answers' => 'required|array',
             'images' => 'required|array',
-            'target' => 'required',
         ];
 
         return $requiredRule;

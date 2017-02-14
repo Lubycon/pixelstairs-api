@@ -13,6 +13,7 @@ class Review extends BaseModel
         'id' => 'string',
         'user_id' => 'string',
         'product_id' => 'string',
+        'option_id' => 'string',
         'image_id' => 'string',
         'image_group_id' => 'string',
     ];
@@ -64,7 +65,7 @@ class Review extends BaseModel
     }
     public function option()
     {
-        return $this->belongsTo('App\Models\Option','sku','sku');
+        return $this->belongsTo('App\Models\Option','option_id','id');
     }
 
 

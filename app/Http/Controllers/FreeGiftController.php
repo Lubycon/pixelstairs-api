@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -111,7 +112,7 @@ class FreeGiftController extends Controller
             "user_id" => $user->id,
             "target" => $request->target,
             "give_stock" => $request->stock,
-            "expire_date" => Carbon::now()->addDays(30),
+            "expire_date" => Carbon::now()->addDays(14),
         ]);
 
         return response()->success([

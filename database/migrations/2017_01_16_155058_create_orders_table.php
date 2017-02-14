@@ -17,7 +17,7 @@ class CreateOrdersTable extends Migration
             $table->integer('haitao_order_id')->unsigned();
             $table->string('haitao_user_id',50);
             $table->integer('product_id')->unsigned();
-            $table->string('sku',100);
+            $table->integer('option_id')->unsigned();
             $table->integer('quantity')->unsigned();
             $table->string('order_status_code',4);
             $table->timestamp('order_date')->nullable();

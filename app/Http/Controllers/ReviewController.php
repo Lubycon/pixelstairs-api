@@ -17,6 +17,7 @@ use App\Models\ImageGroup;
 
 use Log;
 use Abort;
+use Carbon\Carbon;
 
 use App\Traits\GetUserModelTrait;
 use App\Traits\ReviewAnswerControllTraits;
@@ -126,17 +127,15 @@ class ReviewController extends Controller
         $requestDuplicate = $request->duplicate(['search' => "haitaoUserId:$haitao_user_id"]);
         return $this->getList($requestDuplicate);
     }
-    public function post(ReviewPostRequest $request,$target_id){
-        $target = $this->getReviewTargetByRequest($request,$target_id);
+    public function post(ReviewPostRequest $request,$award_id){
+        $award = Award::findOrFail($award_id);
 
         $this->review = new Review;
-
         $this->review->user_id = $this->getUserByTokenRequestOrFail($request)['id'];
-        $this->review->product_id = $target['product_id'];
+        $this->review->product_id = $award->product_id;
+        $this->review->option_id = $award->option_id;
+        $this->review->award_id = $award_id;
         $this->review->title = $request->title;
-        $this->review->sku = $target['sku'];
-        $this->review->target = $request->target;
-
 
         if ( $this->review->save() ){
             $this->review->answer()->saveMany($this->setNewReviewAnswer($request['answers']));
@@ -161,5 +160,21 @@ class ReviewController extends Controller
         }else{
             Abort::Error("0040");
         }
+    }
+
+
+
+    public function expire(Request $request){
+        $expireTarget = Review::where('expire_date','<',Carbon::now()->toDateTimeString())->get();
+        foreach( $expireTarget as $review ){
+            $freeGift = $review->product->freeGiftGroup->where;
+            $return_stock = $review->give_stock;
+
+            $review->give_stock = null;
+            $review->save();
+        }
+
+
+        return response()->success($expireTarget);
     }
 }

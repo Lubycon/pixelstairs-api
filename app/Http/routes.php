@@ -91,9 +91,14 @@ Route::group(['prefix' => '/v1'], function () {
         Route::post('', 'SurveyController@post');
     });
     Route::group(['prefix' => '/reviews/'], function () {
+
+
+        Route::get('/expire', 'ReviewController@expire');
+
+
         Route::get('detail/{review_id}', 'ReviewController@get');
         Route::get('', 'ReviewController@getList');
-        Route::post('{target_id}', 'ReviewController@post');
+        Route::post('{award_id}', 'ReviewController@post');
         Route::put('detail/{review_id}', 'ReviewController@put');
     });
     Route::group(['prefix' => '/questions/'], function () {
