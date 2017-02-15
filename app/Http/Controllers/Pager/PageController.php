@@ -268,6 +268,13 @@ class PageController extends Controller
                 ]);
                 $this->model = new FreeGiftGroup; break;
             case 'award' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'users',
+                        "base_table_key_column" => "awards.user_id",
+                        "join_table_key_column" => "id",
+                    ]
+                ]);
                 $this->model = new Award; break;
             default : Abort::Error('0040','Unknown Model') ;break; //error point
         }

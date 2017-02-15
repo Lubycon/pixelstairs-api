@@ -91,11 +91,6 @@ Route::group(['prefix' => '/v1'], function () {
         Route::post('', 'SurveyController@post');
     });
     Route::group(['prefix' => '/reviews/'], function () {
-
-
-        Route::get('/expire', 'ReviewController@expire');
-
-
         Route::get('detail/{review_id}', 'ReviewController@get');
         Route::get('', 'ReviewController@getList');
         Route::post('{award_id}', 'ReviewController@post');
@@ -110,6 +105,7 @@ Route::group(['prefix' => '/v1'], function () {
     });
     Route::group(['prefix' => '/awards/'], function () {
         Route::get('', 'AwardController@getList');
+        Route::get('{user_id}', 'AwardController@getListByUserId');
     });
     Route::group(['prefix' => '/give/'], function () {
         Route::group(['prefix' => 'apply/'], function () {
