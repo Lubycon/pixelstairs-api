@@ -144,6 +144,8 @@ class ReviewController extends Controller
             $this->review->answer()->saveMany($this->setNewReviewAnswer($request['answers']));
             $fileUpload = new FileUpload( $this->review, $request->images ,'image' );
             $this->review->image_group_id = $fileUpload->getResult();
+            $this->review->award->is_written_review = true;
+            $this->review->award->save();
             $this->review->save();
             return response()->success($this->review);
         }else{
