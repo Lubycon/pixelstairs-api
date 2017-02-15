@@ -114,7 +114,7 @@ $factory->define(App\Models\Seller::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Models\Image::class, function (Faker\Generator $faker) {
     return [
-        'url' => $faker->imageUrl(),
+        'url' => "https://unsplash.it/640?image=".mt_rand(1,1000),
         'is_mitty_own' => false,
     ];
 });

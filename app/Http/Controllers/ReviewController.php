@@ -112,6 +112,7 @@ class ReviewController extends Controller
                 "title" => $this->review->title,
                 "qa" => $this->getQnA($this->review->answer),
                 "images" => $this->review->getImageGroupObject($this->review),
+                "createdTime" => $this->review->created_at->format('Y-m-d H:i:s'),
             );
         };
 

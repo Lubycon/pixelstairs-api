@@ -13,6 +13,7 @@ use Log;
 class AwardController extends Controller
 {
     public $award;
+    public $language;
 
     public function getList(Request $request){
         $this->language = $request->header('X-mitty-language');
@@ -51,6 +52,7 @@ class AwardController extends Controller
                     "skuName" => $this->award->option->getTranslateResultByLanguage($this->award->option->translateName,$this->language),
                     "thumbnailUrl" => $product->getImageObject($product),
                 ],
+                "createdTime" => $this->award->created_at->format('Y-m-d H:i:s'),
             );
         };
 
