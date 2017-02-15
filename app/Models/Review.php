@@ -55,6 +55,10 @@ class Review extends BaseModel
     // belongsTo
     // belongsTo('remote_table_column_name','local_column_name');
 
+    public function award()
+    {
+        return $this->belongsTo('App\Models\Award','award_id','id');
+    }
     public function product()
     {
         return $this->belongsTo('App\Models\Product','product_id','id');
@@ -67,7 +71,6 @@ class Review extends BaseModel
     {
         return $this->belongsTo('App\Models\Option','option_id','id');
     }
-
 
 
     public function image()

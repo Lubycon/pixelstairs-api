@@ -18,6 +18,7 @@ use App\Models\ImageGroup;
 use Log;
 use Abort;
 use Carbon\Carbon;
+use Slack;
 
 use App\Traits\GetUserModelTrait;
 use App\Traits\ReviewAnswerControllTraits;
@@ -163,18 +164,41 @@ class ReviewController extends Controller
     }
 
 
+    public function expire(Request $request)
+    {
+        $expireTarget = Review::whereNotNull('give_stock')->
+                                where('expire_date','<',Carbon::now()->toDateTimeString())->get();
+        $pass = [];
+        $expire = [];
+        $error = [];
 
-    public function expire(Request $request){
-        $expireTarget = Review::where('expire_date','<',Carbon::now()->toDateTimeString())->get();
-        foreach( $expireTarget as $review ){
-            $freeGift = $review->product->freeGiftGroup->where;
-            $return_stock = $review->give_stock;
+        foreach( $expireTarget as $review ) {
+            $award = $review->award;
+            $product = $award->product;
 
-            $review->give_stock = null;
-            $review->save();
+
+            if( is_null($product->free_gift_group_id) ) {
+                $error[] = ["id" => $review->id];
+                $review->give_stock = null;
+                $review->save();
+            }else{
+                $expire[] = ["id" => $review->id];
+                $return_stock = $review->give_stock;
+                $freeGift = $product->freeGiftGroup->freeGift()->whereoption_id($review->option_id)->first();
+                $freeGift->stock += $review->give_stock;
+                $review->give_stock = null;
+
+                $freeGift->save();
+                $review->save();
+            }
         }
 
+        Slack::to('#review_expire_log')->enableMarkdown()->send(
+            'pass = '.json_encode($pass).
+            'expire = '.json_encode($expire).
+            'error = '.json_encode($error)
+        );
 
-        return response()->success($expireTarget);
+        return response()->success();
     }
 }
