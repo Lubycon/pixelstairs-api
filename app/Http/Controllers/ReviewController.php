@@ -90,7 +90,7 @@ class ReviewController extends Controller
             $user = $this->review->user;
             $product = $this->review->product;
 
-            $result->review[] = (object)array(
+            $result->reviews[] = (object)array(
                 "type" => "review",
                 "id" => $this->review->id,
                 "user" => [
@@ -116,7 +116,7 @@ class ReviewController extends Controller
             );
         };
 
-        if(!empty($result->review)){
+        if(!empty($result->reviews)){
             return response()->success($result);
         }else{
             return response()->success();
