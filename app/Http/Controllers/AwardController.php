@@ -31,6 +31,7 @@ class AwardController extends Controller
             $product = $this->award->product;
 
             $result->award[] = (object)array(
+                "type" => "award",
                 "id" => $this->award->id,
                 "expireDate" => $this->award->expire_date,
                 "target" => $this->award->target,
