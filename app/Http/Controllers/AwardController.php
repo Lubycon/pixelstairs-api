@@ -67,7 +67,7 @@ class AwardController extends Controller
     public function getListByUserId(AwardGetUserRequest $request,$user_id){
         $this->language = $request->header('X-mitty-language');
         $query = $request->query();
-        $query['search'] = "userId:".$user_id;
+        $query['filter'] = "userId:".$user_id."||isWrittenReview:false";
         $controller = new PageController('award',$query);
         $collection = $controller->getCollection();
 

@@ -156,6 +156,8 @@ class PageController extends Controller
             case 'reviewId' : return 'reviews.id';
             case 'productId' : return 'products.id';
 
+            case 'isWrittenReview' : return 'awards.is_written_review';
+
             case 'originTitle' : return 'translate_names.original';
             // order, product divide
             case 'stock' : return 'stock';
