@@ -71,6 +71,7 @@ class ReviewController extends Controller
             "title" => $this->review->title,
             "qa" => $this->getQnA($this->review->answer),
             "images" => $this->review->getImageGroupObject($this->review),
+            "giveApplyUserCount" => $this->review->giveProduct->count(),
         ];
 
         return response()->success($response);
@@ -113,6 +114,7 @@ class ReviewController extends Controller
                 "qa" => $this->getQnA($this->review->answer),
                 "images" => $this->review->getImageGroupObject($this->review),
                 "createdTime" => $this->review->created_at->format('Y-m-d H:i:s'),
+                "giveApplyUserCount" => $this->review->giveProduct->count(),
             );
         };
 
