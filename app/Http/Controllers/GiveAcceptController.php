@@ -44,7 +44,7 @@ class GiveAcceptController extends Controller
         foreach($collection as $array){
             $result->accepts[] = (object)array(
                 "id" => $array["id"],
-                "applyUserId" => [
+                "applyUser" => [
                     "id" => $array->review->user->id,
                     "name" => $array->review->user->name,
                     "profileImg" => $array->review->user->image->getObject()
