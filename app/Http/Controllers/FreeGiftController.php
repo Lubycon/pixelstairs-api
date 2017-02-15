@@ -108,7 +108,7 @@ class FreeGiftController extends Controller
         $freeGiftOption->save();
         $award = Award::create([
             "product_id" => $request->productId,
-            "sku" => $freeGiftOption->option->sku,
+            "option_id" => $freeGiftOption->option->id,
             "user_id" => $user->id,
             "target" => $request->target,
             "give_stock" => $request->stock,
