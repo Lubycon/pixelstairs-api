@@ -14,7 +14,10 @@ use App\Models\Category;
 
 use App\Classes\Snoopy;
 use Illuminate\Foundation\Testing\HttpException;
-use PHPHtmlParser\Dom;
+//use PHPHtmlParser\Dom;
+
+use IvoPetkov\HTML5DOMDocument;
+
 use Log;
 use Abort;
 use PHPHtmlParser\Exceptions\EmptyCollectionException;
@@ -28,95 +31,54 @@ class ElevenStreetCrawler
 
     private $result;
 
+    private $marketUrl = "http://www.11st.co.kr/";
+
 
     public function __construct($url){
         $idInfo = $this->getProductId($url);
 
         $this->snoopy = new Snoopy;
-        $this->dom = new Dom;
+        $this->dom = new HTML5DOMDocument();
 
         if( is_null($idInfo) ) Abort::Error("0056","Can Not Found Product Information in Url");
         $this->product_id = $idInfo !== "" ? $idInfo : Abort::Error('0056') ;
-
-        $dom = $this->getDom($url);
-
-
-        Log::info(dd($dom->find('.heading h2')->text));
+        $this->dom = $this->getDom($url);
 
 
-//
-//        $basicProductInfo = $this->basicProductInfo(); // product basic infomation
-//        $basicProductInfWithStock = $this->basicProductInfWithStock(); // product basic infomation with stock
-//        $vendorProductInfo = $this->vendorProductInfo(); // product require info + product detail images
-//        $optionCollection = '';
-//        $optionSkuList = '';
-//        if( $this->sdp_style == "NORMAL" ){
-//            $optionSkuList = $this->pagedOption(0); // product require info + product detail images
-////            $optionSkuList = $this->loadOptions(); // product require info + product detail images
-//        }else if( $this->sdp_style == "FASHION_STYLE_TWO_WAY" ){
-//            $optionCollection = $this->optionAttribute(); // product require info + product detail images
-//            $optionSkuList = $this->optionSkuList($optionCollection);
-//        }else{
-//            Abort::Error('0040',"Product option type not allowed");
-//        }
-//        $productAtf = $this->productAtf(); // product title
-//        $categories = $this->categories(); // product title
 
+
+
+        $last_category = $this->lastCategory($this->dom);
+        $title = $this->getInnerHtml($this->getElement($this->dom,'title'));
+        $priceInfo = $this->priceInfo($this->dom);
+        $deliveryPrice = $this->deliveryPrice($this->dom);
+        $sellerInfo = $this->sellerInfo($this->dom);
+        $product_detail = $this->productDetail($this->dom);
+        $options = $this->options($this->dom);
+        $thumbnail_image = $this->thumbnailImage($this->dom);
+//        $product_detail_image = $this->productDetailImage($this->dom);
 
         $this->result = [
             "id" => (string)$this->product_id,
-            "title" => (string)2222,
+            "title" => (string)$title,
             "priceInfo" => [
-                "price" => (int)33333,
-                "lowestPrice" => (int)4444,
+                "price" => (int)$this->splitWon( $priceInfo['price'] ),
+                "lowestPrice" => (int)$this->splitWon( $priceInfo['lowestPrice'] ),
             ],
-            "deliveryPrice" => (int)5555,
-            "options" => 66666,
-            "brand" => (string)77,
-            "manufacturerCountryId" => "",
+            "deliveryPrice" => (int)$deliveryPrice,
+            "options" => $options,
+            "brand" => (string)$product_detail['brandName'],
+            "manufacturerCountryId" => "", // can not
             "seller" => [
-                "name" => '',
-                "rate" => '',
+                "name" => $sellerInfo['name'],
+                "rate" => $sellerInfo['rate'],
             ],
-            "category" =>[
-                "id" => '1',
-                "name" => 22,
-                "ours" => 123,
-            ],
-            "isLimited" => 123,
-            "detailImages" => 123,
-            "description" => 123,
-            "thumbnailUrl" => 123,
+            "category" => $last_category,
+            "isLimited" => false,
+            "detailImages" => null, // will be
+            "description" => null, // can not
+            "thumbnailUrl" => $thumbnail_image,
         ];
-
-
-
-
-//        $this->result = [
-//            "id" => (string)$this->product_id,
-//            "title" => (string)$productAtf['productName'],
-//            "priceInfo" => [
-//                "price" => (int)$basicProductInfWithStock['price'],
-//                "lowestPrice" => (int)$basicProductInfWithStock['price'],
-//            ],
-//            "deliveryPrice" => (int)$basicProductInfWithStock['deliveryPrice'],
-//            "options" => $optionSkuList,
-//            "brand" => (string)$productAtf['brandName'],
-//            "manufacturerCountryId" => "",
-//            "seller" => [
-//                "name" => "coupang",
-//                "rate" => 4.5,
-//            ],
-//            "category" =>[
-//                "id" => $categories['market_section']['id'],
-//                "name" => $categories['market_section']['name'],
-//                "ours" => $categories['ours'],
-//            ],
-//            "isLimited" => is_null($this->maxBuyAble) ? false : true,
-//            "detailImages" => $vendorProductInfo['detailImage'],
-//            "description" => (string)$basicProductInfo.(string)$vendorProductInfo['requireInfo'],
-//            "thumbnailUrl" => $productAtf["thumbnailUrl"],
-//        ];
     }
 
         private function getProductId($url){
@@ -132,271 +94,298 @@ class ElevenStreetCrawler
         public function getDom($url){
             $requestUrl = $url;
             $dom = $this->getDomResult($requestUrl);
-
             return $dom;
         }
 
 
+        private function priceInfo($dom){
+            $priceBox = $this->getElement($dom,'.price_detail');
+            $original_price = $this->getInnerHtml($this->getElement($priceBox,'.normal_price s'));
+            $sale_price = $this->getInnerHtml($this->getElement($priceBox,'.sale_price'));
+            return [
+                "price" => $original_price,
+                "lowestPrice" => $sale_price,
+            ];
+        }
 
-//
-//    private function optionAttribute(){
-//        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/brandsdp/attributes?itemId=$this->item_id&noAttribute=false&sdpStyle=FASHION_STYLE_TWO_WAY";
-//        $dom = $this->getDomResult($requestUrl);
-//        $eachOption = $dom->find('.each-prod-option');
-//        $result = [];
-//        foreach( $eachOption as $key => $value ){ // option depth
-//            $result[] = [
-//                "key" => $value->getAttribute('data-type-name'),
-//                "values" => $this->getEachOptionAttributes($value),
-//            ];
-//        }
-//        return $result;
-//    }
-//    private function getEachOptionAttributes($option){
-//        $optionValue = $option->find('.prod-option-grid__item');
-//        $result = [];
-//        foreach( $optionValue as $key => $value ){
-//            $result[] = [
-//                "optionKey" => $value->getAttribute('data-option-key'),
-//                "optionValue" => $value->getAttribute('data-option-value'),
-//                "thumbnailUrl" => $value->getAttribute('data-option-img-src'),
-//                "displayType" => $value->getAttribute('data-display-type'),
-//            ];
-//        }
-//        return $result;
-//    }
-//    protected function optionSkuList($optionCollection){
-//        $result = [];
-//        $matchAttr = $this->splitAttrKey($optionCollection[1]['values'][0]['optionKey']);
-//        foreach( $optionCollection[0]['values'] as $key => $value ){
-//            $searchAttr = $this->splitAttrKey($value['optionKey']);
-//            $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/brandsdp/options/0?attrTypeIds=$matchAttr->current&noAttribute=false&sdpStyle=FASHION_STYLE_TWO_WAY&selectedAttrTypeIds=$searchAttr->current&selectedAttrValueIds=$searchAttr->remote";
-//            $dom = json_decode($this->getDomResult($requestUrl));
-//
-//            foreach( $dom->options as $eachOption ){
-//                $result[] = [
-//                    "order" => (int)$key,
-//                    "price" => (int)$this->splitWon($eachOption->salesPrice),
-//                    "name" => (string)$eachOption->title,
-//                    "stock" => (int)$eachOption->remainCount,
-//                    "isSoldout" => (bool)$eachOption->impendSoldOut,
-//                    "thumbnailUrl" => [
-//                        "file" => is_null($eachOption->imageUrl) ? NULL : (string)$eachOption->imageUrl->displayImageUrl,
-//                        "index" => 0,
-//                    ],
-//                ];
-//            }
-//        }
-//        return $result;
-//    }
-////    protected function loadOptions(){
-////        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/loadOptions?itemId=$this->item_id&vendorItemId=$this->vendor_id&&noAttribute=false";
-////        $dom = $this->getDomResult($requestUrl);
-////        $optionKey[] = $this->getText($dom,'.prod-option-name__button');
-////        $options = $this->getElement($dom,'.prod-option-select__item');
-////        $optionResult = [];
-////        foreach( $options as $key => $value ){
-////            $detailUrl = $value->getAttribute('data-request-uri');
-////            if( $detailUrl != '' ){ // option has more request
-////                $parseUrl = '$this->coupangUrl'.str_replace("amp;",'',$detailUrl);
-////                $detailDom = $this->getDomResult($parseUrl);
-////                $getElement = $this->getElement($detailDom,'.prod-option-select__item');
-////                $justPrice = (int)$this->splitWon($this->getText($getElement,'.prod-txt-small'));
-////            }
-////            if( $this->isAllowOptionTitle($value->getAttribute('data-option-title')) ){ // exception
-////                $optionResult[] = [
-////                    "order" => (int)$key,
-////                    "price" => isset($justPrice) ? $justPrice : (int)$this->splitWon($this->getText($value,'.prod-txt-small')),
-////                    "name" => (string)$value->getAttribute('data-option-title'),
-////                    "stock" => (int)$this->maxBuyAble,
-////                    "isSoldout" => (bool)strpos($value->getAttribute('class'),'soldout'),
-////                    "thumbnailUrl" => [
-////                        "file" => (string)$value->getAttribute('data-option-img-src'),
-////                        "index" => 0,
-////                    ],
-////                ];
-////            }
-////        }
-////        return $optionResult;
-////    }
-//    protected function pagedOption($pageNumber){
-//        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/paged-options?page=$pageNumber";
-//        $dom = $this->getDomResult($requestUrl);
-//        $nextPage = $this->getElementAttribute($dom,'.next-url','data-next-url');
-//        $nextNumber = $pageNumber + 1;
-//        $options = $this->getElement($dom,'.prod-option-select__item');
-//        foreach( $options as $key => $value ){
-//            $detailUrl = $value->getAttribute('data-request-uri');
-//            if( $detailUrl != '' ){ // option has more request
-//                $parseUrl = $this->coupangUrl.str_replace("amp;",'',$detailUrl);
-//                $detailDom = $this->getDomResult($parseUrl);
-//                $getElement = $this->getElement($detailDom,'.prod-option-select__item');
-//                $justPrice = (int)$this->splitWon($this->getText($getElement,'.prod-txt-small'));
-//            }
-//            $this->optionResult[] = [
-//                "order" => (int)$key,
-//                "price" => isset($justPrice) ? $justPrice : (int)$this->splitWon($this->getText($value,'.prod-txt-small')),
-//                "name" => (string)$value->getAttribute('data-option-title'),
-//                "stock" => (int)$this->maxBuyAble,
-//                "isSoldout" => (bool)strpos($value->getAttribute('class'),'soldout'),
-//                "thumbnailUrl" => [
-//                    "file" => is_null($value->getAttribute('data-option-img-src')) == "" ? NULL : $value->getAttribute('data-option-img-src'),
-//                    "index" => 0,
-//                ],
-//            ];
-//        }
-//        if( $nextPage != '' ) $this->pagedOption($nextNumber);
-//        return $this->optionResult;
-//    }
-//
-//
-//
-//    protected function categories(){
-//        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/breadcrumb-gnbmenu";
-//        $dom = $this->getDomResult($requestUrl);
-//        $breadcrumb = $dom->find('#breadcrumb .breadcrumb-link');
-//        $category = [];
-//        foreach( $breadcrumb as $value ){
-//            $category[] = [
-//                "id" => (string)$this->getLastSegment($value->getAttribute('href')),
-//                "name" => (string)$value->text,
-//            ];
-//        }
-//        return [
-//            "market_section" => end($category)['name'] == '쿠팡 홈' ? null : end($category),
-//            "ours" => $this->getCategoryData(end($category)),
-//        ];
-//    }
-//    protected function productAtf(){
-//        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/product-atf?itemId=$this->item_id&vendorItemId=$this->vendor_id";
-//        $dom = $this->getDomResult($requestUrl);
-//        return [
-//            "brandName" => $this->getText($dom,'.prod-brand-name'),
-//            "productName" => $this->getText($dom,'.prod-buy-header__title'),
-//            "thumbnailUrl" => [
-//                "file" => $this->getElement($dom,'.prod-image__detail')->getAttribute('data-src'),
-//                "index" => 0,
-//            ],
-//        ];
-//    }
-//    protected function basicProductInfo(){
-//        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/vendor-items/$this->vendor_id/selling-infos?itemId=$this->item_id";
-//        $this->snoopy->fetchtext($requestUrl);
-//        $dom = $this->snoopy->results;
-//        return $dom;
-//    }
-//    protected function basicProductInfWithStock(){
-//        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/vendor-items/$this->vendor_id/sale-infos/sdp";
-//        $dom = $this->getDomResult($requestUrl);
-//        $this->maxBuyAble = $this->getText($dom,'.prod-buyable-quantity');
-//        return [
-//            "isSoldOut" => $this->getElementAttribute($dom,'.prod-value-holder','data-is-sold-out'),
-//            "deliveryPrice" => $this->getElementAttribute($dom,'.prod-value-holder','data-shipping-fee') == ""
-//                ? 0
-//                : $this->getElementAttribute($dom,'.prod-value-holder','data-shipping-fee'),
-//            "price" => $this->getElementAttribute($dom,'.prod-value-holder','data-sale-price'),
-//            "totalStock" => $this->getElementAttribute($dom,'.prod-value-holder','data-stock-quantity'),
-//        ];
-//    }
-//    protected function vendorProductInfo(){
-//        $requestUrl = "$this->coupangUrl/vp/products/$this->product_id/vendor-items/$this->vendor_id?isFixedVendorItem=true&type=sdp";
-//        $dom = $this->getDomResult($requestUrl);
-//        $requireInfo = $this->getMergeText($dom,'.prod-item-attr-name');
-//        $optionsImg = $this->getImageSrc($dom,'.lazy-img','data-src');
-//        return [
-//            "requireInfo" => (string)$requireInfo,
-//            "detailImage" => $optionsImg,
-//        ];
-//    }
-//
-//
-    public function getDomResult($requestUrl){ //common
+        private function deliveryPrice($dom){
+            $boxes = $this->getElementAll($dom,'.det_info');
+            $deliveryBox = null;
+            foreach($boxes as $key => $value){
+                $attr = $value->getAttributes();
+                if( isset($attr['name']) && $attr['name'] == 'dlvCstInfoView' ) $deliveryBox = $value;
+            }
+            $deliveryPrice = $this->getInnerHtml($this->getElement($deliveryBox,'.row .col'));
+            $deliveryPrice = $this->splitDeliveryInfo($deliveryPrice);
+            $deliveryPrice = $this->splitWon($deliveryPrice);
+            return $deliveryPrice;
+        }
+
+        private function splitDeliveryInfo($deliveryPrice){
+            $explode = explode('배송비 : ',$deliveryPrice);
+            return (int)$explode[1] == '무료' ? 0 : $explode[1];
+        }
+
+        private function sellerInfo($dom){
+            $sellerBox = $this->getElement($dom,'.seller_info');
+            $sellerRate = $this->getInnerHtml($this->getElement($sellerBox,'.selr_star_b'));
+            $sellerRate = $this->getSellerRate($sellerRate);
+            return [
+                "name" => $this->getInnerHtml($this->getElement($sellerBox,'.seller_nickname')),
+                "rate" => $sellerRate,
+            ];
+        }
+
+        private function getSellerRate($sellerRate){
+            if( is_null($sellerRate) ) return 4.5;
+            $explode = explode('판매자 평점 별5개 중 ',$sellerRate);
+            $explode = explode('개',$explode[1]);
+            $value = $explode[0];
+            return (int)$value/100*5;
+        }
+
+        private function productDetail($dom){
+            $detailTable = $this->getElement($dom,'.prdc_detail_table');
+            $detailTableTh = $this->getElementAll($detailTable,'th');
+            $brandCell = null;
+            foreach($detailTableTh as $key => $value){
+                $text = $this->getInnerHtml($value);
+                if( $text == '브랜드' ) {
+                    $brandCell = $value->nextSibling->nextSibling;
+                }
+            }
+            return [
+                "brandName" => trim($brandCell->nodeValue),
+            ];
+        }
+
+        private function productDetailImage($dom){
+            $detailTable = $this->getElement($dom,'.prdc_bo_detail .ifrm_bbs');
+            $iframeAttr = $detailTable->getAttributes();
+            dd($iframeAttr);
+        }
+
+        private function lastCategory($dom){
+            $categoryArea = $this->getElement($dom,'.location_wrap');
+            $categories = $this->getElementAll($categoryArea,'.loca_cate_wrap');
+
+            if( count($categories) == 0 ){
+                $script = $this->getElement($categoryArea,'script');
+                $scriptToArray = $this->javascriptStringParse($this->getInnerHtml($script));
+                $sectionId = end($scriptToArray['DealSelCtgr']);
+                foreach( $scriptToArray['DealNaviSCtgr']->DATA as $key => $value ){
+                    if( $value->DISP_CTGR_NO == $sectionId ){
+                        $sectionName = $value->DISP_CTGR_NM;
+                    }
+                }
+                if( is_null($sectionId) || is_null($sectionName) ) Abort::Error("0070","Can not found Category Information");
+            }else{
+                $sectionId = $this->getElement(end($categories),'input')->getAttributes()['value'];
+                $sectionName = $this->getSectionName($this->getElement(end($categories),'button'));
+            }
+            $section = [
+                "id" => (string)$sectionId,
+                "name" => $sectionName,
+                "ours" => $this->getCategoryData(["id"=>$sectionId]),
+            ];
+            return $section;
+        }
+
+        private function thumbnailImage($dom){
+            $thumbnail = $this->getElement($dom,'.thumbBox img')->getAttributes();
+            return [
+                "file" => $thumbnail['src'],
+                "index" => 0,
+            ];
+        }
+
+        private function getSectionName($element){
+            $text = $this->getInnerHtml($element);
+            $text = preg_replace("/<(.*)/","",$text);
+            return trim($text);
+        }
+
+        private function options($dom){
+            $optionArea = $this->getElement($dom,'.option_wrap_layer');
+            $allOptions = $this->getElementAll($optionArea,'.ui_option_list'); // depth catch
+            $optionDepth = count($allOptions);
+            $firstOptions = $this->getElementAll(reset($allOptions),'a'); // depth catch
+            $result = [];
+            foreach($firstOptions as $key => $value){
+                $attr = $value->getAttributes();
+                $parentOption = [
+                    "order" => $key,
+                    "price" => (int)$attr['data-price'],
+                    "name" => $attr['data-dtloptnm'],
+                    "stock" => (int)$attr['data-stckqty'],
+                    "isSoldout" => (int)$attr['data-stckqty'] == 0 ? true : false,
+                    "thumbnailUrl" => null,
+                ];
+
+                if( $optionDepth > 1 ) {
+                    $optionInfo = [
+                        "depth" => $optionDepth > 2 ? "Sub" : "Last",
+                        "level" => 2,
+                        "number_array" => $attr['data-optno'],
+                        "total_depth" => $optionDepth,
+                    ];
+                    $deepOption = $this->getDeepOption($optionInfo);
+                    foreach ($deepOption as $optionKey => $optionValue) {
+                        $result[] = [
+                            "order" => $parentOption['order'],
+                            "price" => $parentOption['price'] + $optionValue['price'],
+                            "name" => $parentOption['name'] . ',' . $optionValue['name'],
+                            "stock" => $optionValue['stock'],
+                            "isSoldout" => $parentOption['isSoldout'] || $optionValue['isSoldout'],
+                            "thumbnailUrl" => null,
+                        ];
+                    }
+                }else{
+                    $result[] = $parentOption;
+                }
+            }
+            return $result;
+        }
+
+        private function getOptionData($info){
+            $requestUrl = $this->marketUrl."product/SellerProductDetailAjax.tmall?method=getProductDetail".$info['depth']."OptionList&prdNo=".$this->product_id."&optNoArr=".$info['number_array']."&optLvl=".$info['level']."&selOptCnt=".$info['total_depth']."&isNewOption=true";
+            $dom = $this->getJsonDomResult($requestUrl);
+            $bodyText = substr($dom, 1, -1);
+            $json = json_decode($bodyText);
+            return $json->infoList;
+        }
+
+        private function getDeepOption($info){
+            $json = $this->getOptionData($info);
+            $lastJson = null;
+            $result = [];
+            foreach( $json as $main_key => $main_value ){
+                $readyResult = [ // ready 2 level option
+                    "name" => $main_value->dtlOptNm,
+                    "price" => isset($main_value->price) ? (int)$main_value->price : (int)0,
+                    "stock" => $main_value->stckQty,
+                    "isSoldout" => (int)$main_value->stckQty == 0 ? true : false,
+                ];
+                if( $info['depth'] != 'Last' ){ // if 3depth option
+                    $lastInfo = ["depth" => "Last","level" => 3,"number_array" => $info["number_array"].','.$main_value->optNo,"total_depth"=>$info['total_depth']];
+                    $lastJson = $this->getOptionData($lastInfo);
+                    foreach( $lastJson as $key => $value ){
+                        $result[] = [
+                            "name" => $readyResult['name'].','.$value->dtlOptNm,
+                            "price" => (int)$readyResult['price'] + (int)$value->price,
+                            "stock" => $value->stckQty,
+                            "isSoldout" => $readyResult['isSoldout'] || (int)$value->stckQty == 0 ? true : false,
+                        ];
+                    }
+                }else{
+                    $result[] = $readyResult;
+                }
+            }
+            return $result;
+        }
+
+    public function getDomResult($requestUrl){
         $this->snoopy->fetch($requestUrl);
         $source = $this->snoopy->results;
         $source = iconv("EUC-KR","UTF-8",$source);
         $source = str_replace(array("\r\n","\r","\n","\t"),'',$source);
-        return $this->dom->load($source);
+        $dom = new HTML5DOMDocument();
+        $dom->loadHTML($source);
+        return $dom;
     }
-    public function getText($dom,$findWord){
+    public function getJsonDomResult($requestUrl){
+        $this->snoopy->fetch($requestUrl);
+        $source = $this->snoopy->results;
+        return $source;
+    }
+
+    public function getElement($dom,$querySelector){
         try{
-            $requireDom = $dom->find($findWord)->text;
-            return $requireDom;
-        }catch(EmptyCollectionException $e){
-            Log::info("$findWord Data not found");
+            $selectors = explode(' ',$querySelector);
+
+            foreach( $selectors as $key => $value ){
+                if( is_null($dom) ) Abort::Error('0040','Go Catch');
+                $dom = $dom->querySelector($value);
+            }
+            return $dom;
+        }catch(\Exception $e){
+            Log::info("$querySelector element not found");
             return null;
         }
     }
-    public function getMergeText($dom,$findWord){
-        $requireDom = $dom->find($findWord);
-        $result = '';
-        foreach ($requireDom as $value)
-        {$result .= $value->text."\n";}
-        return $result;
-    }
-    public function getElement($dom,$findAttr){
-        $requireDom = $dom->find($findAttr);
-        return $requireDom;
-    }
-    public function getElementAttribute($dom,$findAttr,$chooseAttr){
-        $requireDom = $dom->find($findAttr)->getAttribute($chooseAttr);
-        return $requireDom;
-    }
-    public function getImageSrc($dom,$findAttr,$chooseAttr){
-        $requireDom = $dom->find($findAttr);
-
-        $result = [];
-        foreach ($requireDom as $key => $value)
-        {
-            $src = $value->getAttribute($chooseAttr);
-            if( $src[0] == '/' ) $src = 'https:'.$src;
-            $result[] = [
-                "file" => (string)$src,
-                "index" => $key,
-            ];
+    public function getElementAll($dom,$querySelector){
+        try{
+            $selectors = explode(' ',$querySelector);
+            foreach( $selectors as $key => $value ){
+                $dom = $dom->querySelectorAll($value);
+                if( is_null($dom) ) Abort::Error('0040','Go Catch');
+            }
+            return $dom;
+        }catch(\Exception $e){
+            Log::info("$querySelector element not found");
+            return null;
         }
-        return $result;
     }
-//
-//
-//
-//    protected function isAllowOptionTitle($value){
-//        return !in_array($value,$this->optionTitleBlackList);
-//    }
-//    public function getLastSegment($url){
-//        $segments = explode('/',$url);
-//        return end($segments);
-//    }
-    public function splitWon($value){
+
+    public function getInnerHtml($dom){
+        try{
+            $requireDom = $dom->innerHTML;
+            return $requireDom;
+        }catch(\Exception $e){
+            Log::info("inner html not found");
+            return null;
+        }
+    }
+
+    public function splitWon($value){ // common
         $explode = explode('원',$value);
         $result = str_replace(",","", $explode[0]);
         return (int)$result;
     }
-//    public function splitAttrKey($attrTypeIds){
-//        $split = explode(':',$attrTypeIds);
-//        return (object)array(
-//            "current" => $split[0],
-//            "remote" => $split[1],
-//        );
-//    }
-//    public function getCategoryData($marketCategory){
-//        $result = [];
-//        $sections = SectionMarketInfo::wheremarket_category_id($marketCategory['id'])->get();
-//        if(isset($sections[0])){
-//            foreach( $sections as $key => $value ){
-//                $result['sections'][] = (string)$value->section['id'];
-//            }
-//            $division = Division::findOrFail($sections[0]->section['parent_id']);
-//            $category = Category::findOrFail($division['parent_id']);
-//            $result['divisionId'] = (string)$division['id'];
-//            $result['categoryId'] = (string)$category['id'];
-//        }else{
-//            $result = null;
-//        }
-//        return $result;
-//    }
+    public function getCategoryData($marketCategory){ //common
+        $result = [];
+        $sections = SectionMarketInfo::wheremarket_category_id($marketCategory['id'])->get();
+        if(isset($sections[0])){
+            foreach( $sections as $key => $value ){
+                $result['sections'][] = (string)$value->section['id'];
+            }
+            $division = Division::findOrFail($sections[0]->section['parent_id']);
+            $category = Category::findOrFail($division['parent_id']);
+            $result['divisionId'] = (string)$division['id'];
+            $result['categoryId'] = (string)$category['id'];
+        }else{
+            $result = null;
+        }
+        return $result;
+    }
+
+    private function javascriptStringParse($script){
+        $script = str_replace('<script type="text/javascript">','',$script);
+        $script = str_replace('</script>','',$script);
+        $explode = explode(';',$script);
+
+        $scriptToArray = [];
+        foreach( $explode as $key => $value ){
+            if( $value != '' ){
+                $titlePattern = '/(?= )(.*)(?= = )/';
+                preg_match($titlePattern, $value, $title);
+                $title = trim($title[0]);
+                $bodyPattern = "/(?={)(.*)(?=)/";
+                preg_match($bodyPattern, $value, $body);
+                $body = $body[0];
+                if($title=="DealSelCtgr"){
+                    $body=str_replace('CT','"CT',$body);
+                    $body=str_replace('NO','NO"',$body);
+                }
+                $bodyToJson = json_decode(str_replace("'",'"',$body));
+                $scriptToArray[$title] = $bodyToJson;
+            }
+        }
+        return $scriptToArray;
+    }
 
 
-    public function getResult(){
+    public function getResult(){ //common
         return $this->result;
     }
 }
