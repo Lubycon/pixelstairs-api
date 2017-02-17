@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Abort;
+use Carbon\Carbon;
 
 use App\Models\User;
 
@@ -23,10 +24,22 @@ class Review extends BaseModel
     // for apply
     public function applyProduct($user){
         $this->applyDuplicateCheck($user);
+        $this->applyReviewExpiredCheck();
         $this->giveProduct()->create([
             "apply_user_id" => $user->id,
             "accept_user_id" => $this->user_id,
         ]);
+    }
+    public function applyDuplicateCheck($user){
+        if($this->giveProduct()->whereapply_user_id($user->id)->count() ) Abort::Error('0040','Already Applied');
+    }
+    public function applyReviewStockCheck(){
+        if( is_null($this->give_stock) ) Abort::Error('0040','The product no stock');
+    }
+    public function applyReviewExpiredCheck(){
+        if( !is_null($this->expire_date) ){
+            if( $this->expire_date < Carbon::now()->toDateTimeString() ) Abort::Error('0040','This product ended Give time');
+        }
     }
 
     // for accept
@@ -37,9 +50,6 @@ class Review extends BaseModel
 
         $acceptApply->save();
         $this->save();
-    }
-    public function applyDuplicateCheck($user){
-        if($this->giveProduct()->whereapply_user_id($user->id)->count() ) Abort::Error('0040','Already Applied');
     }
     public function acceptStatusCheck($acceptApply){
         if( $acceptApply->give_status_code == "0401" ) Abort::Error('0040','Already Accepted Apply');
