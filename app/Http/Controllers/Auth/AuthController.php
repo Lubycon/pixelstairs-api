@@ -19,7 +19,8 @@ use App\Classes\FileUpload;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 
 use App\Http\Requests\Auth\AuthSigninRequest;
-use App\Http\Requests\Auth\AuthSignupRequest;
+use App\Http\Requests\Auth\AdminAuthSignupRequest;
+use App\Http\Requests\Auth\ServiceAuthSignupRequest;
 use App\Http\Requests\Auth\AuthSigndropRequest;
 use App\Http\Requests\Auth\AuthPostRetrieveRequest;
 use Abort;
@@ -76,13 +77,7 @@ class AuthController extends Controller
     protected function adminSignup(AdminAuthSignupRequest $request)
     {
         $data = $request->json()->all();
-
-        if( $request->getHost() == env('APP_PROVISION_ADMIN_URL') ){
-            $data['password'] = bcrypt(env('COMMON_PASSWORD'));
-        }
-
-        $credentialSignup = Credential::signup($data);
-
+        $credentialSignup = Credential::adminSignup($data);
         if( $user =  User::create($credentialSignup)){
             $id = $user->getAuthIdentifier();
             $token = CheckContoller::insertRememberToken($id);
@@ -95,12 +90,7 @@ class AuthController extends Controller
     protected function serviceSignup(ServiceAuthSignupRequest $request)
     {
         $data = $request->json()->all();
-
-        if( $request->getHost() == env('APP_PROVISION_ADMIN_URL') ){
-            $data['password'] = bcrypt(env('COMMON_PASSWORD'));
-        }
-
-        $credentialSignup = Credential::signup($data);
+        $credentialSignup = Credential::serviceSignup($data);
 
         if( $user =  User::create($credentialSignup)){
             $id = $user->getAuthIdentifier();

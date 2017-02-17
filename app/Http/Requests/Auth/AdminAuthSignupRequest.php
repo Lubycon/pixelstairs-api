@@ -3,15 +3,19 @@
 namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Request;
-use App\Models\User;
-
+use App\Traits\AuthorizesRequestsOverLoad;
+use App\Traits\GetUserModelTrait;
 use Log;
 
-class AuthSignupRequest extends Request
+class AdminAuthSignupRequest extends Request
 {
+    use AuthorizesRequestsOverLoad,
+        GetUserModelTrait;
+
     public function authorize()
     {
-        return true;
+        $user = $this->getUserByTokenOrFail($this->header('x-mitty-token'));
+        return $user->isAdmin();
     }
 
     public function rules()
