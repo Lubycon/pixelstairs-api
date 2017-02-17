@@ -146,6 +146,7 @@ class AuthController extends Controller
                 "grade" => $findUser->grade,
                 "gender" => $findUser->gender_id,
                 "profileImg" => $findUser->getImageObject($findUser),
+                "birthday" => $findUser->birthday
             );
             return response()->success($result);
         }else{
@@ -176,6 +177,7 @@ class AuthController extends Controller
                 ],
                 "likeCategory" => $findUser->getInterest(),
                 "profileImg" => $findUser->getImageObject($findUser),
+                "birthday" => $findUser->birthday
             ]);
         }else{
             Abort::Error('0040');
@@ -199,6 +201,7 @@ class AuthController extends Controller
                 $findUser->address2 = $data['location']['address2'];
                 $findUser->post_code = $data['location']['postCode'];
                 $findUser->gender_id = $data['gender'];
+                $findUser->birthday = $data['birthday'];
                 Interest::firstOrCreate($this->setNewInterest($findUser,$request['likeCategory']));
                 $fileUpload = new FileUpload( $findUser,$data['profileImg'] ,'image' );
                 $findUser->image_id = $fileUpload->getResult();
