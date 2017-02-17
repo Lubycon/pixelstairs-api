@@ -21,7 +21,7 @@ class CreateReviewsTable extends Migration
             $table->string('title',50);
             $table->integer('image_group_id')->unsigned();
             $table->integer('give_stock')->unsigned()->nullable();
-            $table->datetime('expire_date');
+            $table->datetime('expire_date')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

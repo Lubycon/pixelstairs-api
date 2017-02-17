@@ -146,8 +146,12 @@ class ReviewController extends Controller
         $this->review->user_id = $this->getUserByTokenRequestOrFail($request)['id'];
         $this->review->product_id = $award->product_id;
         $this->review->option_id = $award->option_id;
-        $this->review->award_id = $award_id;
         $this->review->title = $request->title;
+        $this->review->award_id = $award->id;
+        $this->review->give_stock = $award->give_stock;
+        $this->review->expire_date = is_null($award->give_stock)
+            ? NULL
+            : Carbon::now()->addDays(3);
 
         if ( $this->review->save() ){
             $this->review->answer()->saveMany($this->setNewReviewAnswer($request['answers']));
@@ -198,7 +202,7 @@ class ReviewController extends Controller
                 $expire[] = ["id" => $review->id];
                 $return_stock = $review->give_stock;
                 $freeGift = $product->freeGiftGroup->freeGift()->whereoption_id($review->option_id)->first();
-                $freeGift->stock += $review->give_stock;
+                $freeGift->stock = $freeGift->stock + $review->give_stock;
                 $review->give_stock = null;
 
                 $freeGift->save();
