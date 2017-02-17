@@ -20,16 +20,10 @@ class FileUpload
     private $inputFile;
     private $fileExt;
     private $responsiveResolution = ['1920','640','320'];
-
-//    private $modelName;
-//    private $modelId;
-//    private $isGroup;
-//
-//    private $saveFileName;
-
+    private $nullCheck = false;
 
     public function __construct($model,$inputFile,$ext){
-        if(is_null($inputFile)) return null;
+        if(is_null($inputFile)) return $this->nullCheck = true;
         $this->storage = Storage::disk('s3');
         $this->tempStorage = $tempStorage = public_path().'/tmp/';
         $this->model = $model;
@@ -206,6 +200,7 @@ class FileUpload
         return !isset($inputFile['file']);
     }
     public function getResult(){
+        if( $this->nullCheck ) return null;
         return $this->createModel['id'];
     }
 }
