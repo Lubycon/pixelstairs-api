@@ -36,6 +36,7 @@ class ReviewController extends Controller
     use GetUserModelTrait,ReviewAnswerControllTraits,OptionControllTraits,ReviewQuestionControllTraits,ImageControllTraits,S3StorageControllTraits;
 
     public $review;
+    public $user;
     public $language;
 
     public function __construct(){
@@ -45,6 +46,7 @@ class ReviewController extends Controller
 
     public function get(Request $request,$review_id){
         $this->language = $request->header('X-mitty-language');
+        $this->user = $this->getUserByTokenRequest($request);
         $this->review = Review::findOrFail($review_id);
 
         $user = $this->review->user;
@@ -53,7 +55,7 @@ class ReviewController extends Controller
         $response = [
             "id" => $this->review->id,
             "user" => [
-                "id" => $user['id'],
+                "id" => $user->id,
                 "name" => $user->name,
                 "profileImg" => $user->getImageObject($user),
             ],
@@ -72,12 +74,15 @@ class ReviewController extends Controller
             "qa" => $this->getQnA($this->review->answer),
             "images" => $this->review->getImageGroupObject($this->review),
             "giveApplyUserCount" => $this->review->giveProduct->count(),
+            "expireDate" => $this->review->expire_date,
+            "isApplied" => $this->review->giveProduct()->whereapply_user_id($this->user->id)->count() > 0,
         ];
 
         return response()->success($response);
     }
     public function getList(Request $request){
         $this->language = $request->header('X-mitty-language');
+        $this->user = $this->getUserByTokenRequest($request);
         $query = $request->query();
         $controller = new PageController('review',$query);
         $collection = $controller->getCollection();
@@ -115,6 +120,8 @@ class ReviewController extends Controller
                 "images" => $this->review->getImageGroupObject($this->review),
                 "createdTime" => $this->review->created_at->format('Y-m-d H:i:s'),
                 "giveApplyUserCount" => $this->review->giveProduct->count(),
+                "expireDate" => $this->review->expire_date,
+                "isApplied" => $this->review->isApplied($this->user),
             );
         };
 

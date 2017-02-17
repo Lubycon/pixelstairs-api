@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Abort;
 
+use App\Models\User;
+
 class Review extends BaseModel
 {
     use SoftDeletes;
@@ -48,6 +50,14 @@ class Review extends BaseModel
     public function reviewStockCheck(){
         if( $this->give_stock <= 0 ) Abort::Error('0040','This review have no stock');
         $this->give_stock = $this->give_stock - 1;
+    }
+
+    public function isApplied($user){
+        $result = false;
+        if( !is_null($user) ){
+            $result = $this->giveProduct()->whereapply_user_id($user->id)->count() > 0;
+        }
+        return $result;
     }
 
 

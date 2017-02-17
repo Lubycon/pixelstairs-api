@@ -17,6 +17,13 @@ trait GetUserModelTrait{
         return $user;
     }
 
+    function getUserByTokenRequest($request){
+        $userId = $this->findUserIdByToken($this->getUserToken($request));
+        $user = $this->getUserModel($userId);
+
+        return $user;
+    }
+
     function getUserByToken($token){
         $userId = $this->findUserIdByToken($token);
         $user = $this->getUserModel($userId);
