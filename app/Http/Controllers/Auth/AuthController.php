@@ -144,6 +144,7 @@ class AuthController extends Controller
                 "phone" => $findUser->phone,
                 "position" => $findUser->position,
                 "grade" => $findUser->grade,
+                "gender" => $findUser->gender_id,
                 "profileImg" => $findUser->getImageObject($findUser),
             );
             return response()->success($result);
@@ -166,6 +167,7 @@ class AuthController extends Controller
                 "phone" => $findUser->phone,
                 "position" => $findUser->position,
                 "grade" => $findUser->grade,
+                "gender" => $findUser->gender_id,
                 "location" => [
                     "city" => $findUser->city,
                     "address1" => $findUser->address1,
@@ -196,6 +198,7 @@ class AuthController extends Controller
                 $findUser->address1 = $data['location']['address1'];
                 $findUser->address2 = $data['location']['address2'];
                 $findUser->post_code = $data['location']['postCode'];
+                $findUser->gender_id = $data['gender'];
                 Interest::firstOrCreate($this->setNewInterest($findUser,$request['likeCategory']));
                 $fileUpload = new FileUpload( $findUser,$data['profileImg'] ,'image' );
                 $findUser->image_id = $fileUpload->getResult();
