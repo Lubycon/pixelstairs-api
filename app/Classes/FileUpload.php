@@ -29,6 +29,7 @@ class FileUpload
 
 
     public function __construct($model,$inputFile,$ext){
+        if(is_null($inputFile)) return null;
         $this->storage = Storage::disk('s3');
         $this->tempStorage = $tempStorage = public_path().'/tmp/';
         $this->model = $model;
