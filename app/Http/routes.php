@@ -26,7 +26,10 @@ Route::group(['prefix' => '/v1'], function () {
         //authenicates
         Route::post('signin', 'Auth\AuthController@signin');
         Route::put('signout', 'Auth\AuthController@signout');
-        Route::post('signup', 'Auth\AuthController@signup');
+
+        Route::post('admin/signup', 'Auth\AuthController@adminSignup');
+        Route::post('service/signup', 'Auth\AuthController@serviceSignup');
+
         Route::delete('signdrop', 'Auth\AuthController@signdrop');
 
         //member data check and get

@@ -41,13 +41,10 @@ class AuthController extends Controller
 
     protected function signin(AuthSigninRequest $request)
     {
-
         $data = $request->json()->all();
         $credentials = Credential::signin($data);
 
-        if(!Auth::once($credentials)){
-            Abort::Error('0040','Login Failed, check email,password');
-        }
+        if(!Auth::once($credentials)) Abort::Error('0040','Login Failed, check email,password');
 
         if( $request->getHost() == env('APP_PROVISION_ADMIN_URL') ){
             if( Auth::user()->grade == 'normal' ) Abort::Error('0043');
@@ -61,9 +58,8 @@ class AuthController extends Controller
             ]);
         }
 
-        if(Auth::user()->status == 'active'){
-            CheckContoller::insertRememberToken(Auth::user()->id);
-        }
+        if(Auth::user()->status == 'active') CheckContoller::insertRememberToken(Auth::user()->id);
+
 
         return response()->success([
             'token' => Auth::user()->remember_token,
@@ -77,7 +73,7 @@ class AuthController extends Controller
         // need somthing other logic
     }
 
-    protected function signup(AuthSignupRequest $request)
+    protected function adminSignup(AdminAuthSignupRequest $request)
     {
         $data = $request->json()->all();
 
@@ -95,6 +91,26 @@ class AuthController extends Controller
             ]);
         }
     }
+
+    protected function serviceSignup(ServiceAuthSignupRequest $request)
+    {
+        $data = $request->json()->all();
+
+        if( $request->getHost() == env('APP_PROVISION_ADMIN_URL') ){
+            $data['password'] = bcrypt(env('COMMON_PASSWORD'));
+        }
+
+        $credentialSignup = Credential::signup($data);
+
+        if( $user =  User::create($credentialSignup)){
+            $id = $user->getAuthIdentifier();
+            $token = CheckContoller::insertRememberToken($id);
+            return response()->success([
+                "token" => $token
+            ]);
+        }
+    }
+
 
     protected function signdrop(AuthSigndropRequest $request)
     {
