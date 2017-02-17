@@ -31,6 +31,8 @@ class AdminUserSeeder extends Seeder
                 'address2' => 'mia',
                 'post_code' => '12312',
                 'image_id' => 2,
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s"),
             ),
             array(
                 'email'=>'peter@mittycompany.com',
@@ -50,6 +52,8 @@ class AdminUserSeeder extends Seeder
                 'address2' => 'street',
                 'post_code' => '5483',
                 'image_id' => 3,
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s"),
             ),
         );
 
