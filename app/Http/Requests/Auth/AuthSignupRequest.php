@@ -7,7 +7,7 @@ use App\Traits\AuthorizesRequestsOverLoad;
 use App\Traits\GetUserModelTrait;
 use Log;
 
-class AdminAuthSignupRequest extends Request
+class AuthSignupRequest extends Request
 {
     use AuthorizesRequestsOverLoad,
         GetUserModelTrait;
@@ -21,13 +21,13 @@ class AdminAuthSignupRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            'haitaoUserId' => "integer",
             'name' => 'required|unique:users,name',
-            'nickname' => 'unique:users,nickname',
-            'email' => 'unique:users,email|email',
+            'email' => 'required|unique:users,email|email',
             'phone' => 'required|unique:users,phone',
-            'password' => 'string',
-            'position' => "string"
+            'password' => 'required|string',
+            'position' => "required|string",
+            'birthday' => "required",
+            'gender' => "required",
         ];
 
         return $requiredRule;

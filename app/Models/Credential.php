@@ -23,15 +23,16 @@ class Credential
       return $credential;
     }
 
-    public static function adminSignup($data){
+    public static function signup($data){
       $credential = [
           'phone' => $data['phone'],
           'email' => $data['email'],
           'name' => $data['name'],
-          'nickname' => isset($data['nickname']) ? $data['nickname'] : NULL,
           'password' => bcrypt(env('COMMON_PASSWORD')),
           'grade' => 'admin',
+          'gender_id' => $data['gender'],
           'position' => isset($data['position']) ? $data['position'] : NULL ,
+          'birthday' => Carbon::parse($data['birthday'])->timezone(config('app.timezone'))->toDateTimeString(),
       ];
       return $credential;
     }
@@ -42,7 +43,7 @@ class Credential
             'email' => $data['email'],
             'name' => $data['name'],
             'password' => bcrypt($data['password']),
-            'gender' => $data['gender'],
+            'gender_id' => $data['gender'],
             'birthday' => Carbon::parse($data['birthday'])->timezone(config('app.timezone'))->toDateTimeString(),
             'grade_id' => 'normal',
             'city' => $data['location']['city'],
