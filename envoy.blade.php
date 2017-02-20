@@ -15,7 +15,7 @@
 #--------------------------------------------------------------------------
 ##
 
-@servers(['pro' => 'aws-mitty-pro','dev' => 'aws-mitty-dev'])
+@servers(['pro' => 'aws-mitty-service-pro','dev' => 'aws-mitty-service-dev'])
 
 
 @setup
