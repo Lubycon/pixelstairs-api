@@ -9,14 +9,14 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Models\Product;
-use App\Models\Order;
+//use App\Models\Order;
 use App\Models\Category;
 use App\Models\Division;
 use App\Models\Section;
-use App\Models\Survey;
-use App\Models\Review;
-use App\Models\GiveProduct;
-use App\Models\Award;
+//use App\Models\Survey;
+//use App\Models\Review;
+//use App\Models\GiveProduct;
+//use App\Models\Award;
 
 use Abort;
 
@@ -186,16 +186,16 @@ class PageController extends Controller
                     ],
                 ]);
                 $this->model = new Product; break;
-            case 'order' :
-                $this->setPartsModel([
-                    [
-                        "join_table_name" => 'products',
-                        "base_table_key_column" => "orders.product_id",
-                        "join_table_key_column" => "id",
-                    ]
-                ]);
-                $this->model = new Order; break;
-                break;
+//            case 'order' :
+//                $this->setPartsModel([
+//                    [
+//                        "join_table_name" => 'products',
+//                        "base_table_key_column" => "orders.product_id",
+//                        "join_table_key_column" => "id",
+//                    ]
+//                ]);
+//                $this->model = new Order; break;
+//                break;
             case 'category' :
                 $this->setPartsModel([
                     [
@@ -228,56 +228,56 @@ class PageController extends Controller
                     ]
                 ]);
                 $this->model = new Section; break;
-            case 'survey' :
-                $this->setPartsModel([
-                    [
-                        "join_table_name" => 'users',
-                        "base_table_key_column" => "surveys.user_id",
-                        "join_table_key_column" => "id",
-                    ]
-                ]);
-                $this->model = new Survey; break;
-            case 'review' :
-                $this->setPartsModel([
-                    [
-                        "join_table_name" => 'users',
-                        "base_table_key_column" => "reviews.user_id",
-                        "join_table_key_column" => "id",
-                    ],
-                    [
-                        "join_table_name" => 'products',
-                        "base_table_key_column" => "reviews.product_id",
-                        "join_table_key_column" => "id",
-                    ]
-                ]);
-                $this->model = new Review; break;
-            case 'give_product' :
-                $this->setPartsModel([
-                    [
-                        "join_table_name" => 'reviews',
-                        "base_table_key_column" => "give_products.review_id",
-                        "join_table_key_column" => "id",
-                    ]
-                ]);
-                $this->model = new GiveProduct; break;
-            case 'free_gift_group' :
-                $this->setPartsModel([
-                    [
-                        "join_table_name" => 'products',
-                        "base_table_key_column" => "free_gift_groups.product_id",
-                        "join_table_key_column" => "id",
-                    ]
-                ]);
-                $this->model = new FreeGiftGroup; break;
-            case 'award' :
-                $this->setPartsModel([
-                    [
-                        "join_table_name" => 'users',
-                        "base_table_key_column" => "awards.user_id",
-                        "join_table_key_column" => "id",
-                    ]
-                ]);
-                $this->model = new Award; break;
+//            case 'survey' :
+//                $this->setPartsModel([
+//                    [
+//                        "join_table_name" => 'users',
+//                        "base_table_key_column" => "surveys.user_id",
+//                        "join_table_key_column" => "id",
+//                    ]
+//                ]);
+//                $this->model = new Survey; break;
+//            case 'review' :
+//                $this->setPartsModel([
+//                    [
+//                        "join_table_name" => 'users',
+//                        "base_table_key_column" => "reviews.user_id",
+//                        "join_table_key_column" => "id",
+//                    ],
+//                    [
+//                        "join_table_name" => 'products',
+//                        "base_table_key_column" => "reviews.product_id",
+//                        "join_table_key_column" => "id",
+//                    ]
+//                ]);
+//                $this->model = new Review; break;
+//            case 'give_product' :
+//                $this->setPartsModel([
+//                    [
+//                        "join_table_name" => 'reviews',
+//                        "base_table_key_column" => "give_products.review_id",
+//                        "join_table_key_column" => "id",
+//                    ]
+//                ]);
+//                $this->model = new GiveProduct; break;
+//            case 'free_gift_group' :
+//                $this->setPartsModel([
+//                    [
+//                        "join_table_name" => 'products',
+//                        "base_table_key_column" => "free_gift_groups.product_id",
+//                        "join_table_key_column" => "id",
+//                    ]
+//                ]);
+//                $this->model = new FreeGiftGroup; break;
+//            case 'award' :
+//                $this->setPartsModel([
+//                    [
+//                        "join_table_name" => 'users',
+//                        "base_table_key_column" => "awards.user_id",
+//                        "join_table_key_column" => "id",
+//                    ]
+//                ]);
+//                $this->model = new Award; break;
             default : Abort::Error('0040','Unknown Model') ;break; //error point
         }
     }

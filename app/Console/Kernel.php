@@ -27,19 +27,10 @@ class Kernel extends ConsoleKernel
     {
 //        $schedule->command('inspire')
 //                 ->hourly();
-        $schedule->call('App\Http\Controllers\MarketController@updateScheduling')
-            ->dailyAt('01:00');
 
 
-        $schedule->call('App\Http\Controllers\ReviewController@expire')
-            ->dailyAt('01:00');
-
-
-        $fileName = date('Y-d-m_ahi')."_backup.sql";
-        $path = "sql/".$fileName;
-        $schedule
-            ->exec("mysqldump -u ".env('DB_USERNAME')." --password=".env('DB_PASSWORD')." ".env('DB_DATABASE')." > ".$path )
-            ->daily();
+//        $schedule->call('App\Http\Controllers\ReviewController@expire')
+//            ->dailyAt('01:00');
     }
 
 }

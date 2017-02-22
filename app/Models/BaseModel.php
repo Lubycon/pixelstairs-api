@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\HeaderBag;
 
 class BaseModel extends Model
 {
+    public $defaultLanguage = 'en';
+
     public function getTranslate($translate){
         $result = [];
 
@@ -44,19 +46,18 @@ class BaseModel extends Model
     }
     public function getTranslateResultByLanguage($translate,$language){
         if( is_null($language) ) Abort::Error("0047");
-        if($language == 'ko' || $language == 'en') $language = "origin";
         if( is_array($translate) ){
             $result = [];
             foreach($translate as $key => $value){
                 $value = $this->isTranslated($value);
                 $data = $this->getTranslateResult($value);
-                $result[] = isset($data[$language]) ? $data[$language] : $data['origin'];
+                $result[] = isset($data[$language]) && $data[$language] != "" ? $data[$language] : $data[$this->defaultLanguage];
             }
             return $result;
         }else{
             $translate = $this->isTranslated($translate);
             $data = $this->getTranslateResult($translate);
-            return isset($data[$language]) ? $data[$language] : $data['origin'];
+            return isset($data[$language]) && $data[$language] != "" ? $data[$language] : $data[$this->defaultLanguage];
         }
     }
     public function isTranslated($value){
