@@ -17,6 +17,8 @@ use App\Models\ImageGroup;
 
 use Log;
 use Abort;
+use Carbon\Carbon;
+use Slack;
 
 use App\Traits\GetUserModelTrait;
 use App\Traits\ReviewAnswerControllTraits;
@@ -34,6 +36,7 @@ class ReviewController extends Controller
     use GetUserModelTrait,ReviewAnswerControllTraits,OptionControllTraits,ReviewQuestionControllTraits,ImageControllTraits,S3StorageControllTraits;
 
     public $review;
+    public $user;
     public $language;
 
     public function __construct(){
@@ -43,6 +46,7 @@ class ReviewController extends Controller
 
     public function get(Request $request,$review_id){
         $this->language = $request->header('X-mitty-language');
+        $this->user = $this->getUserByTokenRequest($request);
         $this->review = Review::findOrFail($review_id);
 
         $user = $this->review->user;
@@ -51,7 +55,7 @@ class ReviewController extends Controller
         $response = [
             "id" => $this->review->id,
             "user" => [
-                "id" => $user['id'],
+                "id" => $user->id,
                 "name" => $user->name,
                 "profileImg" => $user->getImageObject($user),
             ],
@@ -69,12 +73,16 @@ class ReviewController extends Controller
             "title" => $this->review->title,
             "qa" => $this->getQnA($this->review->answer),
             "images" => $this->review->getImageGroupObject($this->review),
+            "giveApplyUserCount" => $this->review->giveProduct->count(),
+            "expireDate" => $this->review->expire_date,
+            "isApplied" => $this->review->giveProduct()->whereapply_user_id($this->user->id)->count() > 0,
         ];
 
         return response()->success($response);
     }
     public function getList(Request $request){
         $this->language = $request->header('X-mitty-language');
+        $this->user = $this->getUserByTokenRequest($request);
         $query = $request->query();
         $controller = new PageController('review',$query);
         $collection = $controller->getCollection();
@@ -88,7 +96,8 @@ class ReviewController extends Controller
             $user = $this->review->user;
             $product = $this->review->product;
 
-            $result->review[] = (object)array(
+            $result->reviews[] = (object)array(
+                "type" => "review",
                 "id" => $this->review->id,
                 "user" => [
                     "id" => $user['id'],
@@ -109,10 +118,14 @@ class ReviewController extends Controller
                 "title" => $this->review->title,
                 "qa" => $this->getQnA($this->review->answer),
                 "images" => $this->review->getImageGroupObject($this->review),
+                "createdTime" => $this->review->created_at->format('Y-m-d H:i:s'),
+                "giveApplyUserCount" => $this->review->giveProduct->count(),
+                "expireDate" => $this->review->expire_date,
+                "isApplied" => $this->review->isApplied($this->user),
             );
         };
 
-        if(!empty($result->review)){
+        if(!empty($result->reviews)){
             return response()->success($result);
         }else{
             return response()->success();
@@ -126,22 +139,26 @@ class ReviewController extends Controller
         $requestDuplicate = $request->duplicate(['search' => "haitaoUserId:$haitao_user_id"]);
         return $this->getList($requestDuplicate);
     }
-    public function post(ReviewPostRequest $request,$target_id){
-        $target = $this->getReviewTargetByRequest($request,$target_id);
+    public function post(ReviewPostRequest $request,$award_id){
+        $award = Award::findOrFail($award_id);
 
         $this->review = new Review;
-
         $this->review->user_id = $this->getUserByTokenRequestOrFail($request)['id'];
-        $this->review->product_id = $target['product_id'];
+        $this->review->product_id = $award->product_id;
+        $this->review->option_id = $award->option_id;
         $this->review->title = $request->title;
-        $this->review->sku = $target['sku'];
-        $this->review->target = $request->target;
-
+        $this->review->award_id = $award->id;
+        $this->review->give_stock = $award->give_stock;
+        $this->review->expire_date = is_null($award->give_stock)
+            ? NULL
+            : Carbon::now()->addDays(3);
 
         if ( $this->review->save() ){
             $this->review->answer()->saveMany($this->setNewReviewAnswer($request['answers']));
             $fileUpload = new FileUpload( $this->review, $request->images ,'image' );
             $this->review->image_group_id = $fileUpload->getResult();
+            $this->review->award->is_written_review = true;
+            $this->review->award->save();
             $this->review->save();
             return response()->success($this->review);
         }else{
@@ -161,5 +178,44 @@ class ReviewController extends Controller
         }else{
             Abort::Error("0040");
         }
+    }
+
+
+    public function expire(Request $request)
+    {
+        $expireTarget = Review::whereNotNull('give_stock')->
+                                where('expire_date','<',Carbon::now()->toDateTimeString())->get();
+        $pass = [];
+        $expire = [];
+        $error = [];
+
+        foreach( $expireTarget as $review ) {
+            $award = $review->award;
+            $product = $award->product;
+
+
+            if( is_null($product->free_gift_group_id) ) {
+                $error[] = ["id" => $review->id];
+                $review->give_stock = null;
+                $review->save();
+            }else{
+                $expire[] = ["id" => $review->id];
+                $return_stock = $review->give_stock;
+                $freeGift = $product->freeGiftGroup->freeGift()->whereoption_id($review->option_id)->first();
+                $freeGift->stock = $freeGift->stock + $review->give_stock;
+                $review->give_stock = null;
+
+                $freeGift->save();
+                $review->save();
+            }
+        }
+
+        Slack::to('#review_expire_log')->enableMarkdown()->send(
+            'pass = '.json_encode($pass).
+            'expire = '.json_encode($expire).
+            'error = '.json_encode($error)
+        );
+
+        return response()->success();
     }
 }

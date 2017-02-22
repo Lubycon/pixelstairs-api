@@ -13,7 +13,7 @@ class Order extends BaseModel
         'product_id' => 'string',
         'haitao_user_id' => 'string',
         'haitao_order_id' => 'string',
-        'sku' => 'string',
+        'option_id' => 'string',
         'order_status_code' => 'string',
     ];
 
@@ -27,7 +27,7 @@ class Order extends BaseModel
     }
     public function option()
     {
-        return $this->belongsTo('App\Models\Option','sku','sku');
+        return $this->belongsTo('App\Models\Option','option_id','id');
     }
     public function status()
     {

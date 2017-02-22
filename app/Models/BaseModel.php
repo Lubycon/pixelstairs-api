@@ -45,7 +45,6 @@ class BaseModel extends Model
     public function getTranslateResultByLanguage($translate,$language){
         if( is_null($language) ) Abort::Error("0047");
         if($language == 'ko' || $language == 'en') $language = "origin";
-
         if( is_array($translate) ){
             $result = [];
             foreach($translate as $key => $value){

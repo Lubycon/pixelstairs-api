@@ -16,6 +16,7 @@ use App\Models\Section;
 use App\Models\Survey;
 use App\Models\Review;
 use App\Models\GiveProduct;
+use App\Models\Award;
 
 use Abort;
 
@@ -155,6 +156,8 @@ class PageController extends Controller
             case 'reviewId' : return 'reviews.id';
             case 'productId' : return 'products.id';
 
+            case 'isWrittenReview' : return 'awards.is_written_review';
+
             case 'originTitle' : return 'translate_names.original';
             // order, product divide
             case 'stock' : return 'stock';
@@ -266,6 +269,15 @@ class PageController extends Controller
                     ]
                 ]);
                 $this->model = new FreeGiftGroup; break;
+            case 'award' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'users',
+                        "base_table_key_column" => "awards.user_id",
+                        "join_table_key_column" => "id",
+                    ]
+                ]);
+                $this->model = new Award; break;
             default : Abort::Error('0040','Unknown Model') ;break; //error point
         }
     }

@@ -15,7 +15,7 @@ class CreateAwardsTable extends Migration
         Schema::create('awards', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('product_id')->unsigned();
-            $table->string('sku',100);
+            $table->integer('option_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->boolean('is_written_review')->default(false);
             $table->string('target',20);

@@ -118,7 +118,7 @@ class DummyDataSeeder extends Seeder
             for( $i=0;$i<$rand;$i++ ){
                 App\Models\Image::create([
                     "index" => $i,
-                    "url" => $faker->imageUrl,
+                    'url' => "https://unsplash.it/640?image=".mt_rand(1,1000),
                     "image_group_id" => $value['id'],
                 ]);
             }

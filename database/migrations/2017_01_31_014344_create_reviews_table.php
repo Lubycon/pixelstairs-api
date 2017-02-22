@@ -16,12 +16,12 @@ class CreateReviewsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('product_id')->unsigned();
-            $table->string('sku',100);
+            $table->integer('award_id')->unsigned();
+            $table->integer('option_id')->unsigned();
             $table->string('title',50);
-            $table->string('target',15);
             $table->integer('image_group_id')->unsigned();
             $table->integer('give_stock')->unsigned()->nullable();
-            $table->datetime('expire_date');
+            $table->datetime('expire_date')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

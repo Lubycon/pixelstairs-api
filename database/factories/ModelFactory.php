@@ -114,7 +114,7 @@ $factory->define(App\Models\Seller::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Models\Image::class, function (Faker\Generator $faker) {
     return [
-        'url' => $faker->imageUrl(),
+        'url' => "https://unsplash.it/640?image=".mt_rand(1,1000),
         'is_mitty_own' => false,
     ];
 });
@@ -166,7 +166,7 @@ $factory->define(App\Models\Order::class, function (Faker\Generator $faker) {
         'haitao_order_id' => mt_rand(10000,100000),
         'haitao_user_id' => mt_rand(10000,100000),
         'product_id' => $option['product_id'],
-        'sku' => $option['sku'],
+        'option_id' => $option['id'],
         'order_status_code' => '0313',
         'quantity' => mt_rand(1,3),
         'order_date' => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
@@ -209,9 +209,9 @@ $factory->define(App\Models\Review::class, function (Faker\Generator $faker) {
     return [
         'user_id' => mt_rand(1,100),
         'product_id' => $product['id'],
-        'sku' => $product->option->first()['sku'],
+        'award_id' => factory(App\Models\Award::class)->create()->id,
+        'option_id' => $product->option->first()['id'],
         'title' => $faker->streetName,
-        'target' => mt_rand(0,1) == 0 ? 'award' : 'buy',
         'image_group_id' => factory(App\Models\ImageGroup::class)->create()->id,
         'expire_date' => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
     ];
@@ -249,7 +249,7 @@ $factory->define(App\Models\Award::class, function (Faker\Generator $faker) {
     $product = App\Models\Product::find(mt_rand(1,100));
     return [
         'product_id' => $product['id'],
-        'sku' => $product->option->first()['sku'],
+        'option_id' => $product->option->first()['id'],
         'user_id' => mt_rand(1,100),
         'target' => 'give',
         'is_written_review' => mt_rand(0,1),

@@ -14,6 +14,7 @@ use App\Models\Market;
 use App\Models\Product;
 
 use App\Crawlers\CoupangCrawler;
+use App\Crawlers\ElevenStreetCrawler;
 
 use App\Traits\OptionControllTraits;
 
@@ -102,6 +103,9 @@ class MarketController extends Controller
 
         if( $this->market['code'] == '0103' ){
             $crawlClass = new CoupangCrawler($this->url);
+            return response()->success($crawlClass->getResult());
+        }else if( $this->market['code'] == '0100' ){
+            $crawlClass = new ElevenStreetCrawler($this->url);
             return response()->success($crawlClass->getResult());
         }else{
             Abort::Error('0040',"This Market Code Not Allow");

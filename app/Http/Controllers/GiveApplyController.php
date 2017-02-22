@@ -60,6 +60,7 @@ class GiveApplyController extends Controller
                     "thumbnailUrl" => $array->review->product->image->getObject(),
                 ],
                 "giveStatusCode" => $array['give_status_code'],
+                "expireDate" => $array->review->expire_date,
             );
         };
 

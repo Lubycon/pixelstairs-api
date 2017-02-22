@@ -1,13 +1,5 @@
 <?php
 Route::group(['prefix' => '/v1'], function () {
-
-//    Route::get('/category','insertSectionController@categoryOrder');
-//    Route::get('/division','insertSectionController@divisionActive');
-//    Route::get('/insert','insertSectionController@check');
-
-//    Route::get('test', 'BackupController@DatabaseBackup'); // get detail example
-
-
     Route::group(['prefix' => '/haitao/'], function () {
         Route::group(['prefix' => 'product/'], function () {
             Route::get('{haitao_product_id}', 'HaitaoController@productDetailGet'); // get detail example
@@ -23,19 +15,16 @@ Route::group(['prefix' => '/v1'], function () {
 
     });
     Route::group(['prefix' => '/members/'], function () {
-        //authenicates
         Route::post('signin', 'Auth\AuthController@signin');
         Route::put('signout', 'Auth\AuthController@signout');
-        Route::post('signup', 'Auth\AuthController@signup');
         Route::delete('signdrop', 'Auth\AuthController@signdrop');
 
-        //member data check and get
         Route::get('', 'Auth\AuthController@getList');
+
         Route::get('simple', 'Auth\AuthController@simpleRetrieve');
         Route::get('detail/{id}', 'Auth\AuthController@getRetrieve');
         Route::post('detail/{id}', 'Auth\AuthController@postRetrieve');
 
-        //about password
         Route::group(['prefix' => 'pwd/'], function () {
             Route::post('reset', 'Auth\PasswordController@postReset');
         });
@@ -51,7 +40,7 @@ Route::group(['prefix' => '/v1'], function () {
         Route::put('status/{status_name}', 'ProductController@status');
 
         Route::group(['prefix' => 'freegift/'], function () {
-            Route::get('{product_id}', 'FreeGiftController@getList');
+            Route::get('{product_id}', 'FreeGiftController@get');
             Route::post('{product_id}', 'FreeGiftController@post');
             Route::group(['prefix' => 'winner/'], function () {
                 Route::post('{user_id}', 'FreeGiftController@winnerPost');
@@ -93,7 +82,7 @@ Route::group(['prefix' => '/v1'], function () {
     Route::group(['prefix' => '/reviews/'], function () {
         Route::get('detail/{review_id}', 'ReviewController@get');
         Route::get('', 'ReviewController@getList');
-        Route::post('{target_id}', 'ReviewController@post');
+        Route::post('{award_id}', 'ReviewController@post');
         Route::put('detail/{review_id}', 'ReviewController@put');
     });
     Route::group(['prefix' => '/questions/'], function () {
@@ -102,6 +91,9 @@ Route::group(['prefix' => '/v1'], function () {
             Route::get('{division_id}', 'QuestionController@getKeys');
             Route::post('', 'QuestionController@postKey');
         });
+    });
+    Route::group(['prefix' => '/awards/'], function () {
+        Route::get('', 'AwardController@getList');
     });
     Route::group(['prefix' => '/give/'], function () {
         Route::group(['prefix' => 'apply/'], function () {
@@ -114,8 +106,27 @@ Route::group(['prefix' => '/v1'], function () {
         });
 
     });
+    Route::get('/data/', 'DataResponseController@dataSimpleResponse');
 
 
+    Route::group(['prefix' => '/admin'], function () {
+        Route::group(['prefix' => '/members/'], function () {
+            Route::post('signup', 'Auth\AuthController@signup');
+        });
+    });
 
-    Route::get('/data/','DataResponseController@dataSimpleResponse');
+
+    Route::group(['prefix' => '/service'], function () {
+        Route::group(['prefix' => '/members/'], function () {
+            Route::post('signup', 'Auth\AuthController@Ssignup');
+
+            Route::get('simple', 'Auth\AuthController@SsimpleRetrieve');
+            Route::get('detail/{id}', 'Auth\AuthController@SgetRetrieve');
+            Route::post('detail/{id}', 'Auth\AuthController@SpostRetrieve');
+        });
+
+        Route::group(['prefix' => '/awards/'], function () {
+            Route::get('{user_id}', 'AwardController@getListByUserId');
+        });
+    });
 });
