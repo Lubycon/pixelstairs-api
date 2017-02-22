@@ -13,29 +13,29 @@ class BaseModel extends Model
 {
     public $defaultLanguage = 'en';
 
-    public function getTranslate($translate){
-        $result = [];
-
-        if( is_array($translate) ){
-            foreach( $translate as $key => $array ){
-                $result[] = $this->getTranslateResult($array->translateName);
-            }
-        }else{
-            $result = $this->getTranslateResult($translate->translateName);
-        }
-        return $result;
-    }
-    public function getTranslateDescription($translate){
-        $result = [];
-        if( is_array($translate) ){
-            foreach( $translate as $key => $array ){
-                $result[] = $this->getTranslateResult($array->translateDescription);
-            }
-        }else{
-            $result = $this->getTranslateResult($translate->translateDescription);
-        }
-        return $result;
-    }
+//    public function getTranslate($translate){
+//        $result = [];
+//
+//        if( is_array($translate) ){
+//            foreach( $translate as $key => $array ){
+//                $result[] = $this->getTranslateResult($array->translateName);
+//            }
+//        }else{
+//            $result = $this->getTranslateResult($translate->translateName);
+//        }
+//        return $result;
+//    }
+//    public function getTranslateDescription($translate){
+//        $result = [];
+//        if( is_array($translate) ){
+//            foreach( $translate as $key => $array ){
+//                $result[] = $this->getTranslateResult($array->translateDescription);
+//            }
+//        }else{
+//            $result = $this->getTranslateResult($translate->translateDescription);
+//        }
+//        return $result;
+//    }
     public function getTranslateResult($translate){
         return [
             'origin' => $translate['original']['original'],
