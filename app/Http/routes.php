@@ -65,5 +65,13 @@ Route::group(['prefix' => '/v1'], function () {
 //            Route::post('{review_id}', 'GiveAcceptController@post');
 //        });
 //    });
+
+    Route::group(['prefix' => '/paypal'], function () {
+        Route::group(['prefix' => '/payments'], function () {
+            Route::get('detail', 'PaypalPaymentController@detail');
+            Route::post('create', 'PaypalPaymentController@payment');
+            Route::post('execute', 'PaypalPaymentController@execute');
+        });
+    });
     Route::get('/data/', 'DataResponseController@dataSimpleResponse');
 });
