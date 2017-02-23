@@ -37,24 +37,6 @@ class Credential
       return $credential;
     }
 
-    public static function serviceSignup($data){
-        $credential = [
-            'phone' => $data['phone'],
-            'email' => $data['email'],
-            'name' => $data['name'],
-            'password' => bcrypt($data['password']),
-            'gender_id' => $data['gender'],
-            'birthday' => Carbon::parse($data['birthday'])->timezone(config('app.timezone'))->toDateTimeString(),
-            'grade_id' => 'normal',
-            'city' => $data['location']['city'],
-            'address1' => $data['location']['address1'],
-            'address2' => $data['location']['address2'],
-            'post_code' => $data['location']['postCode'],
-        ];
-        return $credential;
-    }
-
-
 
     public static function isAdmin($data){
         return strpos($data['id'],'@');

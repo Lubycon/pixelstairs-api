@@ -9,7 +9,7 @@ class Brand extends BaseModel
     use SoftDeletes;
 
     protected $fillable = [
-        'id','translate_name_id'
+        'id','name_translate_id'
     ];
 
     protected $casts = [
@@ -21,7 +21,7 @@ class Brand extends BaseModel
 
     public function translateName()
     {
-        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+        return $this->hasOne('App\Models\BrandNameTranslate','id','name_translate_id');
     }
 
 

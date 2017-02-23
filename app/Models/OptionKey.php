@@ -9,7 +9,7 @@ class OptionKey extends BaseModel
     use SoftDeletes;
 
     protected $fillable = [
-        'translate_name_id'
+        'name_translate_id'
     ];
 
     protected $casts = [
@@ -19,6 +19,6 @@ class OptionKey extends BaseModel
     // get translate data
     public function translateName()
     {
-        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+        return $this->hasOne('App\Models\OptionKeyNameTranslate','id','name_translate_id');
     }
 }

@@ -99,7 +99,7 @@ class DataResponseController extends Controller
                     foreach($modelInfo as $key => $value ){
                         $value['name'] = $value->getTranslateResultByLanguage($value->translateName,$this->language);
                         unset(
-                            $value['translate_name_id'],
+                            $value['name_translate_id'],
                             $value->translateName
                         );
                     }

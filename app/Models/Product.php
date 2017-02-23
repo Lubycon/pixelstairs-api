@@ -11,12 +11,13 @@ class Product extends BaseModel
     use SoftDeletes;
 
     protected $fillable = [
-        'translate_name_id','translate_description_id','image_id','image_group_id'
+        'name_translate_id','description_translate_id','image_id','image_group_id'
     ];
 
     protected $casts = [
         'id' => 'string',
         'market_product_id' => 'string',
+        'haitao_product_id' => 'string',
         'category_id' => 'string',
         'division_id' => 'string',
         'section_group_id' => 'string',
@@ -176,6 +177,7 @@ class Product extends BaseModel
     // get reference data
     // hasOne('remote_table_column_name','local_column_name');
 
+
     public function category()
     {
         return $this->hasOne('App\Models\Category','id','category_id');
@@ -240,11 +242,11 @@ class Product extends BaseModel
     // get translate data
     public function translateName()
     {
-        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+        return $this->hasOne('App\Models\ProductTitleTranslate','id','title_translate_id');
     }
     public function translateDescription()
     {
-        return $this->hasOne('App\Models\TranslateDescription','id','translate_description_id');
+        return $this->hasOne('App\Models\ProductDescriptionTranslate','id','description_translate_id');
     }
 
 }

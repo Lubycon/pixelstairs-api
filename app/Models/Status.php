@@ -15,6 +15,6 @@ class Status extends BaseModel
 
     public function translateName()
     {
-        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+        return $this->hasOne('App\Models\StatusNameTranslate','id','name_translate_id');
     }
 }

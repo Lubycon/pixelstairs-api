@@ -9,7 +9,7 @@ class Category extends BaseModel
     use SoftDeletes;
 
     protected $fillable = [
-        'id','translate_name_id',
+        'id','name_translate_id',
     ];
 
     protected $casts = [
@@ -22,7 +22,7 @@ class Category extends BaseModel
 
     public function translateName()
     {
-        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+        return $this->hasOne('App\Models\CategoryNameTranslate','id','name_translate_id');
     }
 
 

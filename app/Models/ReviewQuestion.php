@@ -9,7 +9,7 @@ class ReviewQuestion extends BaseModel
     use SoftDeletes;
 
     protected $fillable = [
-        "question_key_id","product_id","translate_description_id",
+        "question_key_id","product_id","description_translate_id",
     ];
 
     protected $casts = [
@@ -23,7 +23,7 @@ class ReviewQuestion extends BaseModel
 
     public function translateDescription()
     {
-        return $this->hasOne('App\Models\TranslateDescription','id','translate_description_id');
+        return $this->hasOne('App\Models\ReviewQuestionDescriptionTranslate','id','description_translate_id');
     }
 
     public function questionKey()

@@ -9,14 +9,14 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Models\Product;
-//use App\Models\Order;
+use App\Models\Order;
 use App\Models\Category;
 use App\Models\Division;
 use App\Models\Section;
-//use App\Models\Survey;
-//use App\Models\Review;
-//use App\Models\GiveProduct;
-//use App\Models\Award;
+use App\Models\Survey;
+use App\Models\Review;
+use App\Models\GiveProduct;
+use App\Models\Award;
 
 use Abort;
 
@@ -158,7 +158,7 @@ class PageController extends Controller
 
             case 'isWrittenReview' : return 'awards.is_written_review';
 
-            case 'originTitle' : return 'translate_names.original';
+            case 'originTitle' : return $this->baseTableName.'_title_translate.original';
             // order, product divide
             case 'stock' : return 'stock';
             case 'safeStock' : return 'safe_stock';
@@ -180,8 +180,8 @@ class PageController extends Controller
             case 'product' :
                 $this->setPartsModel([
                     [
-                        "join_table_name" => 'translate_names',
-                        "base_table_key_column" => "translate_name_id",
+                        "join_table_name" => $this->baseTableName.'_title_translate',
+                        "base_table_key_column" => "title_translate_id",
                         "join_table_key_column" => "id",
                     ],
                 ]);
@@ -199,8 +199,8 @@ class PageController extends Controller
             case 'category' :
                 $this->setPartsModel([
                     [
-                        "join_table_name" => 'translate_names',
-                        "base_table_key_column" => "translate_name_id",
+                        "join_table_name" => $this->baseTableName.'_name_translate',
+                        "base_table_key_column" => "name_translate_id",
                         "join_table_key_column" => "id",
                     ]
                 ]);
@@ -208,8 +208,8 @@ class PageController extends Controller
             case 'division' :
                 $this->setPartsModel([
                     [
-                        "join_table_name" => 'translate_names',
-                        "base_table_key_column" => "translate_name_id",
+                        "join_table_name" => $this->baseTableName.'_name_translate',
+                        "base_table_key_column" => "name_translate_id",
                         "join_table_key_column" => "id",
                     ]
                 ]);
@@ -222,62 +222,62 @@ class PageController extends Controller
                         "join_table_key_column" => "section_id",
                     ],
                     [
-                        "join_table_name" => 'translate_names',
-                        "base_table_key_column" => "translate_name_id",
+                        "join_table_name" => $this->baseTableName.'_name_translate',
+                        "base_table_key_column" => "name_translate_id",
                         "join_table_key_column" => "id",
                     ]
                 ]);
                 $this->model = new Section; break;
-//            case 'survey' :
-//                $this->setPartsModel([
-//                    [
-//                        "join_table_name" => 'users',
-//                        "base_table_key_column" => "surveys.user_id",
-//                        "join_table_key_column" => "id",
-//                    ]
-//                ]);
-//                $this->model = new Survey; break;
-//            case 'review' :
-//                $this->setPartsModel([
-//                    [
-//                        "join_table_name" => 'users',
-//                        "base_table_key_column" => "reviews.user_id",
-//                        "join_table_key_column" => "id",
-//                    ],
-//                    [
-//                        "join_table_name" => 'products',
-//                        "base_table_key_column" => "reviews.product_id",
-//                        "join_table_key_column" => "id",
-//                    ]
-//                ]);
-//                $this->model = new Review; break;
-//            case 'give_product' :
-//                $this->setPartsModel([
-//                    [
-//                        "join_table_name" => 'reviews',
-//                        "base_table_key_column" => "give_products.review_id",
-//                        "join_table_key_column" => "id",
-//                    ]
-//                ]);
-//                $this->model = new GiveProduct; break;
-//            case 'free_gift_group' :
-//                $this->setPartsModel([
-//                    [
-//                        "join_table_name" => 'products',
-//                        "base_table_key_column" => "free_gift_groups.product_id",
-//                        "join_table_key_column" => "id",
-//                    ]
-//                ]);
-//                $this->model = new FreeGiftGroup; break;
-//            case 'award' :
-//                $this->setPartsModel([
-//                    [
-//                        "join_table_name" => 'users',
-//                        "base_table_key_column" => "awards.user_id",
-//                        "join_table_key_column" => "id",
-//                    ]
-//                ]);
-//                $this->model = new Award; break;
+            case 'survey' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'users',
+                        "base_table_key_column" => "surveys.user_id",
+                        "join_table_key_column" => "id",
+                    ]
+                ]);
+                $this->model = new Survey; break;
+            case 'review' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'users',
+                        "base_table_key_column" => "reviews.user_id",
+                        "join_table_key_column" => "id",
+                    ],
+                    [
+                        "join_table_name" => 'products',
+                        "base_table_key_column" => "reviews.product_id",
+                        "join_table_key_column" => "id",
+                    ]
+                ]);
+                $this->model = new Review; break;
+            case 'give_product' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'reviews',
+                        "base_table_key_column" => "give_products.review_id",
+                        "join_table_key_column" => "id",
+                    ]
+                ]);
+                $this->model = new GiveProduct; break;
+            case 'free_gift_group' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'products',
+                        "base_table_key_column" => "free_gift_groups.product_id",
+                        "join_table_key_column" => "id",
+                    ]
+                ]);
+                $this->model = new FreeGiftGroup; break;
+            case 'award' :
+                $this->setPartsModel([
+                    [
+                        "join_table_name" => 'users',
+                        "base_table_key_column" => "awards.user_id",
+                        "join_table_key_column" => "id",
+                    ]
+                ]);
+                $this->model = new Award; break;
             default : Abort::Error('0040','Unknown Model') ;break; //error point
         }
     }

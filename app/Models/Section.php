@@ -11,7 +11,7 @@ class Section extends BaseModel
     protected $fillable = [
         "id",
         "parent_id",
-        "translate_name_id",
+        "name_translate_id",
     ];
 
     protected $casts = [
@@ -39,7 +39,7 @@ class Section extends BaseModel
     // get translate data
     public function translateName()
     {
-        return $this->hasOne('App\Models\TranslateName','id','translate_name_id');
+        return $this->hasOne('App\Models\SectionNameTranslate','id','name_translate_id');
     }
 
 

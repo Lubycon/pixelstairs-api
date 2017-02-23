@@ -13,29 +13,6 @@ class BaseModel extends Model
 {
     public $defaultLanguage = 'en';
 
-//    public function getTranslate($translate){
-//        $result = [];
-//
-//        if( is_array($translate) ){
-//            foreach( $translate as $key => $array ){
-//                $result[] = $this->getTranslateResult($array->translateName);
-//            }
-//        }else{
-//            $result = $this->getTranslateResult($translate->translateName);
-//        }
-//        return $result;
-//    }
-//    public function getTranslateDescription($translate){
-//        $result = [];
-//        if( is_array($translate) ){
-//            foreach( $translate as $key => $array ){
-//                $result[] = $this->getTranslateResult($array->translateDescription);
-//            }
-//        }else{
-//            $result = $this->getTranslateResult($translate->translateDescription);
-//        }
-//        return $result;
-//    }
     public function getTranslateResult($translate){
         return [
             'origin' => $translate['original']['original'],
@@ -63,8 +40,9 @@ class BaseModel extends Model
     public function isTranslated($value){
         if( is_null($value) ) return NULL;
         if( !isset($value['original']['original']) ){
-            if( isset( $value['translate_name_id'] ) ) return $value->translateName;
-            if( isset( $value['translate_description_id'] ) ) return $value->translateDescription;
+            if( isset( $value['name_translate_id'] ) ) return $value->translateName;
+            if( isset( $value['title_translate_id'] ) ) return $value->translateName;
+            if( isset( $value['description_translate_id'] ) ) return $value->translateDescription;
         }
         return $value;
     }
