@@ -8,6 +8,7 @@ use App\Models\TranslateDescription;
 use Log;
 use Abort;
 use Symfony\Component\HttpFoundation\HeaderBag;
+use Request;
 
 class BaseModel extends Model
 {
@@ -21,7 +22,8 @@ class BaseModel extends Model
             'en' => $translate['english'],
         ];
     }
-    public function getTranslateResultByLanguage($translate,$language){
+    public function getTranslateResultByLanguage($translate){
+        $language = Request::header('x-mitty-language');
         if( is_null($language) ) Abort::Error("0047");
         if( is_array($translate) ){
             $result = [];

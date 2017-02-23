@@ -10,7 +10,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Pager\PageController;
 use App\Models\Category;
 
-use App\Traits\TranslateTraits;
 use Log;
 
 use App\Http\Requests\Category\CategoryPostRequest;
@@ -19,10 +18,8 @@ use App\Http\Requests\Category\CategoryDeleteRequest;
 
 class CategoryController extends Controller
 {
-    use TranslateTraits;
 
     public $category;
-    public $language;
 
 //    /**
 //     * @SWG\Get(
@@ -72,7 +69,6 @@ class CategoryController extends Controller
 //     */
 
     public function getList(Request $request){
-        $this->language = $request->header('X-mitty-language');
         $query = $request->query();
         $controller = new PageController('category',$query);
         $collection = $controller->getCollection();
@@ -84,7 +80,7 @@ class CategoryController extends Controller
         foreach($collection as $array){
             $result->categories[] = (object)array(
                 "id" => $array["id"],
-                "name" => $array->getTranslateResultByLanguage($array,$this->language),
+                "name" => $array->getTranslateResultByLanguage($array),
             );
         };
 

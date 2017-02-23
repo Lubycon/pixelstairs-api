@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 
 use App\Http\Controllers\Pager\PageController;
 use App\Models\Division;
-use App\Traits\TranslateTraits;
 
 use App\Http\Requests\Division\DivisionPostRequest;
 use App\Http\Requests\Division\DivisionPutRequest;
@@ -17,7 +16,6 @@ use App\Http\Requests\Division\DivisionDeleteRequest;
 
 class DivisionController extends Controller
 {
-    use TranslateTraits;
 
     public $division;
     public $language;
@@ -35,7 +33,7 @@ class DivisionController extends Controller
         foreach($collection as $array){
             $result->divisions[] = (object)array(
                 "id" => $array["id"],
-                "name" => $array->getTranslateResultByLanguage($array,$this->language),
+                "name" => $array->getTranslateResultByLanguage($array),
                 "parentId" => $array['parent_id'],
             );
         };

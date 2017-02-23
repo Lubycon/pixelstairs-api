@@ -13,7 +13,7 @@ trait StatusInfoTraits{
         if( !$this->isSameStatus($product_status_code) ){
             $this->statusPermissionCheck($request);
             $this->forConfirm($product_status_code);
-            $this->targetProduct->status_code = $product_status_code;
+            $this->targetProduct->product_status_code = $product_status_code;
         }
         return $this->targetProduct;
     }

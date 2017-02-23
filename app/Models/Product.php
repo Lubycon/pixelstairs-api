@@ -71,7 +71,7 @@ class Product extends BaseModel
         }
         return $result;
     }
-    public function getOptionCollection($options,$language){
+    public function getOptionCollection($options){
         $optionDivide = $this->optionDivide($options);
         $result = [];
         if( count($this->option) ) {
@@ -80,7 +80,7 @@ class Product extends BaseModel
                 if (is_null($optionKeys['option_key_id_' . $i])) return $result;
 
                 $result[] = [
-                    "name" => $this->getTranslateResultByLanguage($optionKeys->optionKey($i)->first(),$language),
+                    "name" => $this->getTranslateResultByLanguage($optionKeys->optionKey($i)->first()),
                     "values" => $optionDivide[$i],
                 ];
             }
@@ -100,14 +100,14 @@ class Product extends BaseModel
         }
         return $result;
     }
-    public function getOptionTranslate($language){
+    public function getOptionTranslate(){
         $result = [];
         if( count($this->option) ) {
             $optionKeys = $this->option;
             foreach ($optionKeys as $key => $value) {
                 $result[] = array(
                     "id" => $value->id,
-                    "name" => $this->getTranslateResultByLanguage($value,$language),
+                    "name" => $this->getTranslateResultByLanguage($value),
                     "price" => $value->price,
                     "stock" => $value->stock,
                     "safeStock" => $value->safe_stock,
@@ -118,14 +118,14 @@ class Product extends BaseModel
         }
         return $result;
     }
-    public function getProvisionOption($language,$priceUnit){
+    public function getProvisionOption($priceUnit){
         $result = [];
         if (count($this->option)) {
             $optionKeys = $this->option;
             foreach ($optionKeys as $key => $value) {
                 if( $value->stock > $value->safe_stock ){
                     $result[] = array(
-                        "name" => $this->getTranslateResultByLanguage($value,$language),
+                        "name" => $this->getTranslateResultByLanguage($value),
                         "price" => $value->price,
                         "priceUnit" => $priceUnit,
                         "stock" => $value->stock,

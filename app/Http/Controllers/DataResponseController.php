@@ -65,7 +65,6 @@ class DataResponseController extends Controller
 //     *     )
 //     * )
 //     */
-    public $language;
 
     private function getModelByWhitelist($query){
         $whiteList = (object)array(
@@ -87,7 +86,6 @@ class DataResponseController extends Controller
     }
 
     public function dataSimpleResponse(Request $request){
-        $this->language = $request->header('X-mitty-language');
         $query = $request->query();
         $models = $this->getModelByWhitelist($query);
 
@@ -97,7 +95,7 @@ class DataResponseController extends Controller
                 if( count($modelInfo) == 0 ){}
                 else if( isset($modelInfo[0]['translate_name_id']) ){
                     foreach($modelInfo as $key => $value ){
-                        $value['name'] = $value->getTranslateResultByLanguage($value->translateName,$this->language);
+                        $value['name'] = $value->getTranslateResultByLanguage($value->translateName);
                         unset(
                             $value['name_translate_id'],
                             $value->translateName

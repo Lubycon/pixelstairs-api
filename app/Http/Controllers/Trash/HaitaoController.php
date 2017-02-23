@@ -102,7 +102,7 @@
 //
 //        if( $product->product_status_code != '0301' ) Abort::Error('0043',"Ended sale product");
 //
-//        $options = $product->getProvisionOption($this->language,$product["unit"]);
+//        $options = $product->getProvisionOption($product["unit"]);
 //
 //        $response = (object)array(
 //            "mittyProductId" => $product["id"],

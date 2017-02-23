@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\ImageGroup;
 use App\Models\SectionGroup;
-use App\Models\TranslateName;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -21,41 +20,33 @@ use Abort;
 use App\Traits\GetUserModelTrait;
 use App\Traits\OptionControllTraits;
 use App\Traits\StatusInfoTraits;
-use App\Traits\TranslateTraits;
 use App\Traits\SectionTrait;
-use App\Traits\ImageControllTraits;
-use App\Traits\S3StorageControllTraits;
 
 class ProductController extends Controller
 {
     use GetUserModelTrait,
         OptionControllTraits,
         StatusInfoTraits,
-        TranslateTraits,
-        SectionTrait,
-        ImageControllTraits,
-        S3StorageControllTraits;
+        SectionTrait;
 
     public $product;
     public $product_id;
     public $market_id;
     public $market_product_id;
     public $market_category_id;
-    public $language;
 
     public function get(Request $request,$id){
-        $this->language = $request->header('X-mitty-language');
         $product = Product::findOrFail($id);
         $response = (object)array(
             "id" => $product["id"],
             "marketProductId" => $product["market_product_id"],
             "marketId" => $product->market->code,
-            "title" => $product->getTranslateResultByLanguage($product->translateName,$this->language),
-            "brand" => $product->brand->getTranslateResultByLanguage($product->brand->translateName,$this->language),
-            "description" => $product->getTranslateResultByLanguage($product->translateDescription,$this->language),
-            "categoryName" => $product->category->getTranslateResultByLanguage($product->category->translateName,$this->language),
-            "divisionName" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
-            "sections" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
+            "title" => $product->getTranslateResultByLanguage($product->translateName),
+            "brand" => $product->brand->getTranslateResultByLanguage($product->brand->translateName),
+            "description" => $product->getTranslateResultByLanguage($product->translateDescription),
+            "categoryName" => $product->category->getTranslateResultByLanguage($product->category->translateName),
+            "divisionName" => $product->division->getTranslateResultByLanguage($product->division->translateName),
+            "sections" => $product->getTranslateResultByLanguage($product->getSections()),
             "weight" => $product["weight"],
             "priceInfo" => $product->getPriceInfo(),
             "deliveryPrice" => $product["domestic_delivery_price"],
@@ -69,8 +60,8 @@ class ProductController extends Controller
             "createDate" => Carbon::instance($product["created_at"])->toDateTimeString(),
             "startDate" => $product["start_date"],
             "endDate" => $product["end_date"],
-            "optionKeys" => $product->getTranslateResultByLanguage($product->getOptionKey(),$this->language),
-            "options" => $product->getOptionTranslate($this->language),
+            "optionKeys" => $product->getTranslateResultByLanguage($product->getOptionKey()),
+            "options" => $product->getOptionTranslate(),
             "seller" => $product->getSeller(),
             "productGender" => $product->gender->id,
             "manufacturerCountryId" => $product->manufacturer_country_id,
@@ -81,16 +72,15 @@ class ProductController extends Controller
     }
 
     public function getSimple(Request $request,$id){
-        $this->language = $request->header('X-mitty-language');
         $product = Product::findOrFail($id);
         $response = (object)array(
             "id" => $product["id"],
-            "title" => $product->getTranslateResultByLanguage($product->translateName,$this->language),
-            "brand" => $product->brand->getTranslateResultByLanguage($product->brand->translateName,$this->language),
-            "description" => $product->getTranslateResultByLanguage($product->translateDescription,$this->language),
-            "categoryName" => $product->category->getTranslateResultByLanguage($product->category->translateName,$this->language),
-            "divisionName" => $product->division->getTranslateResultByLanguage($product->division->translateName,$this->language),
-            "sections" => $product->getTranslateResultByLanguage($product->getSections(),$this->language),
+            "title" => $product->getTranslateResultByLanguage($product->translateName),
+            "brand" => $product->brand->getTranslateResultByLanguage($product->brand->translateName),
+            "description" => $product->getTranslateResultByLanguage($product->translateDescription),
+            "categoryName" => $product->category->getTranslateResultByLanguage($product->category->translateName),
+            "divisionName" => $product->division->getTranslateResultByLanguage($product->division->translateName),
+            "sections" => $product->getTranslateResultByLanguage($product->getSections()),
             "thumbnailUrl" => $product->getImageObject($product),
 //            "questions" => $product->getQuestionsByLanguage($this->language),
         );
@@ -112,9 +102,9 @@ class ProductController extends Controller
             $result->products[] = (object)array(
                 "id" => $product["id"],
                 "marketProductId" => $product["market_product_id"],
-                "title" => $product->getTranslateResultByLanguage($product->translateName,$this->language),
-                "brand" => $product->brand->getTranslateResultByLanguage($product->brand->translateName,$this->language),
-                "description" => $product->getTranslateResultByLanguage($product->translateDescription,$this->language),
+                "title" => $product->getTranslateResultByLanguage($product->translateName),
+                "brand" => $product->brand->getTranslateResultByLanguage($product->brand->translateName),
+                "description" => $product->getTranslateResultByLanguage($product->translateDescription),
                 "weight" => $product["weight"],
                 "priceInfo" => $product->getPriceInfo(),
                 "thumbnailUrl" => $product->getImageObject($product),

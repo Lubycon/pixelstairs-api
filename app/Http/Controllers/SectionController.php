@@ -11,7 +11,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Pager\PageController;
 use App\Models\Section;
 use Log;
-use App\Traits\TranslateTraits;
 
 use App\Http\Requests\Section\SectionPostRequest;
 use App\Http\Requests\Section\SectionPutRequest;
@@ -19,13 +18,10 @@ use App\Http\Requests\Section\SectionDeleteRequest;
 
 class SectionController extends Controller
 {
-    use TranslateTraits;
 
     public $section;
-    public $language;
 
     public function getList(Request $request){
-        $this->language = $request->header('X-mitty-language');
         $query = $request->query();
         $controller = new PageController('section',$query);
         $collection = $controller->getCollection();
@@ -38,7 +34,7 @@ class SectionController extends Controller
         foreach($collection as $array){
             $result->sections[] = (object)array(
                 "id" => $array["id"],
-                "name" => $array->getTranslateResultByLanguage($array,$this->language),
+                "name" => $array->getTranslateResultByLanguage($array),
                 "parentId" => $array['parent_id'],
                 "marketId" => $array->sectionMarketInfo['market_id'],
                 "marketCategoryId" => $array->sectionMarketInfo['market_category_id'],

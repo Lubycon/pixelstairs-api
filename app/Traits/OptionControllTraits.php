@@ -23,13 +23,15 @@ trait OptionControllTraits
                 $fileUpload = new FileUpload( $this->product,$option["thumbnailUrl"] ,'image' );
                 $image_id = $fileUpload->getResult();
             }
+            $optionModel = new Option;
+
             $result[] = new Option([
                 "product_id" => $this->product->id,
                 "sku" => $this->createSku($index),
                 "price" => $option["price"],
                 "stock" => $option["stock"],
                 "safe_stock" => Option::absoluteSafeStockCkeck($safeStock),
-                "translate_name_id" => $this->createTranslateName($option['name'])['id'],
+                "name_translate_id" => $optionModel->createTranslate($option['name']),
                 'image_id' => $image_id,
                 "option_collection_id" => $optionCollection['id'],
             ]);
@@ -42,6 +44,7 @@ trait OptionControllTraits
         $this->isDirtyOption($product,$options);
         foreach ($options as $key => $option) {
             $originalSku = $product->option[$key]->sku;
+            $optionModel = new Option;
             if($originalSku !== $option['sku']) Abort::Error('0040',"Diff SKU");
 //                $image_id = null;
 //                if( !is_null($option["thumbnailUrl"]['file']) ){
@@ -51,7 +54,7 @@ trait OptionControllTraits
                 $product->option[$key]->price = $option["price"];
                 $product->option[$key]->stock = $option["stock"];
                 $product->option[$key]->safe_stock = Option::absoluteSafeStockCkeck($safeStock);
-                $product->option[$key]->translate_name_id = $this->createTranslateName($option['name'])['id'];
+                $product->option[$key]->name_translate_id = $optionModel->createTranslate($option['name']);
 //                $product->option[$key]->image_id = $image_id;
                 $product->option[$key]->option_collection_id = $optionCollection['id'];
                 if (!$product->option[$key]->update()) Abort::Error("0040","Option Update Fail");
@@ -81,7 +84,9 @@ trait OptionControllTraits
         $optionCollection = array();
         $i = 0;
         foreach ($optionKeys as $key => $value) {
-            $optionCollection['option_key_id_' . $i] = OptionKey::firstOrCreate($this->relationTranslateName($value))['id'];
+            $optionKey = new OptionKey;
+            $optionCollection['option_key_id_' . $i] =
+                OptionKey::firstOrCreate(["name_translate_id"=>$optionKey->createTranslate($value)])['id'];
             $i++;
         }
         return OptionCollection::firstOrCreate($optionCollection);

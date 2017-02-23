@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Auth;
 
 use App\Models\User;
-use App\Models\Image;
 use App\Models\Interest;
 use App\Models\Credential;
 
@@ -24,7 +23,6 @@ use App\Http\Requests\Auth\AuthPostRetrieveRequest;
 use Abort;
 
 use App\Traits\GetUserModelTrait;
-use App\Traits\S3StorageControllTraits;
 use App\Traits\InterestControllTraits;
 
 use App\Jobs\LastSigninTimeCheckerJob;
@@ -35,8 +33,7 @@ class AuthController extends Controller
 {
     use ThrottlesLogins,
         GetUserModelTrait,
-        InterestControllTraits,
-        S3StorageControllTraits;
+        InterestControllTraits;
 
     protected function signin(AuthSigninRequest $request)
     {
