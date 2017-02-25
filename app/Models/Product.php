@@ -39,7 +39,7 @@ class Product extends BaseModel
         return [
             "price" => $this->original_price,
             "lowestPrice" => $this->lower_price,
-            "unit" => $this->unit,
+            "unit" => $this->currency,
         ];
     }
     public function getSectionIds(){
