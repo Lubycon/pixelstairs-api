@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Abort;
+use League\Flysystem\Exception;
 use Log;
 use Illuminate\Http\Request;
 
@@ -11,8 +12,19 @@ use App\Http\Controllers\Controller;
 
 use GuzzleHttp\Client;
 
+use App\Models\Order;
+use App\Models\Option;
+use App\Models\Product;
+
+use App\Traits\GetUserModelTrait;
+
 class PaypalPaymentController extends Controller
 {
+    use GetUserModelTrait;
+
+    public $user;
+    public $product;
+    public $option;
     public $client;
     public $paypalUrl;
     public $paymentUrl;
@@ -20,6 +32,8 @@ class PaypalPaymentController extends Controller
     public $secretKey;
 
     public function __construct(Request $request){
+        $this->user = $this->getUserByTokenRequestOrFail($request);
+
         $this->client = new Client();
         $this->setPlace('sandbox');
         $this->paymentUrl = $this->paypalUrl."/payments/payment";
@@ -75,24 +89,58 @@ class PaypalPaymentController extends Controller
     }
 
     public function payment(Request $request){
-        $response = $this->client->request('POST', $this->paymentUrl , [
-            'headers' => [
-                "Content-Type" => "application/json",
-                "Authorization" => $this->accessToken,
-            ],
-            'json' => [
-                "intent" => "sale",
-                "redirect_urls" => $request->redirect_urls,
-                "payer" => [
-                    "payment_method" => "paypal",
+        try{
+            $response = $this->client->request('POST', $this->paymentUrl , [
+                'headers' => [
+                    "Content-Type" => "application/json",
+                    "Authorization" => $this->accessToken,
                 ],
-                "transactions" => $request->transactions,
-            ]
-        ])->getBody()->getContents();
+                'json' => [
+                    "intent" => "sale",
+                    "redirect_urls" => $request->redirect_urls,
+                    "payer" => [
+                        "payment_method" => "paypal",
+                    ],
+                    "transactions" => $request->transactions,
+                ]
+            ])->getBody()->getContents();
+            $decodeResult = json_decode($response);
+        }catch(\Exception $e){
+            Abort::Error('0070',$e);
+        }
 
-        $decodeResult = json_decode($response);
+            $items = $request->transactions[0]['item_list']['items'][0];
+            $customInfo = json_decode($request->transactions[0]['custom']);
 
-        return response()->success($decodeResult);
+            $this->product = Product::findOrFail($customInfo->productId);
+            $this->option = Option::findOrFail($items['sku']);
+
+            $order = new Order([
+                "user_id" => $this->user->id,
+                "order_status_code" => "0310",
+                "country_id" => $customInfo->countryId,
+                "market_id" => $this->product->market_id,
+                "product_id" => $this->product->id,
+                "product_option_id" => $this->option->id,
+                "product_price" => $items['price'],
+                "product_currency" => $items['currency'],
+                "product_quantity" => $items['quantity'],
+                "product_weight" => $this->product->weight,
+                "product_url" => $this->product->url,
+                "product_total_price" => $items['price'] * $items['quantity'],
+                "domestic_delivery_price" => $this->product->domestic_delivery_price,
+                "domestic_delivery_currency" => $this->product->currency,
+                "international_delivery_price" => 123123,
+                "international_delivery_currency" => "USD",
+                "from_currency_amount" => 1100,
+                "from_currency" => "KRW",
+                "to_currency_amount" => 1,
+            ]);
+        if($order->save()){
+            return response()->success($decodeResult);
+        }else{
+            Abort::Error('0050','Can not save Order Data');
+        }
     }
 
     public function execute(Request $request){

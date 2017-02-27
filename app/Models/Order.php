@@ -7,6 +7,28 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Order extends BaseModel
 {
     use SoftDeletes;
+    
+    protected $fillable = [
+        "user_id",
+        "order_status_code",
+        "country_id",
+        "market_id",
+        "product_id",
+        "product_option_id",
+        "product_price",
+        "product_currency",
+        "product_quantity",
+        "product_weight",
+        "product_url",
+        "product_total_price",
+        "domestic_delivery_price",
+        "domestic_delivery_currency",
+        "international_delivery_price",
+        "international_delivery_currency",
+        "from_currency_amount",
+        "from_currency",
+        "to_currency_amount",
+    ];
 
     protected $casts = [
         'id' => 'string',
