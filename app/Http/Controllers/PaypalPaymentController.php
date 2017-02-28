@@ -86,13 +86,14 @@ class PaypalPaymentController extends Controller
             $this->exceptionCatch($e);
         }
         $decodeResult = json_decode($response);
+        $items = $decodeResult->transactions[0]->item_list->items[0];
+        $customInfo = json_decode($request->transactions[0]->custom);
+        $this->product = Product::findOrFail($customInfo->productId);
+        $this->option = Option::findOrFail($items->sku);
 
-        Log::info( var_dump($decodeResult) );
-
-        $item = $decodeResult->transactions[0]->item_list->items[0];
-        $item->thumbnailUrl = '';
-        $item->marketName = '';
-        $item->options = '';
+        $items->thumbnailUrl = $this->product->getImageObject($this->product);
+        $items->marketName = $this->product->market->getTranslateResultByLanguage($this->product->market->translateName);
+        $items->options = $this->product->getOptionTranslate();
 
         return response()->success($decodeResult);
     }
@@ -117,7 +118,6 @@ class PaypalPaymentController extends Controller
         }catch(\Exception $e){
             $this->exceptionCatch($e);
         }
-
         $items = $request->transactions[0]['item_list']['items'][0];
         $customInfo = json_decode($request->transactions[0]['custom']);
 
