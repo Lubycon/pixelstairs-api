@@ -87,7 +87,7 @@ class PaypalPaymentController extends Controller
         }
         $decodeResult = json_decode($response);
 
-        Log::info($decodeResult);
+        Log::info( var_dump($decodeResult) );
 
         $item = $decodeResult->transactions[0]['item_list']['items'][0];
         $item['thumbnailUrl'] = '';
