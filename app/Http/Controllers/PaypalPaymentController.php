@@ -86,6 +86,11 @@ class PaypalPaymentController extends Controller
             $this->exceptionCatch($e);
         }
         $decodeResult = json_decode($response);
+        $item = $decodeResult->transactions[0]['item_list']['items'][0];
+        $item['thumbnailUrl'] = '';
+        $item['marketName'] = '';
+        $item['options'] = '';
+
         return response()->success($decodeResult);
     }
 
@@ -158,27 +163,24 @@ class PaypalPaymentController extends Controller
         }catch(\Exception $e){
             $this->exceptionCatch($e);
         }
-
         $decodeResult = json_decode($response);
-
         return response()->success($decodeResult);
     }
 
 
     public function exceptionCatch($e){
-        $response = $e->getResponse();
-        $responseBody = json_decode($response->getBody()->getContents());
+        $responseBody = json_decode( $e->getResponse()->getBody()->getContents() );
         $errorMsg = isset( $responseBody->message )
             ? $responseBody->message
-            : $responseBody->error_description ;
-
+            : $responseBody->error_description;
         switch( $e->getCode() ){
-            case 400 : Abort::Error('0040',$errorMsg); break;
-            case 401 : Abort::Error('0042',$errorMsg); break;
-            case 402 : Abort::Error('0042',$errorMsg); break;
-            case 403 : Abort::Error('0057',$errorMsg); break;
-            case 404 : Abort::Error('0044',$errorMsg); break;
-            default : Abort::Error('0070',$errorMsg);
+            case 400 : $errorCode = '0040'; break;
+            case 401 : $errorCode = '0042'; break;
+            case 402 : $errorCode = '0042'; break;
+            case 403 : $errorCode = '0057'; break;
+            case 404 : $errorCode = '0044'; break;
+            default : $errorCode = '0070';
         }
+        Abort::Error($errorCode,$errorMsg);
     }
 }
