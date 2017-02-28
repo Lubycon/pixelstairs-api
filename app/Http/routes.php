@@ -74,5 +74,8 @@ Route::group(['prefix' => '/v1'], function () {
             Route::put('expire', 'PaypalPaymentController@expire');
         });
     });
+    Route::group(['prefix' => '/currency'], function () {
+        Route::get('', 'CurrencyController@get');
+    });
     Route::get('/data/', 'DataResponseController@dataSimpleResponse');
 });
