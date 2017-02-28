@@ -87,7 +87,7 @@ class PaypalPaymentController extends Controller
         }
         $decodeResult = json_decode($response);
         $items = $decodeResult->transactions[0]->item_list->items[0];
-        $customInfo = json_decode($request->transactions[0]->custom);
+        $customInfo = json_decode($decodeResult->transactions[0]->custom);
         $this->product = Product::findOrFail($customInfo->productId);
         $this->option = Option::findOrFail($items->sku);
 
