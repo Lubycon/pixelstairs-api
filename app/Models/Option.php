@@ -26,8 +26,12 @@ class Option extends BaseModel
         return $value > Option::$absoluteSafeStock ? $value :Option::$absoluteSafeStock ;
     }
 
-    // get reference data
-    // hasOne('remote_table_column_name','local_column_name');
+
+
+    public function product()
+    {
+        return $this->belongsTo('App\Models\Product','product_id','id');
+    }
 
     public function optionCollection()
     {

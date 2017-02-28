@@ -11,7 +11,14 @@ class Order extends BaseModel
     protected $fillable = [
         "user_id",
         "order_status_code",
+        "recipient_name",
+        "recipient_phone",
         "country_id",
+        "state",
+        "city",
+        "address1",
+        "address2",
+        "post_code",
         "market_id",
         "product_id",
         "product_option_id",
@@ -28,6 +35,13 @@ class Order extends BaseModel
         "from_currency_amount",
         "from_currency",
         "to_currency_amount",
+        "to_currency",
+        "payment_company",
+        "payment_id",
+        "payment_create_time",
+        "payment_price",
+        "payment_currency",
+        "payment_state",
     ];
 
     protected $casts = [

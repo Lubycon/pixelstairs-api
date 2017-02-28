@@ -11,10 +11,12 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use GuzzleHttp\Client;
+use Carbon\Carbon;
 
 use App\Models\Order;
 use App\Models\Option;
 use App\Models\Product;
+use App\Models\Country;
 
 use App\Traits\GetUserModelTrait;
 
@@ -25,6 +27,7 @@ class PaypalPaymentController extends Controller
     public $user;
     public $product;
     public $option;
+    public $order;
     public $client;
     public $paypalUrl;
     public $paymentUrl;
@@ -119,15 +122,24 @@ class PaypalPaymentController extends Controller
             $this->exceptionCatch($e);
         }
         $items = $request->transactions[0]['item_list']['items'][0];
-        $customInfo = json_decode($request->transactions[0]['custom']);
+        $shippingAddress = $request->transactions[0]['item_list']['shipping_address'];
 
-        $this->product = Product::findOrFail($customInfo->productId);
         $this->option = Option::findOrFail($items['sku']);
+        $this->product = $this->option->product;
 
-        $order = new Order([
+        $country = Country::where('alpha2Code','=',$shippingAddress['country_code'])->firstOrFail();
+
+        $this->order = new Order([
             "user_id" => $this->user->id,
             "order_status_code" => "0310",
-            "country_id" => $customInfo->countryId,
+            "recipient_name" => $shippingAddress['recipient_name'],
+            "recipient_phone" => $shippingAddress['phone'],
+            "country_id" => $country['id'],
+            "state" => isset($shippingAddress['state']) ? $shippingAddress['state'] : null,
+            "city" => $shippingAddress['city'],
+            "address1" => $shippingAddress['line1'],
+            "address2" => isset($shippingAddress['line2']) ? $shippingAddress['line2']  : null,
+            "post_code" => $shippingAddress['postal_code'],
             "market_id" => $this->product->market_id,
             "product_id" => $this->product->id,
             "product_option_id" => $this->option->id,
@@ -144,8 +156,17 @@ class PaypalPaymentController extends Controller
             "from_currency_amount" => 1100,
             "from_currency" => "KRW",
             "to_currency_amount" => 1,
+            "to_currency" => "USD",
+            "payment_company" => "paypal",
+            "payment_id" => $decodeResult->id,
+            "payment_create_time" => Carbon::now()->toDateTimeString(),
+            "payment_price" => $decodeResult->transactions[0]->amount->total,
+            "payment_currency" => $decodeResult->transactions[0]->amount->currency,
+            "payment_state" => $decodeResult->state,
         ]);
-        if($order->save()){
+        if($this->order->save()){
+            $this->option->stock = $this->option->stock--;
+            $this->option->save();
             return response()->success($decodeResult);
         }else{
             Abort::Error('0050','Can not save Order Data');
@@ -163,10 +184,22 @@ class PaypalPaymentController extends Controller
                     "payer_id" => $request->PayerID,
                 ]
             ])->getBody()->getContents();
+            $decodeResult = json_decode($response);
         }catch(\Exception $e){
             $this->exceptionCatch($e);
         }
-        $decodeResult = json_decode($response);
+
+        $this->order = Order::wherepayment_id($decodeResult->id)->firstOrFail();
+        $this->order->order_status_code = "0312";
+        $this->order->payment_user_id = $decodeResult->payer->payer_info->payer_id;
+        $this->order->payment_state = $decodeResult->state;
+        $this->order->payment_execute_time = Carbon::now()->toDateTimeString();
+
+        if($this->order->save()){
+            return response()->success($decodeResult);
+        }else{
+            Abort::Error('0050','Can not save Order Data');
+        }
         return response()->success($decodeResult);
     }
 
