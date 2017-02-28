@@ -86,6 +86,9 @@ class PaypalPaymentController extends Controller
             $this->exceptionCatch($e);
         }
         $decodeResult = json_decode($response);
+
+        Log::info($decodeResult);
+
         $item = $decodeResult->transactions[0]['item_list']['items'][0];
         $item['thumbnailUrl'] = '';
         $item['marketName'] = '';
