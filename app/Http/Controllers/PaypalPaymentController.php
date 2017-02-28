@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Classes\Currency;
 
 use GuzzleHttp\Client;
 use Carbon\Carbon;
@@ -33,6 +34,7 @@ class PaypalPaymentController extends Controller
     public $paymentUrl;
     public $accessToken;
     public $secretKey;
+    public $currency;
 
     public function __construct(Request $request){
         $this->user = $this->getUserByTokenRequestOrFail($request);
@@ -41,6 +43,7 @@ class PaypalPaymentController extends Controller
         $this->setPlace('sandbox');
         $this->paymentUrl = $this->paypalUrl."/payments/payment";
         $this->accessToken = $this->getAccessToken($request);
+        $this->currency = new Currency();
     }
 
     public function setPlace($env){
@@ -90,9 +93,8 @@ class PaypalPaymentController extends Controller
         }
         $decodeResult = json_decode($response);
         $items = $decodeResult->transactions[0]->item_list->items[0];
-        $customInfo = json_decode($decodeResult->transactions[0]->custom);
-        $this->product = Product::findOrFail($customInfo->productId);
         $this->option = Option::findOrFail($items->sku);
+        $this->product = $this->option->product;
 
         $items->thumbnailUrl = $this->product->getImageObject($this->product);
         $items->marketName = $this->product->market->getTranslateResultByLanguage($this->product->market->translateName);
