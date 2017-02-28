@@ -89,10 +89,10 @@ class PaypalPaymentController extends Controller
 
         Log::info( var_dump($decodeResult) );
 
-        $item = $decodeResult->transactions[0]['item_list']['items'][0];
-        $item['thumbnailUrl'] = '';
-        $item['marketName'] = '';
-        $item['options'] = '';
+        $item = $decodeResult->transactions[0]->item_list->items[0];
+        $item->thumbnailUrl = '';
+        $item->marketName = '';
+        $item->options = '';
 
         return response()->success($decodeResult);
     }
