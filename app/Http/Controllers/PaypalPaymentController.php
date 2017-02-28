@@ -102,6 +102,14 @@ class PaypalPaymentController extends Controller
     }
 
     public function payment(Request $request){
+        $items = $request->transactions[0]['item_list']['items'][0];
+        $shippingAddress = $request->transactions[0]['item_list']['shipping_address'];
+        $this->option = Option::findOrFail($items['sku']);
+        $this->product = $this->option->product;
+        $country = Country::where('alpha2Code','=',$shippingAddress['country_code'])->firstOrFail();
+        $this->option->canBuyAble(); // check we have buy able stock
+        // cross check price
+
         try{
             $response = $this->client->request('POST', $this->paymentUrl , [
                 'headers' => [
@@ -121,14 +129,6 @@ class PaypalPaymentController extends Controller
         }catch(\Exception $e){
             $this->exceptionCatch($e);
         }
-        $items = $request->transactions[0]['item_list']['items'][0];
-        $shippingAddress = $request->transactions[0]['item_list']['shipping_address'];
-
-        $this->option = Option::findOrFail($items['sku']);
-        $this->product = $this->option->product;
-
-        $country = Country::where('alpha2Code','=',$shippingAddress['country_code'])->firstOrFail();
-
         $this->order = new Order([
             "user_id" => $this->user->id,
             "order_status_code" => "0310",
@@ -165,7 +165,7 @@ class PaypalPaymentController extends Controller
             "payment_state" => $decodeResult->state,
         ]);
         if($this->order->save()){
-            $this->option->stock = $this->option->stock--;
+            $this->option->stock = $this->option->stock - $items['quantity'];
             $this->option->save();
             return response()->success($decodeResult);
         }else{
@@ -174,6 +174,10 @@ class PaypalPaymentController extends Controller
     }
 
     public function execute(Request $request){
+        $this->order = Order::wherepayment_id($request->paymentId)->firstOrFail();
+        if( $this->order->order_status_code == '0319' ) Abort::Error('0059');
+        if( $this->order->order_status_code != '0310' ) Abort::Error('0040');
+
         try{
             $response = $this->client->request('POST', $this->paymentUrl.'/'.$request->paymentId.'/execute' , [
                 'headers' => [
@@ -189,7 +193,6 @@ class PaypalPaymentController extends Controller
             $this->exceptionCatch($e);
         }
 
-        $this->order = Order::wherepayment_id($decodeResult->id)->firstOrFail();
         $this->order->order_status_code = "0312";
         $this->order->payment_user_id = $decodeResult->payer->payer_info->payer_id;
         $this->order->payment_state = $decodeResult->state;
@@ -203,6 +206,14 @@ class PaypalPaymentController extends Controller
         return response()->success($decodeResult);
     }
 
+    public function expire(Request $request){
+        $this->order = Order::wherepayment_id($request->paymentId)->firstOrFail();
+        if( $this->order->order_status_code != '0310' ) Abort::Error('0040','Allow only order apply status');
+
+        $this->order->returnStock();
+
+        return response()->success($this->order);
+    }
 
     public function exceptionCatch($e){
         $responseBody = json_decode( $e->getResponse()->getBody()->getContents() );

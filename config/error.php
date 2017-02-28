@@ -106,6 +106,14 @@ return [
     "httpCode" => 402,
     "msg" => "Failed request"
 ),
+"0058" => (object)array(
+    "httpCode" => 400,
+    "msg" => "Sku Have No Stock"
+),
+"0059" => (object)array(
+    "httpCode" => 400,
+    "msg" => "Resource expiry"
+),
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 //      4xx response
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑

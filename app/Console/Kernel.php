@@ -27,8 +27,7 @@ class Kernel extends ConsoleKernel
     {
 //        $schedule->command('inspire')
 //                 ->hourly();
-//        $schedule->call('App\Http\Controllers\ReviewController@expire')
-//            ->dailyAt('01:00');
+        $schedule->call('App\Http\Controllers\ScheduleController@expireOrders')
+            ->everyThirtyMinutes();
     }
-
 }

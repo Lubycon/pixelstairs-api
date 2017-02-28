@@ -71,6 +71,7 @@ Route::group(['prefix' => '/v1'], function () {
             Route::get('detail', 'PaypalPaymentController@detail');
             Route::post('create', 'PaypalPaymentController@payment');
             Route::post('execute', 'PaypalPaymentController@execute');
+            Route::put('expire', 'PaypalPaymentController@expire');
         });
     });
     Route::get('/data/', 'DataResponseController@dataSimpleResponse');

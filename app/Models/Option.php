@@ -26,6 +26,9 @@ class Option extends BaseModel
         return $value > Option::$absoluteSafeStock ? $value :Option::$absoluteSafeStock ;
     }
 
+    public function canBuyAble(){
+        if( $this->stock < 1 ) Abort::Error('0058','The sku have no stock');
+    }
 
 
     public function product()

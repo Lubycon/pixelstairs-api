@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
+use Slack;
 
 class Order extends BaseModel
 {
@@ -42,6 +44,7 @@ class Order extends BaseModel
         "payment_price",
         "payment_currency",
         "payment_state",
+        "cancel_date",
     ];
 
     protected $casts = [
@@ -53,6 +56,19 @@ class Order extends BaseModel
         'order_status_code' => 'string',
     ];
 
+    public function returnStock(){
+        try{
+            $this->update(['order_status_code' => '0319','cancel_date' => Carbon::now()->toDateTimeString()]);
+            $this->option = $this->option->update([
+                "stock" => $this->option->stock + $this->quantity
+            ]);
+        }catch(\Exception $e){
+            Slack::to('#order_expire_log')->enableMarkdown()->send(
+                'order expire error = '.$this->option->id
+            );
+        }
+    }
+
 
     // belongsTo
     // belongsTo('remote_table_column_name','local_column_name');
@@ -63,7 +79,7 @@ class Order extends BaseModel
     }
     public function option()
     {
-        return $this->belongsTo('App\Models\Option','option_id','id');
+        return $this->belongsTo('App\Models\Option','product_option_id','id');
     }
     public function status()
     {

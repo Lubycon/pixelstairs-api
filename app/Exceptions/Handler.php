@@ -54,8 +54,9 @@ class Handler extends ExceptionHandler
         }else{ //for provision
             $getCustom = $this->getCustomCode($request,$e);
             if(!is_null($getCustom)){
-                $customCode = is_object($getCustom) ? $getCustom->customCode : $getCustom;
-                $devMsg = is_object($getCustom) ? $getCustom->devMsg : null;
+                $customCode = isset($getCustom->customCode) ? $getCustom->customCode : $getCustom;
+                $devMsg = isset($getCustom->devMsg) ? $getCustom->devMsg : null;
+
                 return response()->error([
                     "code" => $customCode,
                     "devMsg" => $devMsg
@@ -73,7 +74,7 @@ class Handler extends ExceptionHandler
         $status = [
             'httpCode' => $exception->httpStatusCode,
             'code' => '9999',
-            'devMsg' => $exception->msg
+            'devMsg' => $exception->msg,
         ];
         return response()->error($status);
     }
@@ -92,8 +93,12 @@ class Handler extends ExceptionHandler
             case $e instanceof UnprocessableEntityHttpException:   return '0051';  break;
             case $e instanceof MethodNotAllowedHttpException:      return '0055';  break;
             case $e instanceof TooManyRequestsHttpException:       return '0053';  break;
-            case $e instanceof ModelNotFoundException:             return '0054';  break;
-            case $e instanceof FatalErrorException:                $this->slackAlarm($request,$e); return '0070';  break;
+            case $e instanceof ModelNotFoundException:
+                return (object)array(
+                    'customCode'=>'0054',
+                    'devMsg'=>$this->getJsonMessage($e));
+                break;
+            case $e instanceof FatalErrorException:                return '0070';  $this->slackAlarm($request,$e);   break;
             case $e instanceof ServiceUnavailableHttpException:    return '0074';  break;
             default: return null; break;
         }
