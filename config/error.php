@@ -92,7 +92,7 @@ return [
 ),
 "0054" => (object)array(
     "httpCode" => 404,
-    "msg" => "Model Not Found"
+    "msg" => "Resource Was Not Found"
 ),
 "0055" => (object)array(
     "httpCode" => 405,
@@ -101,6 +101,10 @@ return [
 "0056" => (object)array(
     "httpCode" => 404,
     "msg" => "Crawling Data Not Found"
+),
+"0057" => (object)array(
+    "httpCode" => 402,
+    "msg" => "Failed request"
 ),
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 //      4xx response

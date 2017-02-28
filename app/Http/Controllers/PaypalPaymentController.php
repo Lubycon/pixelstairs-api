@@ -66,7 +66,7 @@ class PaypalPaymentController extends Controller
                 ],
             ])->getBody()->getContents();
         }catch(\Exception $e){
-            Abort::Error('0040','Dismatch Key');
+            $this->exceptionCatch($e);
         }
         $decodeResult = json_decode($response);
         $result = $decodeResult->token_type.' '.$decodeResult->access_token;
@@ -75,16 +75,17 @@ class PaypalPaymentController extends Controller
 
     public function detail(Request $request){
         $query = $request->query();
-
-        $response = $this->client->request('GET', $this->paymentUrl.'/'.$query['paymentId'] , [
-            'headers' => [
-                "Content-Type" => "application/json",
-                "Authorization" => $this->accessToken,
-            ],
-        ])->getBody()->getContents();
-
+        try{
+            $response = $this->client->request('GET', $this->paymentUrl.'/'.$query['paymentId'] , [
+                'headers' => [
+                    "Content-Type" => "application/json",
+                    "Authorization" => $this->accessToken,
+                ],
+            ])->getBody()->getContents();
+        }catch(\Exception $e){
+            $this->exceptionCatch($e);
+        }
         $decodeResult = json_decode($response);
-
         return response()->success($decodeResult);
     }
 
@@ -106,36 +107,36 @@ class PaypalPaymentController extends Controller
             ])->getBody()->getContents();
             $decodeResult = json_decode($response);
         }catch(\Exception $e){
-            Abort::Error('0070',$e);
+            $this->exceptionCatch($e);
         }
 
-            $items = $request->transactions[0]['item_list']['items'][0];
-            $customInfo = json_decode($request->transactions[0]['custom']);
+        $items = $request->transactions[0]['item_list']['items'][0];
+        $customInfo = json_decode($request->transactions[0]['custom']);
 
-            $this->product = Product::findOrFail($customInfo->productId);
-            $this->option = Option::findOrFail($items['sku']);
+        $this->product = Product::findOrFail($customInfo->productId);
+        $this->option = Option::findOrFail($items['sku']);
 
-            $order = new Order([
-                "user_id" => $this->user->id,
-                "order_status_code" => "0310",
-                "country_id" => $customInfo->countryId,
-                "market_id" => $this->product->market_id,
-                "product_id" => $this->product->id,
-                "product_option_id" => $this->option->id,
-                "product_price" => $items['price'],
-                "product_currency" => $items['currency'],
-                "product_quantity" => $items['quantity'],
-                "product_weight" => $this->product->weight,
-                "product_url" => $this->product->url,
-                "product_total_price" => $items['price'] * $items['quantity'],
-                "domestic_delivery_price" => $this->product->domestic_delivery_price,
-                "domestic_delivery_currency" => $this->product->currency,
-                "international_delivery_price" => 123123,
-                "international_delivery_currency" => "USD",
-                "from_currency_amount" => 1100,
-                "from_currency" => "KRW",
-                "to_currency_amount" => 1,
-            ]);
+        $order = new Order([
+            "user_id" => $this->user->id,
+            "order_status_code" => "0310",
+            "country_id" => $customInfo->countryId,
+            "market_id" => $this->product->market_id,
+            "product_id" => $this->product->id,
+            "product_option_id" => $this->option->id,
+            "product_price" => $items['price'],
+            "product_currency" => $items['currency'],
+            "product_quantity" => $items['quantity'],
+            "product_weight" => $this->product->weight,
+            "product_url" => $this->product->url,
+            "product_total_price" => $items['price'] * $items['quantity'],
+            "domestic_delivery_price" => $this->product->domestic_delivery_price,
+            "domestic_delivery_currency" => $this->product->currency,
+            "international_delivery_price" => 123123,
+            "international_delivery_currency" => "USD",
+            "from_currency_amount" => 1100,
+            "from_currency" => "KRW",
+            "to_currency_amount" => 1,
+        ]);
         if($order->save()){
             return response()->success($decodeResult);
         }else{
@@ -144,18 +145,40 @@ class PaypalPaymentController extends Controller
     }
 
     public function execute(Request $request){
-        $response = $this->client->request('POST', $this->paymentUrl.'/'.$request->paymentId.'/execute' , [
-            'headers' => [
-                "Content-Type" => "application/json",
-                "Authorization" => $this->accessToken,
-            ],
-            'json' => [
-                "payer_id" => $request->PayerID,
-            ]
-        ])->getBody()->getContents();
+        try{
+            $response = $this->client->request('POST', $this->paymentUrl.'/'.$request->paymentId.'/execute' , [
+                'headers' => [
+                    "Content-Type" => "application/json",
+                    "Authorization" => $this->accessToken,
+                ],
+                'json' => [
+                    "payer_id" => $request->PayerID,
+                ]
+            ])->getBody()->getContents();
+        }catch(\Exception $e){
+            $this->exceptionCatch($e);
+        }
 
         $decodeResult = json_decode($response);
 
         return response()->success($decodeResult);
+    }
+
+
+    public function exceptionCatch($e){
+        $response = $e->getResponse();
+        $responseBody = json_decode($response->getBody()->getContents());
+        $errorMsg = isset( $responseBody->message )
+            ? $responseBody->message
+            : $responseBody->error_description ;
+
+        switch( $e->getCode() ){
+            case 400 : Abort::Error('0040',$errorMsg); break;
+            case 401 : Abort::Error('0042',$errorMsg); break;
+            case 402 : Abort::Error('0042',$errorMsg); break;
+            case 403 : Abort::Error('0057',$errorMsg); break;
+            case 404 : Abort::Error('0044',$errorMsg); break;
+            default : Abort::Error('0070',$errorMsg);
+        }
     }
 }
