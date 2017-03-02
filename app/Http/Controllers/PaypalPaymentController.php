@@ -261,7 +261,7 @@ class PaypalPaymentController extends Controller
     }
 
     public function getInternationalDeliveryPrice($country_alpha2_code){
-        $this->internationalDeliveryPrice = 100;
+        $this->internationalDeliveryPrice = 0;
         return $this->internationalDeliveryPrice;
     }
 }
