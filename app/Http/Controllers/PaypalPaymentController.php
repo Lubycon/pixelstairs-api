@@ -228,8 +228,8 @@ class PaypalPaymentController extends Controller
             (double)$this->getInternationalDeliveryPrice('FR'),
             'KRW'
         );
-        $calcPrice = $itemPrice + $domesticDeliveryPrice + $internationalDeliveryPrice;
-        $calcPriceAddFee = $calcPrice + ( $calcPrice * $this->additionalFee );
+        $calcPrice = (double)($itemPrice + $domesticDeliveryPrice + $internationalDeliveryPrice);
+        $calcPriceAddFee = $calcPrice + ( $calcPrice * (double)("0.0".$this->additionalFee) );
 
         if( abs($totalPrice - $calcPriceAddFee) > 1 )
         Abort::Error('0040','Invalid price server calc = '.$calcPrice.'USD');
