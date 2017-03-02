@@ -246,6 +246,7 @@ class PaypalPaymentController extends Controller
 
     public function exceptionCatch($e){
         $responseBody = json_decode( $e->getResponse()->getBody()->getContents() );
+        Log::info( (array)($responseBody) );
         $errorMsg = isset( $responseBody->message )
             ? $responseBody->message
             : $responseBody->error_description;
