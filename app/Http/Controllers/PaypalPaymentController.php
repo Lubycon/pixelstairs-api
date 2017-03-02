@@ -111,7 +111,7 @@ class PaypalPaymentController extends Controller
         $this->product = $this->option->product;
         $country = Country::where('alpha2Code','=',$shippingAddress['country_code'])->firstOrFail();
         $this->option->canBuyAble(); // check we have buy able stock
-        // cross check price
+        $this->validPrice($request);// cross check price
 
         try{
             $response = $this->client->request('POST', $this->paymentUrl , [
@@ -209,6 +209,26 @@ class PaypalPaymentController extends Controller
         return response()->success($decodeResult);
     }
 
+    public function validPrice(Request $request){
+        $transaction = $request->transactions[0];
+        $totalPrice = $this->currency->exchangeToUsd(
+            (double)$transaction['amount']['total'],
+            $transaction['amount']['currency']);
+        $itemPrice = $this->currency->exchangeToUsd(
+            (double)$this->option['price'] * (int)$transaction['item_list']['items'][0]['quantity'],
+            $this->product['currency']);
+        $domesticDeliveryPrice = $this->currency->exchangeToUsd(
+            (double)$this->product['domestic_delivery_price'],
+            $this->product['currency']);
+        $internationalDeliveryPrice = $this->currency->exchangeToUsd(
+            (double)$this->getInternationalDeliveryPrice('FR'),
+            'KRW'
+        );
+
+        if( abs($totalPrice - ( $itemPrice + $domesticDeliveryPrice + $internationalDeliveryPrice )) > 1 )
+        Abort::Error('0040','Invalid price');
+    }
+
     public function expire(Request $request){
         $this->order = Order::wherepayment_id($request->paymentId)->firstOrFail();
         if( $this->order->order_status_code != '0310' ) Abort::Error('0040','Allow only order apply status');
@@ -232,5 +252,9 @@ class PaypalPaymentController extends Controller
             default : $errorCode = '0070';
         }
         Abort::Error($errorCode,$errorMsg);
+    }
+
+    public function getInternationalDeliveryPrice($country_alpha2_code){
+        return 0;
     }
 }
