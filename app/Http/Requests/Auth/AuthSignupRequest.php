@@ -3,19 +3,15 @@
 namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Request;
-use App\Traits\AuthorizesRequestsOverLoad;
-use App\Traits\GetUserModelTrait;
+use App\Models\User;
+
 use Log;
 
 class AuthSignupRequest extends Request
 {
-    use AuthorizesRequestsOverLoad,
-        GetUserModelTrait;
-
     public function authorize()
     {
-        $user = $this->getUserByTokenOrFail($this->header('x-mitty-token'));
-        return $user->isAdmin();
+        return true;
     }
 
     public function rules()
@@ -25,11 +21,13 @@ class AuthSignupRequest extends Request
             'email' => 'required|unique:users,email|email',
             'phone' => 'required|unique:users,phone',
             'password' => 'required|string',
-            'position' => "required|string",
-            'birthday' => "required",
             'gender' => "required",
+            'birthday' => "required",
+            'location.city' => "required|string",
+            'location.address1' => "required|string",
+            'location.address2' => "required|string",
+            'location.postCode' => "required",
         ];
-
         return $requiredRule;
     }
 }

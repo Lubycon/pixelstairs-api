@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use Carbon\Carbon;
-use DB;
 use Auth;
 
 use App\Models\User;
@@ -20,7 +19,6 @@ use Illuminate\Foundation\Auth\ThrottlesLogins;
 
 use App\Http\Requests\Auth\AuthSigninRequest;
 use App\Http\Requests\Auth\AuthSignupRequest;
-use App\Http\Requests\Auth\ServiceAuthSignupRequest;
 use App\Http\Requests\Auth\AuthSigndropRequest;
 use App\Http\Requests\Auth\AuthPostRetrieveRequest;
 use Abort;
@@ -78,6 +76,7 @@ class AuthController extends Controller
     {
         $data = $request->json()->all();
         $credentialSignup = Credential::signup($data);
+
         if( $user =  User::create($credentialSignup)){
             $id = $user->getAuthIdentifier();
             $token = CheckContoller::insertRememberToken($id);
@@ -98,28 +97,6 @@ class AuthController extends Controller
         };
     }
 
-    protected function getList()
-    {
-        $list = User::all();
-        $responseData = [];
-
-        if(!is_null($list)){
-            foreach ($list as $key => $value) {
-                $responseData[] = (object)array(
-                    "id" => $value->id,
-                    "email" => $value->email,
-                    "name" => $value->name,
-                    "nickname" => $value->nickname,
-                    "position" => $value->position,
-                    "grade" => $value->grade
-                );
-            }
-            return response()->success($responseData);
-        }else{
-            Abort::Error('0040');
-        }
-    }
-
     protected function simpleRetrieve(Request $request){
         $tokenData = CheckContoller::checkToken($request);
 
@@ -131,9 +108,7 @@ class AuthController extends Controller
                 "id" => $findUser->id,
                 "email" => $findUser->email,
                 "name" => $findUser->name,
-                "nickname" => $findUser->nickname,
                 "phone" => $findUser->phone,
-                "position" => $findUser->position,
                 "grade" => $findUser->grade,
                 "gender" => $findUser->gender_id,
                 "profileImg" => $findUser->getImageObject($findUser),
@@ -155,9 +130,7 @@ class AuthController extends Controller
                 "id" => $findUser->id,
                 "email" => $findUser->email,
                 "name" => $findUser->name,
-                "nickname" => $findUser->nickname,
                 "phone" => $findUser->phone,
-                "position" => $findUser->position,
                 "grade" => $findUser->grade,
                 "gender" => $findUser->gender_id,
                 "location" => [
@@ -175,107 +148,6 @@ class AuthController extends Controller
         }
     }
     public function postRetrieve(AuthPostRetrieveRequest $request,$id)
-    {
-        $data = $request->json()->all();
-        $tokenData = CheckContoller::checkToken($request);
-        $findUser = User::find($tokenData->id);
-        $userExist = CheckContoller::checkUserExistById($tokenData->id);
-
-        if($userExist && $id == $findUser->id){
-                $findUser->email = $data['email'];
-                $findUser->nickname = $data['nickname'];
-                $findUser->name = $data['name'];
-                $findUser->password = bcrypt($data['password']);
-                $findUser->position = $data['position'];
-                $findUser->city = $data['location']['city'];
-                $findUser->address1 = $data['location']['address1'];
-                $findUser->address2 = $data['location']['address2'];
-                $findUser->post_code = $data['location']['postCode'];
-                $findUser->gender_id = $data['gender'];
-                $findUser->birthday = $data['birthday'];
-                Interest::firstOrCreate($this->setNewInterest($findUser,$request['likeCategory']));
-                $fileUpload = new FileUpload( $findUser,$data['profileImg'] ,'image' );
-                $findUser->image_id = $fileUpload->getResult();
-                if($findUser->save()){
-                    return response()->success($findUser);
-                }
-        }else{
-            Abort::Error('0040');
-        }
-    }
-
-
-
-    //==========================================================================
-
-
-
-
-    protected function Ssignup(ServiceAuthSignupRequest $request)
-    {
-        $data = $request->json()->all();
-        $credentialSignup = Credential::serviceSignup($data);
-
-        if( $user =  User::create($credentialSignup)){
-            $id = $user->getAuthIdentifier();
-            $token = CheckContoller::insertRememberToken($id);
-            return response()->success([
-                "token" => $token
-            ]);
-        }
-    }
-
-    protected function SsimpleRetrieve(Request $request){
-        $tokenData = CheckContoller::checkToken($request);
-
-        $findUser = User::findOrFail($tokenData->id);
-        $userExist = CheckContoller::checkUserExistById($tokenData->id);
-
-        if($userExist){
-            $result = (object)array(
-                "id" => $findUser->id,
-                "email" => $findUser->email,
-                "name" => $findUser->name,
-                "phone" => $findUser->phone,
-                "grade" => $findUser->grade,
-                "gender" => $findUser->gender_id,
-                "profileImg" => $findUser->getImageObject($findUser),
-                "birthday" => $findUser->birthday
-            );
-            return response()->success($result);
-        }else{
-            Abort::Error('0040');
-        }
-    }
-
-    protected function SgetRetrieve($id)
-    {
-        $findUser = User::findOrFail($id);
-        $userExist = CheckContoller::checkUserExistById($id);
-
-        if($userExist){
-            return response()->success([
-                "id" => $findUser->id,
-                "email" => $findUser->email,
-                "name" => $findUser->name,
-                "phone" => $findUser->phone,
-                "grade" => $findUser->grade,
-                "gender" => $findUser->gender_id,
-                "location" => [
-                    "city" => $findUser->city,
-                    "address1" => $findUser->address1,
-                    "address2" => $findUser->address2,
-                    "postCode" => $findUser->post_code,
-                ],
-                "likeCategory" => $findUser->getInterest(),
-                "profileImg" => $findUser->getImageObject($findUser),
-                "birthday" => $findUser->birthday
-            ]);
-        }else{
-            Abort::Error('0040');
-        }
-    }
-    public function SpostRetrieve(AuthPostRetrieveRequest $request,$id)
     {
         $data = $request->json()->all();
         $tokenData = CheckContoller::checkToken($request);
@@ -302,8 +174,4 @@ class AuthController extends Controller
             Abort::Error('0040');
         }
     }
-
-
-
-
 }

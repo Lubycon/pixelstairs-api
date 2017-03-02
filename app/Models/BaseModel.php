@@ -11,29 +11,31 @@ use Symfony\Component\HttpFoundation\HeaderBag;
 
 class BaseModel extends Model
 {
-    public function getTranslate($translate){
-        $result = [];
+    public $defaultLanguage = 'en';
 
-        if( is_array($translate) ){
-            foreach( $translate as $key => $array ){
-                $result[] = $this->getTranslateResult($array->translateName);
-            }
-        }else{
-            $result = $this->getTranslateResult($translate->translateName);
-        }
-        return $result;
-    }
-    public function getTranslateDescription($translate){
-        $result = [];
-        if( is_array($translate) ){
-            foreach( $translate as $key => $array ){
-                $result[] = $this->getTranslateResult($array->translateDescription);
-            }
-        }else{
-            $result = $this->getTranslateResult($translate->translateDescription);
-        }
-        return $result;
-    }
+//    public function getTranslate($translate){
+//        $result = [];
+//
+//        if( is_array($translate) ){
+//            foreach( $translate as $key => $array ){
+//                $result[] = $this->getTranslateResult($array->translateName);
+//            }
+//        }else{
+//            $result = $this->getTranslateResult($translate->translateName);
+//        }
+//        return $result;
+//    }
+//    public function getTranslateDescription($translate){
+//        $result = [];
+//        if( is_array($translate) ){
+//            foreach( $translate as $key => $array ){
+//                $result[] = $this->getTranslateResult($array->translateDescription);
+//            }
+//        }else{
+//            $result = $this->getTranslateResult($translate->translateDescription);
+//        }
+//        return $result;
+//    }
     public function getTranslateResult($translate){
         return [
             'origin' => $translate['original']['original'],
@@ -44,19 +46,18 @@ class BaseModel extends Model
     }
     public function getTranslateResultByLanguage($translate,$language){
         if( is_null($language) ) Abort::Error("0047");
-        if($language == 'ko' || $language == 'en') $language = "origin";
         if( is_array($translate) ){
             $result = [];
             foreach($translate as $key => $value){
                 $value = $this->isTranslated($value);
                 $data = $this->getTranslateResult($value);
-                $result[] = isset($data[$language]) ? $data[$language] : $data['origin'];
+                $result[] = isset($data[$language]) && $data[$language] != "" ? $data[$language] : $data[$this->defaultLanguage];
             }
             return $result;
         }else{
             $translate = $this->isTranslated($translate);
             $data = $this->getTranslateResult($translate);
-            return isset($data[$language]) ? $data[$language] : $data['origin'];
+            return isset($data[$language]) && $data[$language] != "" ? $data[$language] : $data[$this->defaultLanguage];
         }
     }
     public function isTranslated($value){

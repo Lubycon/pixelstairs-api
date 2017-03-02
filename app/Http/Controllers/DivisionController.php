@@ -20,8 +20,10 @@ class DivisionController extends Controller
     use TranslateTraits;
 
     public $division;
+    public $language;
 
     public function getList(Request $request){
+        $this->language = $request->header('X-mitty-language');
         $query = $request->query();
         $controller = new PageController('division',$query);
         $collection = $controller->getCollection();
@@ -33,7 +35,7 @@ class DivisionController extends Controller
         foreach($collection as $array){
             $result->divisions[] = (object)array(
                 "id" => $array["id"],
-                "name" => $array->getTranslate($array),
+                "name" => $array->getTranslateResultByLanguage($array,$this->language),
                 "parentId" => $array['parent_id'],
             );
         };
@@ -44,32 +46,32 @@ class DivisionController extends Controller
             return response()->success();
         }
     }
-    public function post(DivisionPostRequest $request){
-        $data = [
-            "translate_name_id" => $this->createTranslateName($request['name'])['id'],
-            "parent_id" => $request['parentId'],
-        ];
-        if( $hello = Division::firstOrCreate($data) ){
-            return response()->success($hello);
-        }else{
-            Abort::Error('0040');
-        }
-    }
-    public function put(DivisionPutRequest $request,$id){
-        $this->division = Division::findOrFail($id);
-        $this->division->translate_name_id = $this->createTranslateName($request['name'])['id'];
-        if( $this->division->save() ){
-            return response()->success($this->division);
-        }else {
-            Abort::Error('0040');
-        }
-    }
-    public function delete(DivisionDeleteRequest $request,$id){
-        $this->division = Division::findOrFail($id);
-        if($this->division->delete()){
-            return response()->success();
-        }else {
-            Abort::Error('0040');
-        }
-    }
+//    public function post(DivisionPostRequest $request){
+//        $data = [
+//            "translate_name_id" => $this->createTranslateName($request['name'])['id'],
+//            "parent_id" => $request['parentId'],
+//        ];
+//        if( $hello = Division::firstOrCreate($data) ){
+//            return response()->success($hello);
+//        }else{
+//            Abort::Error('0040');
+//        }
+//    }
+//    public function put(DivisionPutRequest $request,$id){
+//        $this->division = Division::findOrFail($id);
+//        $this->division->translate_name_id = $this->createTranslateName($request['name'])['id'];
+//        if( $this->division->save() ){
+//            return response()->success($this->division);
+//        }else {
+//            Abort::Error('0040');
+//        }
+//    }
+//    public function delete(DivisionDeleteRequest $request,$id){
+//        $this->division = Division::findOrFail($id);
+//        if($this->division->delete()){
+//            return response()->success();
+//        }else {
+//            Abort::Error('0040');
+//        }
+//    }
 }
