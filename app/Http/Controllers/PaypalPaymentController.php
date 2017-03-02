@@ -232,7 +232,7 @@ class PaypalPaymentController extends Controller
         $calcPriceAddFee = $calcPrice + ( $calcPrice * $this->additionalFee );
 
         if( abs($totalPrice - $calcPriceAddFee) > 1 )
-        Abort::Error('0040','Invalid price');
+        Abort::Error('0040','Invalid price server calc = '.$calcPrice.'USD');
     }
 
     public function expire(Request $request){
