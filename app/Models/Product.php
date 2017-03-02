@@ -17,7 +17,6 @@ class Product extends BaseModel
     protected $casts = [
         'id' => 'string',
         'market_product_id' => 'string',
-        'haitao_product_id' => 'string',
         'category_id' => 'string',
         'division_id' => 'string',
         'section_group_id' => 'string',
@@ -100,14 +99,14 @@ class Product extends BaseModel
         }
         return $result;
     }
-    public function getOption(){
+    public function getOptionTranslate($language){
         $result = [];
         if( count($this->option) ) {
             $optionKeys = $this->option;
             foreach ($optionKeys as $key => $value) {
                 $result[] = array(
                     "id" => $value->id,
-                    "name" => $this->getTranslate($value),
+                    "name" => $this->getTranslateResultByLanguage($value,$language),
                     "price" => $value->price,
                     "stock" => $value->stock,
                     "safeStock" => $value->safe_stock,
@@ -145,34 +144,34 @@ class Product extends BaseModel
             "rate" => $seller->rate,
         ];
     }
-    public function getQuestions(){
-        $result = null;
-        $questions = $this->reviewQuestion;
-        foreach($questions as $question){
-            $questionKey = $question->questionKey;
-            $result[] = [
-                "id" => (int)$question->id,
-                "qKeyId" => $questionKey->id,
-                "qKey" => $questionKey->getTranslate($questionKey),
-                "description" => $question->getTranslateDescription($question),
-            ];
-        }
-        return $result;
-    }
-    public function getQuestionsByLanguage($language){
-        $result = [];
-        $questions = $this->reviewQuestion;
-        foreach($questions as $question){
-            $questionKey = $question->questionKey;
-            $result[] = [
-                "id" => (int)$question->id,
-                "qKeyId" => $questionKey->id,
-                "qKey" => $questionKey->getTranslateResultByLanguage($questionKey,$language),
-                "description" => $question->getTranslateResultByLanguage($question,$language),
-            ];
-        }
-        return $result;
-    }
+//    public function getQuestions(){
+//        $result = null;
+//        $questions = $this->reviewQuestion;
+//        foreach($questions as $question){
+//            $questionKey = $question->questionKey;
+//            $result[] = [
+//                "id" => (int)$question->id,
+//                "qKeyId" => $questionKey->id,
+//                "qKey" => $questionKey->getTranslate($questionKey),
+//                "description" => $question->getTranslateDescription($question),
+//            ];
+//        }
+//        return $result;
+//    }
+//    public function getQuestionsByLanguage($language){
+//        $result = [];
+//        $questions = $this->reviewQuestion;
+//        foreach($questions as $question){
+//            $questionKey = $question->questionKey;
+//            $result[] = [
+//                "id" => (int)$question->id,
+//                "qKeyId" => $questionKey->id,
+//                "qKey" => $questionKey->getTranslateResultByLanguage($questionKey,$language),
+//                "description" => $question->getTranslateResultByLanguage($question,$language),
+//            ];
+//        }
+//        return $result;
+//    }
 
     // get reference data
     // hasOne('remote_table_column_name','local_column_name');

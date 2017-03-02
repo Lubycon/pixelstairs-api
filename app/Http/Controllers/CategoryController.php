@@ -22,6 +22,7 @@ class CategoryController extends Controller
     use TranslateTraits;
 
     public $category;
+    public $language;
 
 //    /**
 //     * @SWG\Get(
@@ -71,6 +72,7 @@ class CategoryController extends Controller
 //     */
 
     public function getList(Request $request){
+        $this->language = $request->header('X-mitty-language');
         $query = $request->query();
         $controller = new PageController('category',$query);
         $collection = $controller->getCollection();
@@ -82,7 +84,7 @@ class CategoryController extends Controller
         foreach($collection as $array){
             $result->categories[] = (object)array(
                 "id" => $array["id"],
-                "name" => $array->getTranslate($array),
+                "name" => $array->getTranslateResultByLanguage($array,$this->language),
             );
         };
 
@@ -159,32 +161,32 @@ class CategoryController extends Controller
 //     *     )
 //     * )
 //     */
-    public function post(CategoryPostRequest $request){
-        $data = [
-            "translate_name_id" => $this->createTranslateName($request['name'])['id'],
-        ];
-
-        if( $cate = Category::firstOrCreate($data) ){
-            return response()->success($cate);
-        }else{
-            Abort::Error('0040');
-        }
-    }
-    public function put(CategoryPutRequest $request,$id){
-        $this->category = Category::findOrFail($id);
-        $this->category->translate_name_id = $this->createTranslateName($request['name'])['id'];
-        if( $this->category->save() ){
-            return response()->success($this->category);
-        }else {
-            Abort::Error('0040');
-        }
-    }
-    public function delete(CategoryDeleteRequest $request,$id){
-        $this->category = Category::findOrFail($id);
-        if($this->category->delete()){
-            return response()->success();
-        }else {
-            Abort::Error('0040');
-        }
-    }
+//    public function post(CategoryPostRequest $request){
+//        $data = [
+//            "translate_name_id" => $this->createTranslateName($request['name'])['id'],
+//        ];
+//
+//        if( $cate = Category::firstOrCreate($data) ){
+//            return response()->success($cate);
+//        }else{
+//            Abort::Error('0040');
+//        }
+//    }
+//    public function put(CategoryPutRequest $request,$id){
+//        $this->category = Category::findOrFail($id);
+//        $this->category->translate_name_id = $this->createTranslateName($request['name'])['id'];
+//        if( $this->category->save() ){
+//            return response()->success($this->category);
+//        }else {
+//            Abort::Error('0040');
+//        }
+//    }
+//    public function delete(CategoryDeleteRequest $request,$id){
+//        $this->category = Category::findOrFail($id);
+//        if($this->category->delete()){
+//            return response()->success();
+//        }else {
+//            Abort::Error('0040');
+//        }
+//    }
 }
