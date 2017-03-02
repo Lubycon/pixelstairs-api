@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Abort;
+use Log;
 
 class Option extends BaseModel
 {
