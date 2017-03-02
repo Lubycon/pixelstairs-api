@@ -13,7 +13,7 @@ class Currency
 {
     private $client;
     private $result;
-    private $simpleResult;
+    public $simpleResult;
     private $url = "https://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote?format=json";
 
     public function __construct(){
@@ -37,7 +37,7 @@ class Currency
     public function getExchangeRate($from,$to){
         if( $from != "USD" ) Abort::Error('0070','Unable Currency Unit');
         $this->checkResult();
-        return $this->simpleResult[$to];
+        return round($this->simpleResult[$to],2);
     }
     private function toSimple($original){
         $data = $original->list->resources;

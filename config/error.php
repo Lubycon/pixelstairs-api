@@ -114,6 +114,10 @@ return [
     "httpCode" => 400,
     "msg" => "Resource expiry"
 ),
+"0060" => (object)array(
+    "httpCode" => 400,
+    "msg" => "Invalid Currency Rate"
+),
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 //      4xx response
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑

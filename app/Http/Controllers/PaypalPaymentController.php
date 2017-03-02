@@ -35,6 +35,8 @@ class PaypalPaymentController extends Controller
     public $accessToken;
     public $secretKey;
     public $currency;
+    public $additionalFee = 3;
+    public $internationalDeliveryPrice;
 
     public function __construct(Request $request){
         $this->user = $this->getUserByTokenRequestOrFail($request);
@@ -132,6 +134,7 @@ class PaypalPaymentController extends Controller
         }catch(\Exception $e){
             $this->exceptionCatch($e);
         }
+
         $this->order = new Order([
             "user_id" => $this->user->id,
             "order_status_code" => "0310",
@@ -154,10 +157,11 @@ class PaypalPaymentController extends Controller
             "product_total_price" => $items['price'] * $items['quantity'],
             "domestic_delivery_price" => $this->product->domestic_delivery_price,
             "domestic_delivery_currency" => $this->product->currency,
-            "international_delivery_price" => 123123,
+            "international_delivery_price" => $this->internationalDeliveryPrice,
             "international_delivery_currency" => "USD",
-            "from_currency_amount" => 1100,
-            "from_currency" => "KRW",
+            "purchasing_agency_fee" => $decodeResult->transactions[0]->amount->total - ($decodeResult->transactions[0]->amount->total / (double)("1.0".$this->additionalFee)),
+            "from_currency_amount" => $this->currency->getExchangeRate("USD",$this->product->currency),
+            "from_currency" => $this->product->currency,
             "to_currency_amount" => 1,
             "to_currency" => "USD",
             "payment_company" => "paypal",
@@ -224,14 +228,16 @@ class PaypalPaymentController extends Controller
             (double)$this->getInternationalDeliveryPrice('FR'),
             'KRW'
         );
+        $calcPrice = $itemPrice + $domesticDeliveryPrice + $internationalDeliveryPrice;
+        $calcPriceAddFee = $calcPrice + ( $calcPrice * $this->additionalFee );
 
-        if( abs($totalPrice - ( $itemPrice + $domesticDeliveryPrice + $internationalDeliveryPrice )) > 1 )
+        if( abs($totalPrice - $calcPriceAddFee) > 1 )
         Abort::Error('0040','Invalid price');
     }
 
     public function expire(Request $request){
         $this->order = Order::wherepayment_id($request->paymentId)->firstOrFail();
-        if( $this->order->order_status_code != '0310' ) Abort::Error('0040','Allow only order apply status');
+        if( $this->order->order_status_code != '0310' ) Abort::Error('0060');
 
         $this->order->returnStock();
 
@@ -255,6 +261,7 @@ class PaypalPaymentController extends Controller
     }
 
     public function getInternationalDeliveryPrice($country_alpha2_code){
-        return 0;
+        $this->internationalDeliveryPrice = 100;
+        return $this->internationalDeliveryPrice;
     }
 }
