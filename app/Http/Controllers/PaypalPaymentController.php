@@ -99,6 +99,7 @@ class PaypalPaymentController extends Controller
         $items->thumbnailUrl = $this->product->getImageObject($this->product);
         $items->marketName = $this->product->market->getTranslateResultByLanguage($this->product->market->translateName);
         $items->options = $this->product->getOptionTranslate();
+        $items->optionKeys = $this->product->getTranslateResultByLanguage($this->product->getOptionKey());
 
         return response()->success($decodeResult);
     }
