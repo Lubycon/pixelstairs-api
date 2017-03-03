@@ -91,6 +91,11 @@ class ProductController extends Controller
     public function getList(Request $request){
         $this->language = $request->header('X-mitty-language');
         $query = $request->query();
+        $baseQuery = "productStatusCode:0301";
+        $query['search'] = isset($query['search'])
+            ? $query['search'].$baseQuery
+            : $baseQuery;
+
         $controller = new PageController('product',$query);
         $collection = $controller->getCollection();
 

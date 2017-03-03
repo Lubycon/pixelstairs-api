@@ -105,32 +105,14 @@ class Product extends BaseModel
         if( count($this->option) ) {
             $optionKeys = $this->option;
             foreach ($optionKeys as $key => $value) {
-                $result[] = array(
-                    "id" => $value->id,
-                    "name" => $this->getTranslateResultByLanguage($value),
-                    "price" => $value->price,
-                    "stock" => $value->stock,
-                    "safeStock" => $value->safe_stock,
-                    "thumbnailUrl" => $this->getImageObject($value),
-                    "sku" => $value->sku,
-                );
-            }
-        }
-        return $result;
-    }
-    public function getProvisionOption($priceUnit){
-        $result = [];
-        if (count($this->option)) {
-            $optionKeys = $this->option;
-            foreach ($optionKeys as $key => $value) {
-                if( $value->stock > $value->safe_stock ){
+                if( $value->stock > $value->safe_stock ) {
                     $result[] = array(
+                        "id" => $value->id,
                         "name" => $this->getTranslateResultByLanguage($value),
                         "price" => $value->price,
-                        "priceUnit" => $priceUnit,
                         "stock" => $value->stock,
                         "safeStock" => $value->safe_stock,
-                        "thumbnailUrl" => $value->image->url,
+                        "thumbnailUrl" => $this->getImageObject($value),
                         "sku" => $value->sku,
                     );
                 }
@@ -138,6 +120,26 @@ class Product extends BaseModel
         }
         return $result;
     }
+//    public function getProvisionOption($priceUnit){
+//        $result = [];
+//        if (count($this->option)) {
+//            $optionKeys = $this->option;
+//            foreach ($optionKeys as $key => $value) {
+//                if( $value->stock > $value->safe_stock ){
+//                    $result[] = array(
+//                        "name" => $this->getTranslateResultByLanguage($value),
+//                        "price" => $value->price,
+//                        "priceUnit" => $priceUnit,
+//                        "stock" => $value->stock,
+//                        "safeStock" => $value->safe_stock,
+//                        "thumbnailUrl" => $this->getImageObject($value),
+//                        "sku" => $value->sku,
+//                    );
+//                }
+//            }
+//        }
+//        return $result;
+//    }
     public function getSeller(){
         $seller = $this->seller;
         return [
