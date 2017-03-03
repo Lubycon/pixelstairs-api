@@ -9,7 +9,9 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+
 use App\Classes\Currency;
+use App\Classes\Ems;
 
 use GuzzleHttp\Client;
 use Carbon\Carbon;
@@ -35,6 +37,7 @@ class PaypalPaymentController extends Controller
     public $accessToken;
     public $secretKey;
     public $currency;
+    public $ems;
     public $additionalFee = 3;
     public $internationalDeliveryPrice;
 
@@ -46,6 +49,7 @@ class PaypalPaymentController extends Controller
         $this->paymentUrl = $this->paypalUrl."/payments/payment";
         $this->accessToken = $this->getAccessToken($request);
         $this->currency = new Currency();
+        $this->ems = new Ems();
     }
 
     public function setPlace($env){
@@ -228,7 +232,7 @@ class PaypalPaymentController extends Controller
             (double)$this->product['domestic_delivery_price'],
             $this->product['currency']);
         $internationalDeliveryPrice = $this->currency->exchangeToUsd(
-            (double)$this->getInternationalDeliveryPrice('FR'),
+            (double)$this->getInternationalDeliveryPrice('FR',$this->product['weight']*(int)$transaction['item_list']['items'][0]['quantity']),
             'KRW'
         );
         $calcPrice = (double)($itemPrice + $domesticDeliveryPrice + $internationalDeliveryPrice);
@@ -263,8 +267,8 @@ class PaypalPaymentController extends Controller
         Abort::Error($errorCode,$errorMsg);
     }
 
-    public function getInternationalDeliveryPrice($country_alpha2_code){
-        $this->internationalDeliveryPrice = 0;
+    public function getInternationalDeliveryPrice($country_alpha2_code,$weight){
+        $this->internationalDeliveryPrice = $this->ems->request($country_alpha2_code,$weight);
         return $this->internationalDeliveryPrice;
     }
 }

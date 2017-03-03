@@ -77,5 +77,8 @@ Route::group(['prefix' => '/v1'], function () {
     Route::group(['prefix' => '/currency'], function () {
         Route::get('', 'CurrencyController@get');
     });
+    Route::group(['prefix' => '/ems'], function () {
+        Route::get('', 'EmsController@get');
+    });
     Route::get('/data/', 'DataResponseController@dataSimpleResponse');
 });
