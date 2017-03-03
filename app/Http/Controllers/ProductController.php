@@ -37,7 +37,7 @@ class ProductController extends Controller
 
     public function get(Request $request,$id){
         $product = Product::findOrFail($id);
-        if( !$this->product->isSelling() ) Abort::Error('0054','This item has ended sales');
+        if( !$product->isSelling() ) Abort::Error('0054','This item has ended sales');
         $response = (object)array(
             "id" => $product["id"],
             "marketProductId" => $product["market_product_id"],
@@ -74,7 +74,7 @@ class ProductController extends Controller
 
     public function getSimple(Request $request,$id){
         $product = Product::findOrFail($id);
-        if( !$this->product->isSelling() ) Abort::Error('0054','This item has ended sales');
+        if( !$product->isSelling() ) Abort::Error('0054','This item has ended sales');
         $response = (object)array(
             "id" => $product["id"],
             "title" => $product->getTranslateResultByLanguage($product->translateName),
