@@ -12,6 +12,7 @@ class Order extends BaseModel
     
     protected $fillable = [
         "user_id",
+        "order_number",
         "order_status_code",
         "recipient_name",
         "recipient_phone",

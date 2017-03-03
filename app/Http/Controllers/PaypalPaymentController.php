@@ -137,6 +137,7 @@ class PaypalPaymentController extends Controller
 
         $this->order = new Order([
             "user_id" => $this->user->id,
+            "order_number" => date("YmdH").mt_rand(1000000,9999999),
             "order_status_code" => "0310",
             "recipient_name" => $shippingAddress['recipient_name'],
             "recipient_phone" => $shippingAddress['phone'],
@@ -230,9 +231,8 @@ class PaypalPaymentController extends Controller
         );
         $calcPrice = (double)($itemPrice + $domesticDeliveryPrice + $internationalDeliveryPrice);
         $calcPriceAddFee = $calcPrice + ( $calcPrice * (double)("0.0".$this->additionalFee) );
-
         if( abs($totalPrice - $calcPriceAddFee) > 1 )
-        Abort::Error('0040','Invalid price server calc = '.$calcPrice.'USD');
+        Abort::Error('0040','Invalid price server calc = '.$calcPriceAddFee.'USD');
     }
 
     public function expire(Request $request){
