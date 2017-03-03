@@ -120,6 +120,9 @@ class Product extends BaseModel
         }
         return $result;
     }
+    public function isSelling(){
+        return $this->product_status_code == "0301";
+    }
 //    public function getProvisionOption($priceUnit){
 //        $result = [];
 //        if (count($this->option)) {

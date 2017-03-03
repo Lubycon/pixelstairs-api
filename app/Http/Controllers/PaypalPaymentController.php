@@ -114,6 +114,7 @@ class PaypalPaymentController extends Controller
         $country = Country::where('alpha2Code','=',$shippingAddress['country_code'])->firstOrFail();
         $this->option->canBuyAble(); // check we have buy able stock
         $this->validPrice($request);// cross check price
+        if( !$this->product->isSelling() ) Abort::Error('0054','This item has ended sales');
 
         try{
             $response = $this->client->request('POST', $this->paymentUrl , [
@@ -185,6 +186,7 @@ class PaypalPaymentController extends Controller
         $this->order = Order::wherepayment_id($request->paymentId)->firstOrFail();
         if( $this->order->order_status_code == '0319' ) Abort::Error('0059');
         if( $this->order->order_status_code != '0310' ) Abort::Error('0040');
+        if( !$this->product->isSelling() ) Abort::Error('0054','This item has ended sales');
 
         try{
             $response = $this->client->request('POST', $this->paymentUrl.'/'.$request->paymentId.'/execute' , [
