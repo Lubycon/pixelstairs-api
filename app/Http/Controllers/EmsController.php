@@ -24,9 +24,6 @@ class EmsController extends Controller
         if( !isset($query['totalWeight']) ) Abort::Error('0051','totalWeight is required');
 
         $result = $this->ems->request($query['countryCode'],$query['totalWeight']);
-        $result = $result == ''
-            ? null
-            : $result;
         return response()->success( $result );
     }
 }

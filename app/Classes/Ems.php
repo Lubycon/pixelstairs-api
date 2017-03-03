@@ -27,10 +27,10 @@ class Ems
             Abort::Error('0070',$e->getMessage());
         }
         $this->result = $this->getXmlOnBody($response);
-
-        Log::info( (array)$this->result );
-
-        return trim($this->result->EmsTotProcCmd->emsTotProc[0]);
+        $price = isset($this->result->EmsTotProcCmd->emsTotProc[0])
+            ? trim($this->result->EmsTotProcCmd->emsTotProc[0])
+            : null;
+        return $price;
     }
     private function getXmlOnBody($response){
         return simplexml_load_string($response, 'SimpleXMLElement', LIBXML_NOCDATA);
