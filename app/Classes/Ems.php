@@ -27,6 +27,9 @@ class Ems
             Abort::Error('0070',$e->getMessage());
         }
         $this->result = $this->getXmlOnBody($response);
+
+        Log::info( (array)$this->result );
+
         return trim($this->result->EmsTotProcCmd->emsTotProc[0]);
     }
     private function getXmlOnBody($response){
