@@ -4,6 +4,7 @@ namespace App\Traits;
 use App\Models\User;
 use App\Models\SignupAllow;
 use Log;
+use Abort;
 
 trait GetUserModelTrait{
     function getUserToken($request){
@@ -44,22 +45,29 @@ trait GetUserModelTrait{
             "token" => substr($token, 1, 30),
             "id" => substr($token, 31),
         );
-
         return $tokenData->id;
     }
     function getUserModel($userId){
         $user = User::find($userId);
+        $this->matchToken($user,$userId);
         return $user;
     }
 
     function getUserModelOrFail($userId){
         $user = User::findOrFail($userId);
+        $this->matchToken($user,$userId);
         return $user;
     }
 
     function getUserModelByEmailOrFail($email){
         $user = User::whereemail($email)->firstOrFail();
         return $user;
+    }
+
+    function matchToken($user,$id){
+        if( !isset($user->remember_token) ) Abort::Error('0042');
+        $matchToken = User::whereid($id)->whereremember_token($user->remember_token)->first();
+        if( is_null($matchToken) ) Abort::Error('0042');
     }
 
     function getSignupToken($email){
