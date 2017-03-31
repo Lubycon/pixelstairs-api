@@ -15,8 +15,7 @@ class AuthSigndropRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            'reasonCode' => 'required',
-            'memberId' => 'required'
+            'reasonCode' => 'required'
         ];
 
         return $requiredRule;

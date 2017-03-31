@@ -15,7 +15,7 @@ class AuthSigninRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            'id' => 'required',
+            'email' => 'required',
             'password' => 'required'
         ];
         return $requiredRule;

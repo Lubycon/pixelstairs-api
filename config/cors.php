@@ -5,7 +5,12 @@ return [
     'allowedOrigins' => json_decode(env("ALLOW_ORIGIN")),
     'allowedHeaders' => ['*'],
     'allowedMethods' => ['*'],
-    'requiredHeader' => ["x-mitty-language"],
+    'requiredHeader' => [
+        "x-pixel-version",
+        "x-pixel-country",
+        "x-pixel-language",
+        "x-pixel-device"
+    ],
     'exposedHeaders' => [],
     'maxAge' => 0,
     'hosts' => [],

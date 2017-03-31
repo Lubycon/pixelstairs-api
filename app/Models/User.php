@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -10,75 +11,151 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Log;
+use Illuminate\Support\Str;
+use Request;
+use Abort;
 
-class User extends BaseModel implements AuthenticatableContract,
+class User extends Model implements AuthenticatableContract,
     AuthorizableContract,
     CanResetPasswordContract
 {
     use Authenticatable, Authorizable, CanResetPassword ,SoftDeletes;
 
-    protected $casts = [
-        'id' => 'string',
-        'haitao_user_id' => 'string',
-        'post_code' => 'string',
-        'gender_id' => 'string',
-        'country_id' => 'string',
-        'image_id' => 'string',
-    ];
+	protected $dates = ['deleted_at'];
+    protected $hidden = ['password', 'token'];
+	protected $fillable = ['email', 'password', 'nickname', 'newsletters_accepted', 'terms_of_service_accepted'];
 
-    protected function rules(){
-        // Must be :: without unique value you must be adding unique value to form request required array!!
+
+
+    public static function bindSigninData($request){
         return [
-            "email" => 'email|max:255',
-            "name" => 'max:255',
-            "password" => 'max:255',
-            "grade" => 'in:user,admin,super_admin',
-            "position" => "max:255",
+            "email" => $request->email,
+            "password" => $request->password
         ];
     }
-
-    protected $fillable = [
-        'email',
-        'phone',
-        'name',
-        'nickname',
-        'password',
-        'grade',
-        'position'
-    ];
-
-    protected $hidden = ['password', 'remember_token'];
-
-    public function isAdmin(){
-        return $this->grade !== 'normal';
+	public static function bindSignupData($request){
+	    return [
+	        "email" => $request->email,
+            "password" => bcrypt($request->password),
+            "nickname" => $request->nickname,
+            "newsletters_accepted" => $request->newsletterAccepted,
+            "terms_of_service_accepted" => $request->termsOfServiceAccepted,
+            "grade" => "general",
+            "status" => "inactive",
+        ];
+    }
+    public static function getAccessUser(){
+	    try{
+            $accessToken = Request::header("x-pixel-token");
+            $userId = substr($accessToken, 31);
+            return User::findOrFail($userId)->wheretoken($accessToken)->firstOrFail();
+        }catch(\Exception $e){
+	        Abort::Error('0043','Token dose not match');
+        }
     }
 
-    public function getInterest(){
-        $result = [];
-        $interests = $this->interest;
-        foreach ($interests as $interest) {
-            $result[] = [
-                "categoryId" => $interest->category_id,
-                "divisionId" => $interest->division_id,
-            ];
-        }
+    public function insertAccessToken(){
+        // TODO : device info add to token
+//	    $deviceInfo = Request::header("x-pixel-device");
+        $userId = $this->id;
+        $device = 'w';
+        $randomStr = Str::random(30);
+        $token = $device.$randomStr.$userId; //need change first src from header device check
+
+        $this->token = $token;
+        $this->save();
+        return $token;
+    }
+    public function dropToken(){
+        $this->token = null;
+        $this->save();
+    }
+    public function createSignupToken(){
+        $recoded = SignupAllow::whereemail($this->email);
+        if(!is_null($recoded)) $recoded->delete();
+        SignupAllow::create([
+            "email" => $this->email,
+            "token" =>  Str::random(50)
+        ]);
+    }
+    public function getImageObject(){
+        $imageModel = $this->image;
+        $result = is_null($imageModel)
+            ? null
+            : $this->image->getObject();
         return $result;
     }
 
-    public function image()
-    {
-        return $this->hasOne('App\Models\Image','id','image_id');
-    }
-    public function survey()
-    {
-        return $this->belongsTo('App\Models\Survey','id','user_id');
-    }
 
-    // get reference data
-    // hasMany('remote_table_column_name','local_column_name');
-    public function interest()
-    {
-        return $this->hasMany('App\Models\Interest','user_id','id');
-    }
+	public function image()
+	{
+		return $this->hasOne('App\Models\Image','id','image_id');
+	}
 
 }
+
+
+
+//public static function insertRememberToken($id){
+//    $user = User::findOrFail($id);
+//
+//    $userId = $user->id;
+//    $device = 'w';
+//    $randomStr = Str::random(30);
+//    $token = $device.$randomStr.$userId; //need change first src from header device kind
+//
+//    $user->remember_token = $token;
+//    $user->save();
+//
+//    return $token;
+//}
+
+//public static function insertSignupToken($id){
+//    $user = User::findOrFail($id);
+//
+//    $recoded = SignupAllow::where('email', $user->email);
+//
+//    if(!is_null($recoded)){
+//        $recoded->delete();
+//    }
+//    $signup = new SignupAllow;
+//    $signup->id = $user->id;
+//    $signup->email = $user->email;
+//    $signup->token = Str::random(50);
+//    $signup->save();
+//}
+//
+//public static function checkToken($request){
+//    $token = $request->header('X-mitty-token');
+//    $tokenData = (object)array(
+//        "device" => substr($token, 0, 1),
+//        "token" => substr($token, 1, 30),
+//        "id" => substr($token, 31),
+//    );
+//    return $tokenData;
+//}
+//
+//public static function checkUserExistById($id){
+//    $user = User::find($id);
+//    if (!is_null($user)) {
+//        return true;
+//    }
+//    return false;
+//}
+//
+//public static function checkUserExistByIdOnlyTrashed($id)
+//{
+//    $user = User::onlyTrashed()->find($id);
+//    if (!is_null($user)) {
+//        return true;
+//    }
+//    return false;
+//}
+//
+//public static function checkUserExistByEmail($data){
+//    $user = User::whereRaw("email = '".$data['email']."' and sns_code = ".$data['snsCode'])->get();
+//    if(!$user->isempty()) {
+//        return true;
+//    }
+//    return false;
+//}

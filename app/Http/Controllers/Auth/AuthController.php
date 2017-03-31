@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Carbon\Carbon;
 use Auth;
 
 use App\Models\User;
-use App\Models\Interest;
-use App\Models\Credential;
+use Abort;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -20,10 +18,6 @@ use App\Http\Requests\Auth\AuthSigninRequest;
 use App\Http\Requests\Auth\AuthSignupRequest;
 use App\Http\Requests\Auth\AuthSigndropRequest;
 use App\Http\Requests\Auth\AuthPostRetrieveRequest;
-use Abort;
-
-use App\Traits\GetUserModelTrait;
-use App\Traits\InterestControllTraits;
 
 use App\Jobs\LastSigninTimeCheckerJob;
 
@@ -31,52 +25,45 @@ use Log;
 
 class AuthController extends Controller
 {
-    use ThrottlesLogins,
-        GetUserModelTrait,
-        InterestControllTraits;
+    use ThrottlesLogins;
+
+    public $user;
+
+    public function __construct()
+    {
+        $this->user = User::class;
+    }
 
     protected function signin(AuthSigninRequest $request)
     {
-        $data = $request->json()->all();
-        $credentials = Credential::signin($data);
+        if(!Auth::once(User::bindSigninData($request))) Abort::Error('0061');
+        $this->user = Auth::getUser();
 
-        if(!Auth::once($credentials)) Abort::Error('0040','Login Failed, check email,password');
+//        $this->dispatch(new LastSigninTimeCheckerJob($this->user));
 
-        if( $request->getHost() == env('APP_PROVISION_ADMIN_URL') ){
-            if( Auth::user()->grade == 'normal' ) Abort::Error('0043');
-        }
-
-        $this->dispatch(new LastSigninTimeCheckerJob(Auth::getUser()));
-
-        if (Auth::user()->status == 'inactive'){
-            return response()->success([
-                'token' => Auth::user()->remember_token,
-            ]);
-        }
-
-        if(Auth::user()->status == 'active') CheckContoller::insertRememberToken(Auth::user()->id);
-
+        if($this->user->status == 'active') $this->user->insertAccessToken();
 
         return response()->success([
-            'token' => Auth::user()->remember_token,
-            'grade' => Auth::user()->grade,
+            'token' => $this->user->token,
+            'grade' => $this->user->status,
         ]);
     }
 
 
-    protected function signout()
+    protected function signout(Request $request)
     {
-        // need somthing other logic
+        $this->user = User::getAccessUser();
+        $this->user->dropToken();
+        return response()->success();
     }
 
     protected function signup(AuthSignupRequest $request)
     {
-        $data = $request->json()->all();
-        $credentialSignup = Credential::signup($data);
+        $signupData = User::bindSignupData($request);
 
-        if( $user =  User::create($credentialSignup)){
-            $id = $user->getAuthIdentifier();
-            $token = CheckContoller::insertRememberToken($id);
+        if( $this->user =  User::create($signupData)){
+            $this->user->createSignupToken();
+            $token = $this->user->insertAccessToken();
             return response()->success([
                 "token" => $token
             ]);
@@ -85,9 +72,9 @@ class AuthController extends Controller
 
     protected function signdrop(AuthSigndropRequest $request)
     {
-        $user = User::findOrFail($request->memberId);
-
-        if($user->delete()){
+        // TODO : save user sign drop reasons...
+        $this->user = User::getAccessUser();
+        if($this->user->delete()){
             return response()->success();
         }else{
             Abort::Error('0040');
@@ -95,79 +82,40 @@ class AuthController extends Controller
     }
 
     protected function simpleRetrieve(Request $request){
-        $tokenData = CheckContoller::checkToken($request);
-
-        $findUser = User::findOrFail($tokenData->id);
-        $userExist = CheckContoller::checkUserExistById($tokenData->id);
-
-        if($userExist){
-            $result = (object)array(
-                "id" => $findUser->id,
-                "email" => $findUser->email,
-                "name" => $findUser->name,
-                "phone" => $findUser->phone,
-                "grade" => $findUser->grade,
-                "gender" => $findUser->gender_id,
-                "profileImg" => $findUser->getImageObject($findUser),
-                "birthday" => $findUser->birthday
-            );
-            return response()->success($result);
-        }else{
-            Abort::Error('0040');
-        }
+        $this->user = User::getAccessUser();
+        $result = [
+            "id" => $this->user->id,
+            "email" => $this->user->email,
+            "nickname" => $this->user->nickname,
+            "profileImg" => $this->user->getImageObject(),
+        ];
+        return response()->success($result);
     }
 
-    protected function getRetrieve($id)
+    protected function getRetrieve(Request $request,$user_id)
     {
-        $findUser = User::findOrFail($id);
-        $userExist = CheckContoller::checkUserExistById($id);
+        $this->user = User::findOrFail($user_id);
+        return response()->success([
+            "id" => $this->user->id,
+            "email" => $this->user->email,
+            "nickname" => $this->user->nickname,
+            "profileImg" => $this->user->getImageObject(),
+            "newsletterAccepted" => $this->user->newsletters_accepted,
+        ]);
+    }
+    public function postRetrieve(Request $request)
+    {
+        // TODO : image upload
+        $this->user = User::getAccessUser();
 
-        if($userExist){
-            return response()->success([
-                "id" => $findUser->id,
-                "email" => $findUser->email,
-                "name" => $findUser->name,
-                "phone" => $findUser->phone,
-                "grade" => $findUser->grade,
-                "gender" => $findUser->gender_id,
-                "location" => [
-                    "city" => $findUser->city,
-                    "address1" => $findUser->address1,
-                    "address2" => $findUser->address2,
-                    "postCode" => $findUser->post_code,
-                ],
-                "likeCategory" => $findUser->getInterest(),
-                "profileImg" => $findUser->getImageObject($findUser),
-                "birthday" => $findUser->birthday
+        try{
+            $this->user->update([
+                "nickname" => $request->nickname,
+                "profileImg" => null,
+                "newsletterAccepted" => $request->newsletters_accepted,
             ]);
-        }else{
-            Abort::Error('0040');
-        }
-    }
-    public function postRetrieve(AuthPostRetrieveRequest $request,$id)
-    {
-        $data = $request->json()->all();
-        $tokenData = CheckContoller::checkToken($request);
-        $findUser = User::find($tokenData->id);
-        $userExist = CheckContoller::checkUserExistById($tokenData->id);
-
-        if($userExist && $id == $findUser->id){
-            $findUser->email = $data['email'];
-            $findUser->name = $data['name'];
-            $findUser->password = bcrypt($data['password']);
-            $findUser->city = $data['location']['city'];
-            $findUser->address1 = $data['location']['address1'];
-            $findUser->address2 = $data['location']['address2'];
-            $findUser->post_code = $data['location']['postCode'];
-            $findUser->gender_id = $data['gender'];
-            $findUser->birthday = $data['birthday'];
-            Interest::firstOrCreate($this->setNewInterest($findUser,$request['likeCategory']));
-            $fileUpload = new FileUpload( $findUser,$data['profileImg'] ,'image' );
-            $findUser->image_id = $fileUpload->getResult();
-            if($findUser->save()){
-                return response()->success($findUser);
-            }
-        }else{
+            return response()->success($this->user);
+        }catch (\Exception $e){
             Abort::Error('0040');
         }
     }

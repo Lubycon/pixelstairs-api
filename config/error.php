@@ -11,10 +11,11 @@ return [
     "httpCode" => 202,
     "msg" => "Accepted for processing, but the processing has not been completed."
 ),
-"0012" => (object)array(
-    "httpCode" => 204,
-    "msg" => "Login Failure"
-),
+// Removed protocol
+//"0012" => (object)array(
+//    "httpCode" => 204,
+//    "msg" => "Login Failure"
+//),
 "0013" => (object)array(
     "httpCode" => 204,
     "msg" => "Verification code not match"
@@ -117,6 +118,10 @@ return [
 "0060" => (object)array(
     "httpCode" => 400,
     "msg" => "Invalid Currency Rate"
+),
+"0061" => (object)array(
+    "httpCode" => 401,
+    "msg" => "Login Failure"
 ),
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 //      4xx response

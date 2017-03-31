@@ -3,25 +3,19 @@
 namespace App\Http\Controllers\Auth;
 
 use Log;
-use Abort;
 use DB;
 use Validator;
-use App\Http\Controllers\MailSendController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 
-use App\Traits\GetUserModelTrait;
-use App\Jobs\PasswordReMinderSendMailJob;
-
 use App\Http\Requests\Password\PasswordPostMailRequest;
 use App\Http\Requests\Password\PasswordResetRequest;
 
 class PasswordController extends Controller
 {
-    use GetUserModelTrait;
 
     public function postEmail(PasswordPostMailRequest $request)
     {

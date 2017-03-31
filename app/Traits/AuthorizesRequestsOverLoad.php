@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Auth\Access\UnauthorizedException;
 use Abort;
 
-trait AuthorizesRequestsOverLoad{
+trait AuthorizesRequestsOverLoad {
     use AuthorizesRequests;
 
     public function authorizeAtGate(Gate $gate, $ability, $arguments)
@@ -18,4 +18,3 @@ trait AuthorizesRequestsOverLoad{
         }
     }
 }
- ?>

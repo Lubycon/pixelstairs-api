@@ -9,13 +9,12 @@ use Log;
 
 class AuthPostRetrieveRequest extends Request
 {
-    use AuthorizesRequestsOverLoad,
-        GetUserModelTrait;
+    use AuthorizesRequestsOverLoad;
 
     public function authorize()
     {
         $routeParam = $this->route()->parameters()['id'];
-        $user = $this->getUserByTokenOrFail($this->header('x-mitty-token'));
+        $user = $this->getUserByTokenOrFail($this->header('x-pixel-token'));
 
         return $user->id === $routeParam;
     }

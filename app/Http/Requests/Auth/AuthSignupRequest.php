@@ -17,16 +17,11 @@ class AuthSignupRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            'name' => 'required|unique:users,name',
-            'email' => 'required|unique:users,email|email',
-            'phone' => 'required|unique:users,phone',
-            'password' => 'required|string',
-            'gender' => "required",
-            'birthday' => "required",
-            'location.city' => "required|string",
-            'location.address1' => "required|string",
-            'location.address2' => "required|string",
-            'location.postCode' => "required",
+            "email" => "required|unique:users,email|email",
+            "nickname" => "required|unique:users,nickname",
+            "password" => "required|string",
+            "newsletterAccepted" => "required|boolean",
+            "termsOfServiceAccepted" => "required|boolean"
         ];
         return $requiredRule;
     }
