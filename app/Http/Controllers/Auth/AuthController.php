@@ -2,26 +2,32 @@
 
 namespace App\Http\Controllers\Auth;
 
+// Global
+use Log;
 use Auth;
-
-use App\Models\User;
 use Abort;
 
+// Models
+use App\Models\User;
+
+// Require
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
-use App\Classes\FileUpload;
-
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 
+// Class
+use App\Classes\FileUpload;
+
+// Requests
 use App\Http\Requests\Auth\AuthSigninRequest;
 use App\Http\Requests\Auth\AuthSignupRequest;
 use App\Http\Requests\Auth\AuthSigndropRequest;
 use App\Http\Requests\Auth\AuthPostRetrieveRequest;
 
+// Jobs
 use App\Jobs\LastSigninTimeCheckerJob;
+use App\Jobs\Mails\SignupMailSendJob;
 
-use Log;
 
 class AuthController extends Controller
 {
@@ -64,6 +70,7 @@ class AuthController extends Controller
         if( $this->user =  User::create($signupData)){
             $this->user->createSignupToken();
             $token = $this->user->insertAccessToken();
+            $this->dispatch(new SignupMailSendJob($this->user));
             return response()->success([
                 "token" => $token
             ]);

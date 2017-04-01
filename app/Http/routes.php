@@ -17,5 +17,12 @@ Route::group(['prefix' => '/v1'], function () {
             Route::post('reset', 'Auth\PasswordController@postReset');
         });
     });
+
+    Route::group(['prefix' => '/certs/'], function () {
+        Route::group(['prefix' => '/signup/'], function () {
+            Route::post('code', 'Cert\CertificationController@checkCode');
+            Route::post('time', 'Cert\CertificationController@getDiffTime');
+        });
+    });
     Route::get('/data/', 'Data\DataResponseController@dataSimpleResponse');
 });

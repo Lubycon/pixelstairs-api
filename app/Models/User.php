@@ -78,19 +78,41 @@ class User extends Model implements AuthenticatableContract,
             "token" =>  Str::random(50)
         ]);
     }
+
+
     public function getImageObject(){
         $imageModel = $this->image;
         $result = is_null($imageModel)
             ? null
-            : $this->image->getObject();
+            : $imageModel->getObject();
         return $result;
+    }
+    public function getSignupToken(){
+        $signupAllowModel = $this->signupAllow;
+        $result = is_null($signupAllowModel)
+            ? Abort::Error('0040','This user has not signup token')
+            : $signupAllowModel->token;
+        return $result;
+    }
+    public function getSignupDiffTime(){
+        $signupAllowModel = $this->signupAllow;
+        return $signupAllowModel->getDiffTime();
+    }
+    public function checkSignupCode($code){
+        $userSignupToken = $this->getSignupToken();
+        $this->signupAllow->expiredCheck();
+        return $userSignupToken === $code;
     }
 
 
-	public function image()
+    public function image()
 	{
 		return $this->hasOne('App\Models\Image','id','image_id');
 	}
+    public function signupAllow()
+    {
+        return $this->hasOne('App\Models\SignupAllow','email','email');
+    }
 
 }
 
