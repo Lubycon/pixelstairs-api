@@ -2,40 +2,53 @@
 
 namespace App\Http\Controllers\Auth;
 
+// Global
 use Log;
-use DB;
-use Validator;
+use Abort;
+
+// Requeire
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 
-use App\Http\Requests\Password\PasswordPostMailRequest;
-use App\Http\Requests\Password\PasswordResetRequest;
+// Models
+use App\Models\User;
+use App\Models\PasswordReset;
+
+// Jobs
+use App\Jobs\Mails\PasswordReMinderSendMailJob;
 
 class PasswordController extends Controller
 {
+    public $user;
+    public $passwordReset;
 
-    public function postEmail(PasswordPostMailRequest $request)
+    public function __construct()
     {
-        $email =  $request->only('email');
-        $user = $this->getUserModelByEmailOrFail($email);
-        $res = $this->dispatch(new PasswordReMinderSendMailJob($user));
+        $this->user = User::class;
+        $this->passwordReset = PasswordReset::class;
+    }
 
+    public function postMail(Request $request)
+    {
+        $this->user = User::getFromEmail($request->email);
+        $this->dispatch(new PasswordReMinderSendMailJob($this->user));
         return response()->success();
     }
 
-    public function postReset(PasswordResetRequest $request)
+    public function reset(Request $request)
     {
-        $data = $request->json()->all();
-
-        $credentials = array(
-            "email" => DB::table('password_resets')->where('token','=',$data['code'])->value('email'),
-            "password" => $data['newPassword'],
-            "password_confirmation" => $data['newPassword'],
-            "token" => $data['code']
-        );
+        $this->passwordReset = PasswordReset::getByToken($request->code);
+        $this->passwordReset->expiredCheck();
+        $this->user = $this->passwordReset->user;
+        $credentials = [
+            "email" => $this->user->email,
+            "password" => $request->newPassword,
+            "password_confirmation" => $request->newPassword,
+            "token" => $request->code
+        ];
 
         $response = Password::reset($credentials, function ($user, $password) {
             $this->resetPassword($user, $password);
@@ -49,13 +62,36 @@ class PasswordController extends Controller
         }
     }
 
-    /**
-     * Reset the given user's password.
-     *
-     * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
-     * @param  string  $password
-     * @return void
-     */
+    protected function getDiffTime(Request $request){
+        $this->passwordReset = PasswordReset::getByEmail($request->email);
+        $diffTime = $this->passwordReset->getDiffTime();
+        return response()->success([
+            "time" => $diffTime
+        ]);
+    }
+
+    protected function checkCode(Request $request){
+        $this->passwordReset = PasswordReset::getByToken($request->code);
+        $this->passwordReset->expiredCheck();
+
+        return response()->success([
+            "validity" => $request->code === $this->passwordReset->token
+        ]);
+    }
+
+    protected function checkPassword(Request $request){
+        $this->user = User::getAccessUser();
+
+        $credentials = [
+            'email'    => $this->user->email,
+            'password' => $request->password
+        ];
+
+        return response()->success([
+            "validity" => Auth::once($credentials)
+        ]);
+    }
+
     protected function resetPassword($user, $password)
     {
         $user->password = bcrypt($password);

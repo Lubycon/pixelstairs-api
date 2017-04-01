@@ -42,4 +42,17 @@ class CertificationController extends Controller
             'time' => $diffTime
         ]);
     }
+
+    public function checkAccessToken(Request $request)
+    {
+        try{
+            $this->user = User::getAccessUser();
+            $validity = true;
+        }catch(\Exception $e){
+            $validity = false;
+        }
+        return response()->success([
+            'validity' => $validity
+        ]);
+    }
 }

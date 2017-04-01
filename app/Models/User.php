@@ -44,6 +44,12 @@ class User extends Model implements AuthenticatableContract,
             "status" => "inactive",
         ];
     }
+
+
+    public static function getFromEmail($email){
+	    return User::whereemail($email)->firstOrFail();
+    }
+
     public static function getAccessUser(){
 	    try{
             $accessToken = Request::header("x-pixel-token");

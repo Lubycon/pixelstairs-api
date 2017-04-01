@@ -13,8 +13,9 @@ Route::group(['prefix' => '/v1'], function () {
             Route::post('detail', 'Auth\AuthController@postRetrieve');
         });
 
-        Route::group(['prefix' => 'pwd/'], function () {
-            Route::post('reset', 'Auth\PasswordController@postReset');
+        Route::group(['prefix' => 'password/'], function () {
+            Route::post('mail', 'Auth\PasswordController@postMail');
+            Route::put('reset', 'Auth\PasswordController@reset');
         });
     });
 
@@ -23,6 +24,19 @@ Route::group(['prefix' => '/v1'], function () {
             Route::post('code', 'Cert\CertificationController@checkCode');
             Route::post('time', 'Cert\CertificationController@getDiffTime');
         });
+        Route::group(['prefix' => '/password/'], function () {
+            Route::post('code', 'Auth\PasswordController@checkCode');
+            Route::post('time', 'Auth\PasswordController@getDiffTime');
+            Route::post('', 'Auth\PasswordController@checkPassword');
+        });
+        Route::group(['prefix' => '/token/'], function () {
+            Route::post('', 'Cert\CertificationController@checkAccessToken');
+        });
+    });
+
+    Route::group(['prefix' => '/mail/'], function () {
+        Route::put('password', 'Mail\MailSendController@passwordReset');
+        Route::put('signup', 'Mail\MailSendController@signup');
     });
     Route::get('/data/', 'Data\DataResponseController@dataSimpleResponse');
 });
