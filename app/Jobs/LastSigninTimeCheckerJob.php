@@ -31,8 +31,7 @@ class LastSigninTimeCheckerJob extends Job implements SelfHandling, ShouldQueue
      */
     public function handle()
     {
-        $nowTime = Carbon::now();
-        $this->user->last_login_time = $nowTime;
+        $this->user->last_login_time = Carbon::now();
         $this->user->save();
     }
 }

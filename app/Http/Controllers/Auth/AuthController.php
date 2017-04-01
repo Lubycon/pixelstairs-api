@@ -39,7 +39,7 @@ class AuthController extends Controller
         if(!Auth::once(User::bindSigninData($request))) Abort::Error('0061');
         $this->user = Auth::getUser();
 
-//        $this->dispatch(new LastSigninTimeCheckerJob($this->user));
+        $this->dispatch(new LastSigninTimeCheckerJob($this->user));
 
         if($this->user->status == 'active') $this->user->insertAccessToken();
 
