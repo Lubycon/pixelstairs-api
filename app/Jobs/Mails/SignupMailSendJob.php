@@ -28,6 +28,8 @@ class SignupMailSendJob extends Job implements SelfHandling, ShouldQueue
     {
         Log::info('mail send start');
 
+        $this->user->createSignupToken();
+
         $to = $this->user->email;
         $subject = 'Account Success to Pixelstairs';
         $data = [

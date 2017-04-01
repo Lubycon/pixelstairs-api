@@ -18,7 +18,6 @@ Route::group(['prefix' => '/v1'], function () {
             Route::put('reset', 'Auth\PasswordController@reset');
         });
     });
-
     Route::group(['prefix' => '/certs/'], function () {
         Route::group(['prefix' => '/signup/'], function () {
             Route::post('code', 'Cert\CertificationController@checkCode');
@@ -33,10 +32,9 @@ Route::group(['prefix' => '/v1'], function () {
             Route::post('', 'Cert\CertificationController@checkAccessToken');
         });
     });
-
     Route::group(['prefix' => '/mail/'], function () {
-        Route::put('password', 'Mail\MailSendController@passwordReset');
-        Route::put('signup', 'Mail\MailSendController@signup');
+        Route::put('signup', 'Mail\MailSendController@resendSignup');
+        Route::put('password', 'Auth\PasswordController@postMail');
     });
     Route::get('/data/', 'Data\DataResponseController@dataSimpleResponse');
 });
