@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => 'local',
+    'default' => 's3',
 
     /*
     |--------------------------------------------------------------------------
@@ -79,7 +79,13 @@ return [
             'region'    => 'IAD',
             'url_type'  => 'publicURL',
         ],
-
     ],
+
+    // for save multiple resolutions
+    'responsive_resolution' => ['1920','640','320'],
+
+    'temp_storage' => public_path().'/tmp/',
+
+    'own_checker' => 'is_pixel_own'
 
 ];

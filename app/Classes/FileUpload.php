@@ -16,16 +16,25 @@ class FileUpload
 {
     private $storage;
     private $tempStorage;
+    private $ownCheckers;
     private $model;
     private $inputFile;
     private $fileExt;
-    private $responsiveResolution = ['1920','640','320'];
+    private $responsiveResolution;
     private $nullCheck = false;
 
     public function __construct($model,$inputFile,$ext){
+
+
         if(is_null($inputFile)) return $this->nullCheck = true;
-        $this->storage = Storage::disk('s3');
-        $this->tempStorage = $tempStorage = public_path().'/tmp/';
+        $this->storage = Storage::disk(config('filesystems.default'));
+        $this->responsiveResolution = config('filesystems.responsive_resolution');
+        $this->tempStorage = config('filesystems.temp_storage');
+        $this->ownCheckers = [
+            "snake" => config('filesystems.own_checker'),
+            "camel" => camel_case(config('filesystems.own_checker')),
+        ];
+
         $this->model = $model;
         $this->inputFile = $inputFile;
         $this->fileExt = $ext;
@@ -45,11 +54,11 @@ class FileUpload
             if( is_null($value['type']) ) unset($inputFile[$key]); // null image
             if( isset( $value['id'] ) ){ //update or delete
                 if( $value['deleted'] ){ // delete
-                    if( $value['isMittyOwn'] && $value['type'] == 'url' ) $this->responsiveDeleteUrl($value['file']);
+                    if( $value[$this->ownCheckers['camel']] && $value['type'] == 'url' ) $this->responsiveDeleteUrl($value['file']);
                     Image::find($value['id'])->delete();
                     unset($inputFile[$key]);
                 }else{ // update
-                    if( $value['isMittyOwn'] ){
+                    if( $value[$this->ownCheckers['camel']] ){
                         if( $value['type'] == 'base64' ) $newUrl = $this->responsiveUploadUrl($value['file']);
                     }
                     $inputFile[$key]['url'] = isset($newUrl) ? $newUrl : $value['file'];
@@ -70,14 +79,14 @@ class FileUpload
                 $images[] = Image::findOrFail($value['id'])->update([
                     "index" => $value['index'],
                     "url" => $value['url'],
-                    "is_mitty_own" => $isMittyOwn,
+                    $this->ownCheckers['snake'] => $isMittyOwn,
                     "image_group_id" => $this->isGroup ? $this->groupModel['id'] : null,
                 ]);
             }else{
                 $images[] = Image::create([
                     "index" => $value['index'],
                     "url" => $value['url'],
-                    "is_mitty_own" => $isMittyOwn,
+                    $this->ownCheckers['snake'] => $isMittyOwn,
                     "image_group_id" => $this->isGroup ? $this->groupModel['id'] : null,
                 ]);
             }
@@ -87,8 +96,8 @@ class FileUpload
 
     protected function isMittyOwn($fileObj){
         $isMittyOwn = null;
-        if( isset($fileObj['isMittyOwn']) ){
-            $isMittyOwn = $fileObj['isMittyOwn'] ? true : false ;
+        if( isset($fileObj[$this->ownCheckers['camel']]) ){
+            $isMittyOwn = $fileObj[$this->ownCheckers['camel']] ? true : false ;
         }else if( $fileObj['type'] == 'base64' ){
             $isMittyOwn = true;
         }else{
