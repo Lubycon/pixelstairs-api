@@ -5,14 +5,11 @@ Route::group(['prefix' => '/v1'], function () {
         Route::put('signout', 'Auth\AuthController@signout');
         Route::post('signup', 'Auth\AuthController@signup');
         Route::delete('signdrop', 'Auth\AuthController@signdrop');
-
         Route::get('simple', 'Auth\AuthController@simpleRetrieve');
-
         Route::group(['prefix' => '{id}/'], function () {
             Route::get('detail', 'Auth\AuthController@getRetrieve');
             Route::post('detail', 'Auth\AuthController@postRetrieve');
         });
-
         Route::group(['prefix' => 'password/'], function () {
             Route::post('mail', 'Auth\PasswordController@postMail');
             Route::put('reset', 'Auth\PasswordController@reset');
@@ -37,4 +34,5 @@ Route::group(['prefix' => '/v1'], function () {
         Route::put('password', 'Auth\PasswordController@postMail');
     });
     Route::get('/data/', 'Data\DataResponseController@dataSimpleResponse');
+    Route::post('/tracker','Tracker\TrackerController@create');
 });

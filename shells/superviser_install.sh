@@ -1,9 +1,12 @@
 #! /bin/bash
 
 # Supervisor install
-# echo "Supervisor install"
-# sudo apt-get install supervisor
-# echo "Set Supervisor"
+echo "Supervisor install"
+sudo apt-get install supervisor
+echo "Set Supervisor"
+
+sudo apt install beanstalkd
+echo "Set beanstalkd"
 
 
 # Get domain
