@@ -34,10 +34,12 @@ class AuthController extends Controller
     use ThrottlesLogins;
 
     public $user;
+    public $uploader;
 
     public function __construct()
     {
         $this->user = User::class;
+        $this->uploader = new Fileupload();
     }
 
     protected function signin(AuthSigninRequest $request)
@@ -111,14 +113,15 @@ class AuthController extends Controller
     }
     public function postRetrieve(Request $request)
     {
-        // TODO : image upload
         $this->user = User::getAccessUser();
-
         try{
             $this->user->update([
                 "nickname" => $request->nickname,
-                "profileImg" => null,
-                "newsletterAccepted" => $request->newsletters_accepted,
+                "image_id" => $this->uploader->upload(
+                    $this->user,
+                    $request->profileImg
+                    )->getId(),
+                "newsletters_accepted" => $request->newsletterAccepted,
             ]);
             return response()->success($this->user);
         }catch (\Exception $e){

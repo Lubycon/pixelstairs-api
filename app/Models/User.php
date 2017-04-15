@@ -23,7 +23,7 @@ class User extends Model implements AuthenticatableContract,
 
 	protected $dates = ['deleted_at'];
     protected $hidden = ['password', 'token'];
-	protected $fillable = ['email', 'password', 'nickname', 'newsletters_accepted', 'terms_of_service_accepted'];
+	protected $fillable = ['email', 'password', 'nickname', 'image_id', 'newsletters_accepted', 'terms_of_service_accepted'];
 
 
 

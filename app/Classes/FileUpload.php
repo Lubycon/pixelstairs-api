@@ -14,41 +14,100 @@ use App\Models\ImageGroup;
 
 class FileUpload
 {
+    // config info
     private $storage;
+    private $storagePath;
+    private $bucket;
     private $tempStorage;
     private $ownCheckers;
+    private $nullCheck;
+    // config info
+
+    // model
     private $model;
+    private $modelName;
+    private $modelId;
+    private $groupModel;
+    private $createModel;
+    // model
+
+    // data
     private $inputFile;
-    private $fileExt;
+
+    // info
+    private $isGroup;
     private $responsiveResolution;
-    private $nullCheck = false;
-
-    public function __construct($model,$inputFile,$ext){
+    // info
 
 
-        if(is_null($inputFile)) return $this->nullCheck = true;
+    public function __construct(){
+        // init config...
+        $this->initConfig();
+    }
+
+
+    // init function
+    private function initConfig(){
         $this->storage = Storage::disk(config('filesystems.default'));
+        $this->storagePath = env('S3_PATH');
         $this->responsiveResolution = config('filesystems.responsive_resolution');
         $this->tempStorage = config('filesystems.temp_storage');
         $this->ownCheckers = [
             "snake" => config('filesystems.own_checker'),
             "camel" => camel_case(config('filesystems.own_checker')),
         ];
-
-        $this->model = $model;
-        $this->inputFile = $inputFile;
-        $this->fileExt = $ext;
-        $this->modelName = $this->getModelName($this->model);
-        $this->modelId = $this->getModelId($this->model);
-        $this->isGroup = $this->isGrouping($this->inputFile);
-        $this->groupModel = $this->createImageGroupModel($this->inputFile);
-        $this->inputFile = $this->setToArray($this->inputFile);
-        $this->inputFile = $this->fileTypeCheck($this->inputFile);
-        $this->inputFile = $this->uploadS3($this->inputFile);
-        $this->createModel = $this->createImageModel($this->inputFile);
-        return $this->getResult();
+        $this->bucket = env('S3_BUCKET');
     }
+    // init function
 
+    // progress functions
+    public function upload($model,$inputFile){
+        $this->nullChecker($inputFile);
+        try{
+            if( !$this->nullCheck ){
+                $this->setBasicVariable($model,$inputFile);
+                $this->modelName = $this->getModelName($this->model);
+                $this->modelId = $this->getModelId($this->model);
+                $this->isGroup = $this->isGrouping($this->inputFile);
+                $this->groupModel = $this->createImageGroupModel($this->inputFile);
+                $this->inputFile = $this->setToArray($this->inputFile);
+                $this->inputFile = $this->fileTypeCheck($this->inputFile);
+                $this->inputFile = $this->uploadS3($this->inputFile);
+                $this->createModel = $this->createImageModel($this->inputFile);
+            }
+            return $this;
+        }catch(\Exception $e){
+            Abort::Error('0050',$e->getMessage());
+        }
+    }
+    // progress functions
+
+    // upload function
+    protected function responsiveUploadUrl($file){
+        $image = $this->getResizeImages($file);
+        $uploadPath = $this->modelName.'/'.$this->modelId.'/'.$this->setRandomFileName();
+        foreach($image as $key => $value){
+            $this->storage->getDriver()->getAdapter()->getClient()->upload(
+                $this->bucket, // upload bucket
+                $uploadPath.$key, $value, // upload path.file name
+                'public-read', // permission
+                ['params' => [ // metadata
+                    'ContentType' => 'image/jpeg',
+                ]]);
+        }
+        return $this->storagePath.$uploadPath;
+    }
+    protected function responsiveDeleteUrl($url){
+        foreach($this->responsiveResolution as $key => $value){
+            $path = $this->getInternalS3Url($url.$value);
+            if($this->storage->exists($path)) {
+                $this->storage->delete($path);
+            }else{
+                // not exist file delete request
+            }
+        }
+        return true;
+    }
     private function uploadS3($inputFile){
         foreach($inputFile as $key => $value){
             if( is_null($value['type']) ) unset($inputFile[$key]); // null image
@@ -70,42 +129,32 @@ class FileUpload
         }
         return $inputFile;
     }
+    // upload function
+    
+    // model function
     protected function createImageModel($inputFile){
         $modelId = null;
         $images = [];
         foreach($inputFile as $key => $value ){
-            $isMittyOwn = $this->isMittyOwn($value);
+            $ownerCheck = $this->ownerCheck($value);
             if( isset($value['id']) ){
                 $images[] = Image::findOrFail($value['id'])->update([
                     "index" => $value['index'],
                     "url" => $value['url'],
-                    $this->ownCheckers['snake'] => $isMittyOwn,
+                    $this->ownCheckers['snake'] => $ownerCheck,
                     "image_group_id" => $this->isGroup ? $this->groupModel['id'] : null,
                 ]);
             }else{
                 $images[] = Image::create([
                     "index" => $value['index'],
                     "url" => $value['url'],
-                    $this->ownCheckers['snake'] => $isMittyOwn,
+                    $this->ownCheckers['snake'] => $ownerCheck,
                     "image_group_id" => $this->isGroup ? $this->groupModel['id'] : null,
                 ]);
             }
         }
         return $this->isGroup ? $this->groupModel : $images[0] ;
     }
-
-    protected function isMittyOwn($fileObj){
-        $isMittyOwn = null;
-        if( isset($fileObj[$this->ownCheckers['camel']]) ){
-            $isMittyOwn = $fileObj[$this->ownCheckers['camel']] ? true : false ;
-        }else if( $fileObj['type'] == 'base64' ){
-            $isMittyOwn = true;
-        }else{
-            $isMittyOwn = false;
-        }
-        return $isMittyOwn;
-    }
-
     protected function createImageGroupModel($inputFile){
         if( $this->isGroup ){
             if( $groupId = $this->findGroupExist($inputFile) ){
@@ -118,6 +167,23 @@ class FileUpload
         }
         return isset($model) ? $model : NULL;
     }
+    // model function
+    
+    // checker function
+    protected function ownerCheck($fileObj){
+        $ownerCheck = null;
+        if( isset($fileObj[$this->ownCheckers['camel']]) ){
+            $ownerCheck = $fileObj[$this->ownCheckers['camel']] ? true : false ;
+        }else if( $fileObj['type'] == 'base64' ){
+            $ownerCheck = true;
+        }else{
+            $ownerCheck = false;
+        }
+        return $ownerCheck;
+    }
+    private function nullChecker($inputFile){
+        if(is_null($inputFile)) return $this->nullCheck = true;
+    }
     protected function findGroupExist($inputFile){
         $groupId = null;
         foreach( $inputFile as $key => $value ){
@@ -129,36 +195,41 @@ class FileUpload
         }
         return $groupId;
     }
-    protected function responsiveUploadUrl($file){
-        $image = $this->getResizeImages($file);
-        $uploadPath = $this->modelName.'/'.$this->modelId.'/'.$this->setRandomFileName();
-        foreach($image as $key => $value){
-            $this->storage->getDriver()->getAdapter()->getClient()->upload(
-                env('S3_BUCKET'), // upload bucket
-                $uploadPath.$key, $value, // upload path.file name
-                'public-read', // permission
-                ['params' => [ // metadata
-                    'ContentType' => 'image/jpeg',
-                ]]);
+    protected function fileTypeCheck($inputFile){
+        foreach( $inputFile as $key => $value ){
+            $fileType = $this->getFileType($value);
+            $inputFile[$key]['type'] = $fileType;
         }
-        return env('S3_PATH').$uploadPath;
+        return $inputFile;
     }
-    protected function responsiveDeleteUrl($url){
-        foreach($this->responsiveResolution as $key => $value){
-            $path = $this->getInternalS3Url($url.$value);
-            if($this->storage->exists($path)) {
-                $this->storage->delete($path);
-            }else{
-                // not exist file delete request
-            }
-        }
-        return true;
+    protected function isBase64($file){
+        $explodeBase64 = explode('data:image/jpeg;base64,',$file);
+        return count($explodeBase64) > 1;
     }
-    protected function getInternalS3Url($path){
-        $explode = explode(env('S3_PATH'),$path);
-        return $explode[1];
+    protected function isUrl($file){
+        $explodeBase64 = explode('http',$file);
+        return count($explodeBase64) > 1;
     }
+    protected function isGrouping($inputFile){
+        return !isset($inputFile['file']);
+    }
+    // checker function
 
+    // set data
+    private function setBasicVariable($model,$inputFile){
+        $this->model = $model;
+        $this->inputFile = $inputFile;
+    }
+    protected function setToArray($inputFile){
+        if( !$this->isGroup ) $checker[] = $inputFile;
+        return isset($checker) ? $checker : $inputFile;
+    }
+    protected function setRandomFileName(){
+        return Str::random(30);
+    }
+    // set data
+
+    // get data function
     protected function getResizeImages($file){
         $imageMake = Intervention::make($file);
         $image = [];
@@ -169,16 +240,9 @@ class FileUpload
 
         return $image;
     }
-    protected function setToArray($inputFile){
-        if( !$this->isGroup ) $checker[] = $inputFile;
-        return isset($checker) ? $checker : $inputFile;
-    }
-    protected function fileTypeCheck($inputFile){
-        foreach( $inputFile as $key => $value ){
-            $fileType = $this->getFileType($value);
-            $inputFile[$key]['type'] = $fileType;
-        }
-        return $inputFile;
+    protected function getInternalS3Url($path){
+        $explode = explode($this->storagePath,$path);
+        return $explode[1];
     }
     protected function getFileType($value){
         $file = $value['file'];
@@ -187,14 +251,6 @@ class FileUpload
         else if( is_null($file) ){ return null; }
         else{ Abort::Error('0050',"Unknown file data"); }
     }
-    protected function isBase64($file){
-        $explodeBase64 = explode('data:image/jpeg;base64,',$file);
-        return count($explodeBase64) > 1;
-    }
-    protected function isUrl($file){
-        $explodeBase64 = explode('http',$file);
-        return count($explodeBase64) > 1;
-    }
     protected function getModelName($model){
         $explode =  explode('\\',strtolower(get_class($model)));
         return end($explode);
@@ -202,14 +258,9 @@ class FileUpload
     protected function getModelId($model){
         return $model->id;
     }
-    protected function setRandomFileName(){
-        return Str::random(30);
-    }
-    protected function isGrouping($inputFile){
-        return !isset($inputFile['file']);
-    }
-    public function getResult(){
+    public function getId(){
         if( $this->nullCheck ) return null;
         return $this->createModel['id'];
     }
+    // get data function
 }
