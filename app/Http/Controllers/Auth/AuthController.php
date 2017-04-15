@@ -15,14 +15,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 
-// Class
-use App\Classes\FileUpload;
-
 // Requests
 use App\Http\Requests\Auth\AuthSigninRequest;
 use App\Http\Requests\Auth\AuthSignupRequest;
 use App\Http\Requests\Auth\AuthSigndropRequest;
-use App\Http\Requests\Auth\AuthPostRetrieveRequest;
 
 // Jobs
 use App\Jobs\LastSigninTimeCheckerJob;
@@ -39,7 +35,6 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->user = User::class;
-        $this->uploader = new Fileupload();
     }
 
     protected function signin(AuthSigninRequest $request)
@@ -87,45 +82,5 @@ class AuthController extends Controller
         }else{
             Abort::Error('0040');
         };
-    }
-
-    protected function simpleRetrieve(Request $request){
-        $this->user = User::getAccessUser();
-        $result = [
-            "id" => $this->user->id,
-            "email" => $this->user->email,
-            "nickname" => $this->user->nickname,
-            "profileImg" => $this->user->getImageObject(),
-        ];
-        return response()->success($result);
-    }
-
-    protected function getRetrieve(Request $request,$user_id)
-    {
-        $this->user = User::findOrFail($user_id);
-        return response()->success([
-            "id" => $this->user->id,
-            "email" => $this->user->email,
-            "nickname" => $this->user->nickname,
-            "profileImg" => $this->user->getImageObject(),
-            "newsletterAccepted" => $this->user->newsletters_accepted,
-        ]);
-    }
-    public function postRetrieve(Request $request)
-    {
-        $this->user = User::getAccessUser();
-        try{
-            $this->user->update([
-                "nickname" => $request->nickname,
-                "image_id" => $this->uploader->upload(
-                    $this->user,
-                    $request->profileImg
-                    )->getId(),
-                "newsletters_accepted" => $request->newsletterAccepted,
-            ]);
-            return response()->success($this->user);
-        }catch (\Exception $e){
-            Abort::Error('0040');
-        }
     }
 }
