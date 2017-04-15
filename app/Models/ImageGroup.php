@@ -11,4 +11,16 @@ class ImageGroup extends Model {
 
 	protected $dates = ['deleted_at'];
 
+	public function getObject(){
+	    $result = [];
+        foreach($this->images as $value){
+            $result[] = $value->getObject();
+        }
+        return $result;
+    }
+
+    public function images()
+    {
+        return $this->hasMany('App\Models\Image','image_group_id','id');
+    }
 }
