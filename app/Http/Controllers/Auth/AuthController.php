@@ -64,7 +64,7 @@ class AuthController extends Controller
     {
         $signupData = User::bindSignupData($request);
 
-        if( $this->user =  User::create($signupData)){
+        if( $this->user = User::create($signupData)){
             $token = $this->user->insertAccessToken();
             $this->dispatch(new SignupMailSendJob($this->user));
             return response()->success([

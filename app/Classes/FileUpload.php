@@ -160,9 +160,7 @@ class FileUpload
             if( $groupId = $this->findGroupExist($inputFile) ){
                 $model = ImageGroup::findOrFail($groupId);
             }else{
-                $model = ImageGroup::create([
-                    "model_name" => $this->modelName,
-                ]);
+                $model = ImageGroup::create([]);
             }
         }
         return isset($model) ? $model : NULL;

@@ -119,7 +119,10 @@ class User extends Model implements AuthenticatableContract,
     {
         return $this->hasOne('App\Models\SignupAllow','email','email');
     }
-
+    public function contents()
+    {
+        return $this->hasMany('App\Models\Content','user_id','id');
+    }
 }
 
 

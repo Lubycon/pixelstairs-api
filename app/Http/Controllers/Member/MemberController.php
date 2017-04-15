@@ -27,7 +27,7 @@ class MemberController extends Controller
     public function __construct()
     {
         $this->user = User::class;
-        $this->uploader = new Fileupload();
+        $this->uploader = new FileUpload();
     }
 
     protected function simpleRetrieve(Request $request){

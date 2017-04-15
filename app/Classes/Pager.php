@@ -42,12 +42,12 @@ class Pager
 
     public $DBquery;
 
-    public function __construct($section,$query){
-
+    public function __construct(){
         DB::connection()->enableQueryLog();
         $this->DBquery = DB::getQueryLog();
-        $lastQuery = end($query);
+    }
 
+    public function search($section,$query){
         $this->baseTableName = strtolower(str_plural($section));
         $this->setModel($section);
         $this->query = $query;
