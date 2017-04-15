@@ -30,7 +30,7 @@ class SignupAllow extends Model {
 
 	public function user()
 	{
-		return $this->belongsTo('User', 'email', 'email');
+		return $this->belongsTo('App\Models\User', 'email', 'email');
 	}
 
 }

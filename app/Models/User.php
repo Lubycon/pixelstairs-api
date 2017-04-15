@@ -86,6 +86,15 @@ class User extends Model implements AuthenticatableContract,
     }
 
 
+    public function getSimpleInfo(){
+        return [
+            "id" => $this->id,
+            "email" => $this->email,
+            "nickname" => $this->nickname,
+            "profileImg" => $this->getImageObject(),
+        ];
+    }
+
     public function getImageObject(){
         $imageModel = $this->image;
         $result = is_null($imageModel)

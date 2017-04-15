@@ -24,7 +24,7 @@ class Image extends Model {
 
 	public function imageGroup()
 	{
-		return $this->belongsToMany('ImageGroup');
+		return $this->belongsToMany('App\Models\ImageGroup');
 	}
 
 }

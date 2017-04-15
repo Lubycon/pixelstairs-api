@@ -14,7 +14,7 @@ class View extends Model {
 
 	public function content()
 	{
-		return $this->hasOne('Content', 'content_id');
+		return $this->hasOne('App\Models\Content', 'content_id');
 	}
 
 }

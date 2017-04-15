@@ -14,12 +14,12 @@ class Like extends Model {
 
 	public function user()
 	{
-		return $this->belongsToMany('User');
+		return $this->belongsToMany('App\Models\User');
 	}
 
 	public function content()
 	{
-		return $this->belongsTo('Content');
+		return $this->belongsTo('App\Models\Content');
 	}
 
 }

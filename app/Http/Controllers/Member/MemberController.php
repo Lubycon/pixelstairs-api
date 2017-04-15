@@ -32,12 +32,7 @@ class MemberController extends Controller
 
     protected function simpleRetrieve(Request $request){
         $this->user = User::getAccessUser();
-        $result = [
-            "id" => $this->user->id,
-            "email" => $this->user->email,
-            "nickname" => $this->user->nickname,
-            "profileImg" => $this->user->getImageObject(),
-        ];
+        $result = $this->user->getSimpleInfo();
         return response()->success($result);
     }
 
