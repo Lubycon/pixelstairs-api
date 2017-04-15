@@ -12,7 +12,7 @@ use Abort;
 use DB;
 use Log;
 
-class PageController
+class Pager
 {
     private $model;
     private $finalModel = null;

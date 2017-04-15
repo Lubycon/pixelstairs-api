@@ -34,6 +34,29 @@ Route::group(['prefix' => '/v1'], function () {
         Route::put('signup', 'Mail\MailSendController@resendSignup');
         Route::put('password', 'Auth\PasswordController@postMail');
     });
+
+    Route::group(['prefix' => '/contents/'], function () {
+        Route::get('', 'Content\ContentController@getList');
+        Route::post('', 'Content\ContentController@post');
+
+        Route::group(['prefix' => '{content_id}/'], function () {
+            Route::get('', 'Content\ContentController@get');
+            Route::put('', 'Content\ContentController@put');
+            Route::delete('', 'Content\ContentController@delete');
+
+            Route::group(['prefix' => 'like/'], function () {
+                Route::post('', 'Interest\InterestController@postLike');
+                Route::delete('', 'Interest\InterestController@deleteLike');
+            });
+            Route::group(['prefix' => 'comments/'], function () {
+                Route::get('', 'Comment\CommentController@getList');
+                Route::post('', 'Comment\CommentController@post');
+                Route::put('', 'Comment\CommentController@put');
+                Route::delete('', 'Comment\CommentController@delete');
+            });
+
+        });
+    });
     Route::get('/data/', 'Data\DataResponseController@dataSimpleResponse');
     Route::post('/tracker','Tracker\TrackerController@create');
 });
