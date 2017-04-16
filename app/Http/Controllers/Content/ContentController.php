@@ -35,13 +35,9 @@ class ContentController extends Controller
 
     protected function getList(Request $request){
         $collection = $this->pager
-                        ->search('content',$request->query())
-                        ->getCollection();
-
-        $result = (object)array(
-            "totalCount" => $this->pager->totalCount,
-            "currentPage" => $this->pager->currentPage,
-        );
+            ->search('content',$request->query())
+            ->getCollection();
+        $result = $this->pager->getPageInfo();
         foreach($collection as $content){
             $result->contents[] = [$content->getContentInfoWithAuthor()];
         };

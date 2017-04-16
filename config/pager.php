@@ -17,5 +17,12 @@ return [
                 "base_table_key_column" => "contents.user_id",
             ],
         ],
+        "comment" => [
+            [
+                "join_table_name" => 'contents',
+                "join_table_key_column" => "id",
+                "base_table_key_column" => "comments.content_id",
+            ],
+        ],
     ],
 ];

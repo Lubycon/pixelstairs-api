@@ -71,6 +71,7 @@ class AuthController extends Controller
                 "token" => $token
             ]);
         }
+        return Abort::Error('0040');
     }
 
     protected function signdrop(AuthSigndropRequest $request)
@@ -79,8 +80,18 @@ class AuthController extends Controller
         $this->user = User::getAccessUser();
         if($this->user->delete()){
             return response()->success();
-        }else{
-            Abort::Error('0040');
-        };
+        }
+        return Abort::Error('0040');
+    }
+
+
+    protected function isExist(Request $request)
+    {
+        try{
+            $this->user = User::getFromEmail($request->email);
+        }catch(\Exception $e){
+            return response()->success(false);
+        }
+        return response()->success(true);
     }
 }

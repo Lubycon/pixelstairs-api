@@ -8,9 +8,6 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Abort;
-
-use App\Models\Content;
-
 use DB;
 use Log;
 
@@ -37,10 +34,10 @@ class Pager
     private $pageNumber;
     private $pageSize;
 
-    public $paginator;
-    public $totalCount;
-    public $currentPage;
-    public $collection;
+    private $paginator;
+    private $totalCount;
+    private $currentPage;
+    private $collection;
 
 
     public $DBquery;
@@ -145,8 +142,9 @@ class Pager
     }
     private function setModel($section){
         $checked = config("pager.partsModel.$section");
-        if( is_null($checked) ) Abort::Error('0040','Unknown Model'); //error point
-        $this->setPartsModel($checked);
+        if( !is_null($checked) ){
+            $this->setPartsModel($checked);
+        } //Abort::Error('0040','Unknown Model'); //error point
         $this->model = new $this->baseTablePath;
     }
 
@@ -247,8 +245,9 @@ class Pager
     }
 
     private function bindData(){
-        $this->paginator = $this->finalModel->select($this->baseTableName.'.*')->
-        paginate($this->pageSize, ['*'], 'page', $this->pageNumber);
+        $this->paginator = $this->finalModel
+            ->select($this->baseTableName.'.*')
+            ->paginate($this->pageSize, ['*'], 'page', $this->pageNumber);
         Log::debug('paginate', [DB::getQueryLog()]);
         $this->totalCount = $this->paginator->total();
         $this->currentPage = $this->paginator->currentPage();
@@ -257,5 +256,11 @@ class Pager
 
     public function getCollection(){
         return $this->collection;
+    }
+    public function getPageInfo(){
+        return (object)[
+            "totalCount" => $this->totalCount,
+            "currentPage" => $this->currentPage,
+        ];
     }
 }

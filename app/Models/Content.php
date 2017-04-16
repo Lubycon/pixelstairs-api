@@ -76,5 +76,9 @@ class Content extends Model {
 	{
 		return $this->hasOne('App\Models\ImageGroup','id','image_group_id');
 	}
+    public function comments()
+    {
+        return $this->hasMany('App\Models\Comment','content_id','id');
+    }
 
 }

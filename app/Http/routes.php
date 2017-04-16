@@ -5,6 +5,7 @@ Route::group(['prefix' => '/v1'], function () {
         Route::put('signout', 'Auth\AuthController@signout');
         Route::post('signup', 'Auth\AuthController@signup');
         Route::delete('signdrop', 'Auth\AuthController@signdrop');
+        Route::post('isexist', 'Auth\AuthController@isExist');
 
         Route::get('simple', 'Member\MemberController@simpleRetrieve');
         Route::group(['prefix' => '{id}/'], function () {
@@ -51,12 +52,12 @@ Route::group(['prefix' => '/v1'], function () {
             Route::group(['prefix' => 'comments/'], function () {
                 Route::get('', 'Comment\CommentController@getList');
                 Route::post('', 'Comment\CommentController@post');
-                Route::put('', 'Comment\CommentController@put');
-                Route::delete('', 'Comment\CommentController@delete');
+                Route::put('{comment_id}', 'Comment\CommentController@put');
+                Route::delete('{comment_id}', 'Comment\CommentController@delete');
             });
 
         });
     });
-    Route::get('/data/', 'Data\DataResponseController@dataSimpleResponse');
+    Route::get('/data', 'Data\DataResponseController@dataSimpleResponse');
     Route::post('/tracker','Tracker\TrackerController@create');
 });
