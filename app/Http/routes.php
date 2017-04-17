@@ -46,8 +46,8 @@ Route::group(['prefix' => '/v1'], function () {
             Route::delete('', 'Content\ContentController@delete');
 
             Route::group(['prefix' => 'like/'], function () {
-                Route::post('', 'Interest\InterestController@postLike');
-                Route::delete('', 'Interest\InterestController@deleteLike');
+                Route::post('', 'Content\InterestController@postLike');
+                Route::delete('', 'Content\InterestController@deleteLike');
             });
             Route::group(['prefix' => 'comments/'], function () {
                 Route::get('', 'Comment\CommentController@getList');

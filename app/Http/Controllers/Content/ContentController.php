@@ -50,7 +50,9 @@ class ContentController extends Controller
     }
     protected function get(Request $request,$content_id){
         $this->content = Content::findOrFail($content_id);
+        $this->user = User::getAccessUser();
         $result = $this->content->getContentInfoWithAuthor();
+        $this->content->viewIt($this->user);
         return response()->success($result);
     }
     protected function post(Request $request){

@@ -19,7 +19,7 @@ class Comment extends Model {
 	        "id" => $this->id,
             "description" => $this->description,
             "writtenTime" => $this->created_at->format("Y-m-d H:i:s"),
-            "user" => $this->user,
+            "user" => $this->user->getSimpleInfo(),
         ];
     }
 
