@@ -44,7 +44,7 @@ class ContentController extends Controller
             ->getCollection();
         $result = $this->pager->getPageInfo();
         foreach($collection as $content){
-            $result->contents[] = [$content->getContentInfoWithAuthor()];
+            $result->contents[] = $content->getContentInfoWithAuthor();
         };
 
         if(!empty($result->contents)){
