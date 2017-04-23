@@ -64,7 +64,7 @@ class ContentController extends Controller
         $this->user = User::getAccessUser();
 
         Log::info( $request->all() );
-        Log::info( var_dump(Input::file('images')) );
+        Log::info( $request->file()   );
 
 //        try{
             $this->content = $this->user->contents()->create([
