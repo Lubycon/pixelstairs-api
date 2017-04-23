@@ -62,6 +62,10 @@ class ContentController extends Controller
     }
     protected function post(ContentPostRequest $request){
         $this->user = User::getAccessUser();
+
+        Log::info( $request->all() );
+        Log::info( var_dump(Input::file('images')) );
+
 //        try{
             $this->content = $this->user->contents()->create([
                 "title" => $request->title,

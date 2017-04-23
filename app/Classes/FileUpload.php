@@ -204,6 +204,10 @@ class FileUpload
         $explodeBase64 = explode('data:image/jpeg;base64,',$file);
         return count($explodeBase64) > 1;
     }
+    protected function isBlob($file){
+        Log::info($file);
+        return null;
+    }
     protected function isUrl($file){
         $explodeBase64 = explode('http',$file);
         return count($explodeBase64) > 1;
@@ -245,6 +249,7 @@ class FileUpload
     protected function getFileType($value){
         $file = $value['file'];
         if( $this->isBase64($file) ){ return "base64"; }
+        else if( $this->isBlob($file) ){ return "blob"; }
         else if( $this->isUrl($file) ){ return "url"; }
         else if( is_null($file) ){ return null; }
         else{ Abort::Error('0050',"Unknown file data"); }
