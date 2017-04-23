@@ -9,6 +9,10 @@ class Image extends Model {
 
 	use SoftDeletes;
 
+    protected $casts = [
+        'id' => 'string',
+        'image_group_id' => 'string',
+    ];
 	protected $dates = ['deleted_at'];
 	protected $fillable = array('url', 'index', 'is_pixel_own', 'image_group_id');
 

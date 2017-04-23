@@ -9,6 +9,9 @@ class Like extends Model {
 
 	use SoftDeletes;
 
+    protected $casts = [
+        'id' => 'string',
+    ];
 	protected $dates = ['deleted_at'];
 	protected $fillable = array('user_id', 'content_id');
 

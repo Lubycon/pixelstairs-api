@@ -21,6 +21,10 @@ class User extends Model implements AuthenticatableContract,
 {
     use Authenticatable, Authorizable, CanResetPassword ,SoftDeletes;
 
+    protected $casts = [
+        'id' => 'string',
+        'image_id' => 'string',
+    ];
 	protected $dates = ['deleted_at'];
     protected $hidden = ['password', 'token'];
 	protected $fillable = ['email', 'password', 'nickname', 'image_id', 'newsletters_accepted', 'terms_of_service_accepted'];

@@ -70,7 +70,7 @@ class ContentController extends Controller
             $this->content = $this->user->contents()->create([
                 "title" => $request->title,
                 "description" => $request->description,
-                "licence_code" => '11',
+                "license_code" => $request->licenseCode,
                 "hash_tags" => json_encode($request->hashTags),
             ]);
             $this->content->update([
@@ -90,7 +90,7 @@ class ContentController extends Controller
             $this->content->update([
                 "title" => $request->title,
                 "description" => $request->description,
-                "licence_code" => $request->licenseCode,
+                "license_code" => $request->licenseCode,
                 "hash_tags" => json_encode($request->hashTags),
                 "image_group_id" => $this->uploader->upload(
                     $this->content,$request->image,true

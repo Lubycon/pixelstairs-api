@@ -9,6 +9,9 @@ class ImageGroup extends Model {
 
 	use SoftDeletes;
 
+    protected $casts = [
+        'id' => 'string',
+    ];
 	protected $dates = ['deleted_at'];
 
 	public function getObject(){

@@ -8,13 +8,16 @@ use Log;
 
 class Content extends Model {
 
-	protected $table = 'contents';
-	public $timestamps = true;
-
 	use SoftDeletes;
 
+    protected $casts = [
+        'id' => 'string',
+        'user_id' => 'string',
+        'thumbnail_image_id' => 'string',
+        'image_group_id' => 'string',
+    ];
 	protected $dates = ['deleted_at'];
-	protected $fillable = array('user_id', 'licence_code', 'image_group_id', 'title', 'description', 'view_count', 'like_count', 'hash_tags');
+	protected $fillable = array('user_id', 'license_code', 'image_group_id', 'title', 'description', 'view_count', 'like_count', 'hash_tags');
 
     public function viewIt(User $user){
         if( !$this->amIView($user) ){
@@ -63,7 +66,7 @@ class Content extends Model {
             "description" => $this->description,
 //            "thumbnailImg" => $this->getThumbnailImageObject(),
             "image" => $this->getGroupImageObject(),
-            "licenseCode" => $this->licence_code,
+            "licenseCode" => $this->license_code,
             "myLike" => $this->amILike($user),
             "counts" => $this->getCounts(),
             "hashTags" => $this->getHashTags(),

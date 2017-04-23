@@ -10,6 +10,11 @@ class Comment extends Model {
 
 	use SoftDeletes;
 
+    protected $casts = [
+        'id' => 'string',
+        'user_id' => 'string',
+        'content_id' => 'string',
+    ];
 	protected $dates = ['deleted_at'];
 	protected $fillable = array('user_id', 'content_id', 'description');
 
