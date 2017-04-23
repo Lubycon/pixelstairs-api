@@ -14,6 +14,7 @@ class CreateUsersTable extends Migration {
 			$table->string('nickname', 20);
 			$table->boolean('newsletters_accepted')->default(false);
 			$table->boolean('terms_of_service_accepted');
+            $table->enum('gender', array('male', 'female', 'etc'));
 			$table->enum('grade', array('super_admin', 'admin', 'general'));
 			$table->enum('status', array('active', 'inactive', 'drop'));
 			$table->integer('image_id')->unsigned()->nullable();
