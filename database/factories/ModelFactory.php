@@ -16,6 +16,39 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     ];
 });
 
+//description, hash_tags, id, image_group_id, licence_code, like_count, title, updated_at, user_id, view_count
+
+
+$factory->define(App\Models\Content::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => mt_rand(2,100),
+        'title' => $faker->sentence,
+        'description'=> $faker->paragraph,
+        'hash_tags' => $faker->text,
+        'image_group_id' => factory(App\Models\ImageGroup::class)->create()->id,
+        'licence_code' => '1234',
+        'view_count' => mt_rand(300,1000),
+        'like_count' => mt_rand(500,10000),
+        'created_at' => date("Y-m-d H:i:s"),
+        'updated_at' => date("Y-m-d H:i:s"),
+    ];
+});
+
+$factory->define(App\Models\Comment::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => mt_rand(2,100),
+        'content_id' => mt_rand(1,100),
+        'description'=> $faker->paragraph,
+        'created_at' => date("Y-m-d H:i:s"),
+        'updated_at' => date("Y-m-d H:i:s"),
+    ];
+});
+
+$factory->define(App\Models\ImageGroup::class, function (Faker\Generator $faker) {
+    return [
+    ];
+});
+
 $factory->define(App\Models\Image::class, function (Faker\Generator $faker) {
     return [
         "index" => 0,
