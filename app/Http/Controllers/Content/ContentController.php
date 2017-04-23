@@ -65,10 +65,10 @@ class ContentController extends Controller
                 "hash_tags" => json_encode($request->hashTags),
             ]);
             $this->content->update([
-                "thumbnail_image_id" => $this->uploader->upload(
-                    $this->content,
-                    $request->thumbnailImg
-                )->getId(),
+//                "thumbnail_image_id" => $this->uploader->upload(
+//                    $this->content,
+//                    $request->thumbnailImg
+//                )->getId(),
                 "image_group_id" => $this->uploader->upload(
                     $this->content,
                     $request->images
@@ -88,10 +88,10 @@ class ContentController extends Controller
                 "description" => $request->description,
                 "licence_code" => $request->licenseCode,
                 "hash_tags" => json_encode($request->hashTags),
-                "thumbnail_image_id" => $this->uploader->upload(
-                    $this->content,
-                    $request->thumbnailImg
-                )->getId(),
+//                "thumbnail_image_id" => $this->uploader->upload(
+//                    $this->content,
+//                    $request->thumbnailImg
+//                )->getId(),
                 "image_group_id" => $this->uploader->upload(
                     $this->content,
                     $request->images

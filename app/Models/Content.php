@@ -13,7 +13,7 @@ class Content extends Model {
 	use SoftDeletes;
 
 	protected $dates = ['deleted_at'];
-	protected $fillable = array('user_id', 'licence_code',"thumbnail_image_id", 'image_group_id', 'title', 'description', 'view_count', 'like_count', 'hash_tags');
+	protected $fillable = array('user_id', 'licence_code', 'image_group_id', 'title', 'description', 'view_count', 'like_count', 'hash_tags');
 
     public function viewIt(User $user){
         if( !$this->amIView($user) ){
@@ -54,7 +54,7 @@ class Content extends Model {
             "id" => $this->id,
             "title" => $this->title,
             "description" => $this->description,
-            "thumbnailImg" => $this->getThumbnailImageObject(),
+//            "thumbnailImg" => $this->getThumbnailImageObject(),
             "images" => $this->getGroupImageObject(),
             "licenseCode" => $this->licence_code,
             "myLike" => "",
@@ -98,10 +98,10 @@ class Content extends Model {
 	{
 		return $this->belongsTo('App\Models\License', 'code', 'license_code');
 	}
-    public function thumbnailImage()
-    {
-        return $this->hasOne('App\Models\Image','id','thumbnail_image_id');
-    }
+//    public function thumbnailImage()
+//    {
+//        return $this->hasOne('App\Models\Image','id','thumbnail_image_id');
+//    }
 	public function imageGroup()
 	{
 		return $this->hasOne('App\Models\ImageGroup','id','image_group_id');

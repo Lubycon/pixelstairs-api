@@ -11,7 +11,7 @@ class CreateContentsTable extends Migration {
 			$table->increments('id');
 			$table->integer('user_id')->unsigned();
 			$table->string('licence_code', 4);
-            $table->integer('thumbnail_image_id')->unsigned();
+//            $table->integer('thumbnail_image_id')->unsigned();
 			$table->integer('image_group_id')->unsigned();
 			$table->string('title', 255);
 			$table->text('description')->nullable();
