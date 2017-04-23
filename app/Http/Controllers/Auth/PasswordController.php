@@ -20,6 +20,14 @@ use App\Models\PasswordReset;
 // Jobs
 use App\Jobs\Mails\PasswordReMinderSendMailJob;
 
+// Reqeust
+use App\Http\Requests\Auth\Password\PasswordPostMailRequest;
+use App\Http\Requests\Auth\Password\PasswordResetRequest;
+use App\Http\Requests\Auth\Password\PasswordCheckCodeRequest;
+use App\Http\Requests\Auth\Password\PasswordGetDiffTimeRequest;
+use App\Http\Requests\Auth\Password\PasswordChangePasswordRequest;
+
+
 class PasswordController extends Controller
 {
     public $user;
@@ -31,14 +39,14 @@ class PasswordController extends Controller
         $this->passwordReset = PasswordReset::class;
     }
 
-    public function postMail(Request $request)
+    public function postMail(PasswordPostMailRequest $request)
     {
         $this->user = User::getFromEmail($request->email);
         $this->dispatch(new PasswordReMinderSendMailJob($this->user));
         return response()->success();
     }
 
-    public function reset(Request $request)
+    public function reset(PasswordResetRequest $request)
     {
         $this->passwordReset = PasswordReset::getByToken($request->code);
         $this->passwordReset->expiredCheck();
@@ -62,7 +70,7 @@ class PasswordController extends Controller
         }
     }
 
-    protected function getDiffTime(Request $request){
+    protected function getDiffTime(PasswordGetDiffTimeRequest $request){
         $this->passwordReset = PasswordReset::getByEmail($request->email);
         $diffTime = $this->passwordReset->getDiffTime();
         return response()->success([
@@ -70,7 +78,7 @@ class PasswordController extends Controller
         ]);
     }
 
-    protected function checkCode(Request $request){
+    protected function checkCode(PasswordCheckCodeRequest $request){
         $this->passwordReset = PasswordReset::getByToken($request->code);
         $this->passwordReset->expiredCheck();
 
@@ -79,7 +87,7 @@ class PasswordController extends Controller
         ]);
     }
 
-    protected function checkPassword(Request $request){
+    protected function checkPassword(PasswordChangePasswordRequest $request){
         $this->user = User::getAccessUser();
 
         $credentials = [

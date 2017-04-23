@@ -1,27 +1,29 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Tracker;
 
 use App\Http\Requests\Request;
 use App\Models\User;
 use App\Traits\AuthorizesRequestsOverLoad;
+
 use Log;
 
-class AuthSigninRequest extends Request
+class TrackerPostRequest extends Request
 {
     use AuthorizesRequestsOverLoad;
 
     public function authorize()
     {
-        return User::isGhost();
+        return true;
     }
 
     public function rules()
     {
         $requiredRule = [
-            'email' => 'required',
-            'password' => 'required',
-            // TODO :: sns code later...
+            "uuid" => "required",
+            "current_url" => "required",
+            "prev_url" => "required",
+            "action" => "required"
         ];
         return $requiredRule;
     }

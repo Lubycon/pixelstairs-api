@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Content;
 
 use App\Http\Requests\Request;
 use App\Models\User;
 use App\Traits\AuthorizesRequestsOverLoad;
 
-class AuthSigndropRequest extends Request
+use Log;
+
+class ContentPostRequest extends Request
 {
     use AuthorizesRequestsOverLoad;
 
@@ -18,9 +20,12 @@ class AuthSigndropRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            'reasonCode' => 'required'
+            "title" => "required",
+            "description" => "required",
+            "licenseCode" => "required",
+            "hashTags" => "required|array",
+            "images" => "required",
         ];
-
         return $requiredRule;
     }
 }

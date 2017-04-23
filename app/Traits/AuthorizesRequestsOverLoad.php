@@ -14,7 +14,7 @@ trait AuthorizesRequestsOverLoad {
         try {
             return $gate->authorize($ability, $arguments);
         } catch (UnauthorizedException $e) {
-            Abort::Error('0043');
+            Abort::Error('0043','authorizeAtGate');
         }
     }
 }

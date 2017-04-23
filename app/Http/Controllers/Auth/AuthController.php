@@ -19,6 +19,8 @@ use Illuminate\Foundation\Auth\ThrottlesLogins;
 use App\Http\Requests\Auth\AuthSigninRequest;
 use App\Http\Requests\Auth\AuthSignupRequest;
 use App\Http\Requests\Auth\AuthSigndropRequest;
+use App\Http\Requests\Auth\AuthSignoutRequest;
+use App\Http\Requests\Auth\AuthIsExistRequest;
 
 // Jobs
 use App\Jobs\LastSigninTimeCheckerJob;
@@ -53,7 +55,7 @@ class AuthController extends Controller
     }
 
 
-    protected function signout(Request $request)
+    protected function signout(AuthSignoutRequest $request)
     {
         $this->user = User::getAccessUser();
         $this->user->dropToken();
@@ -85,7 +87,7 @@ class AuthController extends Controller
     }
 
 
-    protected function isExist(Request $request)
+    protected function isExist(AuthIsExistRequest $request)
     {
         try{
             $this->user = User::getFromEmail($request->email);

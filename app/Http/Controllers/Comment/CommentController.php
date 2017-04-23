@@ -18,6 +18,12 @@ use App\Http\Controllers\Controller;
 // Class
 use App\Classes\Pager;
 
+// Request
+use App\Http\Requests\Comment\CommentGetListRequest;
+use App\Http\Requests\Comment\CommentPostRequest;
+use App\Http\Requests\Comment\CommentPutRequest;
+use App\Http\Requests\Comment\CommentDeleteRequest;
+
 class CommentController extends Controller
 {
     public $user;
@@ -33,7 +39,7 @@ class CommentController extends Controller
         $this->pager = new Pager();
     }
 
-    protected function getList(Request $request,$content_id){
+    protected function getList(CommentGetListRequest $request,$content_id){
         $query = "search:contentId:$content_id";
         $collection = $this->pager
             ->search('comment',$query)
@@ -48,7 +54,7 @@ class CommentController extends Controller
             return response()->success();
         }
     }
-    protected function post(Request $request,$content_id){
+    protected function post(CommentPostRequest $request,$content_id){
         $this->user = User::getAccessUser();
         $this->content = Content::findOrFail($content_id);
         $this->comment = $this->content->comments()->create([
@@ -60,14 +66,14 @@ class CommentController extends Controller
         }
         Abort::Error('0040');
     }
-    protected function put(Request $request,$content_id,$comment_id){
+    protected function put(CommentPutRequest $request,$content_id,$comment_id){
         $this->content = Content::findOrFail($content_id);
         $this->comment = $this->content->comments()->findOrFail($comment_id);
         $this->comment->update(["description" => $request->description,]);
         if($this->comment) return response()->success($this->comment);
         Abort::Error('0040');
     }
-    protected function delete(Request $request,$content_id,$comment_id){
+    protected function delete(CommentDeleteRequest $request,$content_id,$comment_id){
         $this->content = Content::findOrFail($content_id);
         $this->comment = $this->content->comments()->findOrFail($comment_id);
         if($this->comment->delete()) return response()->success($this->comment);

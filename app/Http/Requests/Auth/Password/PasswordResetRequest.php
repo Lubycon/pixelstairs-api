@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Auth\Password;
 
 use App\Http\Requests\Request;
 use App\Models\User;
 use App\Traits\AuthorizesRequestsOverLoad;
+
 use Log;
 
-class AuthSigninRequest extends Request
+class PasswordResetRequest extends Request
 {
     use AuthorizesRequestsOverLoad;
 
@@ -19,9 +20,8 @@ class AuthSigninRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            'email' => 'required',
-            'password' => 'required',
-            // TODO :: sns code later...
+            "code" => "required",
+            "newPassword" => "required",
         ];
         return $requiredRule;
     }

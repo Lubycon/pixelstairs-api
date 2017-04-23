@@ -18,6 +18,11 @@ use App\Http\Controllers\Controller;
 use App\Classes\FileUpload;
 use App\Classes\Pager;
 
+// Request
+use App\Http\Requests\Content\ContentDeleteRequest;
+use App\Http\Requests\Content\ContentPutRequest;
+use App\Http\Requests\Content\ContentPostRequest;
+
 class ContentController extends Controller
 {
     public $content;
@@ -55,7 +60,7 @@ class ContentController extends Controller
         $this->content->viewIt($this->user);
         return response()->success($result);
     }
-    protected function post(Request $request){
+    protected function post(ContentPostRequest $request){
         $this->user = User::getAccessUser();
 //        try{
             $this->content = $this->user->contents()->create([
@@ -80,7 +85,7 @@ class ContentController extends Controller
 //        }
         return response()->success($this->content);
     }
-    protected function put(Request $request,$content_id){
+    protected function put(ContentPutRequest $request,$content_id){
         $this->content = Content::findOrFail($content_id);
         try{
             $this->content->update([
@@ -103,7 +108,7 @@ class ContentController extends Controller
         }
         return response()->success($this->content);
     }
-    protected function delete(Request $request,$content_id){
+    protected function delete(ContentDeleteRequest $request,$content_id){
         $this->content = Content::findOrFail($content_id);
         $this->content->delete();
         return response()->success(true);

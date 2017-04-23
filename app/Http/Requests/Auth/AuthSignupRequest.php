@@ -4,14 +4,17 @@ namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Request;
 use App\Models\User;
+use App\Traits\AuthorizesRequestsOverLoad;
 
 use Log;
 
 class AuthSignupRequest extends Request
 {
+    use AuthorizesRequestsOverLoad;
+
     public function authorize()
     {
-        return true;
+        return User::isGhost();
     }
 
     public function rules()

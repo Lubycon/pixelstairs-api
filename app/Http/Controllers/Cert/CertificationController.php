@@ -15,6 +15,10 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+// Request
+use App\Http\Requests\Cert\CertCheckCodeRequest;
+use App\Http\Requests\Cert\CertGetDiffTimeRequest;
+
 class CertificationController extends Controller
 {
     public $user;
@@ -24,7 +28,7 @@ class CertificationController extends Controller
         $this->user = User::class;
     }
 
-    public function checkCode(Request $request)
+    public function checkCode(CertCheckCodeRequest $request)
     {
         $this->user = User::getAccessUser();
         $validity = $this->user->checkSignupCode($request->code);
@@ -33,7 +37,7 @@ class CertificationController extends Controller
         ]);
     }
 
-    public function getDiffTime(Request $request)
+    public function getDiffTime(CertGetDiffTimeRequest $request)
     {
         $this->user = User::getAccessUser();
         $diffTime = $this->user->getSignupDiffTime();

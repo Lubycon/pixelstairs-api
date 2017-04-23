@@ -1,27 +1,25 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\Content;
 
 use App\Http\Requests\Request;
 use App\Models\User;
 use App\Traits\AuthorizesRequestsOverLoad;
+
 use Log;
 
-class AuthSigninRequest extends Request
+class ContentDeleteRequest extends Request
 {
     use AuthorizesRequestsOverLoad;
 
     public function authorize()
     {
-        return User::isGhost();
+        return User::isUser();
     }
 
     public function rules()
     {
         $requiredRule = [
-            'email' => 'required',
-            'password' => 'required',
-            // TODO :: sns code later...
         ];
         return $requiredRule;
     }

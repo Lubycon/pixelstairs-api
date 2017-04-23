@@ -17,7 +17,7 @@ use App\Http\Controllers\Controller;
 use App\Classes\FileUpload;
 
 // Requests
-
+use App\Http\Requests\Member\MemberPostRetrieveRequest;
 
 class MemberController extends Controller
 {
@@ -47,7 +47,7 @@ class MemberController extends Controller
             "newsletterAccepted" => $this->user->newsletters_accepted,
         ]);
     }
-    public function postRetrieve(Request $request)
+    public function postRetrieve(MemberPostRetrieveRequest $request)
     {
         $this->user = User::getAccessUser();
         try{

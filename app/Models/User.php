@@ -45,6 +45,18 @@ class User extends Model implements AuthenticatableContract,
         ];
     }
 
+    public static function isGhost(){
+        return User::getAccessToken() === null;
+    }
+    public static function isUser(){
+        User::getAccessUser();
+        return true;
+    }
+    public static function isAdmin(){
+        // TODO :: admin
+        return false;
+    }
+
 
     public static function getFromEmail($email){
 	    return User::whereemail($email)->firstOrFail();
@@ -52,11 +64,29 @@ class User extends Model implements AuthenticatableContract,
 
     public static function getAccessUser(){
 	    try{
-            $accessToken = Request::header("x-pixel-token");
-            $userId = substr($accessToken, 31);
-            return User::findOrFail($userId)->wheretoken($accessToken)->firstOrFail();
+	        $userInfo = User::getUserInfo();
+            return User::findOrFail($userInfo->user_id)
+                ->wheretoken($userInfo->access_token)
+                ->firstOrFail();
         }catch(\Exception $e){
 	        Abort::Error('0043','Token dose not match');
+        }
+    }
+
+    public static function getUserInfo(){
+        $accessToken = User::getAccessToken();
+        $userId = substr($accessToken, 31);
+        return (object)[
+            "user_id" => $userId,
+            "access_token" => $accessToken,
+        ];
+    }
+
+    public static function getAccessToken(){
+        try{
+            return Request::header("x-pixel-token");
+        }catch(\Exception $e){
+            return null;
         }
     }
 

@@ -15,6 +15,10 @@ use App\Models\Like;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+// Request
+use App\Http\Requests\Content\ContentInterestPostLikeRequest;
+use App\Http\Requests\Content\ContentInterestDeleteLikeRequest;
+
 class InterestController extends Controller
 {
     public $content;
@@ -28,13 +32,13 @@ class InterestController extends Controller
         $this->like = Like::class;
     }
 
-    protected function postLike(Request $request,$content_id){
+    protected function postLike(ContentInterestPostLikeRequest $request,$content_id){
         $this->content = Content::findOrFail($content_id);
         $this->user = User::getAccessUser();
         $this->content->likeIt($this->user);
         return response()->success();
     }
-    protected function deleteLike(Request $request,$content_id){
+    protected function deleteLike(ContentInterestDeleteLikeRequest $request,$content_id){
         $this->content = Content::findOrFail($content_id);
         $this->user = User::getAccessUser();
         $this->content->dislikeIt($this->user);
