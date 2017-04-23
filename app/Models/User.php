@@ -63,13 +63,23 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public static function getAccessUser(){
-	    try{
-	        $userInfo = User::getUserInfo();
+        try{
+            $userInfo = User::getUserInfo();
             return User::findOrFail($userInfo->user_id)
                 ->wheretoken($userInfo->access_token)
                 ->firstOrFail();
         }catch(\Exception $e){
-	        Abort::Error('0043','Token dose not match');
+            Abort::Error('0043','Token dose not match');
+        }
+    }
+    public static function getAccessUserOrNot(){
+        try{
+            $userInfo = User::getUserInfo();
+            return User::findOrFail($userInfo->user_id)
+                ->wheretoken($userInfo->access_token)
+                ->firstOrFail();
+        }catch(\Exception $e){
+            return null;
         }
     }
 

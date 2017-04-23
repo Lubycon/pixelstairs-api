@@ -20,11 +20,11 @@ class ContentPostRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            "title" => "required",
-            "description" => "required",
-            "licenseCode" => "required",
-            "hashTags" => "required|array",
-            "images" => "required",
+//            "title" => "required",
+//            "description" => "required",
+//            "licenseCode" => "required",
+//            "hashTags" => "required|array",
+//            "image" => "required",
         ];
         return $requiredRule;
     }

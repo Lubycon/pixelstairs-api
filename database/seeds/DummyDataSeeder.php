@@ -25,5 +25,20 @@ class DummyDataSeeder extends Seeder
             }
         }
         factory(App\Models\Comment::class, 300)->create();
+
+        $users = App\Models\User::all();
+        foreach($users as $key => $user){
+            $rand = 100; // content quentity
+            for( $i=0;$i<$rand;$i++ ){
+                if( mt_rand(0,100) > 30 ){
+                    App\Models\Like::create([
+                        "user_id" => $user->id,
+                        'content_id' => $i,
+                        'created_at' => date("Y-m-d H:i:s"),
+                        'updated_at' => date("Y-m-d H:i:s"),
+                    ]);
+                }
+            }
+        }
     }
 }

@@ -39,12 +39,13 @@ class ContentController extends Controller
     }
 
     protected function getList(Request $request){
+        $this->user = User::getAccessUserOrNot();
         $collection = $this->pager
             ->search('content',$request->query())
             ->getCollection();
         $result = $this->pager->getPageInfo();
         foreach($collection as $content){
-            $result->contents[] = $content->getContentInfoWithAuthor();
+            $result->contents[] = $content->getContentInfoWithAuthor($this->user);
         };
 
         if(!empty($result->contents)){
@@ -55,38 +56,32 @@ class ContentController extends Controller
     }
     protected function get(Request $request,$content_id){
         $this->content = Content::findOrFail($content_id);
-        $this->user = User::getAccessUser();
-        $result = $this->content->getContentInfoWithAuthor();
-        $this->content->viewIt($this->user);
+        $this->user = User::getAccessUserOrNot();
+        $result = $this->content->getContentInfoWithAuthor($this->user);
+        if( !is_null($this->user) ){
+            $this->content->viewIt($this->user);
+        }
         return response()->success($result);
     }
     protected function post(ContentPostRequest $request){
         $this->user = User::getAccessUser();
 
-        Log::info( $request->all() );
-        Log::info( $request->file()   );
-
-//        try{
+        try{
             $this->content = $this->user->contents()->create([
                 "title" => $request->title,
                 "description" => $request->description,
-                "licence_code" => $request->licenseCode,
+                "licence_code" => '11',
                 "hash_tags" => json_encode($request->hashTags),
             ]);
             $this->content->update([
-//                "thumbnail_image_id" => $this->uploader->upload(
-//                    $this->content,
-//                    $request->thumbnailImg
-//                )->getId(),
                 "image_group_id" => $this->uploader->upload(
-                    $this->content,
-                    $request->images
+                    $this->content,$request->image,true
                 )->getId(),
             ]);
-//        }catch (\Exception $e){
-//            $this->content->delete();
-//            Abort::Error('0040');
-//        }
+        }catch (\Exception $e){
+            $this->content->delete();
+            Abort::Error('0040');
+        }
         return response()->success($this->content);
     }
     protected function put(ContentPutRequest $request,$content_id){
@@ -97,13 +92,8 @@ class ContentController extends Controller
                 "description" => $request->description,
                 "licence_code" => $request->licenseCode,
                 "hash_tags" => json_encode($request->hashTags),
-//                "thumbnail_image_id" => $this->uploader->upload(
-//                    $this->content,
-//                    $request->thumbnailImg
-//                )->getId(),
                 "image_group_id" => $this->uploader->upload(
-                    $this->content,
-                    $request->images
+                    $this->content,$request->image,true
                 )->getId(),
             ]);
         }catch (\Exception $e){

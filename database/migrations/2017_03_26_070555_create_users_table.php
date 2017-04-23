@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration {
             $table->enum('gender', array('male', 'female', 'etc'));
 			$table->enum('grade', array('super_admin', 'admin', 'general'));
 			$table->enum('status', array('active', 'inactive', 'drop'));
-			$table->integer('image_id')->unsigned()->nullable();
+			$table->integer('image_id')->unsigned()->default(1);
             $table->string('token', 40)->nullable();
 			$table->timestamp('last_login_time')->nullable();
 			$table->timestamps();

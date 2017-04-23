@@ -61,14 +61,14 @@ class FileUpload
     // init function
 
     // progress functions
-    public function upload($model,$inputFile){
+    public function upload($model,$inputFile,$isGroup=false){
         $this->nullChecker($inputFile);
-        try{
+//        try{
             if( !$this->nullCheck ){
                 $this->setBasicVariable($model,$inputFile);
                 $this->modelName = $this->getModelName($this->model);
                 $this->modelId = $this->getModelId($this->model);
-                $this->isGroup = $this->isGrouping($this->inputFile);
+                $this->isGroup = $isGroup;
                 $this->groupModel = $this->createImageGroupModel($this->inputFile);
                 $this->inputFile = $this->setToArray($this->inputFile);
                 $this->inputFile = $this->fileTypeCheck($this->inputFile);
@@ -76,9 +76,9 @@ class FileUpload
                 $this->createModel = $this->createImageModel($this->inputFile);
             }
             return $this;
-        }catch(\Exception $e){
-            Abort::Error('0050',$e->getMessage());
-        }
+//        }catch(\Exception $e){
+//            Abort::Error('0050',$e->getMessage());
+//        }
     }
     // progress functions
 
@@ -139,14 +139,14 @@ class FileUpload
             $ownerCheck = $this->ownerCheck($value);
             if( isset($value['id']) ){
                 $images[] = Image::findOrFail($value['id'])->update([
-                    "index" => $value['index'],
+                    "index" => isset($value['index']) ? $value['index'] : 0,
                     "url" => $value['url'],
                     $this->ownCheckers['snake'] => $ownerCheck,
                     "image_group_id" => $this->isGroup ? $this->groupModel['id'] : null,
                 ]);
             }else{
                 $images[] = Image::create([
-                    "index" => $value['index'],
+                    "index" => isset($value['index']) ? $value['index'] : 0,
                     "url" => $value['url'],
                     $this->ownCheckers['snake'] => $ownerCheck,
                     "image_group_id" => $this->isGroup ? $this->groupModel['id'] : null,
@@ -204,10 +204,6 @@ class FileUpload
         $explodeBase64 = explode('data:image/jpeg;base64,',$file);
         return count($explodeBase64) > 1;
     }
-    protected function isBlob($file){
-        Log::info($file);
-        return null;
-    }
     protected function isUrl($file){
         $explodeBase64 = explode('http',$file);
         return count($explodeBase64) > 1;
@@ -223,7 +219,8 @@ class FileUpload
         $this->inputFile = $inputFile;
     }
     protected function setToArray($inputFile){
-        if( !$this->isGroup ) $checker[] = $inputFile;
+        if( isset($inputFile['file']) ) // if file is alone... grep into array
+            $checker[] = $inputFile;
         return isset($checker) ? $checker : $inputFile;
     }
     protected function setRandomFileName(){
@@ -249,7 +246,6 @@ class FileUpload
     protected function getFileType($value){
         $file = $value['file'];
         if( $this->isBase64($file) ){ return "base64"; }
-        else if( $this->isBlob($file) ){ return "blob"; }
         else if( $this->isUrl($file) ){ return "url"; }
         else if( is_null($file) ){ return null; }
         else{ Abort::Error('0050',"Unknown file data"); }

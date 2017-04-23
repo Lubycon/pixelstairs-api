@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Log;
 
 class Content extends Model {
 
@@ -37,27 +38,33 @@ class Content extends Model {
         return $this->save();
     }
     public function amILike($user){
-        $result = $this->likes()
-            ->whereuser_id($user->id)
-            ->first();
-        return !is_null($result);
+        if( !is_null($user) ){
+            $result = $this->likes()
+                ->whereuser_id($user->id)
+                ->first();
+            return !is_null($result);
+        }
+        return false;
     }
     public function amIView($user){
-        $result = $this->views()
-            ->whereuser_id($user->id)
-            ->first();
-        return !is_null($result);
+        if( !is_null($user) ) {
+            $result = $this->views()
+                ->whereuser_id($user->id)
+                ->first();
+            return !is_null($result);
+        }
+        return false;
     }
 
-	public function getContentInfoWithAuthor(){
+	public function getContentInfoWithAuthor($user){
         return [
             "id" => $this->id,
             "title" => $this->title,
             "description" => $this->description,
 //            "thumbnailImg" => $this->getThumbnailImageObject(),
-            "images" => $this->getGroupImageObject(),
+            "image" => $this->getGroupImageObject(),
             "licenseCode" => $this->licence_code,
-            "myLike" => "",
+            "myLike" => $this->amILike($user),
             "counts" => $this->getCounts(),
             "hashTags" => $this->getHashTags(),
             "user" => $this->user->getSimpleInfo(),
@@ -80,7 +87,10 @@ class Content extends Model {
     }
     public function getGroupImageObject(){
         $imageModel = $this->imageGroup;
-        return $this->getImageObject($imageModel);
+        $imageObjects = $this->getImageObject($imageModel);
+        return count($imageObjects) > 1
+            ? $imageObjects
+            : $imageObjects[0];
     }
     public function getImageObject($imageModel){
         $result = is_null($imageModel)

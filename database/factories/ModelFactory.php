@@ -20,11 +20,12 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
 
 
 $factory->define(App\Models\Content::class, function (Faker\Generator $faker) {
+    $hash_tags = $faker->words(mt_rand(0,3));
     return [
         'user_id' => mt_rand(2,100),
         'title' => $faker->sentence,
         'description'=> $faker->paragraph,
-        'hash_tags' => $faker->text,
+        'hash_tags' => count($hash_tags) > 0 ? json_encode($hash_tags) : null,
         'image_group_id' => factory(App\Models\ImageGroup::class)->create()->id,
         'licence_code' => '1234',
         'view_count' => mt_rand(300,1000),
