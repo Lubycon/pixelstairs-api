@@ -57,7 +57,7 @@ class ContentController extends Controller
     }
     protected function post(Request $request){
         $this->user = User::getAccessUser();
-        try{
+//        try{
             $this->content = $this->user->contents()->create([
                 "title" => $request->title,
                 "description" => $request->description,
@@ -74,10 +74,10 @@ class ContentController extends Controller
                     $request->images
                 )->getId(),
             ]);
-        }catch (\Exception $e){
-            $this->content->delete();
-            Abort::Error('0040');
-        }
+//        }catch (\Exception $e){
+//            $this->content->delete();
+//            Abort::Error('0040');
+//        }
         return response()->success($this->content);
     }
     protected function put(Request $request,$content_id){
