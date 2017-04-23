@@ -27,7 +27,7 @@ $factory->define(App\Models\Content::class, function (Faker\Generator $faker) {
         'description'=> $faker->paragraph,
         'hash_tags' => count($hash_tags) > 0 ? json_encode($hash_tags) : null,
         'image_group_id' => factory(App\Models\ImageGroup::class)->create()->id,
-        'licence_code' => '1234',
+        'license_code' => '1234',
         'view_count' => mt_rand(300,1000),
         'like_count' => mt_rand(500,10000),
         'created_at' => date("Y-m-d H:i:s"),
