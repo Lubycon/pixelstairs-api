@@ -201,7 +201,7 @@ class FileUpload
         return $inputFile;
     }
     protected function isBase64($file){
-        $explodeBase64 = explode('data:image/jpeg;base64,',$file);
+        $explodeBase64 = explode('data:image/',$file);
         return count($explodeBase64) > 1;
     }
     protected function isUrl($file){
