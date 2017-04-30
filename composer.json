@@ -11,12 +11,12 @@
         "barryvdh/laravel-cors": "0.8.2",
         "pda/pheanstalk": "^3.1",
         "guzzlehttp/guzzle": "^6.2",
-        "zircote/swagger-php": "^2.0",
         "maknz/slack": "^1.7",
         "aws/aws-sdk-php-laravel": "^3.1",
         "graham-campbell/flysystem": "^3.0",
         "league/flysystem-aws-s3-v3": "~1.0",
-        "intervention/image": "^2.3"
+        "intervention/image": "^2.3",
+        "darkaonline/l5-swagger": "~3.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
