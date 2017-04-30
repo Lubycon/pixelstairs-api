@@ -14,6 +14,8 @@ class CommentDeleteRequest extends Request
 
     public function authorize()
     {
+        $comment = $this->route()->parameters()['comment_id'];
+        User::isMyComment($comment);
         return User::isUser();
     }
 

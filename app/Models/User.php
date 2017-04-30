@@ -49,6 +49,20 @@ class User extends Model implements AuthenticatableContract,
         ];
     }
 
+    public static function isMyId($user_id){
+        if( User::getAccessUser()->id === $user_id )return true;
+        return Abort::Error('0043','It is not target user id');
+    }
+    public static function isMyContent($content_id){
+        if( User::getAccessUser()->id === Content::findOrFail($content_id)->user_id )return true;
+        return Abort::Error('0043','It is user own');
+    }
+    public static function isMyComment($comment_id){
+        if( User::getAccessUser()->id === Comment::findOrFail($comment_id)->user_id )return true;
+        return Abort::Error('0043','It is user own');
+    }
+
+
     public static function isGhost(){
         return User::getAccessToken() === null;
     }

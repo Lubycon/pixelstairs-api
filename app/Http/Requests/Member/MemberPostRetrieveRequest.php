@@ -14,13 +14,15 @@ class MemberPostRetrieveRequest extends Request
 
     public function authorize()
     {
+        $user_id = $this->route()->parameters()['id'];
+        User::isMyId($user_id);
         return User::isUser();
     }
 
     public function rules()
     {
         $requiredRule = [
-            "newsletters_accepted" => "required"
+            "newsletterAccepted" => "required|boolean"
         ];
         return $requiredRule;
     }
