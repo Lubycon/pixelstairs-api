@@ -71,6 +71,8 @@ class Content extends Model {
             "counts" => $this->getCounts(),
             "hashTags" => $this->getHashTags(),
             "user" => $this->user->getSimpleInfo(),
+			"createdAt" => $this->created_at,
+			"updatedAt" => $this->updated_at
         ];
     }
 
