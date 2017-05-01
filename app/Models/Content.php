@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 use Log;
 
 class Content extends Model {
@@ -71,8 +72,8 @@ class Content extends Model {
             "counts" => $this->getCounts(),
             "hashTags" => $this->getHashTags(),
             "user" => $this->user->getSimpleInfo(),
-			"createdAt" => $this->created_at,
-			"updatedAt" => $this->updated_at
+			"createdAt" => Carbon::($this->created_at)->toDateTimeString(),
+			"updatedAt" => Carbon::($this->updated_at)->toDateTimeString()
         ];
     }
 
