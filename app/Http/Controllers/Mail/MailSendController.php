@@ -31,6 +31,22 @@ class MailSendController extends Controller
         $this->user = User::class;
     }
 
+    /**
+     * @SWG\Put(
+     *   path="/mail/signup",
+     *   summary="mail",
+     *   operationId="mail",
+     *   tags={"/Mail"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     public function resendSignup(MailRemindSignupRequest $request){
         $this->user = User::getAccessUser();
         $this->dispatch(new SignupReminderMailSendJob($this->user));

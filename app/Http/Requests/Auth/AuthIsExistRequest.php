@@ -17,6 +17,18 @@ class AuthIsExistRequest extends Request
         return true;
     }
 
+    /**
+     *  @SWG\Definition(
+     *   definition="auth/isexist",
+     *   type="object",
+     *   allOf={
+     *       @SWG\Schema(
+     *           required={"email"},
+     *           @SWG\Property(property="email", type="string", default="test@pixelstairs.com"),
+     *       )
+     *   }
+     * )
+     */
     public function rules()
     {
         $requiredRule = [

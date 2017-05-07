@@ -15,6 +15,19 @@ class AuthSigndropRequest extends Request
         return User::isUser();
     }
 
+    /**
+     *  @SWG\Definition(
+     *   definition="auth/signdrop",
+     *   type="object",
+     *   allOf={
+     *       @SWG\Schema(
+     *           required={"reasonCode"},
+     *           @SWG\Property(property="reasonCode", type="string", default="0303"),
+     *           @SWG\Property(property="reason", type="string", default="이게뭐냐 맘에안듬~~"),
+     *       )
+     *   }
+     * )
+     */
     public function rules()
     {
         $requiredRule = [

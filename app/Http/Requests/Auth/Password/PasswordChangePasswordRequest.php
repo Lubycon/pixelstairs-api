@@ -17,6 +17,18 @@ class PasswordChangePasswordRequest extends Request
         return User::isUser();
     }
 
+    /**
+     *  @SWG\Definition(
+     *   definition="password/changePassword",
+     *   type="object",
+     *   allOf={
+     *       @SWG\Schema(
+     *           required={"password"},
+     *           @SWG\Property(property="password", type="string", default="12341234"),
+     *       )
+     *   }
+     * )
+     */
     public function rules()
     {
         $requiredRule = [

@@ -44,13 +44,13 @@ class AuthController extends Controller
      *   path="/members/signin",
      *   summary="signin",
      *   operationId="signin",
-     *   tags={"Members"},
+     *   tags={"/Members/Auth"},
      *     @SWG\Parameter(
      *     in="body",
      *     name="body",
      *     description="Sign in into web site",
      *     required=true,
-     *     @SWG\Schema(ref="#/definitions/members/signin")
+     *     @SWG\Schema(ref="#/definitions/auth/signin")
      *   ),
      *   @SWG\Response(response=200, description="successful operation")
      * )
@@ -75,7 +75,7 @@ class AuthController extends Controller
      *   path="/members/signout",
      *   summary="signout",
      *   operationId="signout",
-     *   tags={"Members"},
+     *   tags={"/Members/Auth"},
      *     @SWG\Parameter(
      *      type="string",
      *      name="X-pixel-token",
@@ -98,13 +98,13 @@ class AuthController extends Controller
      *   path="/members/signup",
      *   summary="signup",
      *   operationId="signup",
-     *   tags={"Members"},
+     *   tags={"/Members/Auth"},
      *     @SWG\Parameter(
      *     in="body",
      *     name="body",
      *     description="Sign up into web site",
      *     required=true,
-     *     @SWG\Schema(ref="#/definitions/members/signup")
+     *     @SWG\Schema(ref="#/definitions/auth/signup")
      *   ),
      *   @SWG\Response(response=200, description="successful operation")
      * )
@@ -128,7 +128,7 @@ class AuthController extends Controller
      *   path="/members/signdrop",
      *   summary="signdrop",
      *   operationId="signdrop",
-     *   tags={"Members"},
+     *   tags={"/Members/Auth"},
      *     @SWG\Parameter(
      *      type="string",
      *      name="X-pixel-token",
@@ -141,23 +141,9 @@ class AuthController extends Controller
      *     name="body",
      *     description="Sign drop into web site",
      *     required=true,
-     *     @SWG\Schema(ref="#/definitions/members/signdrop")
+     *     @SWG\Schema(ref="#/definitions/auth/signdrop")
      *     ),
      *   @SWG\Response(response=200, description="successful operation")
-     * )
-     */
-
-    /**
-     *  @SWG\Definition(
-     *   definition="members/signdrop",
-     *   type="object",
-     *   allOf={
-     *       @SWG\Schema(
-     *           required={"reasonCode"},
-     *           @SWG\Property(property="reasonCode", type="string", default="0303"),
-     *           @SWG\Property(property="reason", type="string", default="이게뭐냐 맘에안듬~~"),
-     *       )
-     *   }
      * )
      */
     protected function signdrop(AuthSigndropRequest $request)
@@ -175,28 +161,15 @@ class AuthController extends Controller
      *   path="/members/isexist",
      *   summary="isexist",
      *   operationId="isexist",
-     *   tags={"Members"},
+     *   tags={"/Members/Auth"},
      *     @SWG\Parameter(
      *     in="body",
      *     name="body",
      *     description="Sign in into web site",
      *     required=true,
-     *     @SWG\Schema(ref="#/definitions/members/isexist")
+     *     @SWG\Schema(ref="#/definitions/auth/isexist")
      *   ),
      *   @SWG\Response(response=200, description="successful operation")
-     * )
-     */
-
-    /**
-     *  @SWG\Definition(
-     *   definition="members/isexist",
-     *   type="object",
-     *   allOf={
-     *       @SWG\Schema(
-     *           required={"email"},
-     *           @SWG\Property(property="email", type="string", default="test@pixelstairs.com"),
-     *       )
-     *   }
      * )
      */
     protected function isExist(AuthIsExistRequest $request)
@@ -214,7 +187,7 @@ class AuthController extends Controller
      *   path="/test/testerReset",
      *   summary="testerReset",
      *   operationId="testerReset",
-     *   tags={"Test"},
+     *   tags={"/Test"},
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */

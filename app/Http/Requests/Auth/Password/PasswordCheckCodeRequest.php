@@ -16,11 +16,22 @@ class PasswordCheckCodeRequest extends Request
     {
         return User::isGhost();
     }
-
+    /**
+     *  @SWG\Definition(
+     *   definition="password/checkCode",
+     *   type="object",
+     *   allOf={
+     *       @SWG\Schema(
+     *           required={"code"},
+     *           @SWG\Property(property="email", type="string", default="write code"),
+     *       )
+     *   }
+     * )
+     */
     public function rules()
     {
         $requiredRule = [
-            "code" => "required|email",
+            "code" => "required",
         ];
         return $requiredRule;
     }

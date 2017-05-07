@@ -28,6 +28,28 @@ class CertificationController extends Controller
         $this->user = User::class;
     }
 
+    /**
+     * @SWG\Post(
+     *   path="/certs/signup/code",
+     *   summary="code",
+     *   operationId="code",
+     *   tags={"/Certs/Signup"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/certs/signup/checkCode")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     public function checkCode(CertCheckCodeRequest $request)
     {
         $this->user = User::getAccessUser();
@@ -37,6 +59,22 @@ class CertificationController extends Controller
         ]);
     }
 
+    /**
+     * @SWG\Post(
+     *   path="/certs/signup/time",
+     *   summary="code",
+     *   operationId="code",
+     *   tags={"/Certs/Signup"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     public function getDiffTime(CertGetDiffTimeRequest $request)
     {
         $this->user = User::getAccessUser();
@@ -47,6 +85,22 @@ class CertificationController extends Controller
         ]);
     }
 
+    /**
+     * @SWG\Post(
+     *   path="/certs/token",
+     *   summary="code",
+     *   operationId="code",
+     *   tags={"/Certs/Token"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     public function checkAccessToken(Request $request)
     {
         try{

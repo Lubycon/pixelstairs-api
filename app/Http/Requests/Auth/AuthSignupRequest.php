@@ -17,6 +17,22 @@ class AuthSignupRequest extends Request
         return User::isGhost();
     }
 
+    /**
+     *  @SWG\Definition(
+     *   definition="auth/signup",
+     *   type="object",
+     *   allOf={
+     *       @SWG\Schema(
+     *           required={"email","password","nickname","newsletterAccepted","termsOfServiceAccepted"},
+     *           @SWG\Property(property="email", type="string", default="test@pixelstairs.com"),
+     *           @SWG\Property(property="password", type="string", default="password"),
+     *           @SWG\Property(property="nickname", type="string", default="usernick"),
+     *           @SWG\Property(property="newsletterAccepted", type="boolean"),
+     *           @SWG\Property(property="termsOfServiceAccepted", type="boolean"),
+     *       )
+     *   }
+     * )
+     */
     public function rules()
     {
         $requiredRule = [

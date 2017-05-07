@@ -17,6 +17,21 @@ class TrackerPostRequest extends Request
         return true;
     }
 
+    /**
+     *  @SWG\Definition(
+     *   definition="tracker",
+     *   type="object",
+     *   allOf={
+     *       @SWG\Schema(
+     *           required={"uuid","current_url","prev_url","action"},
+     *           @SWG\Property(property="uuid", type="string", default="47328915fjd"),
+     *           @SWG\Property(property="current_url", type="string", default="http://current.com"),
+     *           @SWG\Property(property="prev_url", type="string", default="http://prev.com"),
+     *           @SWG\Property(property="action", type="string", default="1"),
+     *       )
+     *   }
+     * )
+     */
     public function rules()
     {
         $requiredRule = [

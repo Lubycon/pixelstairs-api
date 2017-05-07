@@ -67,41 +67,12 @@ class User extends Model implements AuthenticatableContract,
     protected $hidden = ['password', 'token'];
 	protected $fillable = ['email', 'password', 'nickname', 'image_id', 'newsletters_accepted', 'terms_of_service_accepted'];
 
-    /**
-     *  @SWG\Definition(
-     *   definition="members/signin",
-     *   type="object",
-     *   allOf={
-     *       @SWG\Schema(
-     *           required={"email","password"},
-     *           @SWG\Property(property="email", type="string", default="test@pixelstairs.com"),
-     *           @SWG\Property(property="password", type="string", default="password"),
-     *       )
-     *   }
-     * )
-     */
     public static function bindSigninData($request){
         return [
             "email" => $request->email,
             "password" => $request->password
         ];
     }
-    /**
-     *  @SWG\Definition(
-     *   definition="members/signup",
-     *   type="object",
-     *   allOf={
-     *       @SWG\Schema(
-     *           required={"email","password","nickname","newsletterAccepted","termsOfServiceAccepted"},
-     *           @SWG\Property(property="email", type="string", default="test@pixelstairs.com"),
-     *           @SWG\Property(property="password", type="string", default="password"),
-     *           @SWG\Property(property="nickname", type="string", default="usernick"),
-     *           @SWG\Property(property="newsletterAccepted", type="boolean"),
-     *           @SWG\Property(property="termsOfServiceAccepted", type="boolean"),
-     *       )
-     *   }
-     * )
-     */
 	public static function bindSignupData($request){
 	    return [
 	        "email" => $request->email,
