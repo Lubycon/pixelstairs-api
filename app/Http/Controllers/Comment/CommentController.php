@@ -39,6 +39,15 @@ class CommentController extends Controller
         $this->pager = new Pager();
     }
 
+    /**
+     * @SWG\Get(
+     *   path="/contents/1/comments",
+     *   summary="contents",
+     *   operationId="contents",
+     *   tags={"/Contents/Comment"},
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function getList(CommentGetListRequest $request,$content_id){
         $query = "search:contentId:$content_id";
         $collection = $this->pager
@@ -54,6 +63,30 @@ class CommentController extends Controller
             return response()->success();
         }
     }
+
+    /**
+     * @SWG\Post(
+     *   path="/contents/1/comments",
+     *   summary="detail",
+     *   operationId="detail",
+     *   tags={"/Contents/Comment"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Post detail",
+     *     required=true,
+     *      @SWG\Schema(ref="#/definitions/comments/post")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function post(CommentPostRequest $request,$content_id){
         $this->user = User::getAccessUser();
         $this->content = Content::findOrFail($content_id);
@@ -66,6 +99,30 @@ class CommentController extends Controller
         }
         Abort::Error('0040');
     }
+
+    /**
+     * @SWG\Put(
+     *   path="/contents/1/comments/1",
+     *   summary="detail",
+     *   operationId="detail",
+     *   tags={"/Contents/Comment"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Post detail",
+     *     required=true,
+     *      @SWG\Schema(ref="#/definitions/comments/put")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function put(CommentPutRequest $request,$content_id,$comment_id){
         $this->content = Content::findOrFail($content_id);
         $this->comment = $this->content->comments()->findOrFail($comment_id);
@@ -73,6 +130,23 @@ class CommentController extends Controller
         if($this->comment) return response()->success($this->comment);
         Abort::Error('0040');
     }
+
+    /**
+     * @SWG\Delete(
+     *   path="/contents/1/comments/1",
+     *   summary="detail",
+     *   operationId="detail",
+     *   tags={"/Contents/Comment"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function delete(CommentDeleteRequest $request,$content_id,$comment_id){
         $this->content = Content::findOrFail($content_id);
         $this->comment = $this->content->comments()->findOrFail($comment_id);
