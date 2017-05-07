@@ -38,6 +38,15 @@ class ContentController extends Controller
         $this->pager = new Pager();
     }
 
+    /**
+     * @SWG\Get(
+     *   path="/contents",
+     *   summary="contents",
+     *   operationId="contents",
+     *   tags={"/Contents"},
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function getList(Request $request){
         $this->user = User::getAccessUserOrNot();
         $collection = $this->pager
@@ -54,6 +63,16 @@ class ContentController extends Controller
             return response()->success();
         }
     }
+
+    /**
+     * @SWG\Get(
+     *   path="/contents/1",
+     *   summary="contents",
+     *   operationId="contents",
+     *   tags={"/Contents"},
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function get(Request $request,$content_id){
         $this->content = Content::findOrFail($content_id);
         $this->user = User::getAccessUserOrNot();
@@ -63,6 +82,30 @@ class ContentController extends Controller
         }
         return response()->success($result);
     }
+
+    /**
+     * @SWG\Post(
+     *   path="/contents",
+     *   summary="detail",
+     *   operationId="detail",
+     *   tags={"/Contents"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Post detail",
+     *     required=true,
+     *      @SWG\Schema(ref="#/definitions/contents/post")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function post(ContentPostRequest $request){
         $this->user = User::getAccessUser();
 
@@ -84,6 +127,30 @@ class ContentController extends Controller
         }
         return response()->success($this->content);
     }
+
+    /**
+     * @SWG\Put(
+     *   path="/contents/1",
+     *   summary="detail",
+     *   operationId="detail",
+     *   tags={"/Contents"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Post detail",
+     *     required=true,
+     *      @SWG\Schema(ref="#/definitions/contents/put")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function put(ContentPutRequest $request,$content_id){
         $this->content = Content::findOrFail($content_id);
         try{
@@ -102,6 +169,23 @@ class ContentController extends Controller
         }
         return response()->success($this->content);
     }
+
+    /**
+     * @SWG\Delete(
+     *   path="/contents/1",
+     *   summary="detail",
+     *   operationId="detail",
+     *   tags={"/Contents"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function delete(ContentDeleteRequest $request,$content_id){
         $this->content = Content::findOrFail($content_id);
         $this->content->delete();
