@@ -40,5 +40,9 @@ class DummyDataSeeder extends Seeder
                 }
             }
         }
+
+        //  first content, comment got test user
+        App\Models\Content::first()->update(['user_id'=>2]);
+        App\Models\Comment::first()->update(['user_id'=>2]);
     }
 }

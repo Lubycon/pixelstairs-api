@@ -109,6 +109,7 @@ php {{ $base_dir }}/officer.php deploy {{ $release_dir }}/{{ $distname }};
 sudo service nginx restart;
 sudo service php7.0-fpm restart;
 sudo service mysql restart;
+sudo supervisorctl restart all;
 @endtask
 
 
@@ -172,4 +173,5 @@ php {{ $base_dir }}/officer.php deploy {{ $release_dir }}/{{ $distname }};
 sudo service nginx restart;
 sudo service php7.0-fpm restart;
 sudo service mysql restart;
+sudo supervisorctl restart all;
 @endtask
