@@ -23,7 +23,7 @@ class PasswordCheckCodeRequest extends Request
      *   allOf={
      *       @SWG\Schema(
      *           required={"code"},
-     *           @SWG\Property(property="email", type="string", default="write code"),
+     *           @SWG\Property(property="code", type="string", default="write code"),
      *       )
      *   }
      * )
