@@ -31,7 +31,7 @@ class User extends Model implements AuthenticatableContract,
 
     /**
      *  @SWG\Definition(
-     *   definition="signin",
+     *   definition="members/signin",
      *   type="object",
      *   allOf={
      *       @SWG\Schema(
@@ -50,7 +50,7 @@ class User extends Model implements AuthenticatableContract,
     }
     /**
      *  @SWG\Definition(
-     *   definition="signup",
+     *   definition="members/signup",
      *   type="object",
      *   allOf={
      *       @SWG\Schema(
@@ -145,13 +145,16 @@ class User extends Model implements AuthenticatableContract,
         }
     }
 
-    public function insertAccessToken(){
+    public function insertAccessToken($token = null){
         // TODO : device info add to token
 //	    $deviceInfo = Request::header("x-pixel-device");
-        $userId = $this->id;
-        $device = 'w';
-        $randomStr = Str::random(30);
-        $token = $device.$randomStr.$userId; //need change first src from header device check
+
+        if( is_null($token) ){
+            $userId = $this->id;
+            $device = 'w';
+            $randomStr = Str::random(30);
+            $token = $device.$randomStr.$userId; //need change first src from header device check
+        }
 
         $this->token = $token;
         $this->save();

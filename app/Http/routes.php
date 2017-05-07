@@ -1,5 +1,10 @@
 <?php
 Route::group(['prefix' => '/v1'], function () {
+
+    Route::group(['prefix' => '/test'], function () {
+        Route::post('testerReset', 'Auth\AuthController@testerReset');
+    });
+
     Route::group(['prefix' => '/members/'], function () {
         Route::post('signin', 'Auth\AuthController@signin');
         Route::put('signout', 'Auth\AuthController@signout');
