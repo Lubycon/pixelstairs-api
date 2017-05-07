@@ -32,7 +32,7 @@ class ImageTableSeeder extends Seeder
                 "url" => "https://i.vimeocdn.com/portrait/58832_300x300",
                 "is_pixel_own" => false,
                 'created_at' => date("Y-m-d H:i:s"),
-                'updated_at' => date("Y-m-d H:i:s"),œ
+                'updated_at' => date("Y-m-d H:i:s"),
             ],
         ];
 

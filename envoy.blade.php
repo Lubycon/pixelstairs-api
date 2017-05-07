@@ -89,6 +89,7 @@ cd {{ $release_dir }}/{{ $distname }} && \
 composer install --prefer-dist --no-scripts --no-dev;
 
 {{--Any additional command here--}}
+php artisan l5-swagger:generate
 {{--e.g. php artisan clear-compiled;--}}
 
 {{--Symlink current release to service directory.--}}
@@ -151,6 +152,7 @@ cd {{ $release_dir }}/{{ $distname }} && \
 composer install --prefer-dist;
 
 {{--Any additional command here--}}
+php artisan l5-swagger:generate
 {{--e.g. php artisan clear-compiled;--}}
 
 {{--Symlink current release to service directory.--}}
