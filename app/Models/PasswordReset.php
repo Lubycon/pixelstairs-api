@@ -7,6 +7,22 @@ use Carbon\Carbon;
 use Log;
 use Abort;
 
+/**
+ * App\Models\PasswordReset
+ *
+ * @property int $id
+ * @property string $email
+ * @property string $token
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\PasswordReset whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\PasswordReset whereEmail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\PasswordReset whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\PasswordReset whereToken($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\PasswordReset whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class PasswordReset extends Model {
     protected static $expireTime = 30; //minutes
 

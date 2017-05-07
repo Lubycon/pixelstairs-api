@@ -15,6 +15,44 @@ use Illuminate\Support\Str;
 use Request;
 use Abort;
 
+/**
+ * App\Models\User
+ *
+ * @property int $id
+ * @property string $email
+ * @property string $password
+ * @property string $nickname
+ * @property bool $newsletters_accepted
+ * @property bool $terms_of_service_accepted
+ * @property string $gender
+ * @property string $grade
+ * @property string $status
+ * @property int $image_id
+ * @property string $token
+ * @property string $last_login_time
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Content[] $contents
+ * @property-read \App\Models\Image $image
+ * @property-read \App\Models\SignupAllow $signupAllow
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereEmail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereGender($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereGrade($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereImageId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereLastLoginTime($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereNewslettersAccepted($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereNickname($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User wherePassword($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereTermsOfServiceAccepted($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereToken($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class User extends Model implements AuthenticatableContract,
     AuthorizableContract,
     CanResetPasswordContract

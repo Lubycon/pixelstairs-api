@@ -16,13 +16,15 @@
         "graham-campbell/flysystem": "^3.0",
         "league/flysystem-aws-s3-v3": "~1.0",
         "intervention/image": "^2.3",
-        "darkaonline/l5-swagger": "~3.0"
+        "darkaonline/l5-swagger": "~3.0",
+        "doctrine/dbal": "^2.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~4.0",
-        "phpspec/phpspec": "~2.1"
+        "phpspec/phpspec": "~2.1",
+        "barryvdh/laravel-ide-helper": "^2.3"
     },
     "autoload": {
         "classmap": [
@@ -51,6 +53,8 @@
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "php artisan ide-helper:generate",
+            "php artisan ide-helper:meta",
             "php artisan optimize"
         ]
     },

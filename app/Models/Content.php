@@ -7,6 +7,41 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 use Log;
 
+/**
+ * App\Models\Content
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $license_code
+ * @property int $image_group_id
+ * @property string $title
+ * @property string $description
+ * @property int $view_count
+ * @property int $like_count
+ * @property string $hash_tags
+ * @property \Carbon\Carbon $deleted_at
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $comments
+ * @property-read \App\Models\ImageGroup $imageGroup
+ * @property-read \App\Models\License $license
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Like[] $likes
+ * @property-read \App\Models\User $user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\View[] $views
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Content whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Content whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Content whereDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Content whereHashTags($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Content whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Content whereImageGroupId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Content whereLicenseCode($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Content whereLikeCount($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Content whereTitle($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Content whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Content whereUserId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Content whereViewCount($value)
+ * @mixin \Eloquent
+ */
 class Content extends Model {
 
 	use SoftDeletes;
@@ -72,8 +107,8 @@ class Content extends Model {
             "counts" => $this->getCounts(),
             "hashTags" => $this->getHashTags(),
             "user" => $this->user->getSimpleInfo(),
-			"createdAt" => Carbon::($this->created_at)->toDateTimeString(),
-			"updatedAt" => Carbon::($this->updated_at)->toDateTimeString()
+			"createdAt" => Carbon::parse($this->created_at)->toDateTimeString(),
+			"updatedAt" => Carbon::parse($this->updated_at)->toDateTimeString()
         ];
     }
 
