@@ -203,6 +203,7 @@ return [
         'Slack' => Maknz\Slack\Facades\Slack::class,
         'Intervention' => Intervention\Image\Facades\Image::class,
         \L5Swagger\L5SwaggerServiceProvider::class,
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
     ],
 
