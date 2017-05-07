@@ -229,7 +229,6 @@ return [
         */
 
         'request' => [
-            'X-pixel-token' => 'wMgsW5KD9wClxWUTZkpplGIUGRZQlD21',
             'X-pixel-version' => '1.0.1',
             'X-pixel-country' => 'south korea',
             'X-pixel-language' => 'ko',

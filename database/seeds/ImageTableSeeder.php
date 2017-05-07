@@ -27,6 +27,13 @@ class ImageTableSeeder extends Seeder
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
             ],
+            [
+                "id" => 3,
+                "url" => "https://i.vimeocdn.com/portrait/58832_300x300",
+                "is_pixel_own" => false,
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s"),œ
+            ],
         ];
 
         DB::table('images')->insert($market);
