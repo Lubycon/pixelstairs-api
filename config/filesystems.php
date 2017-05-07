@@ -15,7 +15,9 @@ return [
     |
     */
 
-    'default' => 'local',
+    // default is s3!
+    // written by daniel zepp
+    'default' => 's3',
 
     /*
     |--------------------------------------------------------------------------
@@ -79,7 +81,12 @@ return [
             'region'    => 'IAD',
             'url_type'  => 'publicURL',
         ],
-
     ],
+
+    // for save multiple resolutions
+    // written by daniel zepp
+    'responsive_resolution' => ['1920','640','320'],
+    'temp_storage' => public_path().'/tmp/',
+    'own_checker' => 'is_pixel_own'
 
 ];

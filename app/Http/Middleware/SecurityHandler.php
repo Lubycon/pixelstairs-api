@@ -62,17 +62,17 @@ class SecurityHandler
     protected function isOptionMethod($request){
         return $request->method() === 'OPTIONS';
     }
-    protected function devPassKey($request){
-        return $request->header(env('DEV_SERVER_KEY'));
-    }
-    protected function devPassValue(){
-        return env('DEV_SERVER_VALUE');
-    }
+//    protected function devPassKey($request){
+//        return $request->header(env('DEV_SERVER_KEY'));
+//    }
+//    protected function devPassValue(){
+//        return env('DEV_SERVER_VALUE');
+//    }
     protected function apiUrlVersionCheck($request){
         return $request->segment(1) == env('API_URL_VERSION');
     }
     protected function apiVersionCheck($request){
-        return $request->header('X-mitty-version') == env('API_VERSION');
+        return $request->header('X-pixel-version') == env('API_VERSION');
     }
     protected function isProvision(){
         return env('APP_ENV') === 'provision';

@@ -4,24 +4,25 @@ namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Request;
 use App\Models\User;
+use App\Traits\AuthorizesRequestsOverLoad;
+use Log;
 
 class AuthSigninRequest extends Request
 {
+    use AuthorizesRequestsOverLoad;
+
     public function authorize()
     {
-        return true;
+        return User::isGhost();
     }
 
     public function rules()
     {
         $requiredRule = [
-            'id' => 'required',
-            'password' => 'required'
+            'email' => 'required',
+            'password' => 'required',
+            // TODO :: sns code later...
         ];
         return $requiredRule;
-    }
-
-    public function getModelValidateRule(){
-        return User::rules();
     }
 }

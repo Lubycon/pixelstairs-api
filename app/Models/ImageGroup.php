@@ -2,29 +2,27 @@
 
 namespace App\Models;
 
-use Log;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ImageGroup extends BaseModel
-{
-    protected $fillable = [
-        "id","model_name"
-    ];
+class ImageGroup extends Model {
+
+	use SoftDeletes;
+
     protected $casts = [
-        "id" => 'string',
+        'id' => 'string',
     ];
+	protected $dates = ['deleted_at'];
 
-    public function getObjects(){
-        $result = [];
-        $images = $this->image;
-        foreach( $images as $value ){
+	public function getObject(){
+	    $result = [];
+        foreach($this->images as $value){
             $result[] = $value->getObject();
         }
         return $result;
     }
 
-    // get reference data
-    // hasMany('remote_table_column_name','local_column_name');
-    public function image()
+    public function images()
     {
         return $this->hasMany('App\Models\Image','image_group_id','id');
     }

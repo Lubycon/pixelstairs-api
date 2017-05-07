@@ -29,7 +29,9 @@ class ResponseMacroServiceProvider extends ServiceProvider
             $config = config('error.'.$data['code']);
             $msg = $config->msg;
             $httpCode = isset($data['httpCode']) ? $data['httpCode'] : $config->httpCode;
-            $devMsg = isset($data['devMsg']) ? $data['devMsg'] : '';
+            $devMsg = isset($data['devMsg']) && env('APP_ENV') != 'production'
+                ? $data['devMsg']
+                : '';
 
             $request = Request::instance();
             $response = response()->json([
@@ -41,12 +43,10 @@ class ResponseMacroServiceProvider extends ServiceProvider
                 'result' => null
             ],$httpCode);
             $response->headers->set('Access-Control-Allow-Origin', $request->headers->get('Origin'));
-
             return $response;
         });
     }
     public function register()
     {
-        //
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Auth\Access\UnauthorizedException;
 use Abort;
 
-trait AuthorizesRequestsOverLoad{
+trait AuthorizesRequestsOverLoad {
     use AuthorizesRequests;
 
     public function authorizeAtGate(Gate $gate, $ability, $arguments)
@@ -14,8 +14,7 @@ trait AuthorizesRequestsOverLoad{
         try {
             return $gate->authorize($ability, $arguments);
         } catch (UnauthorizedException $e) {
-            Abort::Error('0043');
+            Abort::Error('0043','authorizeAtGate');
         }
     }
 }
- ?>

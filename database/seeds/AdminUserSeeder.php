@@ -1,0 +1,33 @@
+<?php
+
+use Illuminate\Database\Seeder;
+
+class AdminUserSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        DB::table('users')->truncate();
+        $admin = [
+            [
+            	'email'=>'admin@pixelstairs.com',
+                'nickname' => 'Admin',
+            	'password' => bcrypt(env('COMMON_PASSWORD')),
+                'token' => 'wmLRmEIui4DtFz5ikU5mZ6Cm2gKCIOW1',
+                'status' => 'active',
+            	'grade' => 'super_admin',
+                'gender' => "male",
+                'image_id' => 2,
+                'newsletters_accepted' => true,
+                'terms_of_service_accepted' => true,
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s"),
+            ],
+        ];
+        DB::table('users')->insert($admin);
+    }
+}
