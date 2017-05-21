@@ -53,6 +53,8 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereToken($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $birthday
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereBirthday($value)
  */
 class User extends Model implements AuthenticatableContract,
     AuthorizableContract,
