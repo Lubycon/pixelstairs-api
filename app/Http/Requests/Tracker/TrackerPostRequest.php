@@ -25,8 +25,8 @@ class TrackerPostRequest extends Request
      *       @SWG\Schema(
      *           required={"uuid","current_url","prev_url","action"},
      *           @SWG\Property(property="uuid", type="string", default="47328915fjd"),
-     *           @SWG\Property(property="current_url", type="string", default="http://current.com"),
-     *           @SWG\Property(property="prev_url", type="string", default="http://prev.com"),
+     *           @SWG\Property(property="currentUrl", type="string", default="http://current.com"),
+     *           @SWG\Property(property="prevUrl", type="string", default="http://prev.com"),
      *           @SWG\Property(property="action", type="string", default="1"),
      *       )
      *   }
@@ -36,8 +36,8 @@ class TrackerPostRequest extends Request
     {
         $requiredRule = [
             "uuid" => "required",
-            "current_url" => "required",
-            "prev_url" => "required",
+            "currentUrl" => "required",
+            "prevUrl" => "required",
             "action" => "required"
         ];
         return $requiredRule;
