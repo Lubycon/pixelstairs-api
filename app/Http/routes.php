@@ -63,6 +63,10 @@ Route::group(['prefix' => '/v1'], function () {
 
         });
     });
-    Route::get('/data', 'Data\DataResponseController@dataSimpleResponse');
+
+    Route::group(['prefix' => '/quotes/'], function () {
+        Route::get('{category}', 'Quote\QuoteController@get');
+    });
+//    Route::get('/data', 'Data\DataResponseController@dataSimpleResponse');
     Route::post('/tracker','Tracker\TrackerController@create');
 });
