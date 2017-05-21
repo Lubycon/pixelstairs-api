@@ -77,6 +77,7 @@ class MemberController extends Controller
             "nickname" => $this->user->nickname,
             "profileImg" => $this->user->getImageObject(),
             "gender" => $this->user->gender,
+            "birthday" => $this->user->birthday,
             "newsletterAccepted" => $this->user->newsletters_accepted,
         ]);
     }

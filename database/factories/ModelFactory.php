@@ -7,6 +7,10 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
         'password' => bcrypt(env('COMMON_PASSWORD')),
         'status' => 'active',
         'grade' => 'general',
+        'birthday' => Carbon\Carbon::parse()
+            ->between(
+                Carbon\Carbon::now()->subYears(30),
+                Carbon\Carbon::now()->subYears(20)),
         'gender' => mt_rand(0,1) == 0 ? 'male' : 'female',
         'image_id' => factory(App\Models\Image::class)->create()->id,
         'newsletters_accepted' => mt_rand(0,1),

@@ -39,6 +39,7 @@ class AuthSignupRequest extends Request
             "email" => "required|unique:users,email|email",
             "nickname" => "required|unique:users,nickname",
             "password" => "required|string",
+            "birthday" => "required",
             "newsletterAccepted" => "required|boolean",
             "termsOfServiceAccepted" => "required|boolean"
         ];

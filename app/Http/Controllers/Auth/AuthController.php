@@ -61,12 +61,12 @@ class AuthController extends Controller
         $this->user = Auth::getUser();
 
         $this->dispatch(new LastSigninTimeCheckerJob($this->user));
-
-        if($this->user->status == 'active') $this->user->insertAccessToken();
+        $this->user->insertAccessToken();
 
         return response()->success([
             'token' => $this->user->token,
-            'grade' => $this->user->status,
+            'grade' => $this->user->grade,
+            'status' => $this->user->status,
         ]);
     }
 

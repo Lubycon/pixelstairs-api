@@ -14,6 +14,7 @@ use Log;
 use Illuminate\Support\Str;
 use Request;
 use Abort;
+use Carbon\Carbon;
 
 /**
  * App\Models\User
@@ -65,7 +66,7 @@ class User extends Model implements AuthenticatableContract,
     ];
 	protected $dates = ['deleted_at'];
     protected $hidden = ['password', 'token'];
-	protected $fillable = ['email', 'password', 'nickname', 'image_id', 'newsletters_accepted', 'terms_of_service_accepted'];
+	protected $fillable = ['email', 'password', 'nickname', 'image_id','birthday','grade','status', 'newsletters_accepted', 'terms_of_service_accepted'];
 
     public static function bindSigninData($request){
         return [
@@ -80,6 +81,7 @@ class User extends Model implements AuthenticatableContract,
             "nickname" => $request->nickname,
             "newsletters_accepted" => $request->newsletterAccepted,
             "terms_of_service_accepted" => $request->termsOfServiceAccepted,
+            "birthday" => Carbon::parse($request->birthday)->toDatetimeString(),
             "grade" => "general",
             "status" => "inactive",
         ];
@@ -107,8 +109,8 @@ class User extends Model implements AuthenticatableContract,
         return true;
     }
     public static function isAdmin(){
-        // TODO :: admin
-        return false;
+        $userGrade = User::getAccessUser()->grade;
+        return $userGrade === 'admin' || $userGrade === 'super_admin';
     }
 
 
@@ -189,6 +191,8 @@ class User extends Model implements AuthenticatableContract,
             "email" => $this->email,
             "nickname" => $this->nickname,
             "profileImg" => $this->getImageObject(),
+            "gender" => $this->gender,
+            "birthday" => $this->birthday,
         ];
     }
 
