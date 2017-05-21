@@ -14,11 +14,11 @@ class DatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-//        $this->call(AdminUserSeeder::class);
-//        $this->call(ImageTableSeeder::class);
-//        if( env('APP_ENV') != 'production' ){
-//            $this->call(DummyDataSeeder::class);
-//        }
+        $this->call(AdminUserSeeder::class);
+        $this->call(ImageTableSeeder::class);
+        if( env('APP_ENV') != 'production' ){
+            $this->call(DummyDataSeeder::class);
+        }
         $this->call(QuoteSeeder::class);
 
         Model::reguard();
