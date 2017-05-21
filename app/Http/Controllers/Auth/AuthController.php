@@ -26,34 +26,6 @@ use App\Http\Requests\Auth\AuthIsExistRequest;
 use App\Jobs\LastSigninTimeCheckerJob;
 use App\Jobs\Mails\SignupMailSendJob;
 
-
-/**
- * @SWG\Get(
- *   path="/customer/{customerId}/rate",
- *   summary="List customer rates",
- *   operationId="getCustomerRates",
- *   @SWG\Parameter(
- *     name="customerId",
- *     in="path",
- *     description="Target customer.",
- *     required=true,
- *     type="integer"
- *   ),
- *   @SWG\Parameter(
- *     name="filter",
- *     in="query",
- *     description="Filter results based on query string value.",
- *     required=false,
- *     enum={"active", "expired", "scheduled"},
- *     type="string"
- *   ),
- *   @SWG\Response(response=200, description="successful operation"),
- *   @SWG\Response(response=406, description="not acceptable"),
- *   @SWG\Response(response=500, description="internal server error")
- * )
- *
- */
-
 class AuthController extends Controller
 {
     use ThrottlesLogins;
@@ -66,6 +38,23 @@ class AuthController extends Controller
         $this->user = User::class;
     }
 
+
+    /**
+     * @SWG\Post(
+     *   path="/members/signin",
+     *   summary="signin",
+     *   operationId="signin",
+     *   tags={"/Members/Auth"},
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Sign in into web site",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/auth/signin")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function signin(AuthSigninRequest $request)
     {
         if(!Auth::once(User::bindSigninData($request))) Abort::Error('0061');
@@ -81,7 +70,22 @@ class AuthController extends Controller
         ]);
     }
 
-
+    /**
+     * @SWG\Put(
+     *   path="/members/signout",
+     *   summary="signout",
+     *   operationId="signout",
+     *   tags={"/Members/Auth"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function signout(AuthSignoutRequest $request)
     {
         $this->user = User::getAccessUser();
@@ -89,6 +93,22 @@ class AuthController extends Controller
         return response()->success();
     }
 
+    /**
+     * @SWG\Post(
+     *   path="/members/signup",
+     *   summary="signup",
+     *   operationId="signup",
+     *   tags={"/Members/Auth"},
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Sign up into web site",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/auth/signup")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function signup(AuthSignupRequest $request)
     {
         $signupData = User::bindSignupData($request);
@@ -103,6 +123,29 @@ class AuthController extends Controller
         return Abort::Error('0040');
     }
 
+    /**
+     * @SWG\Delete(
+     *   path="/members/signdrop",
+     *   summary="signdrop",
+     *   operationId="signdrop",
+     *   tags={"/Members/Auth"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Sign drop into web site",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/auth/signdrop")
+     *     ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function signdrop(AuthSigndropRequest $request)
     {
         // TODO : save user sign drop reasons...
@@ -113,7 +156,22 @@ class AuthController extends Controller
         return Abort::Error('0040');
     }
 
-
+    /**
+     * @SWG\Post(
+     *   path="/members/isexist",
+     *   summary="isexist",
+     *   operationId="isexist",
+     *   tags={"/Members/Auth"},
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Sign in into web site",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/auth/isexist")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function isExist(AuthIsExistRequest $request)
     {
         try{
@@ -121,6 +179,27 @@ class AuthController extends Controller
         }catch(\Exception $e){
             return response()->success(false);
         }
+        return response()->success(true);
+    }
+
+    /**
+     * @SWG\Post(
+     *   path="/test/testerReset",
+     *   summary="testerReset",
+     *   operationId="testerReset",
+     *   tags={"/Test"},
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
+    protected function testerReset(Request $request)
+    {
+        $testUserId = 2;
+        $this->user = User::find($testUserId);
+        if( is_null($this->user) ){
+            $this->user = User::onlyTrashed()->where('id', $testUserId)->first();
+            $this->user->restore();
+        }
+        $this->user->insertAccessToken('wtesttesttesttesttesttesttestte2');
         return response()->success(true);
     }
 }

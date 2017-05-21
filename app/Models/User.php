@@ -67,8 +67,6 @@ class User extends Model implements AuthenticatableContract,
     protected $hidden = ['password', 'token'];
 	protected $fillable = ['email', 'password', 'nickname', 'image_id', 'newsletters_accepted', 'terms_of_service_accepted'];
 
-
-
     public static function bindSigninData($request){
         return [
             "email" => $request->email,
@@ -156,13 +154,16 @@ class User extends Model implements AuthenticatableContract,
         }
     }
 
-    public function insertAccessToken(){
+    public function insertAccessToken($token = null){
         // TODO : device info add to token
 //	    $deviceInfo = Request::header("x-pixel-device");
-        $userId = $this->id;
-        $device = 'w';
-        $randomStr = Str::random(30);
-        $token = $device.$randomStr.$userId; //need change first src from header device check
+
+        if( is_null($token) ){
+            $userId = $this->id;
+            $device = 'w';
+            $randomStr = Str::random(30);
+            $token = $device.$randomStr.$userId; //need change first src from header device check
+        }
 
         $this->token = $token;
         $this->save();
@@ -229,69 +230,3 @@ class User extends Model implements AuthenticatableContract,
         return $this->hasMany('App\Models\Content','user_id','id');
     }
 }
-
-
-
-//public static function insertRememberToken($id){
-//    $user = User::findOrFail($id);
-//
-//    $userId = $user->id;
-//    $device = 'w';
-//    $randomStr = Str::random(30);
-//    $token = $device.$randomStr.$userId; //need change first src from header device kind
-//
-//    $user->remember_token = $token;
-//    $user->save();
-//
-//    return $token;
-//}
-
-//public static function insertSignupToken($id){
-//    $user = User::findOrFail($id);
-//
-//    $recoded = SignupAllow::where('email', $user->email);
-//
-//    if(!is_null($recoded)){
-//        $recoded->delete();
-//    }
-//    $signup = new SignupAllow;
-//    $signup->id = $user->id;
-//    $signup->email = $user->email;
-//    $signup->token = Str::random(50);
-//    $signup->save();
-//}
-//
-//public static function checkToken($request){
-//    $token = $request->header('X-mitty-token');
-//    $tokenData = (object)array(
-//        "device" => substr($token, 0, 1),
-//        "token" => substr($token, 1, 30),
-//        "id" => substr($token, 31),
-//    );
-//    return $tokenData;
-//}
-//
-//public static function checkUserExistById($id){
-//    $user = User::find($id);
-//    if (!is_null($user)) {
-//        return true;
-//    }
-//    return false;
-//}
-//
-//public static function checkUserExistByIdOnlyTrashed($id)
-//{
-//    $user = User::onlyTrashed()->find($id);
-//    if (!is_null($user)) {
-//        return true;
-//    }
-//    return false;
-//}
-//
-//public static function checkUserExistByEmail($data){
-//    $user = User::whereRaw("email = '".$data['email']."' and sns_code = ".$data['snsCode'])->get();
-//    if(!$user->isempty()) {
-//        return true;
-//    }
-//    return false;
-//}

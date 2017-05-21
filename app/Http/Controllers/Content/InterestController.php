@@ -16,8 +16,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 // Request
-use App\Http\Requests\Content\ContentInterestPostLikeRequest;
-use App\Http\Requests\Content\ContentInterestDeleteLikeRequest;
+use App\Http\Requests\Content\Interest\ContentInterestPostLikeRequest;
+use App\Http\Requests\Content\Interest\ContentInterestDeleteLikeRequest;
 
 class InterestController extends Controller
 {
@@ -32,12 +32,45 @@ class InterestController extends Controller
         $this->like = Like::class;
     }
 
+    /**
+     * @SWG\Post(
+     *   path="/contents/1/like",
+     *   summary="detail",
+     *   operationId="detail",
+     *   tags={"/Contents/like"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function postLike(ContentInterestPostLikeRequest $request,$content_id){
         $this->content = Content::findOrFail($content_id);
         $this->user = User::getAccessUser();
         $this->content->likeIt($this->user);
         return response()->success();
     }
+
+    /**
+     * @SWG\Delete(
+     *   path="/contents/1/like",
+     *   summary="detail",
+     *   operationId="detail",
+     *   tags={"/Contents/like"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function deleteLike(ContentInterestDeleteLikeRequest $request,$content_id){
         $this->content = Content::findOrFail($content_id);
         $this->user = User::getAccessUser();

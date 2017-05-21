@@ -39,6 +39,21 @@ class PasswordController extends Controller
         $this->passwordReset = PasswordReset::class;
     }
 
+    /**
+     * @SWG\Put(
+     *   path="/mail/password",
+     *   summary="mail",
+     *   operationId="mail",
+     *   tags={"/Mail"},
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/mail/password/postMail")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     public function postMail(PasswordPostMailRequest $request)
     {
         $this->user = User::getFromEmail($request->email);
@@ -46,6 +61,21 @@ class PasswordController extends Controller
         return response()->success();
     }
 
+    /**
+     * @SWG\Put(
+     *   path="/members/password/reset",
+     *   summary="mail",
+     *   operationId="mail",
+     *   tags={"/Members/Password"},
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/password/reset")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     public function reset(PasswordResetRequest $request)
     {
         $this->passwordReset = PasswordReset::getByToken($request->code);
@@ -70,6 +100,21 @@ class PasswordController extends Controller
         }
     }
 
+    /**
+     * @SWG\Post(
+     *   path="/certs/password/time",
+     *   summary="mail",
+     *   operationId="mail",
+     *   tags={"/Certs/Password"},
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/password/getDiffTime")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function getDiffTime(PasswordGetDiffTimeRequest $request){
         $this->passwordReset = PasswordReset::getByEmail($request->email);
         $diffTime = $this->passwordReset->getDiffTime();
@@ -78,6 +123,21 @@ class PasswordController extends Controller
         ]);
     }
 
+    /**
+     * @SWG\Post(
+     *   path="/certs/password/code",
+     *   summary="mail",
+     *   operationId="mail",
+     *   tags={"/Certs/Password"},
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/password/checkCode")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function checkCode(PasswordCheckCodeRequest $request){
         $this->passwordReset = PasswordReset::getByToken($request->code);
         $this->passwordReset->expiredCheck();
@@ -87,6 +147,21 @@ class PasswordController extends Controller
         ]);
     }
 
+    /**
+     * @SWG\Post(
+     *   path="/certs/password",
+     *   summary="mail",
+     *   operationId="mail",
+     *   tags={"/Certs/Password"},
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/password/checkPassword")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
     protected function checkPassword(PasswordChangePasswordRequest $request){
         $this->user = User::getAccessUser();
 

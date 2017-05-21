@@ -19,6 +19,21 @@ class ContentPutRequest extends Request
         return User::isUser();
     }
 
+    /**
+     *  @SWG\Definition(
+     *   definition="contents/put",
+     *   type="object",
+     *   allOf={
+     *       @SWG\Schema(
+     *           required={"title","description","licenseCode","hashTags","image"},
+     *           @SWG\Property(property="title", type="string", default="test title~~"),
+     *           @SWG\Property(property="description", type="string", default="lorammmmmm"),
+     *           @SWG\Property(property="licenseCode", type="string", default="0101"),
+     *           @SWG\Property(property="hashTags", type="string", default={"array","need"}),
+     *       )
+     *   }
+     * )
+     */
     public function rules()
     {
         $requiredRule = [

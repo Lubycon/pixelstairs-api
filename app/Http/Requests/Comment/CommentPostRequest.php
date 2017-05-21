@@ -17,6 +17,18 @@ class CommentPostRequest extends Request
         return User::isUser();
     }
 
+    /**
+     *  @SWG\Definition(
+     *   definition="comments/post",
+     *   type="object",
+     *   allOf={
+     *       @SWG\Schema(
+     *           required={"description"},
+     *           @SWG\Property(property="description", type="string", default="lorammmmmm"),
+     *       )
+     *   }
+     * )
+     */
     public function rules()
     {
         $requiredRule = [

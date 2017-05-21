@@ -89,6 +89,7 @@ cd {{ $release_dir }}/{{ $distname }} && \
 composer install --prefer-dist --no-scripts --no-dev;
 
 {{--Any additional command here--}}
+php artisan l5-swagger:generate
 {{--e.g. php artisan clear-compiled;--}}
 
 {{--Symlink current release to service directory.--}}
@@ -108,6 +109,7 @@ php {{ $base_dir }}/officer.php deploy {{ $release_dir }}/{{ $distname }};
 sudo service nginx restart;
 sudo service php7.0-fpm restart;
 sudo service mysql restart;
+sudo supervisorctl restart all;
 @endtask
 
 
@@ -151,6 +153,7 @@ cd {{ $release_dir }}/{{ $distname }} && \
 composer install --prefer-dist;
 
 {{--Any additional command here--}}
+php artisan l5-swagger:generate
 {{--e.g. php artisan clear-compiled;--}}
 
 {{--Symlink current release to service directory.--}}
@@ -170,4 +173,5 @@ php {{ $base_dir }}/officer.php deploy {{ $release_dir }}/{{ $distname }};
 sudo service nginx restart;
 sudo service php7.0-fpm restart;
 sudo service mysql restart;
+sudo supervisorctl restart all;
 @endtask

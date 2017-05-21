@@ -17,6 +17,19 @@ class PasswordResetRequest extends Request
         return User::isGhost();
     }
 
+    /**
+     *  @SWG\Definition(
+     *   definition="password/reset",
+     *   type="object",
+     *   allOf={
+     *       @SWG\Schema(
+     *           required={"code","newPassword"},
+     *           @SWG\Property(property="code", type="string", default="write code"),
+     *           @SWG\Property(property="newPassword", type="string", default="12341234"),
+     *       )
+     *   }
+     * )
+     */
     public function rules()
     {
         $requiredRule = [

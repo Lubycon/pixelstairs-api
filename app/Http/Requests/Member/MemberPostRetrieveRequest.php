@@ -19,6 +19,20 @@ class MemberPostRetrieveRequest extends Request
         return User::isUser();
     }
 
+
+    /**
+     *  @SWG\Definition(
+     *   definition="members/postRetrieve",
+     *   type="object",
+     *   allOf={
+     *       @SWG\Schema(
+     *           required={"newsletterAccepted"},
+     *           @SWG\Property(property="newsletterAccepted", type="string", default=true),
+     *           @SWG\Property(property="nickname", type="string", default="user_nickname")
+     *       )
+     *   }
+     * )
+     */
     public function rules()
     {
         $requiredRule = [
