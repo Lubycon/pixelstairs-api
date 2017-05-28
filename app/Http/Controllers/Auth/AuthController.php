@@ -138,6 +138,7 @@ class AuthController extends Controller
         $token = $this->user->insertAccessToken();
         $this->dispatch(new SignupMailSendJob($this->user));
         return response()->success([
+            "user" => $this->user,
             "token" => $token
         ]);
     }
