@@ -44,7 +44,7 @@ class AdminUserSeeder extends Seeder
                 'updated_at' => date("Y-m-d H:i:s"),
             ],
             [
-                'email'=>'bboydart@gmail.com',
+                'email'=>'bboydart91@gmail.com',
                 'nickname' => 'Evan',
                 'password' => bcrypt('password'),
                 'token' => 'wtesttesttesttesttesttesttestte3',
