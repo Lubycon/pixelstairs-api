@@ -1,29 +1,76 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+##### 본 문서에는 Pixelstairs API 서버 구동부터 배포까지의 기술이 명세되어있습니다
 
-### What is this repository for? ###
+### 서버 최소 실행시 ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+> .env 파일 내에는 보안과 밀접한 요소들이 존재합니다. 민감한 정보들에 대해서는 .env.example에 명시되어 있지 않고, 백엔드 개발자에게 문의하여 값을 채워 넣으시기 바랍니다.
 
-### How do I get set up? ###
+> Homestead 작동법에 대한 설명은 제외되어있습니다.
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+#### 로컬 데이터베이스 생성
+1. mysql -uhomesated -p
+2. 비밀번호 = secret
+3. create database PixelDB;
+4. exit
 
-### Contribution guidelines ###
+#### 글로벌 설정
+1. composer install
+2. cp .env.example .env
+3. php artisan key:generate
 
-* Writing tests
-* Code review
-* Other guidelines
+#### 디렉토리 권한 설정
+1. chmod -R 775 {{ $project_dir }}/storage
+2. chmod -R 775 {{ $project_dir }}/cache;
 
-### Who do I talk to? ###
+### PHP 필수 모듈 설치
+* sudo apt-get install php7.0-gd
+* sudo apt-get install php7.0-pdo
+* sudo apt-get install php7.0-mysqlnd
+* sudo apt-get install php7.0-mbstring
+* sudo apt-get install php7.0-pdo_mysql
+* sudo apt-get install php7.0-mysql
+* sudo apt-get install php7.0-curl
+* sudo apt-get install php7.0-mcrypt
+* sudo apt-get install php7.0-tokenizer
+* sudo apt-get install php7.0-iconv
+* sudo apt-get install php7.0-dom
+* sudo apt-get install php7.0-xml
 
-* Repo owner or admin
-* Other community or team contact
+### 데이터 시딩
+> composer가 업데이트 된 seed파일을 읽지 않을경우 
+> * composer dump-autoload
+* php artisan migrate --seed
+
+### Supervisor, Beanstalkd 세팅
+> .env파일에 QUEUE_DRIVER를 beanstalkd으로 설정할 경우.
+
+> Queue Driver를 sync로 설정할경우 세팅하지 않아도 됩니다.
+
+> Ubuntu 16.04에 최적화 되어있는 쉘 스크립트 입니다 그 외의 운영체제는 스스로 찾아서 설치하세요
+1. ./shells/superviser_install.sh
+2. 프로젝트의 유니크값인 도메인을 입력
+3. 프로젝트 설치 위치 입력
+
+### 스웨거 문서 업데이트 ###
+>프로젝트 내의 정적문서를 업데이트합니다.
+>업데이트된 문서는 git으로 버전관리 되지 않으며 각 프로젝트마다 실행해야합니다
+* php artisan l5-swagger:publish // 최초 실행시 html, css clone
+* php artisan l5-swagger:generate // json data update
+
+
+### 서버 재시작 ###
+> 세팅이 완료 된 후에는 서버를 재 시작해주는것이 좋습니다.
+> homestead에서는 머신을 재시작해야하고 supervisorctl 구문만 실행하면 됩니다.
+* sudo service nginx restart;
+* sudo service php7.0-fpm restart;
+* sudo service mysql restart;
+* sudo supervisorctl restart all;
+
+### Mysql Clint Tool에서 homestead DB 접속하는법 ###
+__ vagrant가 구동되고 있는 상태에서만 접근 가능합니다.
+* host 127.0.0.1
+* user homestead
+* password secret
+* database PixelDB
+* port 33060

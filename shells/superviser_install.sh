@@ -1,5 +1,14 @@
 #! /bin/bash
 
+echo "Published By Daniel Zepp."
+echo "This is for Ubuntu 16.04"
+
+# Composer Require pda/pheanstalk
+echo "pheanstalk composer require...."
+echo "wait a minuate please"
+composer require pda/pheanstalk
+echo "Set composer require"
+
 # Supervisor install
 echo "Supervisor install"
 sudo apt-get install supervisor
@@ -31,9 +40,6 @@ else
 fi
 
 # set laravel-worker
-echo "Let me know want you running user"
-echo "ex)root || deployer"
-read user_name
 worker_path="/etc/supervisor/conf.d/$domain-laravel-worker.conf"
 sudo rm -rf "$worker_path"
 sudo touch "$worker_path"
@@ -42,7 +48,7 @@ echo "process_name=%(program_name)s_%(process_num)02d" | sudo tee --append $work
 echo "command=php $install_directory/artisan queue:work beanstalkd --sleep=3 --tries=3 --daemon" | sudo tee --append $worker_path
 echo "autostart=true" | sudo tee --append $worker_path
 echo "autorestart=true" | sudo tee --append $worker_path
-echo "user=$user_name" | sudo tee --append $worker_path
+echo "user=root" | sudo tee --append $worker_path
 echo "numprocs=3" | sudo tee --append $worker_path
 echo "redirect_stderr=true" | sudo tee --append $worker_path
 echo "stdout_logfile=$install_directory/storage/logs/worker.log" | sudo tee --append $worker_path
