@@ -124,26 +124,6 @@ class AuthController extends Controller
     }
 
     /**
-     * @SWG\Get(
-     *   path="/members/signup/evan",
-     *   summary="mail test",
-     *   operationId="mail test",
-     *   tags={"/Test"},
-     *   @SWG\Response(response=200, description="successful operation")
-     * )
-     */
-    protected function signupTest(Request $request)
-    {
-        $this->user = User::findOrFail(3);
-        $token = $this->user->insertAccessToken();
-        $this->dispatch(new SignupMailSendJob($this->user));
-        return response()->success([
-            "user" => $this->user,
-            "token" => $token
-        ]);
-    }
-
-    /**
      * @SWG\Delete(
      *   path="/members/signdrop",
      *   summary="signdrop",
@@ -221,5 +201,25 @@ class AuthController extends Controller
         }
         $this->user->insertAccessToken('wtesttesttesttesttesttesttestte2');
         return response()->success(true);
+    }
+
+    /**
+     * @SWG\Get(
+     *   path="/members/signup/evan",
+     *   summary="mail test",
+     *   operationId="mail test",
+     *   tags={"/Test"},
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
+    protected function signupTest(Request $request)
+    {
+        $this->user = User::findOrFail(3);
+        $token = $this->user->insertAccessToken();
+        $this->dispatch(new SignupMailSendJob($this->user));
+        return response()->success([
+            "user" => $this->user,
+            "token" => $token
+        ]);
     }
 }

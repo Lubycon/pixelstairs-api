@@ -66,7 +66,15 @@ class ContentController extends Controller
 
     /**
      * @SWG\Get(
-     *   path="/contents/1",
+     *   path="/contents/{content_id}",
+     *   @SWG\Parameter(
+     *     name="content_id",
+     *     description="ID of content that needs",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     default="1",
+     *   ),
      *   summary="contents",
      *   operationId="contents",
      *   tags={"/Contents"},
@@ -130,7 +138,15 @@ class ContentController extends Controller
 
     /**
      * @SWG\Put(
-     *   path="/contents/1",
+     *   path="/contents/{content_id}",
+     *   @SWG\Parameter(
+     *     name="content_id",
+     *     description="ID of content that needs",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     default="1",
+     *   ),
      *   summary="detail",
      *   operationId="detail",
      *   tags={"/Contents"},
@@ -172,7 +188,15 @@ class ContentController extends Controller
 
     /**
      * @SWG\Delete(
-     *   path="/contents/1",
+     *   path="/contents/{content_id}",
+     *   @SWG\Parameter(
+     *     name="content_id",
+     *     description="ID of content that needs",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     default="1",
+     *   ),
      *   summary="detail",
      *   operationId="detail",
      *   tags={"/Contents"},

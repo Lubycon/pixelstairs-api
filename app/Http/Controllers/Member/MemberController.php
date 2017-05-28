@@ -54,7 +54,15 @@ class MemberController extends Controller
 
     /**
      * @SWG\Get(
-     *   path="/members/2/detail",
+     *   path="/members/{member_id}/detail",
+     *   @SWG\Parameter(
+     *     name="member_id",
+     *     description="ID of member that needs",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     default="2",
+     *   ),
      *   summary="detail",
      *   operationId="detail",
      *   tags={"/Members/User"},
@@ -84,7 +92,15 @@ class MemberController extends Controller
 
     /**
      * @SWG\Post(
-     *   path="/members/2/detail",
+     *   path="/members/{member_id}/detail",
+     *   @SWG\Parameter(
+     *     name="member_id",
+     *     description="ID of member that needs",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     default="2",
+     *   ),
      *   summary="detail",
      *   operationId="detail",
      *   tags={"/Members/User"},

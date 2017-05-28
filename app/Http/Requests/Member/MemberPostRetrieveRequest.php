@@ -36,7 +36,8 @@ class MemberPostRetrieveRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            "newsletterAccepted" => "required|boolean"
+            "newsletterAccepted" => "required|boolean",
+            "nickname" => "string",
         ];
         return $requiredRule;
     }

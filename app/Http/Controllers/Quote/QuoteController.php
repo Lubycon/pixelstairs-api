@@ -21,7 +21,16 @@ class QuoteController extends Controller
 
     /**
      * @SWG\Get(
-     *   path="/quotes/success",
+     *   path="/quotes/{category}",
+     *   @SWG\Parameter(
+     *     name="category",
+     *     description="Quote category",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     enum={"success", "mistake"},
+     *     default="success",
+     *   ),
      *   summary="success",
      *   operationId="success",
      *   tags={"/Quotes/data"},

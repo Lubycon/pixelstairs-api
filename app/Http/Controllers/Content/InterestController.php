@@ -34,7 +34,15 @@ class InterestController extends Controller
 
     /**
      * @SWG\Post(
-     *   path="/contents/1/like",
+     *   path="/contents/{content_id}/like",
+     *   @SWG\Parameter(
+     *     name="content_id",
+     *     description="ID of content that needs",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     default="1",
+     *   ),
      *   summary="detail",
      *   operationId="detail",
      *   tags={"/Contents/like"},
@@ -57,7 +65,15 @@ class InterestController extends Controller
 
     /**
      * @SWG\Delete(
-     *   path="/contents/1/like",
+     *   path="/contents/{content_id}/like",
+     *   @SWG\Parameter(
+     *     name="content_id",
+     *     description="ID of content that needs",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     default="1",
+     *   ),
      *   summary="detail",
      *   operationId="detail",
      *   tags={"/Contents/like"},

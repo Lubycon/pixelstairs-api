@@ -41,7 +41,15 @@ class CommentController extends Controller
 
     /**
      * @SWG\Get(
-     *   path="/contents/1/comments",
+     *   path="/contents/{content_id}/comments",
+     *   @SWG\Parameter(
+     *     name="content_id",
+     *     description="ID of content that needs",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     default="1",
+     *   ),
      *   summary="contents",
      *   operationId="contents",
      *   tags={"/Contents/Comment"},
@@ -66,7 +74,15 @@ class CommentController extends Controller
 
     /**
      * @SWG\Post(
-     *   path="/contents/1/comments",
+     *   path="/contents/{content_id}/comments",
+     *   @SWG\Parameter(
+     *     name="content_id",
+     *     description="ID of content that needs",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     default="1",
+     *   ),
      *   summary="detail",
      *   operationId="detail",
      *   tags={"/Contents/Comment"},
@@ -102,7 +118,23 @@ class CommentController extends Controller
 
     /**
      * @SWG\Put(
-     *   path="/contents/1/comments/1",
+     *   path="/contents/{content_id}/comments/{comment_id}",
+     *   @SWG\Parameter(
+     *     name="content_id",
+     *     description="ID of content that needs",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     default="1",
+     *   ),
+     *   @SWG\Parameter(
+     *     name="comment_id",
+     *     description="ID of comment that needs",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     default="1",
+     *   ),
      *   summary="detail",
      *   operationId="detail",
      *   tags={"/Contents/Comment"},
@@ -133,7 +165,23 @@ class CommentController extends Controller
 
     /**
      * @SWG\Delete(
-     *   path="/contents/1/comments/1",
+     *   path="/contents/{content_id}/comments/{comment_id}",
+     *   @SWG\Parameter(
+     *     name="content_id",
+     *     description="ID of content that needs",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     default="1",
+     *   ),
+     *   @SWG\Parameter(
+     *     name="comment_id",
+     *     description="ID of comment that needs",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     default="1",
+     *   ),
      *   summary="detail",
      *   operationId="detail",
      *   tags={"/Contents/Comment"},
