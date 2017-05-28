@@ -45,7 +45,6 @@ class FileUpload
         $this->initConfig();
     }
 
-
     // init function
     private function initConfig(){
         $this->storage = Storage::disk(config('filesystems.default'));
@@ -82,17 +81,22 @@ class FileUpload
     }
     // progress functions
 
-    // upload function
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ////////    UPLOAD TO STORAGE METHOD AREA START
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
     protected function responsiveUploadUrl($file){
         $image = $this->getResizeImages($file);
         $uploadPath = $this->modelName.'/'.$this->modelId.'/'.$this->setRandomFileName();
         foreach($image as $key => $value){
+            Log::info($value['mime']);
             $this->storage->getDriver()->getAdapter()->getClient()->upload(
                 $this->bucket, // upload bucket
-                $uploadPath.$key, $value, // upload path.file name
+                $uploadPath.$key, $value['image'], // upload path.file name
                 'public-read', // permission
                 ['params' => [ // metadata
-                    'ContentType' => 'image/jpeg',
+                    'ContentType' => $value['mime'],
                 ]]);
         }
         return $this->storagePath.$uploadPath;
@@ -103,7 +107,7 @@ class FileUpload
             if($this->storage->exists($path)) {
                 $this->storage->delete($path);
             }else{
-                // not exist file delete request
+                // TODO :: not exist file delete request
             }
         }
         return true;
@@ -115,9 +119,11 @@ class FileUpload
                 if( $value['deleted'] ){ // delete
                     if( $value[$this->ownCheckers['camel']] && $value['type'] == 'url' ) $this->responsiveDeleteUrl($value['file']);
                     Image::find($value['id'])->delete();
+                    // TODO :: S3 original file remove
                     unset($inputFile[$key]);
                 }else{ // update
                     if( $value[$this->ownCheckers['camel']] ){
+                        // TODO :: S3 original file remove
                         if( $value['type'] == 'base64' ) $newUrl = $this->responsiveUploadUrl($value['file']);
                     }
                     $inputFile[$key]['url'] = isset($newUrl) ? $newUrl : $value['file'];
@@ -129,9 +135,17 @@ class FileUpload
         }
         return $inputFile;
     }
-    // upload function
-    
-    // model function
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ////////    UPLOAD TO STORAGE METHOD AREA END
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ////////    CREATE MODEL METHOD AREA START
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
     protected function createImageModel($inputFile){
         $modelId = null;
         $images = [];
@@ -165,9 +179,85 @@ class FileUpload
         }
         return isset($model) ? $model : NULL;
     }
-    // model function
-    
-    // checker function
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ////////    CREATE MODEL METHOD AREA END
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ////////    GET METHOD AREA START
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    protected function getModelName($model){
+        return strtolower(class_basename($model));
+    }
+    protected function getModelId($model){
+        return $model->id;
+    }
+    protected function getResizeImages($file){
+        $imageMake = Intervention::make($file);
+        $mime = $imageMake->mime();
+        $image = [];
+        foreach( $this->responsiveResolution as $key => $value ){
+            $image[$value]['image'] = $imageMake->widen((int)$value)->stream(null,100);
+            $image[$value]['mime'] = $mime;
+        }
+        return $image;
+    }
+    protected function getInternalS3Url($path){
+        $explode = explode($this->storagePath,$path);
+        return $explode[1];
+    }
+    protected function getFileType($value){
+        $file = $value['file'];
+        if( $this->isBase64($file) ){ return "base64"; }
+        else if( $this->isUrl($file) ){ return "url"; }
+        else if( is_null($file) ){ return null; }
+        return Abort::Error('0050',"Unknown file data");
+    }
+    protected function getExtension($value){
+        return Log::info($value);
+    }
+    public function getId(){
+        if( $this->nullCheck ) return null;
+        return $this->createModel['id'];
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ////////    GET METHOD AREA END
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ////////    SET METHOD AREA START
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    private function setBasicVariable($model,$inputFile){
+        $this->model = $model;
+        $this->inputFile = $inputFile;
+    }
+    protected function setToArray($inputFile){
+        if( isset($inputFile['file']) ) // if file is alone... grep into array
+            $checker[] = $inputFile;
+        return isset($checker) ? $checker : $inputFile;
+    }
+    protected function setRandomFileName(){
+        return Str::random(30);
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ////////    SET METHOD AREA END
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ////////    VALID METHOD AREA START
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
     protected function ownerCheck($fileObj){
         $ownerCheck = null;
         if( isset($fileObj[$this->ownCheckers['camel']]) ){
@@ -196,7 +286,9 @@ class FileUpload
     protected function fileTypeCheck($inputFile){
         foreach( $inputFile as $key => $value ){
             $fileType = $this->getFileType($value);
+//            $fileExt = $this->getExtension($value);
             $inputFile[$key]['type'] = $fileType;
+//            $inputFile[$key]['ext'] = $fileExt;
         }
         return $inputFile;
     }
@@ -211,55 +303,9 @@ class FileUpload
     protected function isGrouping($inputFile){
         return !isset($inputFile['file']);
     }
-    // checker function
-
-    // set data
-    private function setBasicVariable($model,$inputFile){
-        $this->model = $model;
-        $this->inputFile = $inputFile;
-    }
-    protected function setToArray($inputFile){
-        if( isset($inputFile['file']) ) // if file is alone... grep into array
-            $checker[] = $inputFile;
-        return isset($checker) ? $checker : $inputFile;
-    }
-    protected function setRandomFileName(){
-        return Str::random(30);
-    }
-    // set data
-
-    // get data function
-    protected function getResizeImages($file){
-        $imageMake = Intervention::make($file);
-        $image = [];
-
-        foreach( $this->responsiveResolution as $key => $value ){
-            $image[$value] = $imageMake->widen((int)$value)->stream('jpg',100);
-        }
-
-        return $image;
-    }
-    protected function getInternalS3Url($path){
-        $explode = explode($this->storagePath,$path);
-        return $explode[1];
-    }
-    protected function getFileType($value){
-        $file = $value['file'];
-        if( $this->isBase64($file) ){ return "base64"; }
-        else if( $this->isUrl($file) ){ return "url"; }
-        else if( is_null($file) ){ return null; }
-        else{ Abort::Error('0050',"Unknown file data"); }
-    }
-    protected function getModelName($model){
-        $explode =  explode('\\',strtolower(get_class($model)));
-        return end($explode);
-    }
-    protected function getModelId($model){
-        return $model->id;
-    }
-    public function getId(){
-        if( $this->nullCheck ) return null;
-        return $this->createModel['id'];
-    }
-    // get data function
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ////////    VALID METHOD AREA END
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
 }
