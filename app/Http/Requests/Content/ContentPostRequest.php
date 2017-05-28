@@ -37,9 +37,10 @@ class ContentPostRequest extends Request
         $requiredRule = [
             "title" => "required",
             "description" => "required",
-            "licenseCode" => "required",
+            "licenseCode" => "required|string",
             "hashTags" => "required|array",
-            "image" => "required",
+            "image" => "required|array",
+            "image.*.file" => "base64"
         ];
         return $requiredRule;
     }

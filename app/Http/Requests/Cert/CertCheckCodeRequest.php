@@ -32,7 +32,7 @@ class CertCheckCodeRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            "code" => "required",
+            "code" => "required|string",
         ];
         return $requiredRule;
     }
