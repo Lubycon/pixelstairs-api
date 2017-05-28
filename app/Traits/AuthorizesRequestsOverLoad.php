@@ -3,7 +3,7 @@ namespace App\Traits;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Contracts\Auth\Access\Gate;
-use Illuminate\Auth\Access\UnauthorizedException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Abort;
 
 trait AuthorizesRequestsOverLoad {

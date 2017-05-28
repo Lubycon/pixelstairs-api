@@ -7,11 +7,11 @@ use Exception;
 
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Foundation\Validation\ValidationException;
+//use Illuminate\Foundation\Validation\ValidationException;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-use App\Exceptions\UserNotFound;
+//use App\Exceptions\UserNotFound;
 
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -26,6 +26,8 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\LengthRequiredHttpException;
 use Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Access\AuthorizationException;
 
 use Carbon\Carbon;
 
@@ -38,8 +40,10 @@ class Handler extends ExceptionHandler
     private $devMsg;
 
     protected $dontReport = [
+        AuthorizationException::class,
         HttpException::class,
         ModelNotFoundException::class,
+        ValidationException::class,
     ];
 
     public function report(Exception $e)

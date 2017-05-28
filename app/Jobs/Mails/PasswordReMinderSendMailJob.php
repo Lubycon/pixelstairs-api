@@ -5,7 +5,6 @@ namespace App\Jobs\Mails;
 use App\Jobs\Job;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use Log;
@@ -13,7 +12,7 @@ use Password;
 use App\Models\User;
 use Illuminate\Mail\Message;
 
-class PasswordReMinderSendMailJob extends Job implements SelfHandling, ShouldQueue
+class PasswordReMinderSendMailJob extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 

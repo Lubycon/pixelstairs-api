@@ -5,14 +5,13 @@ namespace App\Jobs\Mails;
 use App\Jobs\Job;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use App\Models\User;
 use Mail;
 use Log;
 
-class SignupReminderMailSendJob extends Job implements SelfHandling, ShouldQueue
+class SignupReminderMailSendJob extends Job implements ShouldQueue
 {
     use InteractsWithQueue,
         SerializesModels;

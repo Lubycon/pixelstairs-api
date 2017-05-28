@@ -5,14 +5,13 @@ namespace App\Jobs;
 use App\Jobs\Job;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use Log;
 use App\Models\User;
 use Carbon\Carbon;
 
-class LastSigninTimeCheckerJob extends Job implements SelfHandling, ShouldQueue
+class LastSigninTimeCheckerJob extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
