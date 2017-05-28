@@ -20,8 +20,8 @@
 3. php artisan key:generate
 
 #### 디렉토리 권한 설정
-1. chmod -R 775 {{ $project_dir }}/storage
-2. chmod -R 775 {{ $project_dir }}/cache;
+> 로컬서버에서만 777로 운용할것
+* chmod -R 777 storage bootstrap/cache
 
 ### PHP 필수 모듈 설치
 * sudo apt-get install php7.0-gd
@@ -78,8 +78,8 @@
 >> 새로운 패키지를 추가할때 사용합니다. 패키지에 의존성이 필요할경우 자동으로 추가됩니다.
 * 모든 서버 개발자의 패키지 버전을 통일하기 위해 반드시 composer install을 이용합니다.
 
-### Mysql Clint Tool에서 homestead DB 접속하는법 ###
-__ vagrant가 구동되고 있는 상태에서만 접근 가능합니다.
+### Mysql Client Tool에서 homestead DB 접속하는법 ###
+>vagrant가 구동되고 있는 상태에서만 접근 가능합니다.
 * host 127.0.0.1
 * user homestead
 * password secret
