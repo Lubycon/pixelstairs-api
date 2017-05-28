@@ -67,6 +67,17 @@
 * sudo service mysql restart;
 * sudo supervisorctl restart all;
 
+### 패키지 버전관리 ###
+> composer install
+>> composer.lock의 해시값을 참조하여 모든 프로젝트의 패키지 버전을 통일 관리합니다.
+
+> composer update
+>> 모든 패키지를 최신 버전으로 업데이트하고 composer.lock의 해시값을 업데이트합니다.
+
+> composer require
+>> 새로운 패키지를 추가할때 사용합니다. 패키지에 의존성이 필요할경우 자동으로 추가됩니다.
+* 모든 서버 개발자의 패키지 버전을 통일하기 위해 반드시 composer install을 이용합니다.
+
 ### Mysql Clint Tool에서 homestead DB 접속하는법 ###
 __ vagrant가 구동되고 있는 상태에서만 접근 가능합니다.
 * host 127.0.0.1
