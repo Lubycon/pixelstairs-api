@@ -12,7 +12,6 @@
     min-width: 320px;
     max-width: 720px;
     margin: 20px auto;
-    font-family: 'Inconsolata';
     color: #383838;
 ">
     <div id="header" style="
