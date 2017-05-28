@@ -1,9 +1,7 @@
 <?php
-
 Route::get('/', function () {
     return view('welcome', ['ifYouWantPassData' => 'put in here', 'and' => 'more']);
 });
-
 
 Route::group(['prefix' => '/v1'], function () {
 
@@ -15,6 +13,7 @@ Route::group(['prefix' => '/v1'], function () {
         Route::post('signin', 'Auth\AuthController@signin');
         Route::put('signout', 'Auth\AuthController@signout');
         Route::post('signup', 'Auth\AuthController@signup');
+        Route::get('signup/evan', 'Auth\AuthController@signupTest');
         Route::delete('signdrop', 'Auth\AuthController@signdrop');
         Route::post('isexist', 'Auth\AuthController@isExist');
 

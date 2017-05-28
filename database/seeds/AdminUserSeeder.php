@@ -43,6 +43,21 @@ class AdminUserSeeder extends Seeder
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
             ],
+            [
+                'email'=>'bboydart@gmail.com',
+                'nickname' => 'Evan',
+                'password' => bcrypt('password'),
+                'token' => 'wtesttesttesttesttesttesttestte3',
+                'status' => 'active',
+                'grade' => 'admin',
+                'birthday' => '1992-10-27 00:00:00',
+                'gender' => "male",
+                'image_id' => null,
+                'newsletters_accepted' => true,
+                'terms_of_service_accepted' => true,
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s"),
+            ],
         ];
         DB::table('users')->insert($admin);
     }

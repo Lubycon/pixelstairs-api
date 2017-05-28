@@ -111,7 +111,7 @@
             </div>
         </div>
         <div class="card button-wrapper">
-            <a class="btn" href="{{ $_SERVER['HTTP_ORIGIN'] or 'http://localhost:3000' }}{{ '/certs/code/signup?code='.$token }}">
+            <a class="btn" href="{{ app('request')->getClientIp() }}{{ '/certs/code/signup?code='.$token }}">
                 Confirm
             </a>
             <a class="other-link" href="">Don't request this link?</a>
