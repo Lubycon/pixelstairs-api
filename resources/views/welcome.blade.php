@@ -33,12 +33,15 @@
             .title {
                 font-size: 96px;
             }
+            .title:first-letter {
+                text-transform: uppercase;
+            }
         </style>
     </head>
     <body>
         <div class="container">
             <div class="content">
-                <div class="title">Laravel 5</div>
+                <div class="title">{{ app('request')->getHttpHost() }}</div>
             </div>
         </div>
     </body>

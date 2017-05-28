@@ -1,4 +1,10 @@
 <?php
+
+Route::get('/', function () {
+    return view('welcome', ['ifYouWantPassData' => 'put in here', 'and' => 'more']);
+});
+
+
 Route::group(['prefix' => '/v1'], function () {
 
     Route::group(['prefix' => '/test'], function () {
