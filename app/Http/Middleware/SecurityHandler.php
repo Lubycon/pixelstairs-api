@@ -23,11 +23,6 @@ class SecurityHandler
 
 	public function handle(Request $request, Closure $next)
 	{
-        if( ! $this->secureCheck($request) )
-        {
-            return Abort::Error('0040','Check http secure');
-        }
-
 		if (! $this->cors->isCorsRequest($request)) {
 			return $next($request);
 		}
@@ -73,9 +68,6 @@ class SecurityHandler
     }
     protected function devPassValue(){
         return env('DEV_SERVER_VALUE');
-    }
-    protected function secureCheck($request){
-        return $request->secure();
     }
     protected function apiVersionCheck($request){
         return $request->header('X-pixel-version') == env('API_VERSION');
