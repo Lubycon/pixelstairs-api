@@ -21,8 +21,12 @@ class SecurityHandler
 		$this->cors = $cors;
 	}
 
-	public function handle($request, Closure $next)
+	public function handle(Request $request, Closure $next)
 	{
+        if( ! $this->secureCheck($request) )
+        {
+            return Abort::Error('0040','Check http secure');
+        }
 
 		if (! $this->cors->isCorsRequest($request)) {
 			return $next($request);
@@ -31,7 +35,6 @@ class SecurityHandler
 		if ( ! $this->cors->isActualRequestAllowed($request)) {
 			Abort::Error('0043','Check Origin');
 		}
-
          if( !$this->isOptionMethod($request) ){
 //             if ( $this->devPassKey($request) !== $this->devPassValue() ) {
 //                 Abort::Error('0043','Check Dev Pass');
@@ -62,14 +65,17 @@ class SecurityHandler
     protected function isOptionMethod($request){
         return $request->method() === 'OPTIONS';
     }
-//    protected function devPassKey($request){
-//        return $request->header(env('DEV_SERVER_KEY'));
-//    }
-//    protected function devPassValue(){
-//        return env('DEV_SERVER_VALUE');
-//    }
     protected function apiUrlVersionCheck($request){
         return $request->segment(1) == env('API_URL_VERSION');
+    }
+    protected function devPassKey($request){
+        return $request->header(env('DEV_SERVER_KEY'));
+    }
+    protected function devPassValue(){
+        return env('DEV_SERVER_VALUE');
+    }
+    protected function secureCheck($request){
+        return $request->secure();
     }
     protected function apiVersionCheck($request){
         return $request->header('X-pixel-version') == env('API_VERSION');
