@@ -28,6 +28,12 @@ class View extends Model {
     ];
 	protected $fillable = array('user_id', 'content_id');
 
+	protected static $countUpLimitTime = 60; //how seconds set limit
+
+    public static function getCountUpLimitTime(){
+        return self::$countUpLimitTime;
+    }
+
 	public function user()
 	{
 		return $this->belongsTo('App\Models\User');

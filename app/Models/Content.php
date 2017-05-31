@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 use Log;
 
+use App\Models\View;
+
 /**
  * App\Models\Content
  *
@@ -87,9 +89,9 @@ class Content extends Model {
     }
     public function amIView($user){
         if( !is_null($user) ) {
-            // TODO :: 뷰 카운트 리밋타임 추가
             $result = $this->views()
                 ->whereuser_id($user->id)
+                ->where('created_at','<',Carbon::now()->addSeconds(View::getCountUpLimitTime()))
                 ->first();
             return !is_null($result);
         }
