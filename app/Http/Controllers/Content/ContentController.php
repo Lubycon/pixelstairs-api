@@ -84,10 +84,7 @@ class ContentController extends Controller
     protected function get(Request $request,$content_id){
         $this->content = Content::findOrFail($content_id);
         $this->user = User::getAccessUserOrNot();
-        // TODO :: not auth user can view count up
-        if( !is_null($this->user) ){
-            $this->content->viewIt($this->user);
-        }
+        $this->content->viewIt($this->user);
         $result = $this->content->getContentInfoWithAuthor($this->user);
         return response()->success($result);
     }

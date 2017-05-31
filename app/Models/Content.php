@@ -57,9 +57,12 @@ class Content extends Model {
 	protected $dates = ['deleted_at'];
 	protected $fillable = array('user_id', 'license_code', 'image_group_id', 'title', 'description', 'view_count', 'like_count', 'hash_tags');
 
-    public function viewIt(User $user){
+    public function viewIt($user){
         if( !$this->amIView($user) ){
-            $this->views()->create(["user_id" => $user->id]);
+            $this->views()->create([
+                "user_id" => is_null($user) ? null : $user->id,
+                "ip" => app('request')->ip(),
+            ]);
             $this->view_count++;
             return $this->save();
         }
@@ -88,14 +91,14 @@ class Content extends Model {
         return false;
     }
     public function amIView($user){
-        if( !is_null($user) ) {
-            $result = $this->views()
-                ->whereuser_id($user->id)
-                ->where('created_at','<',Carbon::now()->addSeconds(View::getCountUpLimitTime()))
-                ->first();
-            return !is_null($result);
-        }
-        return false;
+        // option 1. check same ip
+        //        2. check on limit time
+        //        3. check if auth that user id
+        $result = $this->views()
+            ->whereip(app('request')->ip())
+            ->where('created_at','>',Carbon::now()->subSeconds(View::getCountUpLimitTime()));
+        if( !is_null($user) ) $result->whereuser_id($user->id);
+        return !is_null($result->first());
     }
 
 	public function getContentInfoWithAuthor($user){

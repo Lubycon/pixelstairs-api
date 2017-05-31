@@ -26,7 +26,7 @@ class View extends Model {
     protected $casts = [
         'id' => 'string',
     ];
-	protected $fillable = array('user_id', 'content_id');
+	protected $fillable = array('user_id','ip','content_id');
 
 	protected static $countUpLimitTime = 60; //how seconds set limit
 

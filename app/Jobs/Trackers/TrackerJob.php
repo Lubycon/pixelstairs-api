@@ -24,15 +24,11 @@ class TrackerJob extends Job implements ShouldQueue
 
     public function handle()
     {
-        Log::info('tracker start');
-
         $this->tracker = Tracker::create([
             "uuid" => $this->requests['uuid'],
             "current_url" => $this->requests['currentUrl'],
             "prev_url" => $this->requests['prevUrl'],
             "action" => $this->requests['action'],
         ]);
-
-        Log::info('tracker end');
     }
 }
