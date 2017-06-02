@@ -204,17 +204,26 @@ class AuthController extends Controller
     }
 
     /**
-     * @SWG\Get(
-     *   path="/members/signup/evan",
+     * @SWG\Post(
+     *   path="/test/mail/signup",
      *   summary="mail test",
      *   operationId="mail test",
      *   tags={"/Test"},
+     *   @SWG\Parameter(
+     *         name="email",
+     *         in="body",
+     *         description="write your email",
+     *         required=true,
+     *         @SWG\Schema(
+     *           @SWG\Property(property="email",default="bboydart91@gmail.com")
+     *         )
+     *     ),
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */
     protected function signupTest(Request $request)
     {
-        $this->user = User::findOrFail(3);
+        $this->user = User::getFromEmail($request->email);
         $token = $this->user->insertAccessToken();
         $this->dispatch(new SignupMailSendJob($this->user));
         return response()->success([

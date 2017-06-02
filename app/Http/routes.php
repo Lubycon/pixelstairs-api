@@ -7,13 +7,17 @@ Route::group(['prefix' => '/v1'], function () {
 
     Route::group(['prefix' => '/test'], function () {
         Route::post('testerReset', 'Auth\AuthController@testerReset');
+
+        Route::group(['prefix' => '/mail'], function () {
+            Route::post('signup', 'Auth\AuthController@signupTest');
+            Route::post('password', 'Auth\PasswordController@postMailTest');
+        });
     });
 
     Route::group(['prefix' => '/members/'], function () {
         Route::post('signin', 'Auth\AuthController@signin');
         Route::put('signout', 'Auth\AuthController@signout');
         Route::post('signup', 'Auth\AuthController@signup');
-        Route::get('signup/evan', 'Auth\AuthController@signupTest');
         Route::delete('signdrop', 'Auth\AuthController@signdrop');
         Route::post('isexist', 'Auth\AuthController@isExist');
 

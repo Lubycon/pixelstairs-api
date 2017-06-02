@@ -62,6 +62,31 @@ class PasswordController extends Controller
     }
 
     /**
+     * @SWG\Post(
+     *   path="/test/mail/password",
+     *   summary="mail test",
+     *   operationId="mail test",
+     *   tags={"/Test"},
+     *   @SWG\Parameter(
+     *         name="email",
+     *         in="body",
+     *         description="write your email",
+     *         required=true,
+     *         @SWG\Schema(
+     *           @SWG\Property(property="email",default="bboydart91@gmail.com")
+     *         )
+     *     ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
+    protected function postMailTest(Request $request)
+    {
+        $this->user = User::getFromEmail($request->email);
+        $this->dispatch(new PasswordReMinderSendMailJob($this->user));
+        return response()->success();
+    }
+
+    /**
      * @SWG\Put(
      *   path="/members/password/reset",
      *   summary="mail",
