@@ -4,7 +4,7 @@ Route::get('/', function () {
 });
 
 Route::group(['prefix' => '/v1'], function () {
-
+    // FOR TEST START
     Route::group(['prefix' => '/test'], function () {
         Route::post('testerReset', 'Auth\AuthController@testerReset');
 
@@ -13,7 +13,7 @@ Route::group(['prefix' => '/v1'], function () {
             Route::post('password', 'Auth\PasswordController@postMailTest');
         });
     });
-
+    // FOR TEST API END
     Route::group(['prefix' => '/members/'], function () {
         Route::post('signin', 'Auth\AuthController@signin');
         Route::put('signout', 'Auth\AuthController@signout');
