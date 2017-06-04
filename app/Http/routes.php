@@ -45,10 +45,23 @@ Route::group(['prefix' => '/v1'], function () {
             Route::post('', 'Cert\CertificationController@checkAccessToken');
         });
     });
+
+    // !!!!!!!!!!!Deprecated
+    // !!!!!!!!!!!Deprecated
+    // !!!!!!!!!!!Deprecated
+    // !!!!!!!!!!!Deprecated
+    // !!!!!!!!!!!Deprecated
+    // !!!!!!!!!!!Deprecated
     Route::group(['prefix' => '/mail/'], function () {
         Route::put('signup', 'Mail\MailSendController@resendSignup');
         Route::put('password', 'Auth\PasswordController@postMail');
     });
+    // !!!!!!!!!!!Deprecated
+    // !!!!!!!!!!!Deprecated
+    // !!!!!!!!!!!Deprecated
+    // !!!!!!!!!!!Deprecated
+    // !!!!!!!!!!!Deprecated
+    // !!!!!!!!!!!Deprecated
 
     Route::group(['prefix' => '/contents/'], function () {
         Route::get('', 'Content\ContentController@getList');
