@@ -8,7 +8,7 @@ use App\Traits\AuthorizesRequestsOverLoad;
 
 use Log;
 
-class PasswordChangePasswordRequest extends Request
+class PasswordCheckRequest extends Request
 {
     use AuthorizesRequestsOverLoad;
 
@@ -17,6 +17,18 @@ class PasswordChangePasswordRequest extends Request
         return User::isUser();
     }
 
+    /**
+     *  @SWG\Definition(
+     *   definition="password/checkPassword",
+     *   type="object",
+     *   allOf={
+     *       @SWG\Schema(
+     *           required={"password"},
+     *           @SWG\Property(property="password", type="string", default="12341234"),
+     *       )
+     *   }
+     * )
+     */
     public function rules()
     {
         $requiredRule = [
