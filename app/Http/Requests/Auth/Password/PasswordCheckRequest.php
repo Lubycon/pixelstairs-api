@@ -8,7 +8,7 @@ use App\Traits\AuthorizesRequestsOverLoad;
 
 use Log;
 
-class PasswordChangePasswordRequest extends Request
+class PasswordCheckRequest extends Request
 {
     use AuthorizesRequestsOverLoad;
 
@@ -19,7 +19,7 @@ class PasswordChangePasswordRequest extends Request
 
     /**
      *  @SWG\Definition(
-     *   definition="password/changePassword",
+     *   definition="password/checkPassword",
      *   type="object",
      *   allOf={
      *       @SWG\Schema(

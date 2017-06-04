@@ -25,7 +25,7 @@ use App\Http\Requests\Auth\Password\PasswordPostMailRequest;
 use App\Http\Requests\Auth\Password\PasswordResetRequest;
 use App\Http\Requests\Auth\Password\PasswordCheckCodeRequest;
 use App\Http\Requests\Auth\Password\PasswordGetDiffTimeRequest;
-use App\Http\Requests\Auth\Password\PasswordChangePasswordRequest;
+use App\Http\Requests\Auth\Password\PasswordCheckRequest;
 
 
 class PasswordController extends Controller
@@ -40,11 +40,11 @@ class PasswordController extends Controller
     }
 
     /**
-     * @SWG\Put(
-     *   path="/mail/password",
+     * @SWG\Post(
+     *   path="/members/password/mail",
      *   summary="mail",
      *   operationId="mail",
-     *   tags={"/Mail"},
+     *   tags={"/Members/Password"},
      *     @SWG\Parameter(
      *     in="body",
      *     name="body",
@@ -187,7 +187,7 @@ class PasswordController extends Controller
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */
-    protected function checkPassword(PasswordChangePasswordRequest $request){
+    protected function checkPassword(PasswordCheckRequest $request){
         $this->user = User::getAccessUser();
 
         $credentials = [
