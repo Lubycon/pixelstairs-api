@@ -33,8 +33,9 @@ Route::group(['prefix' => '/v1'], function () {
     });
     Route::group(['prefix' => '/certs/'], function () {
         Route::group(['prefix' => '/signup/'], function () {
+            Route::post('mail', 'Mail\MailSendController@resendSignup');
             Route::post('code', 'Cert\CertificationController@checkCode');
-            Route::post('time', 'Cert\CertificationController@getDiffTime');
+            Route::get('time', 'Cert\CertificationController@getDiffTime');
         });
         Route::group(['prefix' => '/password/'], function () {
             Route::post('code', 'Auth\PasswordController@checkCode');
@@ -53,7 +54,6 @@ Route::group(['prefix' => '/v1'], function () {
     // !!!!!!!!!!!Deprecated
     // !!!!!!!!!!!Deprecated
     Route::group(['prefix' => '/mail/'], function () {
-        Route::put('signup', 'Mail\MailSendController@resendSignup');
         Route::put('password', 'Auth\PasswordController@postMail');
     });
     // !!!!!!!!!!!Deprecated

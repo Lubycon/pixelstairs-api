@@ -31,21 +31,9 @@ class MailSendController extends Controller
         $this->user = User::class;
     }
 
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
     public function resendSignup(MailRemindSignupRequest $request){
         $this->user = User::getAccessUser();
         $this->dispatch(new SignupReminderMailSendJob($this->user));
         return response()->success();
     }
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
 }
