@@ -9,7 +9,10 @@ Route::group(['prefix' => '/v1'], function () {
         Route::post('testerReset', 'Auth\AuthController@testerReset');
 
         Route::group(['prefix' => '/mail'], function () {
-            Route::post('signup', 'Auth\AuthController@signupTest');
+            Route::group(['prefix' => '/signup'], function () {
+                Route::post('/', 'Auth\AuthController@signupTest');
+                Route::post('/remind', 'Mail\MailSendController@resendSignupTest');
+            });
             Route::post('password', 'Auth\PasswordController@postMailTest');
         });
     });
