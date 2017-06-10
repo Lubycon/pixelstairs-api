@@ -16,7 +16,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 //Jobs
-use App\Jobs\Mails\SignupReminderMailSendJob;
+use App\Jobs\Mails\SignupMailSendJob;
 use App\Jobs\Mails\PasswordReMinderSendMailJob;
 
 // Request
@@ -31,9 +31,9 @@ class MailSendController extends Controller
         $this->user = User::class;
     }
 
-    public function resendSignup(MailRemindSignupRequest $request){
+    public function sendSignup(MailRemindSignupRequest $request){
         $this->user = User::getAccessUser();
-        $this->dispatch(new SignupReminderMailSendJob($this->user));
+        $this->dispatch(new SignupMailSendJob($this->user));
         return response()->success();
     }
 }
