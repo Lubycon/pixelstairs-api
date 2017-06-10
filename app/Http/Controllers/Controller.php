@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
  *   basePath="/v1",
  *   @SWG\Info(
  *     title="Pixel Stairs API",
- *     version="1.0.1",
+ *     version="1.0.0",
  *     @SWG\Contact(
  *       name="daniel kim",
  *       email="bboyzepot@gmail.com",
