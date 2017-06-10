@@ -186,7 +186,6 @@ class User extends Model implements AuthenticatableContract,
         ]);
     }
 
-
     public function getSimpleInfo(){
         return [
             "id" => $this->id,
@@ -196,6 +195,18 @@ class User extends Model implements AuthenticatableContract,
             "gender" => $this->gender,
             "birthday" => $this->birthday,
             "status" => $this->status
+        ];
+    }
+    public function getDetailInfo(){
+        return [
+            "id" => $this->id,
+            "email" => $this->email,
+            "nickname" => $this->nickname,
+            "profileImg" => $this->getImageObject(),
+            "gender" => $this->gender,
+            "birthday" => $this->birthday,
+            "status" => $this->status,
+            "newsletterAccepted" => $this->newsletters_accepted,
         ];
     }
 
