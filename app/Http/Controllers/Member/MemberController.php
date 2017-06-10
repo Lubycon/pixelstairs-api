@@ -87,6 +87,7 @@ class MemberController extends Controller
             "gender" => $this->user->gender,
             "birthday" => $this->user->birthday,
             "newsletterAccepted" => $this->user->newsletters_accepted,
+            "status" => $this->user->status,
         ]);
     }
 
