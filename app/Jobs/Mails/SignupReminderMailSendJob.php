@@ -32,6 +32,7 @@ class SignupReminderMailSendJob extends Job implements ShouldQueue
          $to = $this->user->email;
          $subject = 'Account Reminder Mail';
          $data = [
+             'url' => env('WEB_URL'),
              'user' => $this->user,
              'token' => $this->user->getSignupToken()
          ];

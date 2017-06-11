@@ -30,10 +30,13 @@ class PasswordReMinderSendMailJob extends Job implements ShouldQueue
      */
     public function handle()
     {
-        $email = ["email" => $this->user->email];
         $subject = '잃어버린 비밀번호를 찾아서';
+        $data = [
+            'url' => env('WEB_URL'),
+            "email" => $this->user->email
+        ];
         
-        Password::sendResetLink($email, function (Message $message) use($subject) {
+        Password::sendResetLink($data, function (Message $message) use($subject) {
             $message->subject($subject);
         });
     }
