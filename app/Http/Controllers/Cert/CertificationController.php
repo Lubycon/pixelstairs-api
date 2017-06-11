@@ -54,6 +54,11 @@ class CertificationController extends Controller
     {
         $this->user = User::getAccessUser();
         $validity = $this->user->checkSignupCode($request->code);
+        if($validity) {
+            $this->user->update([
+                'status' => 'active'
+            ]);
+        }
         return response()->success([
             'validity' => $validity
         ]);
