@@ -61,7 +61,7 @@
             </div>
         </div>
         <div class="card button-wrapper">
-            <a class="btn" href="{{ app('request')->headers->get('Origin').'/certs/password/landing/'.$token }}" style="
+            <a class="btn" href="{{ env('WEB_URL').'/certs/password/landing/'.$token }}" style="
                 display: inline-block;
                 width: 100%;
                 height: 50px;
