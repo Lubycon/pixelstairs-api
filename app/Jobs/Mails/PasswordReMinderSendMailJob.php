@@ -32,7 +32,6 @@ class PasswordReMinderSendMailJob extends Job implements ShouldQueue
     {
         $subject = '잃어버린 비밀번호를 찾아서';
         $data = [
-            'url' => env('WEB_URL'),
             "email" => $this->user->email
         ];
         

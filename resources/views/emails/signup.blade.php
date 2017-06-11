@@ -61,7 +61,7 @@
             </div>
         </div>
         <div class="card button-wrapper">
-            <a class="btn" href="{{ $url.'/certs/signup/landing/'.$token }}" style="
+            <a class="btn" href="{{ env('WEB_URL').'/certs/signup/landing/'.$token }}" style="
                 display: inline-block;
                 width: 100%;
                 height: 50px;

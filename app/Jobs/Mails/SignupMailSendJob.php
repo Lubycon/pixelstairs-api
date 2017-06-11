@@ -32,7 +32,6 @@ class SignupMailSendJob extends Job implements ShouldQueue
         $to = $this->user->email;
         $subject = 'Account Success to Pixelstairs';
         $data = [
-            'url' => env('WEB_URL'),
             'user' => $this->user,
             'token' => $this->user->getSignupToken()
         ];
