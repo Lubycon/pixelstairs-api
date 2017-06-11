@@ -79,16 +79,8 @@ class MemberController extends Controller
     protected function getRetrieve(Request $request,$user_id)
     {
         $this->user = User::findOrFail($user_id);
-        return response()->success([
-            "id" => $this->user->id,
-            "email" => $this->user->email,
-            "nickname" => $this->user->nickname,
-            "profileImg" => $this->user->getImageObject(),
-            "gender" => $this->user->gender,
-            "birthday" => $this->user->birthday,
-            "newsletterAccepted" => $this->user->newsletters_accepted,
-            "status" => $this->user->status,
-        ]);
+        $result = $this->user->getDetailInfo();
+        return response()->success($result);
     }
 
     /**

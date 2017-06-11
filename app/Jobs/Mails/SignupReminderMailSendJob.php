@@ -25,7 +25,9 @@ class SignupReminderMailSendJob extends Job implements ShouldQueue
 
      public function handle()
      {
-         Log::info('mail send start');
+        Log::info('mail send start');
+
+        $this->user->createSignupToken();
 
          $to = $this->user->email;
          $subject = 'Account Reminder Mail';
