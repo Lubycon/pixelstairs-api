@@ -31,7 +31,7 @@ class AdminUserSeeder extends Seeder
             [
                 'email'=>'test@pixelstairs.com',
                 'nickname' => 'TestUser',
-                'password' => bcrypt(env('COMMON_PASSWORD')),
+                'password' => bcrypt(env('TEST_PASSWORD')),
                 'token' => 'wtesttesttesttesttesttesttestte2',
                 'status' => 'active',
                 'grade' => 'general',

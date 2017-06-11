@@ -89,6 +89,7 @@ cd {{ $release_dir }}/{{ $distname }} && \
 composer install --prefer-dist --no-scripts --no-dev;
 
 {{--Any additional command here--}}
+php artisan l5-swagger:publish
 php artisan l5-swagger:generate
 {{--e.g. php artisan clear-compiled;--}}
 
