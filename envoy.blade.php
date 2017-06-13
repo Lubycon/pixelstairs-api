@@ -177,3 +177,6 @@ sudo service php7.0-fpm restart;
 sudo service mysql restart;
 sudo supervisorctl restart all;
 @endtask
+@after
+    @slack('https://hooks.slack.com/services/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', '#deploy' )
+@endafter
