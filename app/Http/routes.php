@@ -95,3 +95,9 @@ Route::group(['prefix' => '/v1'], function () {
 //    Route::get('/data', 'Data\DataResponseController@dataSimpleResponse');
     Route::post('/tracker','Tracker\TrackerController@create');
 });
+
+Route::group(['prefix' => '/admin'], function() {
+    Route::group(['prefix' => '/members/'], function () {
+        Route::get('', 'Member\AdminMemberController@getList');
+    });
+});
