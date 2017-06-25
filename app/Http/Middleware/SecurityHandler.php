@@ -61,7 +61,8 @@ class SecurityHandler
         return $request->method() === 'OPTIONS';
     }
     protected function apiUrlVersionCheck($request){
-        return $request->segment(1) == env('API_URL_VERSION');
+        // return $request->segment(1) == env('API_URL_VERSION');
+        return true;
     }
     protected function devPassKey($request){
         return $request->header(env('DEV_SERVER_KEY'));

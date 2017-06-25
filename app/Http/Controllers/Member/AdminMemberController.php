@@ -35,7 +35,8 @@ class AdminMemberController extends Controller {
             ->getCollection();
         $result = $this->pager->getPageInfo();
         foreach($collection as $user) {
-            $result->users[] = $user;
+            $user = User::findOrFail($user->id);
+            $result->users[] = $user->getDetailInfo();
         };
 
         if(!empty($result->users)) {
