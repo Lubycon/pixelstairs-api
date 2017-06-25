@@ -16,8 +16,6 @@ use App\Http\Controllers\Controller;
 // Class
 use App\Classes\Pager;
 
-// Requests
-use App\Http\Requests\Admin\AdminRequest;
 
 class AdminMemberController extends Controller {
     public $user;
@@ -28,8 +26,23 @@ class AdminMemberController extends Controller {
         $this->pager = new Pager();
     }
 
-    protected function getList(AdminRequest $request) {
-        $is_admin = User::isAdmin();
+    /**
+     * @SWG\Get(
+     *   path="/admin/members",
+     *   summary="get member list",
+     *   operationId="members",
+     *   tags={"/Admin/Members"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="need admin token!",
+     *      required=true
+     *     ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
+    protected function getList(Request $request) {
         $collection = $this->pager
             ->search('user', $request->query())
             ->getCollection();

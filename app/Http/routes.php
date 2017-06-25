@@ -93,10 +93,15 @@ Route::group(['prefix' => '/v1'], function () {
         Route::get('{category}', 'Quote\QuoteController@get');
     });
 //    Route::get('/data', 'Data\DataResponseController@dataSimpleResponse');
-    Route::post('/tracker','Tracker\TrackerController@create');
+    Route::post('/tracker', 'Tracker\TrackerController@create');
 });
 
-Route::group(['prefix' => '/admin'], function() {
+Route::get('admin/profile', ['middleware' => 'auth', function () {
+    //
+}]);
+
+
+Route::group(['prefix' => '/admin', 'middleware' => 'auth.admin'], function () {
     Route::group(['prefix' => '/members/'], function () {
         Route::get('', 'Member\AdminMemberController@getList');
     });
