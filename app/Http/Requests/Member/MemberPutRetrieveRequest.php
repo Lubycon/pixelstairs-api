@@ -47,8 +47,8 @@ class MemberPutRetrieveRequest extends Request
             "gender" => "required", // enum
             "newsletterAccepted" => "required|boolean",
             "nickname" => $nicknameRule,
-            "profileImg" => "required|array",
-            "profileImg.file" => "required"
+            "profileImg" => "array",
+//            "profileImg.file" => "required"
         ];
         return $requiredRule;
     }
