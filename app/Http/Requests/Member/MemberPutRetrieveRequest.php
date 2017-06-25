@@ -21,7 +21,7 @@ class MemberPutRetrieveRequest extends Request
 
     /**
      *  @SWG\Definition(
-     *   definition="members/postRetrieve",
+     *   definition="members/putRetrieve",
      *   type="object",
      *   allOf={
      *       @SWG\Schema(

@@ -110,7 +110,7 @@ class MemberController extends Controller
      *     name="body",
      *     description="Put detail",
      *     required=true,
-     *      @SWG\Schema(ref="#/definitions/members/postRetrieve")
+     *      @SWG\Schema(ref="#/definitions/members/putRetrieve")
      *   ),
      *   @SWG\Response(response=200, description="successful operation")
      * )
