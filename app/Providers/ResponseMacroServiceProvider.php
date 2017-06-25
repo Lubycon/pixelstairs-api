@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\ErrorController;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Request;
