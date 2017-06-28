@@ -50,7 +50,7 @@ class ContentController extends Controller
     protected function getList(Request $request){
         $this->user = User::getAccessUserOrNot();
         $collection = $this->pager
-            ->search('content',$request->query())
+            ->search(new $this->content,$request->query())
             ->getCollection();
         $result = $this->pager->getPageInfo();
         foreach($collection as $content){
