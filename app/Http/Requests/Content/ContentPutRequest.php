@@ -41,7 +41,8 @@ class ContentPutRequest extends Request
             "description" => "required",
             "licenseCode" => "required",
             "hashTags" => "required|array",
-            "image" => "required",
+            "image" => "required|array",
+//            "image.*.file" => "base64"
         ];
         return $requiredRule;
     }

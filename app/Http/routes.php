@@ -27,7 +27,7 @@ Route::group(['prefix' => '/v1'], function () {
         Route::get('simple', 'Member\MemberController@simpleRetrieve');
         Route::group(['prefix' => '{id}/'], function () {
             Route::get('detail', 'Member\MemberController@getRetrieve');
-            Route::post('detail', 'Member\MemberController@postRetrieve');
+            Route::put('detail', 'Member\MemberController@putRetrieve');
         });
         Route::group(['prefix' => 'password/'], function () {
             Route::post('mail', 'Auth\PasswordController@postMail');

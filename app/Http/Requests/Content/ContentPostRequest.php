@@ -40,7 +40,7 @@ class ContentPostRequest extends Request
             "licenseCode" => "required|string",
             "hashTags" => "required|array",
             "image" => "required|array",
-            "image.*.file" => "base64"
+//            "image.*.file" => "base64"
         ];
         return $requiredRule;
     }

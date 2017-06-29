@@ -59,7 +59,7 @@ class CommentController extends Controller
     protected function getList(CommentGetListRequest $request,$content_id){
         $query = "search:contentId:$content_id";
         $collection = $this->pager
-            ->search('comment',$query)
+            ->search(new $this->comment,$query)
             ->getCollection();
         $result = $this->pager->getPageInfo();
         foreach($collection as $comment){

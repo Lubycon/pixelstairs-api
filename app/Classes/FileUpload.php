@@ -20,7 +20,7 @@ class FileUpload
     private $bucket;
     private $tempStorage;
     private $ownCheckers;
-    private $nullCheck;
+    private $needUpload;
     // config info
 
     // model
@@ -61,9 +61,9 @@ class FileUpload
 
     // progress functions
     public function upload($model,$inputFile,$isGroup=false){
-        $this->nullChecker($inputFile);
+        $this->needUpload = $this->checkNeedUpload($inputFile);
 //        try{
-            if( !$this->nullCheck ){
+            if( !$this->needUpload ){
                 $this->setBasicVariable($model,$inputFile);
                 $this->modelName = $this->getModelName($this->model);
                 $this->modelId = $this->getModelId($this->model);
@@ -90,7 +90,6 @@ class FileUpload
         $image = $this->getResizeImages($file);
         $uploadPath = $this->modelName.'/'.$this->modelId.'/'.$this->setRandomFileName();
         foreach($image as $key => $value){
-            Log::info($value['mime']);
             $this->storage->getDriver()->getAdapter()->getClient()->upload(
                 $this->bucket, // upload bucket
                 $uploadPath.$key, $value['image'], // upload path.file name
@@ -122,9 +121,15 @@ class FileUpload
                     // TODO :: S3 original file remove
                     unset($inputFile[$key]);
                 }else{ // update
-                    if( $value[$this->ownCheckers['camel']] ){
+                    if( $value[$this->ownCheckers['camel']] ){ // if in our storage
                         // TODO :: S3 original file remove
-                        if( $value['type'] == 'base64' ) $newUrl = $this->responsiveUploadUrl($value['file']);
+                        if( $value['type'] == 'base64' ){ // If get new image
+                            $newUrl = $this->responsiveUploadUrl($value['file']);
+                        }else if( $value['type'] == 'url'  ){ // Or user not change image
+                            // pass
+                        }else{
+                            Abort::Error('0070','Unknown Update Logic...');
+                        }
                     }
                     $inputFile[$key]['url'] = isset($newUrl) ? $newUrl : $value['file'];
                 }
@@ -147,18 +152,18 @@ class FileUpload
     ///////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////
     protected function createImageModel($inputFile){
-        $modelId = null;
         $images = [];
         foreach($inputFile as $key => $value ){
             $ownerCheck = $this->ownerCheck($value);
-            if( isset($value['id']) ){
-                $images[] = Image::findOrFail($value['id'])->update([
+            if( isset($value['id']) ){ // update
+                $images[] = $image = Image::findOrFail($value['id']);
+                $image->update([
                     "index" => isset($value['index']) ? $value['index'] : 0,
                     "url" => $value['url'],
                     $this->ownCheckers['snake'] => $ownerCheck,
                     "image_group_id" => $this->isGroup ? $this->groupModel['id'] : null,
                 ]);
-            }else{
+            }else{ // create
                 $images[] = Image::create([
                     "index" => isset($value['index']) ? $value['index'] : 0,
                     "url" => $value['url'],
@@ -167,7 +172,7 @@ class FileUpload
                 ]);
             }
         }
-        return $this->isGroup ? $this->groupModel : $images[0] ;
+        return $this->isGroup ? $this->groupModel : $images ;
     }
     protected function createImageGroupModel($inputFile){
         if( $this->isGroup ){
@@ -218,11 +223,13 @@ class FileUpload
         return Abort::Error('0050',"Unknown file data");
     }
     protected function getExtension($value){
-        return Log::info($value);
+        return $value;
     }
     public function getId(){
-        if( $this->nullCheck ) return null;
-        return $this->createModel['id'];
+        if( $this->needUpload ) return null;
+        return $this->isGroup
+            ? $this->createModel['id']
+            : $this->createModel[0]['id'];
     }
     ///////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -269,8 +276,9 @@ class FileUpload
         }
         return $ownerCheck;
     }
-    private function nullChecker($inputFile){
-        if(is_null($inputFile)) return $this->nullCheck = true;
+    private function checkNeedUpload($inputFile){
+        if(is_null($inputFile)) return true;
+        return false;
     }
     protected function findGroupExist($inputFile){
         $groupId = null;
@@ -286,9 +294,7 @@ class FileUpload
     protected function fileTypeCheck($inputFile){
         foreach( $inputFile as $key => $value ){
             $fileType = $this->getFileType($value);
-//            $fileExt = $this->getExtension($value);
             $inputFile[$key]['type'] = $fileType;
-//            $inputFile[$key]['ext'] = $fileExt;
         }
         return $inputFile;
     }

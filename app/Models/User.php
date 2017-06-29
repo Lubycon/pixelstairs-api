@@ -68,7 +68,7 @@ class User extends Model implements AuthenticatableContract,
     ];
 	protected $dates = ['deleted_at'];
     protected $hidden = ['password', 'token'];
-	protected $fillable = ['email', 'password', 'nickname', 'image_id','birthday','grade','status', 'newsletters_accepted', 'terms_of_service_accepted'];
+	protected $fillable = ['email', 'password', 'nickname', 'image_id','birthday','gender','grade','status', 'newsletters_accepted', 'terms_of_service_accepted'];
 
     public static function bindSigninData($request){
         return [

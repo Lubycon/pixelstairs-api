@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Member;
 // Global
 use Log;
 use Abort;
+use Carbon\Carbon;
 
 // Models
 use App\Models\User;
@@ -17,7 +18,7 @@ use App\Http\Controllers\Controller;
 use App\Classes\FileUpload;
 
 // Requests
-use App\Http\Requests\Member\MemberPostRetrieveRequest;
+use App\Http\Requests\Member\MemberPutRetrieveRequest;
 
 class MemberController extends Controller
 {
@@ -84,7 +85,7 @@ class MemberController extends Controller
     }
 
     /**
-     * @SWG\Post(
+     * @SWG\Put(
      *   path="/members/{member_id}/detail",
      *   @SWG\Parameter(
      *     name="member_id",
@@ -107,18 +108,20 @@ class MemberController extends Controller
      *     @SWG\Parameter(
      *     in="body",
      *     name="body",
-     *     description="Post detail",
+     *     description="Put detail",
      *     required=true,
-     *      @SWG\Schema(ref="#/definitions/members/postRetrieve")
+     *      @SWG\Schema(ref="#/definitions/members/putRetrieve")
      *   ),
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */
-    public function postRetrieve(MemberPostRetrieveRequest $request)
+    public function putRetrieve(MemberPutRetrieveRequest $request)
     {
         $this->user = User::getAccessUser();
         try{
             $this->user->update([
+                "birthday" => Carbon::parse($request->birthday)->timezone(config('app.timezone'))->toDateTimeString(),
+                "gender" => $request->gender,
                 "nickname" => $request->nickname,
                 "image_id" => $this->uploader->upload(
                     $this->user,
