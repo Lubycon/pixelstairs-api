@@ -85,7 +85,7 @@ return [
 
     // for save multiple resolutions
     // written by daniel zepp
-    'responsive_resolution' => ['1920','640','320'],
+    'responsive_resolution' => ['1920','640','320', '50'],
     'temp_storage' => public_path().'/tmp/',
     'own_checker' => 'is_pixel_own'
 

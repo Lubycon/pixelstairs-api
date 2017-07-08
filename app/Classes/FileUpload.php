@@ -206,6 +206,7 @@ class FileUpload
         $mime = $imageMake->mime();
         $image = [];
         foreach( $this->responsiveResolution as $key => $value ){
+            if((int)$value == 50){ $imageMake->blur(1);}
             $image[$value]['image'] = $imageMake->widen((int)$value)->stream(null,100);
             $image[$value]['mime'] = $mime;
         }
