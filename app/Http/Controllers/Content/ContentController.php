@@ -23,6 +23,9 @@ use App\Http\Requests\Content\ContentDeleteRequest;
 use App\Http\Requests\Content\ContentPutRequest;
 use App\Http\Requests\Content\ContentPostRequest;
 
+// for image test
+use Intervention;
+
 class ContentController extends Controller
 {
     public $content;
@@ -114,7 +117,7 @@ class ContentController extends Controller
      */
     protected function post(ContentPostRequest $request){
         $this->user = User::getAccessUser();
-
+        //return $request->image;
         try{
             $this->content = $this->user->contents()->create([
                 "title" => $request->title,
