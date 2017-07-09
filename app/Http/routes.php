@@ -7,8 +7,6 @@ Route::group(['prefix' => '/v1'], function () {
     /* FOR TEST START */
     Route::group(['prefix' => '/test'], function () {
 
-        Route::post('resizeImage', 'Content\ContentController@resize');
-
         Route::post('testerReset', 'Auth\AuthController@testerReset');
 
         Route::group(['prefix' => '/mail'], function () {

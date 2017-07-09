@@ -117,7 +117,7 @@ class ContentController extends Controller
      */
     protected function post(ContentPostRequest $request){
         $this->user = User::getAccessUser();
-
+        //return $request->image;
         try{
             $this->content = $this->user->contents()->create([
                 "title" => $request->title,
@@ -135,18 +135,6 @@ class ContentController extends Controller
             Abort::Error('0040');
         }
         return response()->success($this->content);
-    }
-
-    protected function resize(ContentPostRequest $request){
-
-        $imageMake = Intervention::make($request->image[0]);
-        $mime = $imageMake->mime();
-
-        $image = $imageMake->widen(50);
-        $image->blur(1);
-        $image->save("test.jpg");
-        return "Hello";
-
     }
 
     /**
