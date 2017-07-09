@@ -83,7 +83,7 @@ class User extends Model implements AuthenticatableContract,
             "nickname" => $request->nickname,
             "newsletters_accepted" => $request->newsletterAccepted,
             "terms_of_service_accepted" => $request->termsOfServiceAccepted,
-            "birthday" => Carbon::parse($request->birthday)->toDatetimeString(),
+            "birthday" => Carbon::parse($request->birthday)->timezone(config('app.timezone'))->toDatetimeString(),
             "grade" => "general",
             "status" => "inactive",
         ];
