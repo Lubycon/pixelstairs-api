@@ -117,7 +117,11 @@ class User extends Model implements AuthenticatableContract,
 
 
     public static function getFromEmail($email){
-	    return User::whereemail($email)->firstOrFail();
+        return User::whereemail($email)->firstOrFail();
+    }
+
+    public static function getFromNickname($nickname){
+        return User::wherenickname($nickname)->firstOrFail();
     }
 
     public static function getAccessUser(){
