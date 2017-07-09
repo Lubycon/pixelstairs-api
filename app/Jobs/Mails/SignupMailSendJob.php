@@ -8,6 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use App\Models\User;
+use Abort;
 use Mail;
 use Log;
 
@@ -30,15 +31,20 @@ class SignupMailSendJob extends Job implements ShouldQueue
         $this->user->createSignupToken();
 
         $to = $this->user->email;
-        $subject = 'Account Success to Pixelstairs';
+        $subject = '[Pixelstairs] Account Success to Pixelstairs';
         $data = [
             'user' => $this->user,
             'token' => $this->user->getSignupToken()
         ];
 
-        Mail::send("emails.signup", $data, function($message) use($to, $subject) {
-            $message->to($to)->subject($subject);
-        });
+        try{
+            Mail::send("emails.signup", $data, function($message) use($to, $subject) {
+                $message->to($to)->subject($subject);
+            });
+        }catch(\Exception $e){
+            Log::info('Mail Send Fail');
+            // TODO :: mail code check
+        }
 
         Log::info('mail sended');
     }

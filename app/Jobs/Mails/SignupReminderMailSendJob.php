@@ -23,23 +23,28 @@ class SignupReminderMailSendJob extends Job implements ShouldQueue
         $this->user = $user;
     }
 
-     public function handle()
-     {
+    public function handle()
+    {
         Log::info('mail send start');
 
         $this->user->createSignupToken();
 
-         $to = $this->user->email;
-         $subject = 'Account Reminder Mail';
-         $data = [
-             'user' => $this->user,
-             'token' => $this->user->getSignupToken()
-         ];
+        $to = $this->user->email;
+        $subject = '[Pixelstairs] Account Reminder Mail';
+        $data = [
+            'user'  => $this->user,
+            'token' => $this->user->getSignupToken()
+        ];
 
-         Mail::send("emails.signup", $data, function($message) use($to, $subject) {
-             $message->to($to)->subject($subject);
-         });
+        try {
+            Mail::send("emails.signup", $data, function ($message) use ($to, $subject) {
+                $message->to($to)->subject($subject);
+            });
+        } catch (\Exception $e) {
+            Log::info('Mail Send Fail');
+            // TODO :: mail code check
+        }
 
-         Log::info('mail sended');
-     }
+        Log::info('mail sended');
+    }
 }
