@@ -133,7 +133,7 @@ class Content extends Model {
         return $this->getImageObject($imageModel);
     }
     public function getGroupImageObject(){
-        $imageModel = $this->imageGroup;
+        $imageModel = $this->imageGroup->images->first();
         $imageObjects = $this->getImageObject($imageModel);
         return count($imageObjects) > 1
             ? $imageObjects

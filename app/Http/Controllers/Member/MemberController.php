@@ -118,6 +118,7 @@ class MemberController extends Controller
     public function putRetrieve(MemberPutRetrieveRequest $request)
     {
         $this->user = User::getAccessUser();
+        $result = null;
         try{
             $this->user->update([
                 "birthday" => Carbon::parse($request->birthday)->timezone(config('app.timezone'))->toDateTimeString(),
@@ -129,9 +130,10 @@ class MemberController extends Controller
                 )->getId(),
                 "newsletters_accepted" => $request->newsletterAccepted,
             ]);
+            $result = $this->user->getDetailInfo();
         }catch (\Exception $e){
             Abort::Error('0040');
         }
-        return response()->success($this->user);
+        return response()->success($result);
     }
 }

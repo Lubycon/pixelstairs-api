@@ -8,7 +8,7 @@ use App\Traits\AuthorizesRequestsOverLoad;
 
 use Log;
 
-class AuthIsExistRequest extends Request
+class AuthEmailExistRequest extends Request
 {
     use AuthorizesRequestsOverLoad;
 
@@ -19,7 +19,7 @@ class AuthIsExistRequest extends Request
 
     /**
      *  @SWG\Definition(
-     *   definition="auth/isexist",
+     *   definition="auth/emailExist",
      *   type="object",
      *   allOf={
      *       @SWG\Schema(

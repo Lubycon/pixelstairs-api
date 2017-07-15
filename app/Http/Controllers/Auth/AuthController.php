@@ -20,7 +20,8 @@ use App\Http\Requests\Auth\AuthSigninRequest;
 use App\Http\Requests\Auth\AuthSignupRequest;
 use App\Http\Requests\Auth\AuthSigndropRequest;
 use App\Http\Requests\Auth\AuthSignoutRequest;
-use App\Http\Requests\Auth\AuthIsExistRequest;
+use App\Http\Requests\Auth\AuthEmailExistRequest;
+use App\Http\Requests\Auth\AuthNicknameExistRequest;
 
 // Jobs
 use App\Jobs\LastSigninTimeCheckerJob;
@@ -158,24 +159,50 @@ class AuthController extends Controller
 
     /**
      * @SWG\Post(
-     *   path="/members/isexist",
-     *   summary="isexist",
-     *   operationId="isexist",
+     *   path="/members/exists/email",
+     *   summary="emailExist",
+     *   operationId="emailExist",
      *   tags={"/Members/Auth"},
      *     @SWG\Parameter(
      *     in="body",
      *     name="body",
      *     description="Sign in into web site",
      *     required=true,
-     *     @SWG\Schema(ref="#/definitions/auth/isexist")
+     *     @SWG\Schema(ref="#/definitions/auth/emailExist")
      *   ),
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */
-    protected function isExist(AuthIsExistRequest $request)
+    protected function emailExist(AuthEmailExistRequest $request)
     {
         try{
             $this->user = User::getFromEmail($request->email);
+        }catch(\Exception $e){
+            return response()->success(false);
+        }
+        return response()->success(true);
+    }
+
+    /**
+     * @SWG\Post(
+     *   path="/members/exists/nickname",
+     *   summary="nicknameExist",
+     *   operationId="nicknameExist",
+     *   tags={"/Members/Auth"},
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Sign in into web site",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/auth/nicknameExist")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
+    protected function nicknameExist(AuthNicknameExistRequest $request)
+    {
+        try{
+            $this->user = User::getFromNickname($request->nickname);
         }catch(\Exception $e){
             return response()->success(false);
         }

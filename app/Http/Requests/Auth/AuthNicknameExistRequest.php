@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Auth\Password;
+namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Request;
 use App\Models\User;
@@ -8,23 +8,23 @@ use App\Traits\AuthorizesRequestsOverLoad;
 
 use Log;
 
-class PasswordGetDiffTimeRequest extends Request
+class AuthNicknameExistRequest extends Request
 {
     use AuthorizesRequestsOverLoad;
 
     public function authorize()
     {
-        return User::isGhost();
+        return true;
     }
 
     /**
      *  @SWG\Definition(
-     *   definition="password/getDiffTime",
+     *   definition="auth/nicknameExist",
      *   type="object",
      *   allOf={
      *       @SWG\Schema(
-     *           required={"email"},
-     *           @SWG\Property(property="email", type="string", default="test@pixelstairs.com"),
+     *           required={"nickname"},
+     *           @SWG\Property(property="nickname", type="string", default="tester"),
      *       )
      *   }
      * )
@@ -32,7 +32,7 @@ class PasswordGetDiffTimeRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            "email" => "required|email",
+            "nickname" => "required",
         ];
         return $requiredRule;
     }
