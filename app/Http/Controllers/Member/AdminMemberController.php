@@ -44,7 +44,7 @@ class AdminMemberController extends Controller {
      */
     protected function getList(Request $request) {
         $collection = $this->pager
-            ->search('user', $request->query())
+            ->search(new $this->user, $request->query())
             ->getCollection();
         $result = $this->pager->getPageInfo();
         foreach($collection as $user) {
