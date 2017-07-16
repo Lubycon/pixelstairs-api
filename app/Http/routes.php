@@ -106,12 +106,13 @@ Route::get('admin/profile', ['middleware' => 'auth', function () {
 }]);
 
 
+// ADMIN API
 Route::group(['prefix' => '/admin', 'middleware' => 'auth.admin'], function () {
     Route::group(['prefix' => '/members/'], function () {
-        Route::get('', 'Member\AdminMemberController@getList');
+        Route::get('', 'Admin\Member\AdminMemberController@getList');
         Route::group(['prefix' => '{id}/'], function () {
-            Route::get('detail', 'Member\AdminMemberController@getRetrieve');
-            Route::put('detail', 'Member\MemberController@putRetrieve');
+            Route::get('detail', 'Admin\Member\AdminMemberController@getRetrieve');
+            Route::put('detail', 'Admin\Member\MemberController@putRetrieve');
         });
     });
 
@@ -120,8 +121,8 @@ Route::group(['prefix' => '/admin', 'middleware' => 'auth.admin'], function () {
 
         Route::group(['prefix' => '{content_id}/'], function () {
             Route::get('', 'Content\ContentController@get');
-            Route::put('', 'Content\ContentController@put');
-            Route::delete('', 'Content\ContentController@delete');
+            Route::put('', 'Admin\Content\AdminContentController@put');
+            Route::delete('', 'Admin\Content\AdminContentController@delete');
         });
     });
 });
