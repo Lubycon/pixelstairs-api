@@ -141,6 +141,8 @@ return [
         App\Providers\ResponseMacroServiceProvider::class,
         Maknz\Slack\SlackServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        Stevebauman\Location\LocationServiceProvider::class,
+        Jenssegers\Agent\AgentServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -202,6 +204,8 @@ return [
         'Intervention' => Intervention\Image\Facades\Image::class,
         \L5Swagger\L5SwaggerServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        'Location' => Stevebauman\Location\Facades\Location::class,
+        'Agent' => Jenssegers\Agent\Facades\Agent::class,
 
     ],
 

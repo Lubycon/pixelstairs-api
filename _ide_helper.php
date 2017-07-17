@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.2.45 on 2017-06-10.
+ * Generated for Laravel 5.2.45 on 2017-07-17.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -2469,7 +2469,7 @@ namespace Illuminate\Support\Facades {
          */
         public static function increment($key, $value = 1)
         {
-            return \Illuminate\Cache\FileStore::increment($key, $value);
+            return \Illuminate\Cache\ArrayStore::increment($key, $value);
         }
         
         /**
@@ -2482,7 +2482,7 @@ namespace Illuminate\Support\Facades {
          */
         public static function decrement($key, $value = 1)
         {
-            return \Illuminate\Cache\FileStore::decrement($key, $value);
+            return \Illuminate\Cache\ArrayStore::decrement($key, $value);
         }
         
         /**
@@ -2493,29 +2493,7 @@ namespace Illuminate\Support\Facades {
          */
         public static function flush()
         {
-            \Illuminate\Cache\FileStore::flush();
-        }
-        
-        /**
-         * Get the Filesystem instance.
-         *
-         * @return \Illuminate\Filesystem\Filesystem 
-         * @static 
-         */
-        public static function getFilesystem()
-        {
-            return \Illuminate\Cache\FileStore::getFilesystem();
-        }
-        
-        /**
-         * Get the working directory of the cache.
-         *
-         * @return string 
-         * @static 
-         */
-        public static function getDirectory()
-        {
-            return \Illuminate\Cache\FileStore::getDirectory();
+            \Illuminate\Cache\ArrayStore::flush();
         }
         
         /**
@@ -2526,7 +2504,7 @@ namespace Illuminate\Support\Facades {
          */
         public static function getPrefix()
         {
-            return \Illuminate\Cache\FileStore::getPrefix();
+            return \Illuminate\Cache\ArrayStore::getPrefix();
         }
         
     }         
@@ -7213,11 +7191,12 @@ namespace Illuminate\Support\Facades {
          * @param mixed $data
          * @param string $queue
          * @return mixed 
+         * @throws \Exception|\Throwable
          * @static 
          */
         public static function push($job, $data = '', $queue = null)
         {
-            return \Illuminate\Queue\BeanstalkdQueue::push($job, $data, $queue);
+            return \Illuminate\Queue\SyncQueue::push($job, $data, $queue);
         }
         
         /**
@@ -7231,7 +7210,7 @@ namespace Illuminate\Support\Facades {
          */
         public static function pushRaw($payload, $queue = null, $options = array())
         {
-            return \Illuminate\Queue\BeanstalkdQueue::pushRaw($payload, $queue, $options);
+            return \Illuminate\Queue\SyncQueue::pushRaw($payload, $queue, $options);
         }
         
         /**
@@ -7246,7 +7225,7 @@ namespace Illuminate\Support\Facades {
          */
         public static function later($delay, $job, $data = '', $queue = null)
         {
-            return \Illuminate\Queue\BeanstalkdQueue::later($delay, $job, $data, $queue);
+            return \Illuminate\Queue\SyncQueue::later($delay, $job, $data, $queue);
         }
         
         /**
@@ -7258,43 +7237,7 @@ namespace Illuminate\Support\Facades {
          */
         public static function pop($queue = null)
         {
-            return \Illuminate\Queue\BeanstalkdQueue::pop($queue);
-        }
-        
-        /**
-         * Delete a message from the Beanstalk queue.
-         *
-         * @param string $queue
-         * @param string $id
-         * @return void 
-         * @static 
-         */
-        public static function deleteMessage($queue, $id)
-        {
-            \Illuminate\Queue\BeanstalkdQueue::deleteMessage($queue, $id);
-        }
-        
-        /**
-         * Get the queue or return the default.
-         *
-         * @param string|null $queue
-         * @return string 
-         * @static 
-         */
-        public static function getQueue($queue)
-        {
-            return \Illuminate\Queue\BeanstalkdQueue::getQueue($queue);
-        }
-        
-        /**
-         * Get the underlying Pheanstalk instance.
-         *
-         * @return \Pheanstalk\Pheanstalk 
-         * @static 
-         */
-        public static function getPheanstalk()
-        {
-            return \Illuminate\Queue\BeanstalkdQueue::getPheanstalk();
+            return \Illuminate\Queue\SyncQueue::pop($queue);
         }
         
         /**
@@ -7309,7 +7252,7 @@ namespace Illuminate\Support\Facades {
         public static function pushOn($queue, $job, $data = '')
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\BeanstalkdQueue::pushOn($queue, $job, $data);
+            return \Illuminate\Queue\SyncQueue::pushOn($queue, $job, $data);
         }
         
         /**
@@ -7325,7 +7268,7 @@ namespace Illuminate\Support\Facades {
         public static function laterOn($queue, $delay, $job, $data = '')
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\BeanstalkdQueue::laterOn($queue, $delay, $job, $data);
+            return \Illuminate\Queue\SyncQueue::laterOn($queue, $delay, $job, $data);
         }
         
         /**
@@ -7340,7 +7283,7 @@ namespace Illuminate\Support\Facades {
         public static function bulk($jobs, $data = '', $queue = null)
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\BeanstalkdQueue::bulk($jobs, $data, $queue);
+            return \Illuminate\Queue\SyncQueue::bulk($jobs, $data, $queue);
         }
         
         /**
@@ -7353,7 +7296,7 @@ namespace Illuminate\Support\Facades {
         public static function setContainer($container)
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            \Illuminate\Queue\BeanstalkdQueue::setContainer($container);
+            \Illuminate\Queue\SyncQueue::setContainer($container);
         }
         
         /**
@@ -7366,7 +7309,7 @@ namespace Illuminate\Support\Facades {
         public static function setEncrypter($encrypter)
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            \Illuminate\Queue\BeanstalkdQueue::setEncrypter($encrypter);
+            \Illuminate\Queue\SyncQueue::setEncrypter($encrypter);
         }
         
     }         
@@ -12623,6 +12566,59 @@ namespace Barryvdh\LaravelIdeHelper {
     }         
 }
     
+namespace Stevebauman\Location\Facades {
+
+    class Location {
+        
+        /**
+         * Creates the selected driver instance and sets the driver property.
+         *
+         * @param \Stevebauman\Location\Driver $driver
+         * @static 
+         */
+        public static function setDriver($driver)
+        {
+            return \Stevebauman\Location\Location::setDriver($driver);
+        }
+        
+        /**
+         * Sets the default driver from the configuration.
+         *
+         * @throws DriverDoesNotExistException
+         * @static 
+         */
+        public static function setDefaultDriver()
+        {
+            return \Stevebauman\Location\Location::setDefaultDriver();
+        }
+        
+        /**
+         * Sets the location session key.
+         *
+         * @param string $key
+         * @return \Location 
+         * @static 
+         */
+        public static function setSessionKey($key)
+        {
+            return \Stevebauman\Location\Location::setSessionKey($key);
+        }
+        
+        /**
+         * Retrieve the users location.
+         *
+         * @param string $ip
+         * @return \Stevebauman\Location\Position|bool 
+         * @static 
+         */
+        public static function get($ip = '')
+        {
+            return \Stevebauman\Location\Location::get($ip);
+        }
+        
+    }         
+}
+    
     
 namespace {
 
@@ -14544,6 +14540,8 @@ namespace {
     class 0 extends \L5Swagger\L5SwaggerServiceProvider {}
     
     class 1 extends \Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider {}
+    
+    class Location extends \Stevebauman\Location\Facades\Location {}
     
 }
 

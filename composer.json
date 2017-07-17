@@ -18,7 +18,9 @@
         "intervention/image": "^2.3",
         "darkaonline/l5-swagger": "~3.0",
         "doctrine/dbal": "~2.3",
-        "barryvdh/laravel-ide-helper": "^2.3"
+        "barryvdh/laravel-ide-helper": "^2.3",
+        "stevebauman/location": "^2.0",
+        "jenssegers/agent": "^2.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

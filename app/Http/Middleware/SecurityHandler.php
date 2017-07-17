@@ -23,6 +23,7 @@ class SecurityHandler
 
 	public function handle(Request $request, Closure $next)
 	{
+
 		if (! $this->cors->isCorsRequest($request)) {
 			return $next($request);
 		}

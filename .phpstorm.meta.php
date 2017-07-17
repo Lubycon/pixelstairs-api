@@ -3,7 +3,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2017-06-10.
+    * Generated on 2017-07-17.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -43,6 +43,7 @@ namespace PHPSTORM_META {
             'Maknz\Slack\Client' instanceof \Maknz\Slack\Client,
             'image' instanceof \Intervention\Image\ImageManager,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
+            'location' instanceof \Stevebauman\Location\Location,
             'command.l5-swagger.publish' instanceof \L5Swagger\Console\PublishCommand,
             'command.l5-swagger.publish-config' instanceof \L5Swagger\Console\PublishConfigCommand,
             'command.l5-swagger.publish-views' instanceof \L5Swagger\Console\PublishViewsCommand,
@@ -117,7 +118,7 @@ namespace PHPSTORM_META {
             'mailer' instanceof \Illuminate\Mail\Mailer,
             'Illuminate\Contracts\Pipeline\Hub' instanceof \Illuminate\Pipeline\Hub,
             'queue' instanceof \Illuminate\Queue\QueueManager,
-            'queue.connection' instanceof \Illuminate\Queue\BeanstalkdQueue,
+            'queue.connection' instanceof \Illuminate\Queue\SyncQueue,
             'command.queue.work' instanceof \Illuminate\Queue\Console\WorkCommand,
             'command.queue.restart' instanceof \Illuminate\Queue\Console\RestartCommand,
             'queue.worker' instanceof \Illuminate\Queue\Worker,
@@ -162,6 +163,7 @@ namespace PHPSTORM_META {
             'Maknz\Slack\Client' instanceof \Maknz\Slack\Client,
             'image' instanceof \Intervention\Image\ImageManager,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
+            'location' instanceof \Stevebauman\Location\Location,
             'command.l5-swagger.publish' instanceof \L5Swagger\Console\PublishCommand,
             'command.l5-swagger.publish-config' instanceof \L5Swagger\Console\PublishConfigCommand,
             'command.l5-swagger.publish-views' instanceof \L5Swagger\Console\PublishViewsCommand,
@@ -236,7 +238,7 @@ namespace PHPSTORM_META {
             'mailer' instanceof \Illuminate\Mail\Mailer,
             'Illuminate\Contracts\Pipeline\Hub' instanceof \Illuminate\Pipeline\Hub,
             'queue' instanceof \Illuminate\Queue\QueueManager,
-            'queue.connection' instanceof \Illuminate\Queue\BeanstalkdQueue,
+            'queue.connection' instanceof \Illuminate\Queue\SyncQueue,
             'command.queue.work' instanceof \Illuminate\Queue\Console\WorkCommand,
             'command.queue.restart' instanceof \Illuminate\Queue\Console\RestartCommand,
             'queue.worker' instanceof \Illuminate\Queue\Worker,
@@ -281,6 +283,7 @@ namespace PHPSTORM_META {
             'Maknz\Slack\Client' instanceof \Maknz\Slack\Client,
             'image' instanceof \Intervention\Image\ImageManager,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
+            'location' instanceof \Stevebauman\Location\Location,
             'command.l5-swagger.publish' instanceof \L5Swagger\Console\PublishCommand,
             'command.l5-swagger.publish-config' instanceof \L5Swagger\Console\PublishConfigCommand,
             'command.l5-swagger.publish-views' instanceof \L5Swagger\Console\PublishViewsCommand,
@@ -355,7 +358,7 @@ namespace PHPSTORM_META {
             'mailer' instanceof \Illuminate\Mail\Mailer,
             'Illuminate\Contracts\Pipeline\Hub' instanceof \Illuminate\Pipeline\Hub,
             'queue' instanceof \Illuminate\Queue\QueueManager,
-            'queue.connection' instanceof \Illuminate\Queue\BeanstalkdQueue,
+            'queue.connection' instanceof \Illuminate\Queue\SyncQueue,
             'command.queue.work' instanceof \Illuminate\Queue\Console\WorkCommand,
             'command.queue.restart' instanceof \Illuminate\Queue\Console\RestartCommand,
             'queue.worker' instanceof \Illuminate\Queue\Worker,
@@ -400,6 +403,7 @@ namespace PHPSTORM_META {
             'Maknz\Slack\Client' instanceof \Maknz\Slack\Client,
             'image' instanceof \Intervention\Image\ImageManager,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
+            'location' instanceof \Stevebauman\Location\Location,
             'command.l5-swagger.publish' instanceof \L5Swagger\Console\PublishCommand,
             'command.l5-swagger.publish-config' instanceof \L5Swagger\Console\PublishConfigCommand,
             'command.l5-swagger.publish-views' instanceof \L5Swagger\Console\PublishViewsCommand,
@@ -474,7 +478,7 @@ namespace PHPSTORM_META {
             'mailer' instanceof \Illuminate\Mail\Mailer,
             'Illuminate\Contracts\Pipeline\Hub' instanceof \Illuminate\Pipeline\Hub,
             'queue' instanceof \Illuminate\Queue\QueueManager,
-            'queue.connection' instanceof \Illuminate\Queue\BeanstalkdQueue,
+            'queue.connection' instanceof \Illuminate\Queue\SyncQueue,
             'command.queue.work' instanceof \Illuminate\Queue\Console\WorkCommand,
             'command.queue.restart' instanceof \Illuminate\Queue\Console\RestartCommand,
             'queue.worker' instanceof \Illuminate\Queue\Worker,
