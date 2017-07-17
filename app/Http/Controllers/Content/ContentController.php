@@ -118,19 +118,19 @@ class ContentController extends Controller
     protected function post(ContentPostRequest $request){
         $this->user = User::getAccessUser();
         //return $request->image;
-        try{
+        try {
             $this->content = $this->user->contents()->create([
                 "title" => $request->title,
                 "description" => $request->description,
                 "license_code" => $request->licenseCode,
                 "hash_tags" => json_encode($request->hashTags),
             ]);
-            $this->content->update([
-                "image_group_id" => $this->uploader->upload(
-                    $this->content,$request->image,true
-                )->getId(),
-            ]);
-        }catch (\Exception $e){
+            // $this->content->update([
+            //     "image_group_id" => $this->uploader->upload(
+            //         $this->content,$request->image,true
+            //     )->getId(),
+            // ]);
+        } catch (\Exception $e){
             $this->content->delete();
             Abort::Error('0040');
         }
