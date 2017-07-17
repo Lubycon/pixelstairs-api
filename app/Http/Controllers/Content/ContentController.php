@@ -117,7 +117,6 @@ class ContentController extends Controller
      */
     protected function post(ContentPostRequest $request){
         $this->user = User::getAccessUser();
-        //return $request->image;
         try{
             $this->content = $this->user->contents()->create([
                 "title" => $request->title,

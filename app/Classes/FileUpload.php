@@ -211,6 +211,7 @@ class FileUpload
             $image[$value]['image'] = $img->stream(null,100);
             $image[$value]['mime'] = $mime;
         }
+        $imageMake->destroy();
         return $image;
     }
     protected function getInternalS3Url($path){
