@@ -60,11 +60,11 @@ class FileUpload
     // init function
 
     // progress functions
-    public function upload($model,$inputFile,$isGroup=false){
+    public function upload($model, $inputFile, $isGroup=false){
         $this->needUpload = $this->checkNeedUpload($inputFile);
 //        try{
             if( !$this->needUpload ){
-                $this->setBasicVariable($model,$inputFile);
+                $this->setBasicVariable($model, $inputFile);
                 $this->modelName = $this->getModelName($this->model);
                 $this->modelId = $this->getModelId($this->model);
                 $this->isGroup = $isGroup;
@@ -280,7 +280,7 @@ class FileUpload
         return $ownerCheck;
     }
     private function checkNeedUpload($inputFile){
-        if(is_null($inputFile)) return true;
+        if(is_null($inputFile['file'])) return true;
         return false;
     }
     protected function findGroupExist($inputFile){
