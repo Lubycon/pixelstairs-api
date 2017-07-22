@@ -141,6 +141,7 @@ return [
         App\Providers\ResponseMacroServiceProvider::class,
         Maknz\Slack\SlackServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        Sentry\SentryLaravel\SentryLaravelServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -202,6 +203,7 @@ return [
         'Intervention' => Intervention\Image\Facades\Image::class,
         \L5Swagger\L5SwaggerServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        'Sentry' => Sentry\SentryLaravel\SentryFacade::class,
 
     ],
 
