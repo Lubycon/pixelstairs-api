@@ -39,6 +39,31 @@ class AdminContentController extends Controller {
         $this->pager = new Pager;
     }
 
+    protected function getList(Request $request) {
+        $this->user = User::getAccessUserOrNot();
+        $collection = $this->pager
+            ->search(new $this->content,$request->query())
+            ->getCollection();
+        $result = $this->pager->getPageInfo();
+        foreach($collection as $content){
+            $result->contents[] = $content->getContentInfoWithAuthor($this->user);
+        };
+
+        if(!empty($result->contents)) {
+            return response()->success($result);
+        } else{
+            return response()->success();
+        }
+    }
+
+    protected function get(Request $request, $content_id) {
+        $this->content = Content::findOrFail($content_id);
+        $this->user = User::getAccessUserOrNot();
+        $this->content->viewIt($this->user);
+        $result = $this->content->getContentInfoWithAuthor($this->user);
+        return response()->success($result);
+    }
+
     protected function put(Request $request, $content_id){
         $this->content = Content::findOrFail($content_id);
         try{
@@ -46,10 +71,7 @@ class AdminContentController extends Controller {
                 "title" => $request->title,
                 "description" => $request->description,
                 "license_code" => $request->licenseCode,
-                "hash_tags" => json_encode($request->hashTags),
-                "image_group_id" => $this->uploader->upload(
-                    $this->content,$request->image,true
-                )->getId(),
+                "hash_tags" => json_encode($request->hashTags)
             ]);
         } catch (\Exception $e){
             $this->content->delete();

@@ -117,10 +117,10 @@ Route::group(['prefix' => '/admin', 'middleware' => 'auth.admin'], function () {
     });
 
     Route::group(['prefix' => '/contents/'], function () {
-        Route::get('', 'Content\ContentController@getList');
+        Route::get('', 'Admin\Content\AdminContentController@getList');
 
         Route::group(['prefix' => '{content_id}/'], function () {
-            Route::get('', 'Content\ContentController@get');
+            Route::get('', 'Admin\Content\AdminContentController@get');
             Route::put('', 'Admin\Content\AdminContentController@put');
             Route::delete('', 'Admin\Content\AdminContentController@delete');
         });
