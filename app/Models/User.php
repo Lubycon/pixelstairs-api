@@ -267,4 +267,8 @@ class User extends Model implements AuthenticatableContract,
     {
         return $this->hasMany('App\Models\Content','user_id','id');
     }
+    public function blackUser()
+    {
+        return $this->hasOne('App\Models\BlackUser','user_id','id');
+    }
 }
