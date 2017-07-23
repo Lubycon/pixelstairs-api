@@ -112,7 +112,7 @@ Route::group(['prefix' => '/admin', 'middleware' => 'auth.admin'], function () {
         Route::get('', 'Admin\Member\AdminMemberController@getList');
         Route::group(['prefix' => '{id}/'], function () {
             Route::get('detail', 'Admin\Member\AdminMemberController@getRetrieve');
-            Route::put('detail', 'Admin\Member\MemberController@putRetrieve');
+            Route::put('detail', 'Admin\Member\AdminMemberController@putRetrieve');
         });
     });
 
