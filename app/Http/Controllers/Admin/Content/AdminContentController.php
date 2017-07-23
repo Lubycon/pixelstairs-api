@@ -42,7 +42,7 @@ class AdminContentController extends Controller {
     protected function getList(Request $request) {
         $this->user = User::getAccessUserOrNot();
         $collection = $this->pager
-            ->search(new $this->content,$request->query())
+            ->search(new $this->content, $request->query(), 'withDeleted')
             ->getCollection();
         $result = $this->pager->getPageInfo();
         foreach($collection as $content){
@@ -57,7 +57,7 @@ class AdminContentController extends Controller {
     }
 
     protected function get(Request $request, $content_id) {
-        $this->content = Content::findOrFail($content_id);
+        $this->content = Content::withTrashed()->findOrFail($content_id);
         $this->user = User::getAccessUserOrNot();
         $this->content->viewIt($this->user);
         $result = $this->content->getContentInfoWithAuthor($this->user);
