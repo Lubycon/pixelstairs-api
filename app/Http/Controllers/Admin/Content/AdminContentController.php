@@ -46,7 +46,7 @@ class AdminContentController extends Controller {
             ->getCollection();
         $result = $this->pager->getPageInfo();
         foreach($collection as $content){
-            $result->contents[] = $content->getContentInfoWithAuthor($this->user);
+            $result->contents[] = $content->getContentInfoWithAuthorByAdmin($this->user);
         };
 
         if(!empty($result->contents)) {
@@ -60,7 +60,7 @@ class AdminContentController extends Controller {
         $this->content = Content::withTrashed()->findOrFail($content_id);
         $this->user = User::getAccessUserOrNot();
         $this->content->viewIt($this->user);
-        $result = $this->content->getContentInfoWithAuthor($this->user);
+        $result = $this->content->getContentInfoWithAuthorByAdmin($this->user);
         return response()->success($result);
     }
 
