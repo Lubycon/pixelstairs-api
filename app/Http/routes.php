@@ -114,6 +114,11 @@ Route::group(['prefix' => '/admin', 'middleware' => 'auth.admin'], function () {
             Route::get('detail', 'Admin\Member\AdminMemberController@getRetrieve');
             Route::put('detail', 'Admin\Member\AdminMemberController@putRetrieve');
         });
+
+    });
+
+    Route::group(['prefix' => '/blackmembers/'], function() {
+        Route::get('', 'Admin\Member\AdminMemberController@getBlackUserList');
     });
 
     Route::group(['prefix' => '/contents/'], function () {

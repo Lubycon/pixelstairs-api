@@ -220,13 +220,22 @@ class User extends Model implements AuthenticatableContract,
             "profileImg" => $this->getImageObject(),
             "gender" => $this->gender,
             "birthday" => $this->birthday,
+            "grade" => $this->grade,
             "status" => $this->status,
             "newsletterAccepted" => $this->newsletters_accepted,
 
-            "createdAt" => $this->created_at,
-            "updatedAt" => $this->updated_at,
+            "createdAt" => Carbon::parse($this->created_at)->timezone(config('app.timezone'))->toDatetimeString(),
+            "updatedAt" => Carbon::parse($this->updated_at)->timezone(config('app.timezone'))->toDatetimeString(),
             "lastLoginTime" => $this->last_login_time,
-            "grade" => $this->grade
+
+            "isBlack" => $this->isBlackUser()
+        ];
+    }
+    public function getBlackInfo() {
+        return [
+            "createdAt" => Carbon::parse($this->blackUser->created_at)->timezone(config('app.timezone'))->toDatetimeString(),
+            "updatedAt" => Carbon::parse($this->blackUser->updated_at)->timezone(config('app.timezone'))->toDatetimeString(),
+            "deletedAt" => Carbon::parse($this->blackUser->deleted_at)->timezone(config('app.timezone'))->toDatetimeString(),
         ];
     }
 
@@ -252,6 +261,10 @@ class User extends Model implements AuthenticatableContract,
         $userSignupToken = $this->getSignupToken();
         $this->signupAllow->expiredCheck();
         return $userSignupToken === $code;
+    }
+
+    private function isBlackUser() {
+        return $this->blackUser()->exists();
     }
 
 

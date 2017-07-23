@@ -8,6 +8,7 @@ use Abort;
 
 // Models
 use App\Models\User;
+use App\Models\BlackUser;
 
 // Require
 use Illuminate\Http\Request;
@@ -19,10 +20,12 @@ use App\Classes\Pager;
 
 class AdminMemberController extends Controller {
     public $user;
+    public $blackUser;
     public $pager;
 
     public function __construct() {
         $this->user = User::class;
+        $this->blackUser = BlackUser::class;
         $this->pager = new Pager();
     }
 
@@ -32,11 +35,31 @@ class AdminMemberController extends Controller {
             ->getCollection();
         $result = $this->pager->getPageInfo();
         foreach($collection as $user) {
-            $user = User::findOrFail($user->id);
-            $result->users[] = $user->getDetailInfo();
+            $result->users[] = $user->getDetailInfoByAdmin();
         };
 
         if(!empty($result->users)) {
+            return response()->success($result);
+        }
+        else {
+            return response()->success();
+        }
+    }
+
+    protected function getBlackUserList(Request $request) {
+        $collection = $this->pager
+            ->search(new $this->blackUser, $request->query())
+            ->getCollection();
+        $result = $this->pager->getPageInfo();
+        foreach($collection as $blackUser) {
+            $user = User::findOrFail($blackUser->user_id);
+            $result->blackUsers[] = [
+                "user" => $user->getDetailInfoByAdmin(),
+                "blackInfo" => $user->getBlackInfo()
+            ];
+        };
+
+        if(!empty($result->blackUsers)) {
             return response()->success($result);
         }
         else {
