@@ -42,7 +42,8 @@ class AdminContentController extends Controller {
     protected function getList(Request $request) {
         $this->user = User::getAccessUserOrNot();
         $collection = $this->pager
-            ->search(new $this->content, $request->query(), 'withDeleted')
+            ->search(new $this->content, $request->query())
+            ->setDeleteParam(true)
             ->getCollection();
         $result = $this->pager->getPageInfo();
         foreach($collection as $content){

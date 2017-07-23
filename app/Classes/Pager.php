@@ -41,7 +41,7 @@ class Pager
     private $currentPage;
     private $collection;
 
-    private $withDeleted;
+    private $withDeleted = false;
 
     public $DBquery;
 
@@ -55,9 +55,8 @@ class Pager
         $this->defaultPageSize = config("pager.default.pageSize.basic");
     }
 
-    public function search($model, $query, $withDeleted)
+    public function search($model, $query)
     {
-        $this->withDeleted = $withDeleted == 'withDeleted';
         $this->baseTableName = with($model)->getTable();
         $this->baseTablePath = $model;
         $this->setModel($model);
@@ -142,6 +141,12 @@ class Pager
             }
         }
         return $result;
+    }
+
+    public function setDeleteParam($params)
+    {
+        $this->withDeleted = $params;
+        return $this;
     }
 
     private function getParsedQuery($type, $query)
@@ -369,6 +374,7 @@ class Pager
     private function modelWithDeleted()
     {
         $this->finalModel = $this->finalModel->withTrashed();
+        return $this;
     }
 
     private function sortDirectionCheck($key,$direction)
