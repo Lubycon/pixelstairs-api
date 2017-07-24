@@ -22,6 +22,7 @@ use App\Classes\Pager;
 use App\Http\Requests\Content\ContentDeleteRequest;
 use App\Http\Requests\Content\ContentPutRequest;
 use App\Http\Requests\Content\ContentPostRequest;
+use App\Http\Requests\Image\ImagePostRequest;
 
 // for image test
 use Intervention;
@@ -131,6 +132,22 @@ class ContentController extends Controller
             //     )->getId(),
             // ]);
         } catch (\Exception $e){
+            $this->content->delete();
+            Abort::Error('0040');
+        }
+        return response()->success($this->content);
+    }
+
+    protected function uploadImage(Request $request,$content_id){
+        $this->content = Content::findOrFail($content_id);
+        
+        // $this->user = User::getAccessUser();
+        try{
+            $this->content->update([
+                "image_group_id" =>
+                    $this->uploader->uploadByFile($this->content,$request->image,true)->getId()
+            ]);
+        }catch (\Exception $e){
             $this->content->delete();
             Abort::Error('0040');
         }

@@ -79,6 +79,21 @@ class FileUpload
 //            Abort::Error('0050',$e->getMessage());
 //        }
     }
+
+    public function uploadByFile($model, $file, $isGroup=false){
+        $this->modelName = $this->getModelName($model);
+        $this->modelId = $this->getModelId($model);
+        $uploadPath = $this->responsiveUploadUrl($file);
+        $image = Image::create([
+                    "index" => 0,
+                    "url" => $uploadPath,
+                    $this->ownCheckers['snake'] => false,
+                    "image_group_id" => null,
+                ]);
+
+        return $this;
+    }
+
     // progress functions
 
     ///////////////////////////////////////////////////////////////////////////////////////
