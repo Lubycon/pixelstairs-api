@@ -3,7 +3,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2017-07-22.
+    * Generated on 2017-07-17.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -43,6 +43,7 @@ namespace PHPSTORM_META {
             'Maknz\Slack\Client' instanceof \Maknz\Slack\Client,
             'image' instanceof \Intervention\Image\ImageManager,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
+            'location' instanceof \Stevebauman\Location\Location,
             'command.l5-swagger.publish' instanceof \L5Swagger\Console\PublishCommand,
             'command.l5-swagger.publish-config' instanceof \L5Swagger\Console\PublishConfigCommand,
             'command.l5-swagger.publish-views' instanceof \L5Swagger\Console\PublishViewsCommand,
@@ -162,6 +163,7 @@ namespace PHPSTORM_META {
             'Maknz\Slack\Client' instanceof \Maknz\Slack\Client,
             'image' instanceof \Intervention\Image\ImageManager,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
+            'location' instanceof \Stevebauman\Location\Location,
             'command.l5-swagger.publish' instanceof \L5Swagger\Console\PublishCommand,
             'command.l5-swagger.publish-config' instanceof \L5Swagger\Console\PublishConfigCommand,
             'command.l5-swagger.publish-views' instanceof \L5Swagger\Console\PublishViewsCommand,
@@ -281,6 +283,7 @@ namespace PHPSTORM_META {
             'Maknz\Slack\Client' instanceof \Maknz\Slack\Client,
             'image' instanceof \Intervention\Image\ImageManager,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
+            'location' instanceof \Stevebauman\Location\Location,
             'command.l5-swagger.publish' instanceof \L5Swagger\Console\PublishCommand,
             'command.l5-swagger.publish-config' instanceof \L5Swagger\Console\PublishConfigCommand,
             'command.l5-swagger.publish-views' instanceof \L5Swagger\Console\PublishViewsCommand,
@@ -400,6 +403,7 @@ namespace PHPSTORM_META {
             'Maknz\Slack\Client' instanceof \Maknz\Slack\Client,
             'image' instanceof \Intervention\Image\ImageManager,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
+            'location' instanceof \Stevebauman\Location\Location,
             'command.l5-swagger.publish' instanceof \L5Swagger\Console\PublishCommand,
             'command.l5-swagger.publish-config' instanceof \L5Swagger\Console\PublishConfigCommand,
             'command.l5-swagger.publish-views' instanceof \L5Swagger\Console\PublishViewsCommand,

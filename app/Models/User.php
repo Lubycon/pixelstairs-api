@@ -163,14 +163,12 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public function insertAccessToken($token = null){
-        // TODO : device info add to token
-//	    $deviceInfo = Request::header("x-pixel-device");
-
+        $device = app('request')->clientInfo['device']['typeCode'];
         if( is_null($token) ){
             $userId = $this->id;
-            $device = 'w';
+            $deviceCode = $device;
             $randomStr = Str::random(30);
-            $token = $device.$randomStr.$userId; //need change first src from header device check
+            $token = $deviceCode.$randomStr.$userId; //need change first src from header device check
         }
 
         $this->token = $token;
