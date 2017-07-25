@@ -22,6 +22,7 @@ use App\Classes\Pager;
 use App\Http\Requests\Content\ContentDeleteRequest;
 use App\Http\Requests\Content\ContentPutRequest;
 use App\Http\Requests\Content\ContentPostRequest;
+use App\Http\Requests\Content\Image\ContentImagePostRequest;
 
 // for image test
 use Intervention;
@@ -124,15 +125,53 @@ class ContentController extends Controller
                 "license_code" => $request->licenseCode,
                 "hash_tags" => json_encode($request->hashTags),
             ]);
-            $this->content->update([
-                "image_group_id" => $this->uploader->upload(
-                    $this->content,$request->image,true
-                )->getId(),
-            ]);
-        }catch (\Exception $e){
+            // $this->content->update([
+            //     "image_group_id" => $this->uploader->upload(
+            //         $this->content,$request->image,true
+            //     )->getId(),
+            // ]);
+        } catch (\Exception $e){
             $this->content->delete();
             Abort::Error('0040');
         }
+        return response()->success($this->content);
+    }
+
+    /**
+     * @SWG\Post(
+     *   path="/contents/image",
+     *   summary="image upload",
+     *   operationId="image upload",
+     *   tags={"/Contents/Image"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Post detail",
+     *     required=true,
+     *      @SWG\Schema(ref="#/definitions/contents/image/post")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
+    protected function uploadImage(ContentImagePostRequest $request,$content_id){
+        $this->content = Content::findOrFail($content_id);
+//        $this->user = User::getAccessUser();
+//        try{
+            $this->content->update([
+                "image_group_id" => $this->uploader->upload(
+                         $this->content,$request->file('file'),true
+                     )->getId(),
+            ]);
+//        }catch (\Exception $e){
+//            Abort::Error('0040');
+//        }
         return response()->success($this->content);
     }
 

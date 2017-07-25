@@ -23,7 +23,7 @@ class ContentPostRequest extends Request
      *   type="object",
      *   allOf={
      *       @SWG\Schema(
-     *           required={"title","description","licenseCode","hashTags","image"},
+     *           required={"title","description","licenseCode","hashTags"},
      *           @SWG\Property(property="title", type="string", default="test title~~"),
      *           @SWG\Property(property="description", type="string", default="lorammmmmm"),
      *           @SWG\Property(property="licenseCode", type="string", default="0101"),
@@ -39,8 +39,6 @@ class ContentPostRequest extends Request
             "description" => "required",
             "licenseCode" => "required|string",
             "hashTags" => "required|array",
-            "image" => "required|array",
-//            "image.*.file" => "base64"
         ];
         return $requiredRule;
     }
