@@ -71,27 +71,17 @@ class FileUpload
                 $this->groupModel = $this->createImageGroupModel($this->inputFile);
                 $this->inputFile = $this->setToArray($this->inputFile);
                 $this->inputFile = $this->fileTypeCheck($this->inputFile);
-                $this->inputFile = $this->uploadS3($this->inputFile);
+                if( gettype($this->inputFile[0]) === 'object' ){
+                    $this->inputFile = $this->uploadS3File($this->inputFile);
+                }else{
+                    $this->inputFile = $this->uploadS3Binery($this->inputFile);
+                }
                 $this->createModel = $this->createImageModel($this->inputFile);
             }
             return $this;
 //        }catch(\Exception $e){
 //            Abort::Error('0050',$e->getMessage());
 //        }
-    }
-
-    public function uploadByFile($model, $file, $isGroup=false){
-        $this->modelName = $this->getModelName($model);
-        $this->modelId = $this->getModelId($model);
-        $uploadPath = $this->responsiveUploadUrl($file);
-        $image = Image::create([
-                    "index" => 0,
-                    "url" => $uploadPath,
-                    $this->ownCheckers['snake'] => false,
-                    "image_group_id" => null,
-                ]);
-
-        return $this;
     }
 
     // progress functions
@@ -126,7 +116,17 @@ class FileUpload
         }
         return true;
     }
-    private function uploadS3($inputFile){
+
+
+    private function uploadS3File($inputFile){
+        foreach($inputFile as $key => $value){
+            $value->url = $this->responsiveUploadUrl($value);
+        }
+        return $inputFile;
+    }
+
+
+    private function uploadS3Binery($inputFile){
         foreach($inputFile as $key => $value){
             if( is_null($value['type']) ) unset($inputFile[$key]); // null image
             if( isset( $value['id'] ) ){ //update or delete
@@ -169,22 +169,33 @@ class FileUpload
     protected function createImageModel($inputFile){
         $images = [];
         foreach($inputFile as $key => $value ){
-            $ownerCheck = $this->ownerCheck($value);
-            if( isset($value['id']) ){ // update
-                $images[] = $image = Image::findOrFail($value['id']);
-                $image->update([
-                    "index" => isset($value['index']) ? $value['index'] : 0,
-                    "url" => $value['url'],
-                    $this->ownCheckers['snake'] => $ownerCheck,
-                    "image_group_id" => $this->isGroup ? $this->groupModel['id'] : null,
-                ]);
-            }else{ // create
-                $images[] = Image::create([
-                    "index" => isset($value['index']) ? $value['index'] : 0,
-                    "url" => $value['url'],
-                    $this->ownCheckers['snake'] => $ownerCheck,
-                    "image_group_id" => $this->isGroup ? $this->groupModel['id'] : null,
-                ]);
+            if( gettype($value) === 'object' ){
+                if( gettype($value) === 'object' ){
+                    $images[] = Image::create([
+                        "index" => 0,
+                        "url" => $value->url,
+                        $this->ownCheckers['snake'] => true,
+                        "image_group_id" => $this->isGroup ? $this->groupModel['id'] : null,
+                    ]);
+                }
+            }else{
+                $ownerCheck = $this->ownerCheck($value);
+                if( isset($value['id']) ){ // update
+                    $images[] = $image = Image::findOrFail($value['id']);
+                    $image->update([
+                        "index" => isset($value['index']) ? $value['index'] : 0,
+                        "url" => $value['url'],
+                        $this->ownCheckers['snake'] => $ownerCheck,
+                        "image_group_id" => $this->isGroup ? $this->groupModel['id'] : null,
+                    ]);
+                }else{ // create
+                    $images[] = Image::create([
+                        "index" => isset($value['index']) ? $value['index'] : 0,
+                        "url" => $value['url'],
+                        $this->ownCheckers['snake'] => $ownerCheck,
+                        "image_group_id" => $this->isGroup ? $this->groupModel['id'] : null,
+                    ]);
+                }
             }
         }
         return $this->isGroup ? $this->groupModel : $images ;
@@ -233,6 +244,7 @@ class FileUpload
         return $explode[1];
     }
     protected function getFileType($value){
+        if( gettype($value) === 'object' ) return "file";
         $file = $value['file'];
         if( $this->isBase64($file) ){ return "base64"; }
         else if( $this->isUrl($file) ){ return "url"; }
@@ -264,7 +276,9 @@ class FileUpload
         $this->inputFile = $inputFile;
     }
     protected function setToArray($inputFile){
-        if( isset($inputFile['file']) ) // if file is alone... grep into array
+        if( get_class($inputFile) === 'Illuminate\Http\UploadedFile' ){
+            $checker[] = $inputFile;
+        }else if( isset($inputFile['file']) ) // if file is alone... grep into array
             $checker[] = $inputFile;
         return isset($checker) ? $checker : $inputFile;
     }
@@ -311,7 +325,11 @@ class FileUpload
     protected function fileTypeCheck($inputFile){
         foreach( $inputFile as $key => $value ){
             $fileType = $this->getFileType($value);
-            $inputFile[$key]['type'] = $fileType;
+            if( $fileType === 'file' ){
+                $inputFile[$key]->type = $fileType;
+            }else{
+                $inputFile[$key]['type'] = $fileType;
+            }
         }
         return $inputFile;
     }

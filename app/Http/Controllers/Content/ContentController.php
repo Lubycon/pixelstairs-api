@@ -165,14 +165,17 @@ class ContentController extends Controller
         $this->content = Content::findOrFail($content_id);
 //        $this->user = User::getAccessUser();
 
-        try{
+
+
+//        try{
             $this->content->update([
-                "image_group_id" =>
-                    $this->uploader->uploadByFile($this->content,$request->file,true)->getId()
+                "image_group_id" => $this->uploader->upload(
+                         $this->content,$request->file('file'),true
+                     )->getId(),
             ]);
-        }catch (\Exception $e){
-            Abort::Error('0040');
-        }
+//        }catch (\Exception $e){
+//            Abort::Error('0040');
+//        }
         return response()->success($this->content);
     }
 

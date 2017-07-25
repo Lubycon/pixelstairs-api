@@ -34,7 +34,7 @@ class ContentImagePostRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            "file" => "required",
+            "file" => "required|image|mimes:jpeg,png,jpg|max:10240",
         ];
         return $requiredRule;
     }
