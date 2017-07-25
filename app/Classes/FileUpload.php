@@ -61,7 +61,7 @@ class FileUpload
 
     // progress functions
     public function upload($model, $inputFile, $isGroup=false){
-        $this->needUpload = $this->checkNeedUpload($inputFile);
+//        $this->needUpload = $this->checkNeedUpload($inputFile);
 //        try{
             if( !$this->needUpload ){
                 $this->setBasicVariable($model, $inputFile);
@@ -309,6 +309,7 @@ class FileUpload
         return $ownerCheck;
     }
     private function checkNeedUpload($inputFile){
+        if(is_null($inputFile['file'])) return true;
         if(is_null($inputFile['file'])) return true;
         return false;
     }
