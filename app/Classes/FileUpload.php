@@ -61,7 +61,7 @@ class FileUpload
 
     // progress functions
     public function upload($model, $inputFile, $isGroup=false){
-//        $this->needUpload = $this->checkNeedUpload($inputFile);
+        $this->needUpload = $this->checkNeedUpload($inputFile);
 //        try{
             if( !$this->needUpload ){
                 $this->setBasicVariable($model, $inputFile);
@@ -277,7 +277,7 @@ class FileUpload
         $this->inputFile = $inputFile;
     }
     protected function setToArray($inputFile){
-        if( get_class($inputFile) === 'Illuminate\Http\UploadedFile' ){
+        if( gettype($inputFile) === 'object' && get_class($inputFile) === 'Illuminate\Http\UploadedFile' ){
             $checker[] = $inputFile;
         }else if( isset($inputFile['file']) ) // if file is alone... grep into array
             $checker[] = $inputFile;
@@ -309,8 +309,11 @@ class FileUpload
         return $ownerCheck;
     }
     private function checkNeedUpload($inputFile){
-        if(is_null($inputFile['file'])) return true;
-        if(is_null($inputFile['file'])) return true;
+        if( gettype($inputFile) === 'object' ){
+            return false;
+        }else{
+            if(is_null($inputFile['file'])) return true;
+        }
         return false;
     }
     protected function findGroupExist($inputFile){

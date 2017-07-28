@@ -120,7 +120,7 @@ class MemberController extends Controller
         $this->user = User::getAccessUser();
         $result = null;
         
-        try {
+//        try {
             $this->user->update([
                 "birthday" => Carbon::parse($request->birthday)->timezone(config('app.timezone'))->toDateTimeString(),
                 "gender" => $request->gender,
@@ -132,9 +132,9 @@ class MemberController extends Controller
                 "newsletters_accepted" => $request->newsletterAccepted,
             ]);
             $result = $this->user->getDetailInfo();
-        } catch (\Exception $e){
-            Abort::Error('0040');
-        }
+//        } catch (\Exception $e){
+//            Abort::Error('0040');
+//        }
         return response()->success($result);
     }
 }
