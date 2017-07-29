@@ -226,7 +226,7 @@ class User extends Model implements AuthenticatableContract,
             "updatedAt" => Carbon::parse($this->updated_at)->timezone(config('app.timezone'))->toDatetimeString(),
             "lastLoginTime" => $this->last_login_time,
 
-            "isBlack" => $this->isBlackUser()
+            "isBlackUser" => $this->isBlackUser()
         ];
     }
     public function getBlackInfo() {
@@ -235,6 +235,24 @@ class User extends Model implements AuthenticatableContract,
             "updatedAt" => Carbon::parse($this->blackUser->updated_at)->timezone(config('app.timezone'))->toDatetimeString(),
             "deletedAt" => Carbon::parse($this->blackUser->deleted_at)->timezone(config('app.timezone'))->toDatetimeString(),
         ];
+    }
+
+    public function setToBlackList() {
+        if(!$this->isBlackUser()) {
+            $this->blackUser()->create([
+                "user_id" => $this->id
+            ]);
+
+            return $this->save();
+        }
+    }
+
+    public function removeFromBlackList() {
+        if($this->isBlackUser()) {
+            $this->blackUser()->delete();
+
+            return $this->save();
+        }
     }
 
     public function getImageObject(){

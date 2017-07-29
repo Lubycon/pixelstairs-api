@@ -85,6 +85,14 @@ class AdminMemberController extends Controller {
                 "status" => $request->status,
                 "grade" => $request->grade
             ]);
+
+            if($request->isBlackUser) {
+                $this->user->setToBlackList();
+            }
+            else {
+                $this->user->removeFromBlackList();
+            }
+
             $result = $this->user->getDetailInfo();
         } catch (\Exception $e){
             Abort::Error('0040');
