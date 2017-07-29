@@ -58,10 +58,11 @@ class Content extends Model {
 	protected $fillable = array('user_id', 'license_code', 'image_group_id', 'title', 'description', 'view_count', 'like_count', 'hash_tags');
 
     public function viewIt($user){
+        Log::info(app('request')->clientInfo);
         if( !$this->amIView($user) ){
             $this->views()->create([
                 "user_id" => is_null($user) ? null : $user->id,
-                "ip" => app('request')->ip(),
+                "ip" => app('request')->clientInfo['ip'],
             ]);
             $this->view_count++;
             return $this->save();

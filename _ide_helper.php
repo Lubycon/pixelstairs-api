@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.2.45 on 2017-07-22.
+ * Generated for Laravel 5.2.45 on 2017-07-17.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -12566,6 +12566,59 @@ namespace Barryvdh\LaravelIdeHelper {
     }         
 }
     
+namespace Stevebauman\Location\Facades {
+
+    class Location {
+        
+        /**
+         * Creates the selected driver instance and sets the driver property.
+         *
+         * @param \Stevebauman\Location\Driver $driver
+         * @static 
+         */
+        public static function setDriver($driver)
+        {
+            return \Stevebauman\Location\Location::setDriver($driver);
+        }
+        
+        /**
+         * Sets the default driver from the configuration.
+         *
+         * @throws DriverDoesNotExistException
+         * @static 
+         */
+        public static function setDefaultDriver()
+        {
+            return \Stevebauman\Location\Location::setDefaultDriver();
+        }
+        
+        /**
+         * Sets the location session key.
+         *
+         * @param string $key
+         * @return \Location 
+         * @static 
+         */
+        public static function setSessionKey($key)
+        {
+            return \Stevebauman\Location\Location::setSessionKey($key);
+        }
+        
+        /**
+         * Retrieve the users location.
+         *
+         * @param string $ip
+         * @return \Stevebauman\Location\Position|bool 
+         * @static 
+         */
+        public static function get($ip = '')
+        {
+            return \Stevebauman\Location\Location::get($ip);
+        }
+        
+    }         
+}
+    
     
 namespace {
 
@@ -14487,6 +14540,8 @@ namespace {
     class 0 extends \L5Swagger\L5SwaggerServiceProvider {}
     
     class 1 extends \Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider {}
+    
+    class Location extends \Stevebauman\Location\Facades\Location {}
     
 }
 

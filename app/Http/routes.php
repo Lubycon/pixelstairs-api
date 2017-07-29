@@ -80,6 +80,9 @@ Route::group(['prefix' => '/v1'], function () {
             Route::put('', 'Content\ContentController@put');
             Route::delete('', 'Content\ContentController@delete');
 
+            Route::group(['prefix' => 'image/'], function () {
+                Route::post('', 'Content\ContentController@uploadImage');
+            });
             Route::group(['prefix' => 'like/'], function () {
                 Route::post('', 'Content\InterestController@postLike');
                 Route::delete('', 'Content\InterestController@deleteLike');
