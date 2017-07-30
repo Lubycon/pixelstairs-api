@@ -58,7 +58,6 @@ class Content extends Model {
 	protected $fillable = array('user_id', 'license_code', 'image_group_id', 'title', 'description', 'view_count', 'like_count', 'hash_tags');
 
     public function viewIt($user){
-        Log::info(app('request')->clientInfo);
         if( !$this->amIView($user) ){
             $this->views()->create([
                 "user_id" => is_null($user) ? null : $user->id,
@@ -78,9 +77,11 @@ class Content extends Model {
         return true;
     }
     public function dislikeIt(User $user){
-        $this->likes()->whereuser_id($user->id)->delete();
-        $this->like_count--;
-        return $this->save();
+        if( $this->amILike($user) ){
+            $this->likes()->where('user_id',$user->id)->delete();
+            $this->like_count--;
+            return $this->save();
+        }
     }
     public function amILike($user){
         if( !is_null($user) ){
@@ -96,7 +97,7 @@ class Content extends Model {
         //        2. check on limit time
         //        3. check if auth that user id
         $result = $this->views()
-            ->whereip(app('request')->ip())
+            ->where('ip',app('request')->clientInfo['ip'])
             ->where('created_at','>',Carbon::now()->subSeconds(View::getCountUpLimitTime()));
         if( !is_null($user) ) $result->whereuser_id($user->id);
         return !is_null($result->first());
