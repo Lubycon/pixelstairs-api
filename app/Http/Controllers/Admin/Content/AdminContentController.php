@@ -60,8 +60,7 @@ class AdminContentController extends Controller {
     protected function get(Request $request, $content_id) {
         $this->content = Content::withTrashed()->findOrFail($content_id);
         $this->user = User::getAccessUserOrNot();
-        $this->content->viewIt($this->user);
-        $result = $this->content->getContentInfoWithAuthorByAdmin($this->user);
+        $result = $this->content->getContentInfoWithAuthorByAdmin();
         return response()->success($result);
     }
 
@@ -75,7 +74,6 @@ class AdminContentController extends Controller {
                 "hash_tags" => json_encode($request->hashTags)
             ]);
         } catch (\Exception $e){
-            $this->content->delete();
             Abort::Error('0040');
         }
         return response()->success($this->content);

@@ -14,8 +14,8 @@ class CreateBlackUsersTable extends Migration
     {
         Schema::create('black_users', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
             $table->integer('user_id')->unsigned();
+            $table->timestamps();
             $table->softDeletes();
         });
     }

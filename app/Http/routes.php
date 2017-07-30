@@ -104,9 +104,6 @@ Route::group(['prefix' => '/v1'], function () {
     Route::post('/tracker', 'Tracker\TrackerController@create');
 });
 
-Route::get('admin/profile', ['middleware' => 'auth', function () {
-    //
-}]);
 
 
 // ADMIN API

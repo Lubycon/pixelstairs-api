@@ -243,7 +243,7 @@ class User extends Model implements AuthenticatableContract,
                 "user_id" => $this->id
             ]);
 
-            return $this->save();
+            return $this;
         }
     }
 
@@ -251,7 +251,7 @@ class User extends Model implements AuthenticatableContract,
         if($this->isBlackUser()) {
             $this->blackUser()->delete();
 
-            return $this->save();
+            return $this;
         }
     }
 

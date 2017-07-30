@@ -117,7 +117,7 @@ class Content extends Model {
 			"updatedAt" => Carbon::parse($this->updated_at)->toDateTimeString()
         ];
     }
-	public function getContentInfoWithAuthorByAdmin($user) {
+	public function getContentInfoWithAuthorByAdmin() {
 		// Here is no 'myLike' prop, and 'deletedAt' prop is added
 		$contentInfo = [
 			"id" => $this->id,
