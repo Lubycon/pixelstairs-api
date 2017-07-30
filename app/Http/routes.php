@@ -105,16 +105,27 @@ Route::group(['prefix' => '/v1'], function () {
 });
 
 
+Route::post('/admin/members/signin', 'Admin\Auth\AuthController@signin');
 
 // ADMIN API
 Route::group(['prefix' => '/admin', 'middleware' => 'auth.admin'], function () {
     Route::group(['prefix' => '/members/'], function () {
+        Route::put('signout', 'Auth\AuthController@signout');
+        Route::post('signup', 'Admin\Auth\AuthController@signup');
+
         Route::get('', 'Admin\Member\AdminMemberController@getList');
+        Route::get('simple', 'Member\MemberController@simpleRetrieve');
+
         Route::group(['prefix' => '{id}/'], function () {
+            Route::delete('signdrop', 'Admin\Auth\AuthController@signdrop');
             Route::get('detail', 'Admin\Member\AdminMemberController@getRetrieve');
             Route::put('detail', 'Admin\Member\AdminMemberController@putRetrieve');
         });
 
+        Route::group(['prefix' => 'exists/'], function () {
+            Route::post('email', 'Auth\AuthController@emailExist');
+            Route::post('nickname', 'Auth\AuthController@nicknameExist');
+        });
     });
 
     Route::group(['prefix' => '/blackmembers/'], function() {

@@ -88,6 +88,18 @@ class User extends Model implements AuthenticatableContract,
             "status" => "inactive",
         ];
     }
+    public static function bindSignupDataByAdmin($request){
+        return [
+            "email" => $request->email,
+            "password" => bcrypt($request->password),
+            "nickname" => $request->nickname,
+            "newsletters_accepted" => $request->newsletterAccepted,
+            "terms_of_service_accepted" => $request->termsOfServiceAccepted,
+            "birthday" => Carbon::parse($request->birthday)->timezone(config('app.timezone'))->toDatetimeString(),
+            "grade" => $request->grade,
+            "status" => $request->status,
+        ];
+    }
 
     public static function isMyId($user_id){
         if( User::getAccessUser()->id === $user_id )return true;
