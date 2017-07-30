@@ -107,7 +107,6 @@ class Content extends Model {
             "id" => $this->id,
             "title" => $this->title,
             "description" => $this->description,
-//            "thumbnailImg" => $this->getThumbnailImageObject(),
             "image" => $this->getGroupImageObject(),
             "licenseCode" => $this->license_code,
             "myLike" => $this->amILike($user),
@@ -118,6 +117,27 @@ class Content extends Model {
 			"updatedAt" => Carbon::parse($this->updated_at)->toDateTimeString()
         ];
     }
+	public function getContentInfoWithAuthorByAdmin() {
+		// Here is no 'myLike' prop, and 'deletedAt' prop is added
+		$contentInfo = [
+			"id" => $this->id,
+			"title" => $this->title,
+			"description" => $this->description,
+            "image" => $this->getGroupImageObject(),
+            "licenseCode" => $this->license_code,
+            "counts" => $this->getCounts(),
+            "hashTags" => $this->getHashTags(),
+            "user" => $this->user->getSimpleInfo(),
+			"createdAt" => Carbon::parse($this->created_at)->toDateTimeString(),
+			"updatedAt" => Carbon::parse($this->updated_at)->toDateTimeString(),
+			"deletedAt" => null
+		];
+		if($this->deleted_at) {
+			$contentInfo["deletedAt"] = Carbon::parse($this->deleted_at)->toDateTimeString();
+		}
+
+		return $contentInfo;
+	}
 
 	public function getCounts(){
         return [

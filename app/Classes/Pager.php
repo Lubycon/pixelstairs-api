@@ -41,6 +41,8 @@ class Pager
     private $currentPage;
     private $collection;
 
+    private $withDeleted = false;
+
     public $DBquery;
 
     public function __construct()
@@ -51,6 +53,7 @@ class Pager
         $this->multipleQueryDivider = config("pager.comparision.multipleQueryDivider");
         $this->maxSize = config("pager.default.pageSize.max");
         $this->defaultPageSize = config("pager.default.pageSize.basic");
+        $this->withDeleted = false;
     }
 
     public function search($model, $query)
@@ -139,6 +142,12 @@ class Pager
             }
         }
         return $result;
+    }
+
+    public function setDeleteParam($params)
+    {
+        $this->withDeleted = $params;
+        return $this;
     }
 
     private function getParsedQuery($type, $query)
@@ -363,6 +372,12 @@ class Pager
         }
     }
 
+    private function modelWithDeleted()
+    {
+        $this->finalModel = $this->finalModel->withTrashed();
+        return $this;
+    }
+
     private function sortDirectionCheck($key,$direction)
     {
         if ($direction == 'desc' || $direction == 'asc') return $direction;
@@ -413,6 +428,9 @@ class Pager
     {
         $this->joinedmodel = $this->joinModel($this->model);
         $this->modelFiltering();
+        if($this->withDeleted) {
+            $this->modelWithDeleted();
+        }
         $this->modelSorting();
 
         $this->paginator = $this->finalModel

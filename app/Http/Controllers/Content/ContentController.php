@@ -85,7 +85,7 @@ class ContentController extends Controller
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */
-    protected function get(Request $request,$content_id){
+    protected function get(Request $request, $content_id){
         $this->content = Content::findOrFail($content_id);
         $this->user = User::getAccessUserOrNot();
         $this->content->viewIt($this->user);
