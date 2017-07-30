@@ -101,5 +101,33 @@ Route::group(['prefix' => '/v1'], function () {
         Route::get('{category}', 'Quote\QuoteController@get');
     });
 //    Route::get('/data', 'Data\DataResponseController@dataSimpleResponse');
-    Route::post('/tracker','Tracker\TrackerController@create');
+    Route::post('/tracker', 'Tracker\TrackerController@create');
+});
+
+
+
+// ADMIN API
+Route::group(['prefix' => '/admin', 'middleware' => 'auth.admin'], function () {
+    Route::group(['prefix' => '/members/'], function () {
+        Route::get('', 'Admin\Member\AdminMemberController@getList');
+        Route::group(['prefix' => '{id}/'], function () {
+            Route::get('detail', 'Admin\Member\AdminMemberController@getRetrieve');
+            Route::put('detail', 'Admin\Member\AdminMemberController@putRetrieve');
+        });
+
+    });
+
+    Route::group(['prefix' => '/blackmembers/'], function() {
+        Route::get('', 'Admin\Member\AdminMemberController@getBlackUserList');
+    });
+
+    Route::group(['prefix' => '/contents/'], function () {
+        Route::get('', 'Admin\Content\AdminContentController@getList');
+
+        Route::group(['prefix' => '{content_id}/'], function () {
+            Route::get('', 'Admin\Content\AdminContentController@get');
+            Route::put('', 'Admin\Content\AdminContentController@put');
+            Route::delete('', 'Admin\Content\AdminContentController@delete');
+        });
+    });
 });

@@ -207,9 +207,52 @@ class User extends Model implements AuthenticatableContract,
             "profileImg" => $this->getImageObject(),
             "gender" => $this->gender,
             "birthday" => $this->birthday,
+            "status" => $this->status
+        ];
+    }
+    public function getDetailInfoByAdmin() {
+        return [
+            "id" => $this->id,
+            "email" => $this->email,
+            "nickname" => $this->nickname,
+            "profileImg" => $this->getImageObject(),
+            "gender" => $this->gender,
+            "birthday" => $this->birthday,
+            "grade" => $this->grade,
             "status" => $this->status,
             "newsletterAccepted" => $this->newsletters_accepted,
+
+            "createdAt" => Carbon::parse($this->created_at)->timezone(config('app.timezone'))->toDatetimeString(),
+            "updatedAt" => Carbon::parse($this->updated_at)->timezone(config('app.timezone'))->toDatetimeString(),
+            "lastLoginTime" => $this->last_login_time,
+
+            "isBlackUser" => $this->isBlackUser()
         ];
+    }
+    public function getBlackInfo() {
+        return [
+            "createdAt" => Carbon::parse($this->blackUser->created_at)->timezone(config('app.timezone'))->toDatetimeString(),
+            "updatedAt" => Carbon::parse($this->blackUser->updated_at)->timezone(config('app.timezone'))->toDatetimeString(),
+            "deletedAt" => Carbon::parse($this->blackUser->deleted_at)->timezone(config('app.timezone'))->toDatetimeString(),
+        ];
+    }
+
+    public function setToBlackList() {
+        if(!$this->isBlackUser()) {
+            $this->blackUser()->create([
+                "user_id" => $this->id
+            ]);
+
+            return $this;
+        }
+    }
+
+    public function removeFromBlackList() {
+        if($this->isBlackUser()) {
+            $this->blackUser()->delete();
+
+            return $this;
+        }
     }
 
     public function getImageObject(){
@@ -236,6 +279,10 @@ class User extends Model implements AuthenticatableContract,
         return $userSignupToken === $code;
     }
 
+    private function isBlackUser() {
+        return $this->blackUser()->exists();
+    }
+
 
     public function image()
 	{
@@ -248,5 +295,9 @@ class User extends Model implements AuthenticatableContract,
     public function contents()
     {
         return $this->hasMany('App\Models\Content','user_id','id');
+    }
+    public function blackUser()
+    {
+        return $this->hasOne('App\Models\BlackUser','user_id','id');
     }
 }
