@@ -26,6 +26,7 @@ use App\Http\Requests\Auth\Password\PasswordResetRequest;
 use App\Http\Requests\Auth\Password\PasswordCheckCodeRequest;
 use App\Http\Requests\Auth\Password\PasswordGetDiffTimeRequest;
 use App\Http\Requests\Auth\Password\PasswordCheckRequest;
+use App\Http\Requests\Auth\Password\PasswordChangeRequest;
 
 
 class PasswordController extends Controller
@@ -101,7 +102,7 @@ class PasswordController extends Controller
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */
-    public function reset(PasswordResetRequest $request)
+    public function resetWithToken(PasswordResetRequest $request)
     {
         $this->passwordReset = PasswordReset::getByToken($request->code);
         $this->passwordReset->expiredCheck();
@@ -123,6 +124,29 @@ class PasswordController extends Controller
             default:
                 Abort::Error('0040');
         }
+    }
+
+
+    /**
+     * @SWG\Put(
+     *   path="/members/password/change",
+     *   summary="password",
+     *   operationId="password",
+     *   tags={"/Members/Password"},
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     required=true,
+     *     @SWG\Schema(ref="#/definitions/password/change")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
+    public function changePassword(PasswordChangeRequest $request)
+    {
+        $this->user = User::getAccessUser();
+        $this->resetPassword($this->user, $request->newPassword);
+        return response()->success();
     }
 
     /**
