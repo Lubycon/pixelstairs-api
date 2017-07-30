@@ -134,6 +134,13 @@ class PasswordController extends Controller
      *   operationId="password",
      *   tags={"/Members/Password"},
      *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *     @SWG\Parameter(
      *     in="body",
      *     name="body",
      *     required=true,
