@@ -53,6 +53,7 @@ class Pager
         $this->multipleQueryDivider = config("pager.comparision.multipleQueryDivider");
         $this->maxSize = config("pager.default.pageSize.max");
         $this->defaultPageSize = config("pager.default.pageSize.basic");
+        $this->withDeleted = false;
     }
 
     public function search($model, $query)

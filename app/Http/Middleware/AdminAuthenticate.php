@@ -10,12 +10,14 @@ use Abort;
 use Log;
 
 use App\Models\User;
+use App\Models\AdminProcessLog;
 
 class AdminAuthenticate
 {
 	public function handle(Request $request, Closure $next)
 	{
         if ( User::isAdmin() ) {
+            AdminProcessLog::createLog($request);
             return $next($request);
         }else{
             Abort::Error('0043','You are not Admin');

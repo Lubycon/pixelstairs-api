@@ -19,12 +19,6 @@ use App\Classes\FileUpload;
 use App\Classes\Pager;
 
 // Request
-use App\Http\Requests\Content\ContentDeleteRequest;
-use App\Http\Requests\Content\ContentPutRequest;
-use App\Http\Requests\Content\ContentPostRequest;
-
-// for image test
-use Intervention;
 
 class AdminContentController extends Controller {
     public $content;
@@ -40,14 +34,13 @@ class AdminContentController extends Controller {
     }
 
     protected function getList(Request $request) {
-        $this->user = User::getAccessUserOrNot();
         $collection = $this->pager
             ->search(new $this->content, $request->query())
             ->setDeleteParam(true)
             ->getCollection();
         $result = $this->pager->getPageInfo();
         foreach($collection as $content){
-            $result->contents[] = $content->getContentInfoWithAuthorByAdmin($this->user);
+            $result->contents[] = $content->getContentInfoWithAuthorByAdmin();
         };
 
         if(!empty($result->contents)) {
@@ -59,7 +52,6 @@ class AdminContentController extends Controller {
 
     protected function get(Request $request, $content_id) {
         $this->content = Content::withTrashed()->findOrFail($content_id);
-        $this->user = User::getAccessUserOrNot();
         $result = $this->content->getContentInfoWithAuthorByAdmin();
         return response()->success($result);
     }
