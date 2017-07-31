@@ -230,9 +230,6 @@ return [
 
         'request' => [
             'X-pixel-version' => env('API_VERSION'),
-            'X-pixel-country' => 'south korea',
-            'X-pixel-language' => 'ko',
-            'X-pixel-device' => 'bs=browser,dvc=device,os=os',
         ],
 
     ],
