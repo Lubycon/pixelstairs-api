@@ -17,7 +17,9 @@ class DatabaseSeeder extends Seeder
         $this->call(AdminUserSeeder::class);
         $this->call(ImageTableSeeder::class);
         $this->call(QuoteSeeder::class);
-        if( env('APP_ENV') != 'production' ){
+        $this->call(SigndropAnswerSeeder::class);
+        $this->call(SigndropQuestionSeeder::class);
+        if( App::isLocal() ){
             $this->call(DummyDataSeeder::class);
         }
 
