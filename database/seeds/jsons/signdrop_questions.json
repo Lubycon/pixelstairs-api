@@ -1,8 +1,10 @@
 [
   {
-    "question": "What was convenient for you in Pixelstairs?"
+    "question_english": "What was convenient for you in Pixelstairs?",
+    "question_korean": "픽셀스테어스에서 느낀 편리한 점은 무엇인가요?"
   },
   {
-    "question": "What was inconvenient for you in Pixelstairs?"
+    "question_english": "What was inconvenient for you in Pixelstairs?",
+    "question_korean": "픽셀스테어스에서 느낀 불편했던 점은 무엇인가요?"
   }
 ]

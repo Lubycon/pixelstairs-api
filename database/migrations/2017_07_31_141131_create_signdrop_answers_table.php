@@ -9,8 +9,9 @@ class CreateSigndropAnswersTable extends Migration {
 	{
 		Schema::create('signdrop_answers', function(Blueprint $table) {
 			$table->increments('id');
-			$table->integer('signdrop_question_id')->nullable();
-            $table->string('answer', 300);
+            $table->integer('signdrop_question_id')->nullable();
+            $table->string('answer_korean', 300);
+            $table->string('answer_english', 300);
             $table->timestamps();
             $table->softDeletes();
 		});

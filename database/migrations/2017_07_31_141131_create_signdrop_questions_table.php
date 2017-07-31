@@ -9,7 +9,8 @@ class CreateSigndropQuestionsTable extends Migration {
 	{
 		Schema::create('signdrop_questions', function(Blueprint $table) {
 			$table->increments('id');
-			$table->string('question', 100);
+            $table->string('question_korean', 100);
+            $table->string('question_english', 100);
 			$table->timestamps();
 			$table->softDeletes();
 		});
