@@ -24,6 +24,10 @@ use Abort;
  * @mixin \Eloquent
  */
 class PasswordReset extends Model {
+
+    protected $fillable = ['email','token'];
+
+
     protected static $expireTime = 30; //minutes
 
     public static function getByToken($token){

@@ -35,9 +35,9 @@ Route::group(['prefix' => '/v1'], function () {
             Route::put('detail', 'Member\MemberController@putRetrieve');
         });
         Route::group(['prefix' => 'password/'], function () {
+            Route::post('token', 'Auth\PasswordController@postToken');
             Route::post('mail', 'Auth\PasswordController@postMail');
             Route::put('reset', 'Auth\PasswordController@resetWithToken');
-            Route::put('change', 'Auth\PasswordController@changePassword');
         });
     });
     Route::group(['prefix' => '/certs/'], function () {

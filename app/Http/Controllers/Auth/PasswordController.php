@@ -9,9 +9,9 @@ use Abort;
 // Requeire
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 // Models
 use App\Models\User;
@@ -22,11 +22,11 @@ use App\Jobs\Mails\PasswordReMinderSendMailJob;
 
 // Reqeust
 use App\Http\Requests\Auth\Password\PasswordPostMailRequest;
+use App\Http\Requests\Auth\Password\PasswordPostTokenRequest;
 use App\Http\Requests\Auth\Password\PasswordResetRequest;
 use App\Http\Requests\Auth\Password\PasswordCheckCodeRequest;
 use App\Http\Requests\Auth\Password\PasswordGetDiffTimeRequest;
 use App\Http\Requests\Auth\Password\PasswordCheckRequest;
-use App\Http\Requests\Auth\Password\PasswordChangeRequest;
 
 
 class PasswordController extends Controller
@@ -60,6 +60,35 @@ class PasswordController extends Controller
         $this->user = User::getFromEmail($request->email);
         $this->dispatch(new PasswordReMinderSendMailJob($this->user));
         return response()->success();
+    }
+
+    /**
+     * @SWG\Post(
+     *   path="/members/password/token",
+     *   summary="token",
+     *   operationId="token",
+     *   tags={"/Members/Password"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wtesttesttesttesttesttesttestte2",
+     *      required=true
+     *     ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
+    public function postToken(PasswordPostTokenRequest $request)
+    {
+        $this->user = User::getAccessUser();
+        PasswordReset::where('email',$this->user->email)->delete();
+        $resets = PasswordReset::create([
+            "email" => $this->user->email,
+            "token" => Str::random(30),
+        ]);
+        return response()->success([
+            "token" => $resets['token']
+        ]);
     }
 
     /**
@@ -124,36 +153,6 @@ class PasswordController extends Controller
             default:
                 Abort::Error('0040');
         }
-    }
-
-
-    /**
-     * @SWG\Put(
-     *   path="/members/password/change",
-     *   summary="password",
-     *   operationId="password",
-     *   tags={"/Members/Password"},
-     *     @SWG\Parameter(
-     *      type="string",
-     *      name="X-pixel-token",
-     *      in="header",
-     *      default="wtesttesttesttesttesttesttestte2",
-     *      required=true
-     *     ),
-     *     @SWG\Parameter(
-     *     in="body",
-     *     name="body",
-     *     required=true,
-     *     @SWG\Schema(ref="#/definitions/password/change")
-     *   ),
-     *   @SWG\Response(response=200, description="successful operation")
-     * )
-     */
-    public function changePassword(PasswordChangeRequest $request)
-    {
-        $this->user = User::getAccessUser();
-        $this->resetPassword($this->user, $request->newPassword);
-        return response()->success();
     }
 
     /**
