@@ -12,6 +12,13 @@ class SigndropAnswer extends Model
     protected $dates = ['deleted_at'];
     protected $fillable = ['answer','signdrop_id'];
 
+    public function getAnswer(){
+        return [
+            "kor" => $this->answer_korean,
+            "eng" => $this->answer_english,
+        ];
+    }
+
     public function signdropQuestion()
     {
         return $this->belongsTo('App\Models\SigndropQuestion');

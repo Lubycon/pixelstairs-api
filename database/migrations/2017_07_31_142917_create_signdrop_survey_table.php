@@ -7,7 +7,7 @@ class CreateSigndropSurveyTable extends Migration {
 
     public function up()
     {
-        Schema::create('signdrop_survey', function(Blueprint $table) {
+        Schema::create('signdrop_surveys', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('signdrop_id');
             $table->integer('signdrop_answer_id');
@@ -18,6 +18,6 @@ class CreateSigndropSurveyTable extends Migration {
 
     public function down()
     {
-        Schema::drop('signdrop_survey');
+        Schema::drop('signdrop_surveys');
     }
 }

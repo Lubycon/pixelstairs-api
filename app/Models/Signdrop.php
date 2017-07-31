@@ -17,5 +17,13 @@ class Signdrop extends Model
     {
         return $this->belongsTo('App\Models\User');
     }
+    public function signdropSurvey()
+    {
+        return $this->hasMany('App\Models\SigndropSurvey','signdrop_id','id');
+    }
+    public function signdropAnswer()
+    {
+        return $this->hasMany('App\Models\SigndropAnswer','signdrop_id','id');
+    }
 
 }
