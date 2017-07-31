@@ -28,7 +28,7 @@ class CorsHandler
 
 	public function handle(Request $request, Closure $next)
 	{
-        $this->options['allowedOrigins'] = $request->segments()[0] === 'admin'
+        $this->options['allowedOrigins'] = isset($request->segments()[0]) && $request->segments()[0] === 'admin'
             ? $this->options['adminAllowedOrigins']
             : $this->options['allowedOrigins'];
 

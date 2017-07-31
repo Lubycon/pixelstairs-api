@@ -19,9 +19,9 @@ class SecurityHandler
 //             if ( !$this->apiUrlVersionCheck($request) || !$this->apiVersionCheck($request) ) {
 //                 Abort::Error('0073','Check Current API version');
 //             }
-             if ( !$this->requiredHeaderCheck($request) ) {
-                 Abort::Error('0047');
-             }
+//             if ( !$this->requiredHeaderCheck($request) ) {
+//                 Abort::Error('0047');
+//             }
          }
 
         return $next($request);
