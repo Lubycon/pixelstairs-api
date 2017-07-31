@@ -21,9 +21,8 @@ class AuthSigndropRequest extends Request
      *   type="object",
      *   allOf={
      *       @SWG\Schema(
-     *           required={"reasonCode"},
-     *           @SWG\Property(property="reasonCode", type="string", default="0303"),
-     *           @SWG\Property(property="reason", type="string", default="이게뭐냐 맘에안듬~~"),
+     *           required={"answerId"},
+     *           @SWG\Property(property="answerIds", type="array", default={1,7}),
      *       )
      *   }
      * )
@@ -31,7 +30,7 @@ class AuthSigndropRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            'reason' => 'required'
+            'answerIds' => 'required|array'
         ];
 
         return $requiredRule;

@@ -23,6 +23,7 @@ Route::group(['prefix' => '/v1'], function () {
         Route::put('signout', 'Auth\AuthController@signout');
         Route::post('signup', 'Auth\AuthController@signup');
         Route::delete('signdrop', 'Auth\AuthController@signdrop');
+        Route::get('signdrop/survey/list', 'Survey\SigndropSurveyController@getList');
 
         Route::group(['prefix' => 'exists/'], function () {
             Route::post('email', 'Auth\AuthController@emailExist');

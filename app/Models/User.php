@@ -312,4 +312,8 @@ class User extends Model implements AuthenticatableContract,
     {
         return $this->hasOne('App\Models\BlackUser','user_id','id');
     }
+    public function signdrop()
+    {
+        return $this->hasOne('App\Models\Signdrop','user_id','id');
+    }
 }
