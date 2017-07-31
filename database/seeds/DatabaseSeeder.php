@@ -14,14 +14,14 @@ class DatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        $this->call(AdminUserSeeder::class);
-        $this->call(ImageTableSeeder::class);
+        if( App::isLocal() ){
+            $this->call(AdminUserSeeder::class);
+            $this->call(ImageTableSeeder::class);
+            $this->call(DummyDataSeeder::class);
+        }
         $this->call(QuoteSeeder::class);
         $this->call(SigndropAnswerSeeder::class);
         $this->call(SigndropQuestionSeeder::class);
-        if( App::isLocal() ){
-            $this->call(DummyDataSeeder::class);
-        }
 
         Model::reguard();
     }
