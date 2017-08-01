@@ -3,7 +3,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2017-07-17.
+    * Generated on 2017-08-01.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -42,8 +42,11 @@ namespace PHPSTORM_META {
             'maknz.slack' instanceof \Maknz\Slack\Client,
             'Maknz\Slack\Client' instanceof \Maknz\Slack\Client,
             'image' instanceof \Intervention\Image\ImageManager,
+            'agent' instanceof \Jenssegers\Agent\Agent,
+            'sentry' instanceof \Raven_Client,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
             'location' instanceof \Stevebauman\Location\Location,
+            'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'command.l5-swagger.publish' instanceof \L5Swagger\Console\PublishCommand,
             'command.l5-swagger.publish-config' instanceof \L5Swagger\Console\PublishConfigCommand,
             'command.l5-swagger.publish-views' instanceof \L5Swagger\Console\PublishViewsCommand,
@@ -112,7 +115,6 @@ namespace PHPSTORM_META {
             'command.queue.retry' instanceof \Illuminate\Queue\Console\RetryCommand,
             'command.queue.forget' instanceof \Illuminate\Queue\Console\ForgetFailedCommand,
             'command.queue.flush' instanceof \Illuminate\Queue\Console\FlushFailedCommand,
-            'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'swift.transport' instanceof \Illuminate\Mail\TransportManager,
             'swift.mailer' instanceof \Swift_Mailer,
             'mailer' instanceof \Illuminate\Mail\Mailer,
@@ -162,8 +164,11 @@ namespace PHPSTORM_META {
             'maknz.slack' instanceof \Maknz\Slack\Client,
             'Maknz\Slack\Client' instanceof \Maknz\Slack\Client,
             'image' instanceof \Intervention\Image\ImageManager,
+            'agent' instanceof \Jenssegers\Agent\Agent,
+            'sentry' instanceof \Raven_Client,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
             'location' instanceof \Stevebauman\Location\Location,
+            'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'command.l5-swagger.publish' instanceof \L5Swagger\Console\PublishCommand,
             'command.l5-swagger.publish-config' instanceof \L5Swagger\Console\PublishConfigCommand,
             'command.l5-swagger.publish-views' instanceof \L5Swagger\Console\PublishViewsCommand,
@@ -232,7 +237,6 @@ namespace PHPSTORM_META {
             'command.queue.retry' instanceof \Illuminate\Queue\Console\RetryCommand,
             'command.queue.forget' instanceof \Illuminate\Queue\Console\ForgetFailedCommand,
             'command.queue.flush' instanceof \Illuminate\Queue\Console\FlushFailedCommand,
-            'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'swift.transport' instanceof \Illuminate\Mail\TransportManager,
             'swift.mailer' instanceof \Swift_Mailer,
             'mailer' instanceof \Illuminate\Mail\Mailer,
@@ -282,8 +286,11 @@ namespace PHPSTORM_META {
             'maknz.slack' instanceof \Maknz\Slack\Client,
             'Maknz\Slack\Client' instanceof \Maknz\Slack\Client,
             'image' instanceof \Intervention\Image\ImageManager,
+            'agent' instanceof \Jenssegers\Agent\Agent,
+            'sentry' instanceof \Raven_Client,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
             'location' instanceof \Stevebauman\Location\Location,
+            'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'command.l5-swagger.publish' instanceof \L5Swagger\Console\PublishCommand,
             'command.l5-swagger.publish-config' instanceof \L5Swagger\Console\PublishConfigCommand,
             'command.l5-swagger.publish-views' instanceof \L5Swagger\Console\PublishViewsCommand,
@@ -352,7 +359,6 @@ namespace PHPSTORM_META {
             'command.queue.retry' instanceof \Illuminate\Queue\Console\RetryCommand,
             'command.queue.forget' instanceof \Illuminate\Queue\Console\ForgetFailedCommand,
             'command.queue.flush' instanceof \Illuminate\Queue\Console\FlushFailedCommand,
-            'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'swift.transport' instanceof \Illuminate\Mail\TransportManager,
             'swift.mailer' instanceof \Swift_Mailer,
             'mailer' instanceof \Illuminate\Mail\Mailer,
@@ -402,8 +408,11 @@ namespace PHPSTORM_META {
             'maknz.slack' instanceof \Maknz\Slack\Client,
             'Maknz\Slack\Client' instanceof \Maknz\Slack\Client,
             'image' instanceof \Intervention\Image\ImageManager,
+            'agent' instanceof \Jenssegers\Agent\Agent,
+            'sentry' instanceof \Raven_Client,
             'blade.compiler' instanceof \Illuminate\View\Compilers\BladeCompiler,
             'location' instanceof \Stevebauman\Location\Location,
+            'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'command.l5-swagger.publish' instanceof \L5Swagger\Console\PublishCommand,
             'command.l5-swagger.publish-config' instanceof \L5Swagger\Console\PublishConfigCommand,
             'command.l5-swagger.publish-views' instanceof \L5Swagger\Console\PublishViewsCommand,
@@ -472,7 +481,6 @@ namespace PHPSTORM_META {
             'command.queue.retry' instanceof \Illuminate\Queue\Console\RetryCommand,
             'command.queue.forget' instanceof \Illuminate\Queue\Console\ForgetFailedCommand,
             'command.queue.flush' instanceof \Illuminate\Queue\Console\FlushFailedCommand,
-            'hash' instanceof \Illuminate\Hashing\BcryptHasher,
             'swift.transport' instanceof \Illuminate\Mail\TransportManager,
             'swift.mailer' instanceof \Swift_Mailer,
             'mailer' instanceof \Illuminate\Mail\Mailer,
