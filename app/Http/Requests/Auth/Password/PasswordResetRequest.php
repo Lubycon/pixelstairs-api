@@ -14,7 +14,7 @@ class PasswordResetRequest extends Request
 
     public function authorize()
     {
-        return User::isGhost();
+        return true;
     }
 
     /**

@@ -158,6 +158,7 @@ class AuthController extends Controller
             ]);
         }
 
+        $this->user->contents()->delete();
 
         if($this->user->delete()){
             return response()->success();
