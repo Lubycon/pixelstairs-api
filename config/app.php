@@ -143,6 +143,7 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         Stevebauman\Location\LocationServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
+        Sentry\SentryLaravel\SentryLaravelServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -206,6 +207,7 @@ return [
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         'Location' => Stevebauman\Location\Facades\Location::class,
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
+        'Sentry' => Sentry\SentryLaravel\SentryFacade::class,
 
     ],
 

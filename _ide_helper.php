@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.2.45 on 2017-07-17.
+ * Generated for Laravel 5.2.45 on 2017-08-01.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -12619,6 +12619,1115 @@ namespace Stevebauman\Location\Facades {
     }         
 }
     
+namespace Jenssegers\Agent\Facades {
+
+    class Agent {
+        
+        /**
+         * Get all detection rules. These rules include the additional
+         * platforms and browsers.
+         *
+         * @return array 
+         * @static 
+         */
+        public static function getDetectionRulesExtended()
+        {
+            return \Jenssegers\Agent\Agent::getDetectionRulesExtended();
+        }
+        
+        /**
+         * 
+         *
+         * @inheritdoc 
+         * @static 
+         */
+        public static function getRules()
+        {
+            return \Jenssegers\Agent\Agent::getRules();
+        }
+        
+        /**
+         * 
+         *
+         * @return \Jenssegers\Agent\CrawlerDetect 
+         * @static 
+         */
+        public static function getCrawlerDetect()
+        {
+            return \Jenssegers\Agent\Agent::getCrawlerDetect();
+        }
+        
+        /**
+         * Get accept languages.
+         *
+         * @param string $acceptLanguage
+         * @return array 
+         * @static 
+         */
+        public static function languages($acceptLanguage = null)
+        {
+            return \Jenssegers\Agent\Agent::languages($acceptLanguage);
+        }
+        
+        /**
+         * Get the browser name.
+         *
+         * @param null $userAgent
+         * @return string 
+         * @static 
+         */
+        public static function browser($userAgent = null)
+        {
+            return \Jenssegers\Agent\Agent::browser($userAgent);
+        }
+        
+        /**
+         * Get the platform name.
+         *
+         * @param string $userAgent
+         * @return string 
+         * @static 
+         */
+        public static function platform($userAgent = null)
+        {
+            return \Jenssegers\Agent\Agent::platform($userAgent);
+        }
+        
+        /**
+         * Get the device name.
+         *
+         * @param string $userAgent
+         * @return string 
+         * @static 
+         */
+        public static function device($userAgent = null)
+        {
+            return \Jenssegers\Agent\Agent::device($userAgent);
+        }
+        
+        /**
+         * Check if the device is a desktop computer.
+         *
+         * @param string $userAgent deprecated
+         * @param array $httpHeaders deprecated
+         * @return bool 
+         * @static 
+         */
+        public static function isDesktop($userAgent = null, $httpHeaders = null)
+        {
+            return \Jenssegers\Agent\Agent::isDesktop($userAgent, $httpHeaders);
+        }
+        
+        /**
+         * Check if the device is a mobile phone.
+         *
+         * @param string $userAgent deprecated
+         * @param array $httpHeaders deprecated
+         * @return bool 
+         * @static 
+         */
+        public static function isPhone($userAgent = null, $httpHeaders = null)
+        {
+            return \Jenssegers\Agent\Agent::isPhone($userAgent, $httpHeaders);
+        }
+        
+        /**
+         * Get the robot name.
+         *
+         * @param string $userAgent
+         * @return string|bool 
+         * @static 
+         */
+        public static function robot($userAgent = null)
+        {
+            return \Jenssegers\Agent\Agent::robot($userAgent);
+        }
+        
+        /**
+         * Check if device is a robot.
+         *
+         * @param string $userAgent
+         * @return bool 
+         * @static 
+         */
+        public static function isRobot($userAgent = null)
+        {
+            return \Jenssegers\Agent\Agent::isRobot($userAgent);
+        }
+        
+        /**
+         * 
+         *
+         * @inheritdoc 
+         * @static 
+         */
+        public static function version($propertyName, $type = 'text')
+        {
+            return \Jenssegers\Agent\Agent::version($propertyName, $type);
+        }
+        
+        /**
+         * Get the current script version.
+         * 
+         * This is useful for the demo.php file,
+         * so people can check on what version they are testing
+         * for mobile devices.
+         *
+         * @return string The version number in semantic version format.
+         * @static 
+         */
+        public static function getScriptVersion()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getScriptVersion();
+        }
+        
+        /**
+         * Set the HTTP Headers. Must be PHP-flavored. This method will reset existing headers.
+         *
+         * @param array $httpHeaders The headers to set. If null, then using PHP's _SERVER to extract
+         *                           the headers. The default null is left for backwards compatibility.
+         * @static 
+         */
+        public static function setHttpHeaders($httpHeaders = null)
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::setHttpHeaders($httpHeaders);
+        }
+        
+        /**
+         * Retrieves the HTTP headers.
+         *
+         * @return array 
+         * @static 
+         */
+        public static function getHttpHeaders()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getHttpHeaders();
+        }
+        
+        /**
+         * Retrieves a particular header. If it doesn't exist, no exception/error is caused.
+         * 
+         * Simply null is returned.
+         *
+         * @param string $header The name of the header to retrieve. Can be HTTP compliant such as
+         *                       "User-Agent" or "X-Device-User-Agent" or can be php-esque with the
+         *                       all-caps, HTTP_ prefixed, underscore seperated awesomeness.
+         * @return string|null The value of the header.
+         * @static 
+         */
+        public static function getHttpHeader($header)
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getHttpHeader($header);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getMobileHeaders()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getMobileHeaders();
+        }
+        
+        /**
+         * Get all possible HTTP headers that
+         * can contain the User-Agent string.
+         *
+         * @return array List of HTTP headers.
+         * @static 
+         */
+        public static function getUaHttpHeaders()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getUaHttpHeaders();
+        }
+        
+        /**
+         * Set CloudFront headers
+         * http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/header-caching.html#header-caching-web-device
+         *
+         * @param array $cfHeaders List of HTTP headers
+         * @return boolean If there were CloudFront headers to be set
+         * @static 
+         */
+        public static function setCfHeaders($cfHeaders = null)
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::setCfHeaders($cfHeaders);
+        }
+        
+        /**
+         * Retrieves the cloudfront headers.
+         *
+         * @return array 
+         * @static 
+         */
+        public static function getCfHeaders()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getCfHeaders();
+        }
+        
+        /**
+         * Set the User-Agent to be used.
+         *
+         * @param string $userAgent The user agent string to set.
+         * @return string|null 
+         * @static 
+         */
+        public static function setUserAgent($userAgent = null)
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::setUserAgent($userAgent);
+        }
+        
+        /**
+         * Retrieve the User-Agent.
+         *
+         * @return string|null The user agent if it's set.
+         * @static 
+         */
+        public static function getUserAgent()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getUserAgent();
+        }
+        
+        /**
+         * Set the detection type. Must be one of self::DETECTION_TYPE_MOBILE or
+         * self::DETECTION_TYPE_EXTENDED. Otherwise, nothing is set.
+         *
+         * @deprecated since version 2.6.9
+         * @param string $type The type. Must be a self::DETECTION_TYPE_* constant. The default
+         *                     parameter is null which will default to self::DETECTION_TYPE_MOBILE.
+         * @static 
+         */
+        public static function setDetectionType($type = null)
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::setDetectionType($type);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getMatchingRegex()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getMatchingRegex();
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getMatchesArray()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getMatchesArray();
+        }
+        
+        /**
+         * Retrieve the list of known phone devices.
+         *
+         * @return array List of phone devices.
+         * @static 
+         */
+        public static function getPhoneDevices()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getPhoneDevices();
+        }
+        
+        /**
+         * Retrieve the list of known tablet devices.
+         *
+         * @return array List of tablet devices.
+         * @static 
+         */
+        public static function getTabletDevices()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getTabletDevices();
+        }
+        
+        /**
+         * Alias for getBrowsers() method.
+         *
+         * @return array List of user agents.
+         * @static 
+         */
+        public static function getUserAgents()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getUserAgents();
+        }
+        
+        /**
+         * Retrieve the list of known browsers. Specifically, the user agents.
+         *
+         * @return array List of browsers / user agents.
+         * @static 
+         */
+        public static function getBrowsers()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getBrowsers();
+        }
+        
+        /**
+         * Retrieve the list of known utilities.
+         *
+         * @return array List of utilities.
+         * @static 
+         */
+        public static function getUtilities()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getUtilities();
+        }
+        
+        /**
+         * Method gets the mobile detection rules. This method is used for the magic methods $detect->is*().
+         *
+         * @deprecated since version 2.6.9
+         * @return array All the rules (but not extended).
+         * @static 
+         */
+        public static function getMobileDetectionRules()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getMobileDetectionRules();
+        }
+        
+        /**
+         * Method gets the mobile detection rules + utilities.
+         * 
+         * The reason this is separate is because utilities rules
+         * don't necessary imply mobile. This method is used inside
+         * the new $detect->is('stuff') method.
+         *
+         * @deprecated since version 2.6.9
+         * @return array All the rules + extended.
+         * @static 
+         */
+        public static function getMobileDetectionRulesExtended()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getMobileDetectionRulesExtended();
+        }
+        
+        /**
+         * Retrieve the list of mobile operating systems.
+         *
+         * @return array The list of mobile operating systems.
+         * @static 
+         */
+        public static function getOperatingSystems()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getOperatingSystems();
+        }
+        
+        /**
+         * Check the HTTP headers for signs of mobile.
+         * 
+         * This is the fastest mobile check possible; it's used
+         * inside isMobile() method.
+         *
+         * @return bool 
+         * @static 
+         */
+        public static function checkHttpHeadersForMobile()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::checkHttpHeadersForMobile();
+        }
+        
+        /**
+         * Check if the device is mobile.
+         * 
+         * Returns true if any type of mobile device detected, including special ones
+         *
+         * @param null $userAgent deprecated
+         * @param null $httpHeaders deprecated
+         * @return bool 
+         * @static 
+         */
+        public static function isMobile($userAgent = null, $httpHeaders = null)
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::isMobile($userAgent, $httpHeaders);
+        }
+        
+        /**
+         * Check if the device is a tablet.
+         * 
+         * Return true if any type of tablet device is detected.
+         *
+         * @param string $userAgent deprecated
+         * @param array $httpHeaders deprecated
+         * @return bool 
+         * @static 
+         */
+        public static function isTablet($userAgent = null, $httpHeaders = null)
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::isTablet($userAgent, $httpHeaders);
+        }
+        
+        /**
+         * This method checks for a certain property in the
+         * userAgent.
+         *
+         * @todo : The httpHeaders part is not yet used.
+         * @param string $key
+         * @param string $userAgent deprecated
+         * @param string $httpHeaders deprecated
+         * @return bool|int|null 
+         * @static 
+         */
+        public static function is($key, $userAgent = null, $httpHeaders = null)
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::is($key, $userAgent, $httpHeaders);
+        }
+        
+        /**
+         * Some detection rules are relative (not standard),
+         * because of the diversity of devices, vendors and
+         * their conventions in representing the User-Agent or
+         * the HTTP headers.
+         * 
+         * This method will be used to check custom regexes against
+         * the User-Agent string.
+         *
+         * @param $regex
+         * @param string $userAgent
+         * @return bool 
+         * @todo : search in the HTTP headers too.
+         * @static 
+         */
+        public static function match($regex, $userAgent = null)
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::match($regex, $userAgent);
+        }
+        
+        /**
+         * Get the properties array.
+         *
+         * @return array 
+         * @static 
+         */
+        public static function getProperties()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::getProperties();
+        }
+        
+        /**
+         * Prepare the version number.
+         *
+         * @todo Remove the error supression from str_replace() call.
+         * @param string $ver The string version, like "2.6.21.2152";
+         * @return float 
+         * @static 
+         */
+        public static function prepareVersionNo($ver)
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::prepareVersionNo($ver);
+        }
+        
+        /**
+         * Retrieve the mobile grading, using self::MOBILE_GRADE_* constants.
+         *
+         * @return string One of the self::MOBILE_GRADE_* constants.
+         * @static 
+         */
+        public static function mobileGrade()
+        {
+            //Method inherited from \Mobile_Detect            
+            return \Jenssegers\Agent\Agent::mobileGrade();
+        }
+        
+    }         
+}
+    
+namespace Sentry\SentryLaravel {
+
+    class SentryFacade {
+        
+        /**
+         * Destruct all objects contain link to this object
+         * 
+         * This method can not delete shutdown handler
+         *
+         * @static 
+         */
+        public static function close_all_children_link()
+        {
+            return \Raven_Client::close_all_children_link();
+        }
+        
+        /**
+         * Installs any available automated hooks (such as error_reporting).
+         *
+         * @static 
+         */
+        public static function install()
+        {
+            return \Raven_Client::install();
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getRelease()
+        {
+            return \Raven_Client::getRelease();
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function setRelease($value)
+        {
+            return \Raven_Client::setRelease($value);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getEnvironment()
+        {
+            return \Raven_Client::getEnvironment();
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function setEnvironment($value)
+        {
+            return \Raven_Client::setEnvironment($value);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getAppPath()
+        {
+            return \Raven_Client::getAppPath();
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function setAppPath($value)
+        {
+            return \Raven_Client::setAppPath($value);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getExcludedAppPaths()
+        {
+            return \Raven_Client::getExcludedAppPaths();
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function setExcludedAppPaths($value)
+        {
+            return \Raven_Client::setExcludedAppPaths($value);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getPrefixes()
+        {
+            return \Raven_Client::getPrefixes();
+        }
+        
+        /**
+         * 
+         *
+         * @param array $value
+         * @return \Raven_Client 
+         * @static 
+         */
+        public static function setPrefixes($value)
+        {
+            return \Raven_Client::setPrefixes($value);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getSendCallback()
+        {
+            return \Raven_Client::getSendCallback();
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function setSendCallback($value)
+        {
+            return \Raven_Client::setSendCallback($value);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getTransport()
+        {
+            return \Raven_Client::getTransport();
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getServerEndpoint($value = '')
+        {
+            return \Raven_Client::getServerEndpoint($value);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getUserAgent()
+        {
+            return \Raven_Client::getUserAgent();
+        }
+        
+        /**
+         * Set a custom transport to override how Sentry events are sent upstream.
+         * 
+         * The bound function will be called with ``$client`` and ``$data`` arguments
+         * and is responsible for encoding the data, authenticating, and sending
+         * the data to the upstream Sentry server.
+         *
+         * @param Callable $value Function to be called
+         * @return \Raven_Client 
+         * @static 
+         */
+        public static function setTransport($value)
+        {
+            return \Raven_Client::setTransport($value);
+        }
+        
+        /**
+         * 
+         *
+         * @return string[]|\Raven_Processor[] 
+         * @static 
+         */
+        public static function getDefaultProcessors()
+        {
+            return \Raven_Client::getDefaultProcessors();
+        }
+        
+        /**
+         * Sets the Raven_Processor sub-classes to be used when data is processed before being
+         * sent to Sentry.
+         *
+         * @param $options
+         * @return \Raven_Processor[] 
+         * @static 
+         */
+        public static function setProcessorsFromOptions($options)
+        {
+            return \Raven_Client::setProcessorsFromOptions($options);
+        }
+        
+        /**
+         * Parses a Raven-compatible DSN and returns an array of its values.
+         *
+         * @param string $dsn Raven compatible DSN
+         * @return array parsed DSN
+         * @doc http://raven.readthedocs.org/en/latest/config/#the-sentry-dsn
+         * @static 
+         */
+        public static function parseDSN($dsn)
+        {
+            return \Raven_Client::parseDSN($dsn);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getLastError()
+        {
+            return \Raven_Client::getLastError();
+        }
+        
+        /**
+         * Given an identifier, returns a Sentry searchable string.
+         *
+         * @param mixed $ident
+         * @return mixed 
+         * @codeCoverageIgnore 
+         * @static 
+         */
+        public static function getIdent($ident)
+        {
+            return \Raven_Client::getIdent($ident);
+        }
+        
+        /**
+         * 
+         *
+         * @param string $message The message (primary description) for the event.
+         * @param array $params params to use when formatting the message.
+         * @param string $level Log level group
+         * @param bool|array $stack
+         * @param mixed $vars
+         * @return string|null 
+         * @deprecated 
+         * @codeCoverageIgnore 
+         * @static 
+         */
+        public static function message($message, $params = array(), $level = 'info', $stack = false, $vars = null)
+        {
+            return \Raven_Client::message($message, $params, $level, $stack, $vars);
+        }
+        
+        /**
+         * 
+         *
+         * @param \Exception $exception
+         * @return string|null 
+         * @deprecated 
+         * @codeCoverageIgnore 
+         * @static 
+         */
+        public static function exception($exception)
+        {
+            return \Raven_Client::exception($exception);
+        }
+        
+        /**
+         * Log a message to sentry
+         *
+         * @param string $message The message (primary description) for the event.
+         * @param array $params params to use when formatting the message.
+         * @param array $data Additional attributes to pass with this event (see Sentry docs).
+         * @param bool|array $stack
+         * @param mixed $vars
+         * @return string|null 
+         * @static 
+         */
+        public static function captureMessage($message, $params = array(), $data = array(), $stack = false, $vars = null)
+        {
+            return \Raven_Client::captureMessage($message, $params, $data, $stack, $vars);
+        }
+        
+        /**
+         * Log an exception to sentry
+         *
+         * @param \Exception $exception The Exception object.
+         * @param array $data Additional attributes to pass with this event (see Sentry docs).
+         * @param mixed $logger
+         * @param mixed $vars
+         * @return string|null 
+         * @static 
+         */
+        public static function captureException($exception, $data = null, $logger = null, $vars = null)
+        {
+            return \Raven_Client::captureException($exception, $data, $logger, $vars);
+        }
+        
+        /**
+         * Capture the most recent error (obtained with ``error_get_last``).
+         *
+         * @return string|null 
+         * @static 
+         */
+        public static function captureLastError()
+        {
+            return \Raven_Client::captureLastError();
+        }
+        
+        /**
+         * Log an query to sentry
+         *
+         * @param string|null $query
+         * @param string $level
+         * @param string $engine
+         * @static 
+         */
+        public static function captureQuery($query, $level = 'info', $engine = '')
+        {
+            return \Raven_Client::captureQuery($query, $level, $engine);
+        }
+        
+        /**
+         * Return the last captured event's ID or null if none available.
+         *
+         * @static 
+         */
+        public static function getLastEventID()
+        {
+            return \Raven_Client::getLastEventID();
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function get_default_data()
+        {
+            return \Raven_Client::get_default_data();
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function capture($data, $stack = null, $vars = null)
+        {
+            return \Raven_Client::capture($data, $stack, $vars);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function sanitize($data)
+        {
+            return \Raven_Client::sanitize($data);
+        }
+        
+        /**
+         * Process data through all defined Raven_Processor sub-classes
+         *
+         * @param array $data Associative array of data to log
+         * @static 
+         */
+        public static function process($data)
+        {
+            return \Raven_Client::process($data);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function sendUnsentErrors()
+        {
+            return \Raven_Client::sendUnsentErrors();
+        }
+        
+        /**
+         * 
+         *
+         * @param array $data
+         * @return string|bool 
+         * @static 
+         */
+        public static function encode($data)
+        {
+            return \Raven_Client::encode($data);
+        }
+        
+        /**
+         * Wrapper to handle encoding and sending data to the Sentry API server.
+         *
+         * @param array $data Associative array of data to log
+         * @static 
+         */
+        public static function send($data)
+        {
+            return \Raven_Client::send($data);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getAuthHeader()
+        {
+            return \Raven_Client::getAuthHeader();
+        }
+        
+        /**
+         * Translate a PHP Error constant into a Sentry log level group
+         *
+         * @param string $severity PHP E_$x error constant
+         * @return string Sentry log level group
+         * @static 
+         */
+        public static function translateSeverity($severity)
+        {
+            return \Raven_Client::translateSeverity($severity);
+        }
+        
+        /**
+         * Provide a map of PHP Error constants to Sentry logging groups to use instead
+         * of the defaults in translateSeverity()
+         *
+         * @param array $map
+         * @static 
+         */
+        public static function registerSeverityMap($map)
+        {
+            return \Raven_Client::registerSeverityMap($map);
+        }
+        
+        /**
+         * Convenience function for setting a user's ID and Email
+         *
+         * @deprecated 
+         * @param string $id User's ID
+         * @param string|null $email User's email
+         * @param array $data Additional user data
+         * @codeCoverageIgnore 
+         * @static 
+         */
+        public static function set_user_data($id, $email = null, $data = array())
+        {
+            return \Raven_Client::set_user_data($id, $email, $data);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function onShutdown()
+        {
+            return \Raven_Client::onShutdown();
+        }
+        
+        /**
+         * Sets user context.
+         *
+         * @param array $data Associative array of user data
+         * @param bool $merge Merge existing context with new context
+         * @static 
+         */
+        public static function user_context($data, $merge = true)
+        {
+            return \Raven_Client::user_context($data, $merge);
+        }
+        
+        /**
+         * Appends tags context.
+         *
+         * @param array $data Associative array of tags
+         * @static 
+         */
+        public static function tags_context($data)
+        {
+            return \Raven_Client::tags_context($data);
+        }
+        
+        /**
+         * Appends additional context.
+         *
+         * @param array $data Associative array of extra data
+         * @static 
+         */
+        public static function extra_context($data)
+        {
+            return \Raven_Client::extra_context($data);
+        }
+        
+        /**
+         * 
+         *
+         * @param array $processors
+         * @static 
+         */
+        public static function setProcessors($processors)
+        {
+            return \Raven_Client::setProcessors($processors);
+        }
+        
+        /**
+         * 
+         *
+         * @return object|null 
+         * @static 
+         */
+        public static function getLastSentryError()
+        {
+            return \Raven_Client::getLastSentryError();
+        }
+        
+        /**
+         * 
+         *
+         * @return bool 
+         * @static 
+         */
+        public static function getShutdownFunctionHasBeenSet()
+        {
+            return \Raven_Client::getShutdownFunctionHasBeenSet();
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function close_curl_resource()
+        {
+            return \Raven_Client::close_curl_resource();
+        }
+        
+    }         
+}
+    
     
 namespace {
 
@@ -14542,6 +15651,10 @@ namespace {
     class 1 extends \Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider {}
     
     class Location extends \Stevebauman\Location\Facades\Location {}
+    
+    class Agent extends \Jenssegers\Agent\Facades\Agent {}
+    
+    class Sentry extends \Sentry\SentryLaravel\SentryFacade {}
     
 }
 
