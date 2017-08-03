@@ -5,15 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SigndropAnswer extends Model 
+class SigndropAnswer extends Model
 {
     use SoftDeletes;
     public $timestamps = true;
     protected $dates = ['deleted_at'];
-    protected $fillable = ['answer','signdrop_id'];
+    protected $fillable = ['answer', 'signdrop_id'];
 
-    public function getAnswer(){
+    public function getAnswer()
+    {
         return [
+            "id"  => $this->id,
             "kor" => $this->answer_korean,
             "eng" => $this->answer_english,
         ];
