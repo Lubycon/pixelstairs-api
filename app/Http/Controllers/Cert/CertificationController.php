@@ -18,6 +18,7 @@ use App\Http\Controllers\Controller;
 // Request
 use App\Http\Requests\Cert\CertCheckCodeRequest;
 use App\Http\Requests\Cert\CertGetDiffTimeRequest;
+use App\Http\Requests\Cert\CertCheckAccessRequest;
 
 class CertificationController extends Controller
 {
@@ -106,7 +107,7 @@ class CertificationController extends Controller
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */
-    public function checkAccessToken(Request $request)
+    public function checkAccessToken(CertCheckAccessRequest $request)
     {
         try{
             $this->user = User::getAccessUser();

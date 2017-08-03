@@ -103,6 +103,21 @@ class User extends Model implements AuthenticatableContract,
     }
 
 
+    public static function isActive(){
+        $user = User::getAccessUser();
+        if( $user->status === 'active' ) return true;
+        Abort::Error('0043','is not active user');
+    }
+    public static function isNotActive(){
+        $user = User::getAccessUser();
+        if( $user->status !== 'active' ) return true;
+        Abort::Error('0043','is active user');
+    }
+    public static function isInactive(){
+        $user = User::getAccessUser();
+        if( $user->status === 'inactive' ) return true;
+        Abort::Error('0043','is not inactive user');
+    }
     public static function isGhost(){
         return User::getAccessToken() === null;
     }

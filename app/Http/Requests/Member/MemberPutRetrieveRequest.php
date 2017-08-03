@@ -14,6 +14,7 @@ class MemberPutRetrieveRequest extends Request
 
     public function authorize()
     {
+        User::isActive();
         $user_id = $this->route()->parameters()['id'];
         $this->isMyId = User::isMyId($user_id);
         return User::isUser();
@@ -45,7 +46,7 @@ class MemberPutRetrieveRequest extends Request
         $requiredRule = [
             "birthday" => "required",
             "gender" => "required", // enum
-            "newsletterAccepted" => "required|boolean",
+//            "newsletterAccepted" => "required|boolean",
             "nickname" => $nicknameRule,
             "profileImg" => "array",
 //            "profileImg.file" => "required"
