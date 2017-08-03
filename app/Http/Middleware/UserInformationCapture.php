@@ -33,7 +33,10 @@ class UserInformationCapture
             $ip = $request->ip();
         }
 
-        $location = \Location::get($ip);
+        $location = (array)\Location::get($ip);
+        foreach( $location as $index => $value ){
+            if( $value === "" ) $location[$index] = null;
+        }
 
         $agent = new Agent();
         $language = $agent->languages();
