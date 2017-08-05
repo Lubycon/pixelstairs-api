@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SigndropQuestion extends Model 
+class SigndropQuestion extends Model
 {
     use SoftDeletes;
 
@@ -15,8 +15,8 @@ class SigndropQuestion extends Model
 
     public function getQuestion(){
         return [
-            "kor" => $this->question_korean,
-            "eng" => $this->question_english,
+            "ko" => $this->question_korean,
+            "en" => $this->question_english,
         ];
     }
 
