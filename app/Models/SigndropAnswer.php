@@ -16,8 +16,8 @@ class SigndropAnswer extends Model
     {
         return [
             "id"  => $this->id,
-            "kor" => $this->answer_korean,
-            "eng" => $this->answer_english,
+            "ko" => $this->answer_korean,
+            "en" => $this->answer_english,
         ];
     }
 
