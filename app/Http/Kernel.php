@@ -17,6 +17,7 @@ class Kernel extends HttpKernel
 //        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
 //        \Illuminate\Session\Middleware\StartSession::class,
 //        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \App\Http\Middleware\CorsHandler::class,
         \App\Http\Middleware\SecurityHandler::class,
         \App\Http\Middleware\UserInformationCapture::class,
         //\App\Http\Middleware\VerifyCsrfToken::class,

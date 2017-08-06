@@ -88,6 +88,18 @@ class User extends Model implements AuthenticatableContract,
             "status" => "inactive",
         ];
     }
+    public static function bindSignupDataByAdmin($request){
+        return [
+            "email" => $request->email,
+            "password" => bcrypt($request->password),
+            "nickname" => $request->nickname,
+            "newsletters_accepted" => $request->newsletterAccepted,
+            "terms_of_service_accepted" => $request->termsOfServiceAccepted,
+            "birthday" => Carbon::parse($request->birthday)->timezone(config('app.timezone'))->toDatetimeString(),
+            "grade" => $request->grade,
+            "status" => $request->status,
+        ];
+    }
 
     public static function isMyId($user_id){
         if( User::getAccessUser()->id === $user_id )return true;
@@ -103,6 +115,21 @@ class User extends Model implements AuthenticatableContract,
     }
 
 
+    public static function isActive(){
+        $user = User::getAccessUser();
+        if( $user->status === 'active' ) return true;
+        Abort::Error('0043','is not active user');
+    }
+    public static function isNotActive(){
+        $user = User::getAccessUser();
+        if( $user->status !== 'active' ) return true;
+        Abort::Error('0043','is active user');
+    }
+    public static function isInactive(){
+        $user = User::getAccessUser();
+        if( $user->status === 'inactive' ) return true;
+        Abort::Error('0043','is not inactive user');
+    }
     public static function isGhost(){
         return User::getAccessToken() === null;
     }
@@ -196,7 +223,8 @@ class User extends Model implements AuthenticatableContract,
             "profileImg" => $this->getImageObject(),
             "gender" => $this->gender,
             "birthday" => $this->birthday,
-            "status" => $this->status
+            "status" => $this->status,
+            "newsletterAccepted" => $this->newsletters_accepted,
         ];
     }
     public function getDetailInfo(){
@@ -207,7 +235,8 @@ class User extends Model implements AuthenticatableContract,
             "profileImg" => $this->getImageObject(),
             "gender" => $this->gender,
             "birthday" => $this->birthday,
-            "status" => $this->status
+            "status" => $this->status,
+            "newsletterAccepted" => $this->newsletters_accepted,
         ];
     }
     public function getDetailInfoByAdmin() {
@@ -299,5 +328,9 @@ class User extends Model implements AuthenticatableContract,
     public function blackUser()
     {
         return $this->hasOne('App\Models\BlackUser','user_id','id');
+    }
+    public function signdrop()
+    {
+        return $this->hasOne('App\Models\Signdrop','user_id','id');
     }
 }

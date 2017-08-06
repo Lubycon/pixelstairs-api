@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Http\Requests\Cert;
+namespace App\Http\Requests\Auth\Password;
 
 use App\Http\Requests\Request;
 use App\Models\User;
 use App\Traits\AuthorizesRequestsOverLoad;
+use Illuminate\Support\Facades\Auth;
 
 use Log;
 
-class CertGetDiffTimeRequest extends Request
+class PasswordPostTokenRequest extends Request
 {
     use AuthorizesRequestsOverLoad;
 
     public function authorize()
     {
-        User::isInactive();
         return User::isUser();
     }
 

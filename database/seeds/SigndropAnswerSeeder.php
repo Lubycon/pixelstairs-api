@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Quote;
+use App\Models\SigndropAnswer;
 
-class QuoteSeeder extends Seeder
+class SigndropAnswerSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,11 +12,11 @@ class QuoteSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('quotes')->truncate();
-        $getJson = File::get("database/seeds/jsons/quotes.json");
+        DB::table('signdrop_answers')->truncate();
+        $getJson = File::get("database/seeds/jsons/signdrop_answers.json");
         $json = json_decode($getJson,true);
         foreach( $json as $array ){
-            Quote::create($array);
+            SigndropAnswer::create($array);
         }
     }
 }

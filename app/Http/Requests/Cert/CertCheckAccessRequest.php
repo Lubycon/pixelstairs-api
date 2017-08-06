@@ -8,7 +8,7 @@ use App\Traits\AuthorizesRequestsOverLoad;
 
 use Log;
 
-class CertGetDiffTimeRequest extends Request
+class CertCheckAccessRequest extends Request
 {
     use AuthorizesRequestsOverLoad;
 

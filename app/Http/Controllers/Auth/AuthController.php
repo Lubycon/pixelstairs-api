@@ -149,8 +149,17 @@ class AuthController extends Controller
      */
     protected function signdrop(AuthSigndropRequest $request)
     {
-        // TODO : save user sign drop reasons...
         $this->user = User::getAccessUser();
+        $signdrop = $this->user->signdrop()->create([]);
+
+        foreach( $request->answerIds as $answerId ){
+            $signdrop->signdropSurvey()->create([
+                'signdrop_answer_id' => $answerId
+            ]);
+        }
+
+        $this->user->contents()->delete();
+
         if($this->user->delete()){
             return response()->success();
         }

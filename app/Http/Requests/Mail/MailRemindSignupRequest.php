@@ -14,6 +14,7 @@ class MailRemindSignupRequest extends Request
 
     public function authorize()
     {
+        User::isInactive();
         return User::isUser();
     }
 
