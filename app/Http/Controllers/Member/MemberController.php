@@ -122,8 +122,8 @@ class MemberController extends Controller
         
 //        try {
             $this->user->update([
-                "birthday" => Carbon::parse($request->birthday)->timezone(config('app.timezone'))->toDateTimeString(),
-                "gender" => $request->gender,
+//                "birthday" => Carbon::parse($request->birthday)->timezone(config('app.timezone'))->toDateTimeString(),
+//                "gender" => $request->gender,
                 "nickname" => $request->nickname,
                 "image_id" => $this->uploader->upload(
                     $this->user,
