@@ -159,4 +159,10 @@ return [
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 //      5xx response
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+
+"9999" => (object)array(
+    "httpCode" => 500,
+    "msg" => "Fatal server error"
+),
 ];
