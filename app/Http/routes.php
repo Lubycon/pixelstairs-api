@@ -104,6 +104,7 @@ Route::group(['prefix' => '/v1'], function () {
     });
 //    Route::get('/data', 'Data\DataResponseController@dataSimpleResponse');
     Route::post('/tracker', 'Tracker\TrackerController@create');
+    Route::get('/client', 'Client\ClientController@info');
 });
 
 
