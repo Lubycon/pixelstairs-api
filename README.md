@@ -9,6 +9,7 @@
 > Homestead 작동법에 대한 설명은 제외되어있습니다.
 
 #### 로컬 데이터베이스 생성
+>Pixelstairs-Docekr 프로젝트를 이용하여 설치하였다면 패스하세요
 1. mysql -uhomesated -p
 2. 비밀번호 = secret
 3. create database PixelDB;
@@ -23,7 +24,7 @@
 > 로컬서버에서만 777로 운용할것
 * chmod -R 777 storage bootstrap/cache
 
-### PHP 필수 모듈 설치
+### PHP 필수 모듈 안내
 * sudo apt-get install php7.0-gd
 * sudo apt-get install php7.0-pdo
 * sudo apt-get install php7.0-mysqlnd
@@ -39,8 +40,15 @@
 
 ### 데이터 시딩
 > composer가 업데이트 된 seed파일을 읽지 않을경우 
-> * composer dump-autoload
+* composer dump-autoload
+
+> 마이그레이션과 시딩을 같이 할 때
 * php artisan migrate --seed
+
+> 더미데이터 시딩 할때
+1. APP_ENV=local일 경우 더미 데이터 삽입됩니다
+2. APP_ENV=staging 혹은 production일 경우 운영데이터만 삽입됩니다.
+* php artisan db:seed
 
 ### Supervisor, Beanstalkd 세팅
 > .env파일에 QUEUE_DRIVER를 beanstalkd으로 설정할 경우.
@@ -85,3 +93,11 @@
 * password secret
 * database PixelDB
 * port 33060
+
+### Mysql Client Tool에서 docker DB 접속하는법 ###
+>docker가 구동되고 있는 상태에서만 접근 가능합니다.
+* host database
+* user deployer
+* password secret
+* database PixelDB
+* port 33061
