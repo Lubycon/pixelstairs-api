@@ -26,9 +26,8 @@ class MemberPutRetrieveRequest extends Request
      *   type="object",
      *   allOf={
      *       @SWG\Schema(
-     *           required={"birthday","gender","newsletterAccepted","nickname","profileImg"},
+     *           required={"birthday","newsletterAccepted","nickname","profileImg"},
      *           @SWG\Property(property="birthday", type="string", default="2017-05-28T22:59:53.000Z"),
-     *           @SWG\Property(property="gender", type="string", default="male"),
      *           @SWG\Property(property="newsletterAccepted", type="string", default=true),
      *           @SWG\Property(property="nickname", type="string", default="user_nickname")
      *       )
@@ -45,7 +44,6 @@ class MemberPutRetrieveRequest extends Request
 
         $requiredRule = [
             "birthday" => "required",
-            "gender" => "required", // enum
 //            "newsletterAccepted" => "required|boolean",
             "nickname" => $nicknameRule,
             "profileImg" => "array",
