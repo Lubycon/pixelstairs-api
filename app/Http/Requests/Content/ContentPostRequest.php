@@ -14,6 +14,7 @@ class ContentPostRequest extends Request
 
     public function authorize()
     {
+        User::isActive();
         return User::isUser();
     }
 
