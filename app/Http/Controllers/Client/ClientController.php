@@ -27,13 +27,16 @@ class ClientController extends Controller
     protected function info(Request $request)
     {
         $clientInfo = $request->clientInfo;
-        $result = [
-            "ip"       => $clientInfo['ip'],
-            "location" => [
+        $location = $clientInfo['location'] === false
+            ?[
                 "country" => $clientInfo['location']['countryName'],
                 "region"  => $clientInfo['location']['regionName'],
                 "city"    => $clientInfo['location']['cityName'],
-            ],
+            ]
+            : null;
+        $result = [
+            "ip"       => $clientInfo['ip'],
+            "location" => $location,
             "language" => $clientInfo['language'][0],
             "device"   => $clientInfo['device'],
         ];
