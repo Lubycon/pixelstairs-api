@@ -223,7 +223,8 @@ class User extends Model implements AuthenticatableContract,
             "profileImg" => $this->getImageObject(),
             "gender" => $this->gender,
             "birthday" => $this->birthday,
-            "status" => $this->status
+            "status" => $this->status,
+            "newsletterAccepted" => $this->newsletters_accepted,
         ];
     }
     public function getDetailInfo(){
@@ -234,7 +235,8 @@ class User extends Model implements AuthenticatableContract,
             "profileImg" => $this->getImageObject(),
             "gender" => $this->gender,
             "birthday" => $this->birthday,
-            "status" => $this->status
+            "status" => $this->status,
+            "newsletterAccepted" => $this->newsletters_accepted,
         ];
     }
     public function getDetailInfoByAdmin() {
