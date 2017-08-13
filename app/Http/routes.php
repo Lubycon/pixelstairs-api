@@ -1,4 +1,20 @@
 <?php
+
+
+if (App::environment('local')) {
+    // The environment is local
+    DB::enableQueryLog();
+    if (env('DB_LOG', false)) {
+        DB::listen(function ($query) {
+            Log::info([
+                'sql'      => $query->sql,
+                'bindings' => $query->bindings,
+                'time'     => $query->time,
+            ]);
+        });
+    }
+}
+
 Route::get('/', function () {
     return view('welcome', ['ifYouWantPassData' => 'put in here', 'and' => 'more']);
 });
