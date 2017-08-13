@@ -78,12 +78,12 @@
             ">
                 Confirm
             </a>
-            <a class="other-link" href="" style="
-                display: block;
-                text-align: center;
-                margin-top: 10px;
-                font-size: 14px;
-            ">Don't request this link?</a>
+            {{--<a class="other-link" href="" style="--}}
+                {{--display: block;--}}
+                {{--text-align: center;--}}
+                {{--margin-top: 10px;--}}
+                {{--font-size: 14px;--}}
+            {{--">Don't request this link?</a>--}}
         </div>
     </div>
     <div id="footer" style="
