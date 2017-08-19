@@ -14,10 +14,8 @@ class ContentDeleteRequest extends Request
 
     public function authorize()
     {
-        User::isActive();
         $content = $this->route()->parameters()['content_id'];
-        User::isMyContent($content);
-        return User::isUser();
+        return User::isUser() && User::isActive() && User::isMyContent($content);
     }
 
     public function rules()

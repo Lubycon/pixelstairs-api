@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Traits\AuthorizesRequestsOverLoad;
 
 use Log;
+use Auth;
 
 class MemberPutRetrieveRequest extends Request
 {
@@ -14,10 +15,8 @@ class MemberPutRetrieveRequest extends Request
 
     public function authorize()
     {
-        User::isActive();
         $user_id = $this->route()->parameters()['id'];
-        $this->isMyId = User::isMyId($user_id);
-        return User::isUser();
+        return User::isUser() && User::isActive() && User::isMyId($user_id);
     }
 
     /**
@@ -37,16 +36,14 @@ class MemberPutRetrieveRequest extends Request
     {
         // If same before nickname and new nickname
         // Do not check unique nickname in database
-        $nicknameRule = User::getAccessUser()->nickname === app('request')->nickname
+        $nicknameRule = Auth::user()->nickname === app('request')->nickname
             ? "required"
             : "required|unique:users,nickname";
 
         $requiredRule = [
-//            "birthday" => "required",
 //            "newsletterAccepted" => "required|boolean",
             "nickname" => $nicknameRule,
             "profileImg" => "array",
-//            "profileImg.file" => "required"
         ];
         return $requiredRule;
     }

@@ -14,8 +14,9 @@ class CertCheckCodeRequest extends Request
 
     public function authorize()
     {
-        User::isInactive();
-        return User::isUser();
+        $result = true;
+        if( User::isUser() ) $result = User::isInactive();
+        return $result;
     }
 
     /**

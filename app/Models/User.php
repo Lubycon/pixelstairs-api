@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use Request;
 use Abort;
 use Carbon\Carbon;
+use Auth;
 
 /**
  * App\Models\User
@@ -55,6 +56,8 @@ use Carbon\Carbon;
  * @mixin \Eloquent
  * @property string $birthday
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereBirthday($value)
+ * @property-read \App\Models\BlackUser $blackUser
+ * @property-read \App\Models\Signdrop $signdrop
  */
 class User extends Model implements AuthenticatableContract,
     AuthorizableContract,
@@ -83,7 +86,6 @@ class User extends Model implements AuthenticatableContract,
             "nickname" => $request->nickname,
             "newsletters_accepted" => $request->newsletterAccepted,
             "terms_of_service_accepted" => $request->termsOfServiceAccepted,
-//            "birthday" => Carbon::parse($request->birthday)->timezone(config('app.timezone'))->toDatetimeString(),
             "grade" => "general",
             "status" => "inactive",
         ];
@@ -95,53 +97,60 @@ class User extends Model implements AuthenticatableContract,
             "nickname" => $request->nickname,
             "newsletters_accepted" => $request->newsletterAccepted,
             "terms_of_service_accepted" => $request->termsOfServiceAccepted,
-//            "birthday" => Carbon::parse($request->birthday)->timezone(config('app.timezone'))->toDatetimeString(),
             "grade" => $request->grade,
             "status" => $request->status,
         ];
     }
 
     public static function isMyId($user_id){
-        if( User::getAccessUser()->id === $user_id )return true;
-        return Abort::Error('0043','It is not target user id');
+        if( Auth::check() ){
+            return Auth::id() === $user_id;
+        }
+        return false;
     }
     public static function isMyContent($content_id){
-        if( User::getAccessUser()->id === Content::findOrFail($content_id)->user_id )return true;
-        return Abort::Error('0043','It is user own');
+        if( Auth::check() ){
+            return Auth::id() === Content::findOrFail($content_id)->user_id;
+        }
+        return false;
     }
     public static function isMyComment($comment_id){
-        if( User::getAccessUser()->id === Comment::findOrFail($comment_id)->user_id )return true;
-        return Abort::Error('0043','It is user own');
+        if( Auth::check() ){
+            return Auth::id() === Comment::findOrFail($comment_id)->user_id;
+        }
+        return false;
     }
-
-
     public static function isActive(){
-        $user = User::getAccessUser();
-        if( $user->status === 'active' ) return true;
-        Abort::Error('0043','is not active user');
+        if( Auth::check() ){
+            return Auth::user()->status === 'active';
+        }
+        return false;
     }
     public static function isNotActive(){
-        $user = User::getAccessUser();
-        if( $user->status !== 'active' ) return true;
-        Abort::Error('0043','is active user');
+        if( Auth::check() ){
+            return Auth::user()->status !== 'active';
+        }
+        return false;
     }
     public static function isInactive(){
-        $user = User::getAccessUser();
-        if( $user->status === 'inactive' ) return true;
-        Abort::Error('0043','is not inactive user');
+        if( Auth::check() ){
+            return Auth::user()->status === 'inactive';
+        }
+        return false;
     }
     public static function isGhost(){
-        return User::getAccessToken() === null;
+        return Auth::check() === false;
     }
     public static function isUser(){
-        User::getAccessUser();
-        return true;
+        return Auth::check() === true;
     }
     public static function isAdmin(){
-        $userGrade = User::getAccessUser()->grade;
-        return $userGrade === 'admin' || $userGrade === 'super_admin';
+        if( Auth::check() ){
+            $userGrade = Auth::user()->grade;
+            return $userGrade === 'admin' || $userGrade === 'super_admin';
+        }
+        return false;
     }
-
 
     public static function getFromEmail($email){
         return User::whereemail($email)->firstOrFail();
@@ -149,44 +158,6 @@ class User extends Model implements AuthenticatableContract,
 
     public static function getFromNickname($nickname){
         return User::wherenickname($nickname)->firstOrFail();
-    }
-
-    public static function getAccessUser(){
-        try{
-            $userInfo = User::getUserInfo();
-            return User::findOrFail($userInfo->user_id)
-                ->wheretoken($userInfo->access_token)
-                ->firstOrFail();
-        }catch(\Exception $e){
-            Abort::Error('0043','Token dose not match');
-        }
-    }
-    public static function getAccessUserOrNot(){
-        try{
-            $userInfo = User::getUserInfo();
-            return User::findOrFail($userInfo->user_id)
-                ->wheretoken($userInfo->access_token)
-                ->firstOrFail();
-        }catch(\Exception $e){
-            return null;
-        }
-    }
-
-    public static function getUserInfo(){
-        $accessToken = User::getAccessToken();
-        $userId = substr($accessToken, 31);
-        return (object)[
-            "user_id" => $userId,
-            "access_token" => $accessToken,
-        ];
-    }
-
-    public static function getAccessToken(){
-        try{
-            return Request::header("x-pixel-token");
-        }catch(\Exception $e){
-            return null;
-        }
     }
 
     public function insertAccessToken($token = null){
@@ -271,17 +242,15 @@ class User extends Model implements AuthenticatableContract,
             $this->blackUser()->create([
                 "user_id" => $this->id
             ]);
-
-            return $this;
         }
+        return $this;
     }
 
     public function removeFromBlackList() {
         if($this->isBlackUser()) {
             $this->blackUser()->delete();
-
-            return $this;
         }
+        return $this;
     }
 
     public function getImageObject(){

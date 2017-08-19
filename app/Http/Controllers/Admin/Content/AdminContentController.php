@@ -57,7 +57,7 @@ class AdminContentController extends Controller {
     }
 
     protected function put(Request $request, $content_id){
-        $this->content = Content::findOrFail($content_id);
+        $this->content = Content::withTrashed()->findOrFail($content_id);
         try{
             $this->content->update([
                 "title" => $request->title,

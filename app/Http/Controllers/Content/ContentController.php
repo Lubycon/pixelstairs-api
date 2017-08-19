@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Content;
 // Global
 use Log;
 use Abort;
+use Auth;
 
 // Models
 use App\Models\Content;
@@ -36,8 +37,8 @@ class ContentController extends Controller
 
     public function __construct()
     {
+        $this->user = Auth::user();
         $this->content = Content::class;
-        $this->user = User::class;
         $this->uploader = new FileUpload();
         $this->pager = new Pager();
     }
@@ -52,7 +53,6 @@ class ContentController extends Controller
      * )
      */
     protected function getList(Request $request){
-        $this->user = User::getAccessUserOrNot();
         $collection = $this->pager
             ->search(new $this->content,$request->query())
             ->getCollection();
@@ -87,7 +87,6 @@ class ContentController extends Controller
      */
     protected function get(Request $request, $content_id){
         $this->content = Content::findOrFail($content_id);
-        $this->user = User::getAccessUserOrNot();
         $this->content->viewIt($this->user);
         $result = $this->content->getContentInfoWithAuthor($this->user);
         return response()->success($result);
@@ -117,23 +116,12 @@ class ContentController extends Controller
      * )
      */
     protected function post(ContentPostRequest $request){
-        $this->user = User::getAccessUser();
-        try{
-            $this->content = $this->user->contents()->create([
-                "title" => $request->title,
-                "description" => $request->description,
-                "license_code" => $request->licenseCode,
-                "hash_tags" => json_encode($request->hashTags),
-            ]);
-            // $this->content->update([
-            //     "image_group_id" => $this->uploader->upload(
-            //         $this->content,$request->image,true
-            //     )->getId(),
-            // ]);
-        } catch (\Exception $e){
-            $this->content->delete();
-            Abort::Error('0040');
-        }
+        $this->content = $this->user->contents()->create([
+            "title" => $request->title,
+            "description" => $request->description,
+            "license_code" => $request->licenseCode,
+            "hash_tags" => json_encode($request->hashTags),
+        ]);
         return response()->success($this->content);
     }
 
@@ -162,16 +150,11 @@ class ContentController extends Controller
      */
     protected function uploadImage(ContentImagePostRequest $request,$content_id){
         $this->content = Content::findOrFail($content_id);
-//        $this->user = User::getAccessUser();
-//        try{
-            $this->content->update([
-                "image_group_id" => $this->uploader->upload(
-                         $this->content,$request->file('file'),true
-                     )->getId(),
-            ]);
-//        }catch (\Exception $e){
-//            Abort::Error('0040');
-//        }
+        $this->content->update([
+            "image_group_id" => $this->uploader->upload(
+                $this->content,$request->file('file'),true
+            )->getId(),
+        ]);
         return response()->success($this->content);
     }
 
@@ -219,7 +202,6 @@ class ContentController extends Controller
                 )->getId(),
             ]);
         }catch (\Exception $e){
-            $this->content->delete();
             Abort::Error('0040');
         }
         return response()->success($this->content);

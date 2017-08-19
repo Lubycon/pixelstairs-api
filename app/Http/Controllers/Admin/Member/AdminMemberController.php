@@ -86,12 +86,9 @@ class AdminMemberController extends Controller {
                 "grade" => $request->grade
             ]);
 
-            if($request->isBlackUser) {
-                $this->user->setToBlackList();
-            }
-            else {
-                $this->user->removeFromBlackList();
-            }
+            $this->user = $request->isBlackUser
+                ? $this->user->setToBlackList()
+                : $this->user->removeFromBlackList();
 
             $result = $this->user->getDetailInfo();
         } catch (\Exception $e){

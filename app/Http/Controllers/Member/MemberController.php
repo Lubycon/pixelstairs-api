@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Member;
 use Log;
 use Abort;
 use Carbon\Carbon;
+use Auth;
 
 // Models
 use App\Models\User;
@@ -27,7 +28,7 @@ class MemberController extends Controller
 
     public function __construct()
     {
-        $this->user = User::class;
+        $this->user = Auth::user();
         $this->uploader = new FileUpload();
     }
 
@@ -48,7 +49,6 @@ class MemberController extends Controller
      * )
      */
     protected function simpleRetrieve(Request $request){
-        $this->user = User::getAccessUser();
         $result = $this->user->getSimpleInfo();
         return response()->success($result);
     }
@@ -79,7 +79,6 @@ class MemberController extends Controller
      */
     protected function getRetrieve(Request $request,$user_id)
     {
-        $this->user = User::findOrFail($user_id);
         $result = $this->user->getDetailInfo();
         return response()->success($result);
     }
@@ -117,24 +116,16 @@ class MemberController extends Controller
      */
     public function putRetrieve(MemberPutRetrieveRequest $request)
     {
-        $this->user = User::getAccessUser();
         $result = null;
-        
-//        try {
-            $this->user->update([
-//                "birthday" => Carbon::parse($request->birthday)->timezone(config('app.timezone'))->toDateTimeString(),
-//                "gender" => $request->gender,
-                "nickname" => $request->nickname,
-                "image_id" => $this->uploader->upload(
-                    $this->user,
-                    $request->profileImg
-                )->getId(),
-                "newsletters_accepted" => $request->newsletterAccepted,
-            ]);
-            $result = $this->user->getDetailInfo();
-//        } catch (\Exception $e){
-//            Abort::Error('0040');
-//        }
+        $this->user->update([
+            "nickname" => $request->nickname,
+            "image_id" => $this->uploader->upload(
+                $this->user,
+                $request->profileImg
+            )->getId(),
+            "newsletters_accepted" => $request->newsletterAccepted,
+        ]);
+        $result = $this->user->getDetailInfo();
         return response()->success($result);
     }
 }

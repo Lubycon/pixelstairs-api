@@ -5,6 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * App\Models\Signdrop
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SigndropAnswer[] $signdropAnswer
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SigndropSurvey[] $signdropSurvey
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Signdrop whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Signdrop whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Signdrop whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Signdrop whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Signdrop whereUserId($value)
+ * @mixin \Eloquent
+ */
 class Signdrop extends Model 
 {
     use SoftDeletes;

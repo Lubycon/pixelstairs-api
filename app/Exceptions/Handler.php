@@ -105,24 +105,9 @@ class Handler extends ExceptionHandler
                     'customCode'=>'0054',
                     'devMsg'=>$this->getJsonMessage($e));
                 break;
-            case $e instanceof FatalErrorException:                return '0070';  $this->slackAlarm($request,$e);   break;
+            case $e instanceof FatalErrorException:                return '0070';  break;
             case $e instanceof ServiceUnavailableHttpException:    return '0074';  break;
             default: return null; break;
-        }
-    }
-    protected function slackAlarm($request,Exception $e){
-        if(env('SLACK_DEBUG_BOT')){
-            Slack::enableMarkdown()->send(
-                '*Url* = '.$request->path()."     ".
-                '*Method* = '.$request->method()."     ".
-                '*Ip* = '.$request->ip()."     ".
-                '*Input* = ```'.json_encode($request->json()->all())."```     ".
-                '*UserToken* = '.$request->header('X-mitty-token')."     ".
-                '*Code* = '.$e->getCode()."     ".
-                '*Line* = '.$e->getLine()."     ".
-                '*Message* = ```'.$e->getMessage().'```      '.
-                '*Time* = '.Carbon::now()->toDateTimeString()
-            );
         }
     }
     protected function getJsonMessage($e){

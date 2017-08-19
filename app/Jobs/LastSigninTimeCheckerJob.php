@@ -22,7 +22,6 @@ class LastSigninTimeCheckerJob extends Job implements ShouldQueue
         $this->user = $user;
     }
 
-
     /**
      * Execute the job.
      *

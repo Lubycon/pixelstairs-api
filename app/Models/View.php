@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\View whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\View whereUserId($value)
  * @mixin \Eloquent
+ * @property string $ip
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\View whereIp($value)
  */
 class View extends Model {
 

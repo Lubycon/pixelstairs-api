@@ -14,8 +14,7 @@ class CertGetDiffTimeRequest extends Request
 
     public function authorize()
     {
-        User::isInactive();
-        return User::isUser();
+        return User::isInactive() && User::isUser();
     }
 
     public function rules()

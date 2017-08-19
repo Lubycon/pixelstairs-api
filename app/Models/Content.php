@@ -155,11 +155,15 @@ class Content extends Model {
         return $this->getImageObject($imageModel);
     }
     public function getGroupImageObject(){
-        $imageModel = $this->imageGroup->images->first();
-        $imageObjects = $this->getImageObject($imageModel);
-        return count($imageObjects) > 1
-            ? $imageObjects
-            : $imageObjects[0];
+        $imageGroupModel = $this->imageGroup;
+        if( !is_null($imageGroupModel) ){
+            $imageModel = $imageGroupModel->images->first();
+            $imageObjects = $this->getImageObject($imageModel);
+            return count($imageObjects) > 1
+                ? $imageObjects
+                : $imageObjects[0];
+        }
+        return null;
     }
     public function getImageObject($imageModel){
         $result = is_null($imageModel)

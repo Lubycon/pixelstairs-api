@@ -14,7 +14,7 @@ class ContentInterestDeleteLikeRequest extends Request
 
     public function authorize()
     {
-        return User::isUser();
+        return User::isUser() && User::isActive();
     }
 
     public function rules()

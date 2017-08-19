@@ -47,9 +47,6 @@ class Pager
 
     public function __construct()
     {
-        DB::connection()->enableQueryLog();
-        $this->DBquery = DB::getQueryLog();
-
         $this->multipleQueryDivider = config("pager.comparision.multipleQueryDivider");
         $this->maxSize = config("pager.default.pageSize.max");
         $this->defaultPageSize = config("pager.default.pageSize.basic");
@@ -436,7 +433,6 @@ class Pager
         $this->paginator = $this->finalModel
             ->select($this->baseTableName . '.*')
             ->paginate($this->pageSize, ['*'], 'page', $this->pageNumber);
-        Log::debug('paginate', [DB::getQueryLog()]);
         $this->totalCount = $this->paginator->total();
         $this->currentPage = $this->paginator->currentPage();
         $this->collection = $this->paginator->getCollection();

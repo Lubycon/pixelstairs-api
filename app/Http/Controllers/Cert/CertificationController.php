@@ -26,7 +26,7 @@ class CertificationController extends Controller
 
     public function __construct()
     {
-        $this->user = User::class;
+        $this->user = Auth::user();
     }
 
     /**
@@ -53,7 +53,6 @@ class CertificationController extends Controller
      */
     public function checkCode(CertCheckCodeRequest $request)
     {
-        $this->user = User::getAccessUser();
         $validity = $this->user->checkSignupCode($request->code);
         if($validity) {
             $this->user->update([
@@ -83,11 +82,13 @@ class CertificationController extends Controller
      */
     public function getDiffTime(CertGetDiffTimeRequest $request)
     {
-        $this->user = User::getAccessUser();
         $diffTime = $this->user->getSignupDiffTime();
+        $result = $diffTime > 0
+            ? $diffTime
+            : 0;
         return response()->success([
             'unit' => 'second',
-            'time' => $diffTime
+            'time' => $result
         ]);
     }
 
@@ -109,14 +110,8 @@ class CertificationController extends Controller
      */
     public function checkAccessToken(CertCheckAccessRequest $request)
     {
-        try{
-            $this->user = User::getAccessUser();
-            $validity = true;
-        }catch(\Exception $e){
-            $validity = false;
-        }
         return response()->success([
-            'validity' => $validity
+            'validity' => !is_null($this->user)
         ]);
     }
 }

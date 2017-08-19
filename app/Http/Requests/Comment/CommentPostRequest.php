@@ -14,8 +14,7 @@ class CommentPostRequest extends Request
 
     public function authorize()
     {
-        User::isActive();
-        return User::isUser();
+        return User::isActive() && User::isUser();
     }
 
     /**
