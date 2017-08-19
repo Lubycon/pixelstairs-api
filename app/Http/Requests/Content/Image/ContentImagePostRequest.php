@@ -14,10 +14,8 @@ class ContentImagePostRequest extends Request
 
     public function authorize()
     {
-        User::isActive();
-        $content = $this->route()->parameters()['content_id'];
-        User::isMyContent($content);
-        return User::isUser();
+        $content_id = $this->route()->parameters()['content_id'];
+        return User::isActive() && User::isUser() && User::isMyContent($content_id);
     }
 
     /**

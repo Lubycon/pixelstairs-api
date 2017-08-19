@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Content;
 // Global
 use Log;
 use Abort;
+use Auth;
 
 // Models
 use App\Models\User;
@@ -27,8 +28,8 @@ class InterestController extends Controller
 
     public function __construct()
     {
+        $this->user = Auth::user();
         $this->content = Content::class;
-        $this->user = User::class;
         $this->like = Like::class;
     }
 
@@ -58,7 +59,6 @@ class InterestController extends Controller
      */
     protected function postLike(ContentInterestPostLikeRequest $request,$content_id){
         $this->content = Content::findOrFail($content_id);
-        $this->user = User::getAccessUser();
         $this->content->likeIt($this->user);
         return response()->success();
     }
@@ -89,7 +89,6 @@ class InterestController extends Controller
      */
     protected function deleteLike(ContentInterestDeleteLikeRequest $request,$content_id){
         $this->content = Content::findOrFail($content_id);
-        $this->user = User::getAccessUser();
         $this->content->dislikeIt($this->user);
         return response()->success();
     }

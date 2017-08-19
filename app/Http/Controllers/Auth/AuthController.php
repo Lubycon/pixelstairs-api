@@ -36,7 +36,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->user = User::class;
+        $this->user = Auth::user();
     }
 
 
@@ -59,8 +59,7 @@ class AuthController extends Controller
     protected function signin(AuthSigninRequest $request)
     {
         if(!Auth::once(User::bindSigninData($request))) Abort::Error('0061');
-        $this->user = Auth::getUser();
-
+        $this->user = Auth::user();
         $this->dispatch(new LastSigninTimeCheckerJob($this->user));
         $this->user->insertAccessToken();
 
@@ -89,7 +88,6 @@ class AuthController extends Controller
      */
     protected function signout(AuthSignoutRequest $request)
     {
-        $this->user = User::getAccessUser();
         $this->user->dropToken();
         return response()->success();
     }
@@ -149,7 +147,6 @@ class AuthController extends Controller
      */
     protected function signdrop(AuthSigndropRequest $request)
     {
-        $this->user = User::getAccessUser();
         $signdrop = $this->user->signdrop()->create([]);
 
         foreach( $request->answerIds as $answerId ){

@@ -35,10 +35,9 @@ class AuthController extends Controller
     protected function signin(Request $request)
     {
         if(!Auth::once(User::bindSigninData($request))) Abort::Error('0061');
-        $this->user = Auth::getUser();
-        if( $this->user->grade === 'admin' || $this->user->grade === 'super_admin'){
+        $this->user = Auth::user();
+        if( $this->user->isAdmin()){
             $this->user->insertAccessToken();
-
             return response()->success([
                 'token' => $this->user->token,
                 'grade' => $this->user->grade,

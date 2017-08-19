@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Comment;
 // Global
 use Log;
 use Abort;
+use Auth;
 
 // Models
 use App\Models\Content;
@@ -33,7 +34,7 @@ class CommentController extends Controller
 
     public function __construct()
     {
-        $this->user = User::class;
+        $this->user = Auth::user();
         $this->content = Content::class;
         $this->comment = Comment::class;
         $this->pager = new Pager();
@@ -57,7 +58,9 @@ class CommentController extends Controller
      * )
      */
     protected function getList(CommentGetListRequest $request,$content_id){
-        $query = "search:contentId:$content_id";
+        $query = [
+            "filter" => "contentId:$content_id"
+        ];
         $collection = $this->pager
             ->search(new $this->comment,$query)
             ->getCollection();
@@ -104,7 +107,6 @@ class CommentController extends Controller
      * )
      */
     protected function post(CommentPostRequest $request,$content_id){
-        $this->user = User::getAccessUser();
         $this->content = Content::findOrFail($content_id);
         $this->comment = $this->content->comments()->create([
             "user_id" => $this->user->id,
@@ -160,7 +162,7 @@ class CommentController extends Controller
         $this->comment = $this->content->comments()->findOrFail($comment_id);
         $this->comment->update(["description" => $request->description,]);
         if($this->comment) return response()->success($this->comment);
-        Abort::Error('0040');
+        return Abort::Error('0040');
     }
 
     /**
@@ -199,6 +201,6 @@ class CommentController extends Controller
         $this->content = Content::findOrFail($content_id);
         $this->comment = $this->content->comments()->findOrFail($comment_id);
         if($this->comment->delete()) return response()->success($this->comment);
-        Abort::Error('0040');
+        return Abort::Error('0040');
     }
 }

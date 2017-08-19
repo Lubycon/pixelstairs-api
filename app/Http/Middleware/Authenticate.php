@@ -2,8 +2,12 @@
 
 namespace App\Http\Middleware;
 
+use Log;
 use Closure;
+use Auth;
 use Illuminate\Contracts\Auth\Guard;
+
+use App\Models\User;
 
 class Authenticate
 {
@@ -13,6 +17,9 @@ class Authenticate
      * @var Guard
      */
     protected $auth;
+    protected $access_token;
+    protected $user_id;
+    protected $user;
 
     /**
      * Create a new middleware instance.
@@ -34,14 +41,24 @@ class Authenticate
      */
     public function handle($request, Closure $next)
     {
-        if ($this->auth->guest()) {
-            if ($request->ajax()) {
-                return response('Unauthorized.', 401);
-            } else {
-                return redirect()->guest('auth/login');
+        if( $this->isOptionMethod($request) === false ) {
+            try {
+                $this->access_token = app('request')->header("x-pixel-token");
+                if( !is_null($this->access_token) ){
+                    $this->user_id = substr($this->access_token, 31);
+                    $this->user = User::
+                        where('id',$this->user_id)
+                        ->where('token', $this->access_token)
+                        ->firstOrFail();
+                    Auth::onceUsingId($this->user_id);
+                }
+            } catch (\Exception $e) {
             }
         }
-
         return $next($request);
+    }
+
+    protected function isOptionMethod($request){
+        return $request->method() === 'OPTIONS';
     }
 }

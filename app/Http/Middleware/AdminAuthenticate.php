@@ -16,8 +16,7 @@ class AdminAuthenticate
 {
 	public function handle(Request $request, Closure $next)
 	{
-        User::isActive();
-        if ( User::isAdmin() ) {
+        if ( User::isUser() && User::isActive() && User::isAdmin() ) {
             AdminProcessLog::createLog($request);
             return $next($request);
         }else{

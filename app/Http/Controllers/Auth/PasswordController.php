@@ -36,7 +36,7 @@ class PasswordController extends Controller
 
     public function __construct()
     {
-        $this->user = User::class;
+        $this->user = Auth::user();
         $this->passwordReset = PasswordReset::class;
     }
 
@@ -80,7 +80,6 @@ class PasswordController extends Controller
      */
     public function postToken(PasswordPostTokenRequest $request)
     {
-        $this->user = User::getAccessUser();
         PasswordReset::where('email',$this->user->email)->delete();
         $resets = PasswordReset::create([
             "email" => $this->user->email,
@@ -225,15 +224,11 @@ class PasswordController extends Controller
      * )
      */
     protected function checkPassword(PasswordCheckRequest $request){
-        $this->user = User::getAccessUser();
-
-        $credentials = [
-            'email'    => $this->user->email,
-            'password' => $request->password
-        ];
-
         return response()->success([
-            "validity" => Auth::once($credentials)
+            "validity" => Auth::once([
+                'email'    => $this->user->email,
+                'password' => $request->password
+            ])
         ]);
     }
 
