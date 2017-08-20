@@ -60,10 +60,9 @@
                 From now, we'll always support your awesome creative works and your artistic life.<br>
             </div>
         </div>
-        <div class="card button-wrapper">
+        <div class="card button-wrapper" style="text-align: center;">
             <a class="btn" href="{{ env('WEB_URL').'/certs/signup/landing/'.$token }}" style="
-                display: inline-block;
-                width: 100%;
+                display: block;
                 height: 50px;
                 text-align: center;
                 background: #383838;
