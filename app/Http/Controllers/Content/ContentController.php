@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Content;
 
 // Global
+use Faker\Provider\File;
 use Log;
 use Abort;
 use Auth;
@@ -18,6 +19,8 @@ use App\Http\Controllers\Controller;
 // Class
 use App\Classes\FileUpload;
 use App\Classes\Pager;
+use App\Classes\Pager\QueryStringParser;
+use App\Classes\Pager\Modeling;
 
 // Request
 use App\Http\Requests\Content\ContentDeleteRequest;
@@ -38,9 +41,6 @@ class ContentController extends Controller
     public function __construct()
     {
         $this->user = Auth::user();
-        $this->content = Content::class;
-        $this->uploader = new FileUpload();
-        $this->pager = new Pager();
     }
 
     /**
@@ -53,10 +53,12 @@ class ContentController extends Controller
      * )
      */
     protected function getList(Request $request){
-        $collection = $this->pager
-            ->search(new $this->content,$request->query())
-            ->getCollection();
-        $result = $this->pager->getPageInfo();
+        $parser = new QueryStringParser();
+        $queryObject = $parser->parse($request->query())->get();
+
+        $modeling = new Modeling( Content::with(['user','user.image','imageGroup','image']) );
+        $collection = $modeling->setQuery( $queryObject )->getCollection();
+        $result = $modeling->getPageInfo();
         foreach($collection as $content){
             $result->contents[] = $content->getContentInfoWithAuthor($this->user);
         };
@@ -116,7 +118,7 @@ class ContentController extends Controller
      * )
      */
     protected function post(ContentPostRequest $request){
-        $this->content = $this->user->contents()->create([
+        $this->content = $this->user->content()->create([
             "title" => $request->title,
             "description" => $request->description,
             "license_code" => $request->licenseCode,
@@ -150,6 +152,7 @@ class ContentController extends Controller
      */
     protected function uploadImage(ContentImagePostRequest $request,$content_id){
         $this->content = Content::findOrFail($content_id);
+        $this->uploader = new FileUpload();
         $this->content->update([
             "image_group_id" => $this->uploader->upload(
                 $this->content,$request->file('file'),true
@@ -191,6 +194,7 @@ class ContentController extends Controller
      */
     protected function put(ContentPutRequest $request,$content_id){
         $this->content = Content::findOrFail($content_id);
+        $this->uploader = new FileUpload();
         try{
             $this->content->update([
                 "title" => $request->title,

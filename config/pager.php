@@ -1,36 +1,44 @@
 <?php
-
-$tableName = (object)[
-    "Content" => with(new App\Models\Content)->getTable(),
-    "Comment" => with(new App\Models\Comment)->getTable(),
-];
-
 return [
-    "comparision"           => [
-        "multipleQueryDivider" => "||",
+    "sections"    => ['filter', 'search', 'sort'],
+    "type"        => ['range', 'where', 'like', 'order', 'in'],
+    "comparision" => [
+        "divider" => "||",
+        "regex"   => "(<[=>]?|>=?|:|;)",
+        "filter"  => ["=", "<", ">", "<=", ">=", "~"],
+        "search"  => ["="],
+        "sort"    => ["="],
     ],
-    "default"               => [
+    "default"     => [
         "pageSize" => [
             "basic" => 20,
             "max"   => 100,
         ],
+        "sort" => [
+            "key" => null,
+            "value" => "desc",
+        ],
     ],
-    "searchKeyConversion"   => [
-        "contentId" => $tableName->Content . ".id",
-        "featured"  => $tableName->Content . ".like_count",
-        "latest"    => $tableName->Content . ".created_at",
-        "RAW"       => "RAW", // Special key for raw query
-    ],
-    "searchValueConversion" => [
-        "isNull" => null,
-    ],
-    "partsModel"            => [
-        "Comment" => [
-            [
-                "join_table_name"       => $tableName->Content,
-                "join_table_key_column" => "id",
-                "base_table_key_column" => $tableName->Comment . ".content_id",
+    "conversion"  => [
+        "key"   => [
+            "contentId" => [
+                "model"    => App\Models\Content::class,
+                "relation" => "content",
+                "column"   => "id"
+            ],
+            "featured"  => [
+                "model"    => App\Models\Content::class,
+                "relation" => "content",
+                "column"   => "like_count"
+            ],
+            "latest"    => [
+                "model"    => App\Models\Content::class,
+                "relation" => "content",
+                "column"   => "created_at"
             ],
         ],
+        "value" => [
+            "isNull" => null,
+        ]
     ],
 ];

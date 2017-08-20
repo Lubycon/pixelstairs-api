@@ -24,12 +24,12 @@ use App\Models\View;
  * @property \Carbon\Carbon $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $comments
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $comment
  * @property-read \App\Models\ImageGroup $imageGroup
  * @property-read \App\Models\License $license
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Like[] $likes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Like[] $like
  * @property-read \App\Models\User $user
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\View[] $views
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\View[] $view
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Content whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Content whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Content whereDescription($value)
@@ -59,7 +59,7 @@ class Content extends Model {
 
     public function viewIt($user){
         if( !$this->amIView($user) ){
-            $this->views()->create([
+            $this->view()->create([
                 "user_id" => is_null($user) ? null : $user->id,
                 "ip" => app('request')->clientInfo['ip'],
             ]);
@@ -70,7 +70,7 @@ class Content extends Model {
     }
 	public function likeIt(User $user){
 	    if( !$this->amILike($user) ){
-            $this->likes()->create(["user_id" => $user->id]);
+            $this->like()->create(["user_id" => $user->id]);
             $this->like_count++;
             return $this->save();
         }
@@ -78,14 +78,14 @@ class Content extends Model {
     }
     public function dislikeIt(User $user){
         if( $this->amILike($user) ){
-            $this->likes()->where('user_id',$user->id)->delete();
+            $this->like()->where('user_id',$user->id)->delete();
             $this->like_count--;
             return $this->save();
         }
     }
     public function amILike($user){
         if( !is_null($user) ){
-            $result = $this->likes()
+            $result = $this->like()
                 ->whereuser_id($user->id)
                 ->first();
             return !is_null($result);
@@ -96,7 +96,7 @@ class Content extends Model {
         // option 1. check same ip
         //        2. check on limit time
         //        3. check if auth that user id
-        $result = $this->views()
+        $result = $this->view()
             ->where('ip',app('request')->clientInfo['ip'])
             ->where('created_at','>',Carbon::now()->subSeconds(View::getCountUpLimitTime()));
         if( !is_null($user) ) $result->whereuser_id($user->id);
@@ -157,7 +157,7 @@ class Content extends Model {
     public function getGroupImageObject(){
         $imageGroupModel = $this->imageGroup;
         if( !is_null($imageGroupModel) ){
-            $imageModel = $imageGroupModel->images->first();
+            $imageModel = $this->image->first();
             $imageObjects = $this->getImageObject($imageModel);
             return count($imageObjects) > 1
                 ? $imageObjects
@@ -181,23 +181,26 @@ class Content extends Model {
 	{
 		return $this->belongsTo('App\Models\License', 'code', 'license_code');
 	}
-//    public function thumbnailImage()
-//    {
-//        return $this->hasOne('App\Models\Image','id','thumbnail_image_id');
-//    }
+    public function image()
+    {
+        return $this->hasManyThrough(
+            'App\Models\Image', 'App\Models\ImageGroup',
+            'id', 'image_group_id', 'image_group_id'
+        );
+    }
 	public function imageGroup()
 	{
 		return $this->hasOne('App\Models\ImageGroup','id','image_group_id');
 	}
-    public function likes()
+    public function like()
     {
         return $this->hasMany('App\Models\Like','content_id','id');
     }
-    public function views()
+    public function view()
     {
         return $this->hasMany('App\Models\View','content_id','id');
     }
-    public function comments()
+    public function comment()
     {
         return $this->hasMany('App\Models\Comment','content_id','id');
     }
