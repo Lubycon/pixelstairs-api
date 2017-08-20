@@ -60,10 +60,9 @@
                 아래 쪽 버튼을 눌러 패스워드를 지키세요.
             </div>
         </div>
-        <div class="card button-wrapper">
+        <div class="card button-wrapper" style="text-align: center;">
             <a class="btn" href="{{ env('WEB_URL').'/certs/password/landing/'.$token }}" style="
-                display: inline-block;
-                width: 100%;
+                display: block;
                 height: 50px;
                 text-align: center;
                 background: #383838;
