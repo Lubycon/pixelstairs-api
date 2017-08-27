@@ -5,7 +5,7 @@ return [
     "comparision" => [
         "divider" => "||",
         "regex"   => "(<[=>]?|>=?|:|;)",
-        "filter"  => ["=", "<", ">", "<=", ">=", "~"],
+        "filter"  => ["=", "<", ">", "<=", ">=", "~", ";"],
         "search"  => ["="],
         "sort"    => ["="],
     ],
@@ -35,6 +35,11 @@ return [
                 "model"    => App\Models\Content::class,
                 "relation" => "content",
                 "column"   => "created_at"
+            ],
+            "userId"    => [
+                "model"    => App\Models\User::class,
+                "relation" => "user",
+                "column"   => "id"
             ],
         ],
         "value" => [

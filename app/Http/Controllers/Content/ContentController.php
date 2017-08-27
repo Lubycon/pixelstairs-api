@@ -18,9 +18,7 @@ use App\Http\Controllers\Controller;
 
 // Class
 use App\Classes\FileUpload;
-use App\Classes\Pager;
-use App\Classes\Pager\QueryStringParser;
-use App\Classes\Pager\Modeling;
+use App\Classes\Pager\Pager;
 
 // Request
 use App\Http\Requests\Content\ContentDeleteRequest;
@@ -36,7 +34,6 @@ class ContentController extends Controller
     public $content;
     public $user;
     public $uploader;
-    public $pager;
 
     public function __construct()
     {
@@ -53,11 +50,11 @@ class ContentController extends Controller
      * )
      */
     protected function getList(Request $request){
-        $parser = new QueryStringParser();
-        $queryObject = $parser->parse($request->query())->get();
-
-        $modeling = new Modeling( Content::with(['user','user.image','imageGroup','image']) );
-        $collection = $modeling->setQuery( $queryObject )->getCollection();
+        $modeling = new Pager( Content::with(['user','user.image','imageGroup','image']) );
+        $collection = $modeling
+            ->setQueryObject($request->query())
+            ->setQuery()
+            ->getCollection();
         $result = $modeling->getPageInfo();
         foreach($collection as $content){
             $result->contents[] = $content->getContentInfoWithAuthor($this->user);

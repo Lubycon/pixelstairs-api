@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 // Class
-use App\Classes\Pager;
+use App\Classes\Pager\Pager;
 
 // Request
 use App\Http\Requests\Comment\CommentGetListRequest;
@@ -30,14 +30,12 @@ class CommentController extends Controller
     public $user;
     public $content;
     public $comment;
-    public $pager;
 
     public function __construct()
     {
         $this->user = Auth::user();
         $this->content = Content::class;
         $this->comment = Comment::class;
-        $this->pager = new Pager();
     }
 
     /**
@@ -58,21 +56,22 @@ class CommentController extends Controller
      * )
      */
     protected function getList(CommentGetListRequest $request,$content_id){
-        $query = [
-            "filter" => "contentId:$content_id"
-        ];
-        $collection = $this->pager
-            ->search(new $this->comment,$query)
-            ->getCollection();
-        $result = $this->pager->getPageInfo();
-        foreach($collection as $comment){
-            $result->comments[] = $comment->getCommentWithAuthor();
-        };
-        if(!empty($result->comments)){
-            return response()->success($result);
-        }else{
-            return response()->success();
-        }
+        // TODO :: inject pager
+//        $query = [
+//            "filter" => "contentId:$content_id"
+//        ];
+//        $collection = $this->pager
+//            ->search(new $this->comment,$query)
+//            ->getCollection();
+//        $result = $this->pager->getPageInfo();
+//        foreach($collection as $comment){
+//            $result->comments[] = $comment->getCommentWithAuthor();
+//        };
+//        if(!empty($result->comments)){
+//            return response()->success($result);
+//        }else{
+//            return response()->success();
+//        }
     }
 
     /**

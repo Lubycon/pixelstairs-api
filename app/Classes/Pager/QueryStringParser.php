@@ -17,7 +17,7 @@ class QueryStringParser
     private $divider;
     private $dividerRegex;
     private $sections;
-    private $result = [];
+    private $object = [];
 
     public function __construct()
     {
@@ -31,7 +31,7 @@ class QueryStringParser
         foreach ($queryString as $sectionName => $value) {
             if ($this->_isAvailableSection($sectionName)) {
                 $parse = $this->_getQueryObject($sectionName, $queryString[$sectionName]);
-                $this->result = array_merge_recursive($this->result, $parse);
+                $this->object = array_merge_recursive($this->object, $parse);
             }
         }
         return $this;
@@ -39,7 +39,7 @@ class QueryStringParser
 
     public function get()
     {
-        return $this->result;
+        return $this->object;
     }
 
     private function _getQueryObject($sectionName, $query)
@@ -59,9 +59,16 @@ class QueryStringParser
             // get object information
             $key = $this->_keyConversion($splits[0]);
             $value = $this->_valueConversion($splits[1]);
-            $type = $this->_getType($sectionName, $comparison);
-            $queryObject = $this->_createQueryObject($key, $value, $comparison, $type);
+            $type = $this->_getType($sectionName, $comparison ,$value);
 
+            // For RangeQuery
+            if( $type === 'range' ){
+                $value = $this->_explodeRangeValue($value);
+            }else if( $type === 'in' ){
+                $value = $this->_decodeInValue($value);
+            }
+
+            $queryObject = $this->_createQueryObject($key, $value, $comparison, $type);
             // inject result
             if (!is_null($type)) {
                 $result[] = $queryObject;
@@ -104,10 +111,21 @@ class QueryStringParser
         // 실제 쿼리에서 사용될 Comparision
         // :를 =로 치환
         $result = str_replace($search, '', $subject);
+        $result = $result[0];
         return $result === ":" ? "=" : $result;
     }
 
-    private function _getType($sectionName, $comparison)
+    private function _explodeRangeValue($value){
+        $result = explode("~",$value);
+        return is_array($result) ? $result : Abort::Error("0040","Range Query Explode Error");
+    }
+
+    private function _decodeInValue($value){
+        $result =  json_decode($value);
+        return is_array($result) ? $result : [$result];
+    }
+
+    private function _getType($sectionName,$comparison, $value)
     {
         // filter = < > <= >= :
         // search :
@@ -116,16 +134,12 @@ class QueryStringParser
         // sort :
         $result = null;
         if ($sectionName === "filter") {
-            switch ($comparison) {
-                case "~" :
-                    $result = "range";
-                    break;
-                case ";" :
-                    $result = "in";
-                    break;
-                default :
-                    $result = "filter";
-                    break;
+            if( strpos($value,'~') ){
+                $result = "range";
+            }else if( $comparison === ';' ){
+                $result = "in";
+            }else{
+                $result = "filter";
             }
         } else {
             $result = $sectionName;
