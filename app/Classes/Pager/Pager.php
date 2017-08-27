@@ -50,7 +50,7 @@ class Pager
 
     public function setQuery()
     {
-        Log::info( print_r($this->queryObject,true) );
+//        Log::info( print_r($this->queryObject,true) );
         foreach ($this->queryObject as $index => $object) {
             if ($this->_isSameModel($object)) {
                 // 바로 쿼리
