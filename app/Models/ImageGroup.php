@@ -28,8 +28,16 @@ class ImageGroup extends Model {
     ];
 	protected $dates = ['deleted_at'];
 
-	public function getObject(){
-	    $result = [];
+    public function getFirstObject(){
+        $result = null;
+        if( !is_null($this->image[0]) ){
+            $result = $this->image[0]->getObject();
+        }
+        return $result;
+    }
+
+    public function getObjects(){
+        $result = [];
         foreach($this->image as $value){
             $result[] = $value->getObject();
         }

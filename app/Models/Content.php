@@ -149,21 +149,8 @@ class Content extends Model {
     public function getHashTags(){
         return json_decode($this->hash_tags);
     }
-
-    public function getThumbnailImageObject(){
-        $imageModel = $this->thumbnailImage;
-        return $this->getImageObject($imageModel);
-    }
     public function getGroupImageObject(){
-        $imageGroupModel = $this->imageGroup;
-        if( !is_null($imageGroupModel) ){
-            $imageModel = $this->image->first();
-            $imageObjects = $this->getImageObject($imageModel);
-            return count($imageObjects) > 1
-                ? $imageObjects
-                : $imageObjects[0];
-        }
-        return null;
+        return $this->imageGroup->getFirstObject();
     }
     public function getImageObject($imageModel){
         $result = is_null($imageModel)
@@ -181,13 +168,6 @@ class Content extends Model {
 	{
 		return $this->belongsTo('App\Models\License', 'code', 'license_code');
 	}
-    public function image()
-    {
-        return $this->hasManyThrough(
-            'App\Models\Image', 'App\Models\ImageGroup',
-            'id', 'image_group_id', 'image_group_id'
-        );
-    }
 	public function imageGroup()
 	{
 		return $this->hasOne('App\Models\ImageGroup','id','image_group_id');
