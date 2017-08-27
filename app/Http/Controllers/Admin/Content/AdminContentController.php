@@ -32,7 +32,7 @@ class AdminContentController extends Controller {
     }
 
     protected function getList(Request $request) {
-        $modeling = new Pager( Content::with(['user','user.image','imageGroup','image']) );
+        $modeling = new Pager( Content::with(['user','user.image','user.blackUser','imageGroup','image']) );
         $collection = $modeling
             ->setQueryObject($request->query())
             ->setQuery()

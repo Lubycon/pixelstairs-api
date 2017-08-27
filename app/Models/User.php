@@ -278,7 +278,7 @@ class User extends Model implements AuthenticatableContract,
     }
 
     private function isBlackUser() {
-        return $this->blackUser()->exists();
+        return !is_null($this->blackUser);
     }
 
 

@@ -28,7 +28,7 @@ class AdminMemberController extends Controller {
     }
 
     protected function getList(Request $request) {
-        $modeling = new Pager( new $this->user );
+        $modeling = new Pager( User::with(['image','blackUser']) );
         $collection = $modeling
             ->setQueryObject($request->query())
             ->setQuery()
@@ -47,14 +47,14 @@ class AdminMemberController extends Controller {
     }
 
     protected function getBlackUserList(Request $request) {
-        $modeling = new Pager( new $this->blackUser );
+        $modeling = new Pager( BlackUser::with(['user','user.image','user.blackUser']) );
         $collection = $modeling
             ->setQueryObject($request->query())
             ->setQuery()
             ->getCollection();
         $result = $modeling->getPageInfo();
         foreach($collection as $blackUser) {
-            $user = User::findOrFail($blackUser->user_id);
+            $user = $blackUser->user;
             $result->blackUsers[] = [
                 "user" => $user->getDetailInfoByAdmin(),
                 "blackInfo" => $user->getBlackInfo()
