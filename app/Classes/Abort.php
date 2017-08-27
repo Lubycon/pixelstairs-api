@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Classes;
+
 use Log;
+
 class Abort{
 
     public static function Error($errorCode,$devMsg = null){

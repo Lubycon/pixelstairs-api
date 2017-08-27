@@ -35,7 +35,7 @@ use Auth;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Content[] $contents
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Content[] $content
  * @property-read \App\Models\Image $image
  * @property-read \App\Models\SignupAllow $signupAllow
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereCreatedAt($value)
@@ -278,7 +278,7 @@ class User extends Model implements AuthenticatableContract,
     }
 
     private function isBlackUser() {
-        return $this->blackUser()->exists();
+        return !is_null($this->blackUser);
     }
 
 
@@ -290,7 +290,7 @@ class User extends Model implements AuthenticatableContract,
     {
         return $this->hasOne('App\Models\SignupAllow','email','email');
     }
-    public function contents()
+    public function content()
     {
         return $this->hasMany('App\Models\Content','user_id','id');
     }

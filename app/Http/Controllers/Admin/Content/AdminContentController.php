@@ -16,7 +16,7 @@ use App\Http\Controllers\Controller;
 
 // Class
 use App\Classes\FileUpload;
-use App\Classes\Pager;
+use App\Classes\Pager\Pager;
 
 // Request
 
@@ -24,21 +24,21 @@ class AdminContentController extends Controller {
     public $content;
     public $user;
     public $uploader;
-    public $pager;
 
     public function __construct() {
         $this->content = Content::class;
         $this->user = User::class;
         $this->uploader = new FileUpload;
-        $this->pager = new Pager;
     }
 
     protected function getList(Request $request) {
-        $collection = $this->pager
-            ->search(new $this->content, $request->query())
-            ->setDeleteParam(true)
+        $modeling = new Pager( Content::with(['user','user.image','user.blackUser','imageGroup','image']) );
+        $collection = $modeling
+            ->setQueryObject($request->query())
+            ->setQuery()
+            ->withTrashed()
             ->getCollection();
-        $result = $this->pager->getPageInfo();
+        $result = $modeling->getPageInfo();
         foreach($collection as $content){
             $result->contents[] = $content->getContentInfoWithAuthorByAdmin();
         };

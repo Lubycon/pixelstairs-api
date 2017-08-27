@@ -15,25 +15,25 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 // Class
-use App\Classes\Pager;
+use App\Classes\Pager\Pager;
 
 
 class AdminMemberController extends Controller {
     public $user;
     public $blackUser;
-    public $pager;
 
     public function __construct() {
         $this->user = User::class;
         $this->blackUser = BlackUser::class;
-        $this->pager = new Pager();
     }
 
     protected function getList(Request $request) {
-        $collection = $this->pager
-            ->search(new $this->user, $request->query())
+        $modeling = new Pager( User::with(['image','blackUser']) );
+        $collection = $modeling
+            ->setQueryObject($request->query())
+            ->setQuery()
             ->getCollection();
-        $result = $this->pager->getPageInfo();
+        $result = $modeling->getPageInfo();
         foreach($collection as $user) {
             $result->users[] = $user->getDetailInfoByAdmin();
         };
@@ -47,12 +47,14 @@ class AdminMemberController extends Controller {
     }
 
     protected function getBlackUserList(Request $request) {
-        $collection = $this->pager
-            ->search(new $this->blackUser, $request->query())
+        $modeling = new Pager( BlackUser::with(['user','user.image','user.blackUser']) );
+        $collection = $modeling
+            ->setQueryObject($request->query())
+            ->setQuery()
             ->getCollection();
-        $result = $this->pager->getPageInfo();
+        $result = $modeling->getPageInfo();
         foreach($collection as $blackUser) {
-            $user = User::findOrFail($blackUser->user_id);
+            $user = $blackUser->user;
             $result->blackUsers[] = [
                 "user" => $user->getDetailInfoByAdmin(),
                 "blackInfo" => $user->getBlackInfo()

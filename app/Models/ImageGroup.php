@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Image[] $images
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Image[] $image
  * @method static \Illuminate\Database\Query\Builder|\App\Models\ImageGroup whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\ImageGroup whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\ImageGroup whereId($value)
@@ -30,13 +30,13 @@ class ImageGroup extends Model {
 
 	public function getObject(){
 	    $result = [];
-        foreach($this->images as $value){
+        foreach($this->image as $value){
             $result[] = $value->getObject();
         }
         return $result;
     }
 
-    public function images()
+    public function image()
     {
         return $this->hasMany('App\Models\Image','image_group_id','id');
     }
