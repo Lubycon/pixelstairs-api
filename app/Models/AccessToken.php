@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Log;
 
-use App\Models\User;
-
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
@@ -25,7 +23,8 @@ class AccessToken extends Model
 
     public static $randomLength = 50;
 
-    public static function getMyLastToken($deviceCode){
+    public static function getMyLastToken(){
+        $deviceCode = app('request')->clientInfo['device']['typeCode'];
         return static::where('token','like',$deviceCode."%")->my()->notExpired()->latest()->first();
     }
 
@@ -39,10 +38,9 @@ class AccessToken extends Model
     }
 
     public static function createToken(){
-        $deviceCode = app('request')->clientInfo['device']['typeCode'];
-        $lastToken = static::getMyLastToken($deviceCode);
-        Log::info($lastToken);
+        $lastToken = static::getMyLastToken();
         if( !is_null($lastToken) ){
+            $lastToken->updateExpires();
             return $lastToken['token'];
         }
         $token = static::create([
@@ -61,10 +59,17 @@ class AccessToken extends Model
         return $deviceCode.$randomStr.$userId;
     }
 
+
     public static function destroyExpiredTokens(){
         static::expired()->delete();
     }
 
+
+    public function updateExpires(){
+        $this->update([
+            "expired_at" => Carbon::now()->addHours(8),
+        ]);
+    }
 
 
     /**
