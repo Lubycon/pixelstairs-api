@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Log;
 
 use App\Models\User;
 
 use Auth;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
@@ -24,8 +25,12 @@ class AccessToken extends Model
 
     public static $randomLength = 50;
 
+    public static function getMyLastToken($deviceCode){
+        return static::where('token','like',$deviceCode."%")->my()->notExpired()->latest()->first();
+    }
+
     public static function validToken($user_id, $token){
-        return User::with('user')
+        return static::with('user')
             ->whereHas('user', function (Builder $query) use ($user_id) {
                 $query->where('id', $user_id);
             })
@@ -34,6 +39,12 @@ class AccessToken extends Model
     }
 
     public static function createToken(){
+        $deviceCode = app('request')->clientInfo['device']['typeCode'];
+        $lastToken = static::getMyLastToken($deviceCode);
+        Log::info($lastToken);
+        if( !is_null($lastToken) ){
+            return $lastToken['token'];
+        }
         $token = static::create([
             "user_id" => Auth::user()->id,
             "token" => static::generateToken(),
@@ -54,6 +65,38 @@ class AccessToken extends Model
         static::expired()->delete();
     }
 
+
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeMy($query)
+    {
+        return $query->where('user_id', Auth::user()->id);
+    }
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeLatest($query)
+    {
+        return $query->orderBy('created_at', "desc");
+    }
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeNotExpired($query)
+    {
+        return $query->where('expired_at', ">", Carbon::now()->toDateTimeString());
+    }
     /**
      * Scope a query to only include active users.
      *

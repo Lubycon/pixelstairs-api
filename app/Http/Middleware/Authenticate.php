@@ -40,6 +40,7 @@ class Authenticate
                     Auth::onceUsingId($this->user_id);
                 }
             } catch (\Exception $e) {
+                Abort::Error('0043',"Check Token");
             }
         }
         return $next($request);
