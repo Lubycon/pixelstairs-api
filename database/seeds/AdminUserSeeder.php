@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\AccessToken;
 
 class AdminUserSeeder extends Seeder
 {
@@ -17,7 +18,6 @@ class AdminUserSeeder extends Seeder
             	'email'=>'admin@pixelstairs.com',
                 'nickname' => 'Admin',
             	'password' => bcrypt(env('COMMON_PASSWORD')),
-                'token' => 'wmLRmEIui4DtFz5ikU5mZ6Cm2gKCIOW1',
                 'status' => 'active',
             	'grade' => 'super_admin',
                 'birthday' => '1993-10-27 00:00:00',
@@ -32,7 +32,6 @@ class AdminUserSeeder extends Seeder
                 'email'=>'test@pixelstairs.com',
                 'nickname' => 'TestUser',
                 'password' => bcrypt(env('TEST_PASSWORD')),
-                'token' => 'wtesttesttesttesttesttesttestte2',
                 'status' => 'active',
                 'grade' => 'general',
                 'birthday' => '1993-10-27 00:00:00',
@@ -47,7 +46,6 @@ class AdminUserSeeder extends Seeder
                 'email'=>'bboydart91@gmail.com',
                 'nickname' => 'Evan',
                 'password' => bcrypt(env('COMMON_PASSWORD')),
-                'token' => 'wtesttesttesttesttesttesttestte3',
                 'status' => 'active',
                 'grade' => 'admin',
                 'birthday' => '1991-10-27 00:00:00',
@@ -62,7 +60,6 @@ class AdminUserSeeder extends Seeder
                 'email'=>'bboyzepot@gmail.com',
                 'nickname' => 'daniel_zepp',
                 'password' => bcrypt(env('COMMON_PASSWORD')),
-                'token' => 'wtesttesttesttesttesttesttestte4',
                 'status' => 'active',
                 'grade' => 'admin',
                 'birthday' => '1993-10-27 00:00:00',
@@ -75,5 +72,9 @@ class AdminUserSeeder extends Seeder
             ],
         ];
         DB::table('users')->insert($admin);
+
+
+        Auth::onceUsingId(2);
+        AccessToken::createToken();
     }
 }

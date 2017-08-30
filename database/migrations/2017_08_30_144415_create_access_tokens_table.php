@@ -18,9 +18,10 @@ class CreateAccessTokensTable extends Migration
             $table->string('token',255);
             $table->timestamp('expired_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('birthday');
+            $table->dropColumn('token');
         });
     }
 
@@ -33,7 +34,7 @@ class CreateAccessTokensTable extends Migration
     {
         Schema::drop('access_tokens');
         Schema::table('users', function (Blueprint $table) {
-            $table->timestamp('birthday')->nullable();
+            $table->string('token',255)->nullable();;
         });
     }
 }

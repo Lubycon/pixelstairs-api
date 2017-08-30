@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -11,6 +10,7 @@ use App\Models\User;
 use Auth;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class AccessToken extends Model
 {
@@ -48,6 +48,21 @@ class AccessToken extends Model
         $deviceCode = $device;
         $randomStr = Str::random(static::$randomLength);
         return $deviceCode.$randomStr.$userId;
+    }
+
+    public static function destroyExpiredTokens(){
+        static::expired()->delete();
+    }
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeExpired($query)
+    {
+        return $query->where('expired_at', "<", Carbon::now()->toDateTimeString());
     }
 
     public function user() {
