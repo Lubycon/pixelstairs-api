@@ -30,7 +30,6 @@ use Auth;
  * @property string $grade
  * @property string $status
  * @property int $image_id
- * @property string $token
  * @property string $last_login_time
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -51,7 +50,6 @@ use Auth;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User wherePassword($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereStatus($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereTermsOfServiceAccepted($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereToken($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereUpdatedAt($value)
  * @mixin \Eloquent
  * @property string $birthday
@@ -70,7 +68,7 @@ class User extends Model implements AuthenticatableContract,
         'image_id' => 'string',
     ];
 	protected $dates = ['deleted_at'];
-    protected $hidden = ['password', 'token'];
+    protected $hidden = ['password'];
 	protected $fillable = ['email', 'password', 'nickname', 'image_id','birthday','gender','grade','status', 'newsletters_accepted', 'terms_of_service_accepted'];
 
     public static function bindSigninData($request){
@@ -161,21 +159,13 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public function insertAccessToken($token = null){
-        $device = app('request')->clientInfo['device']['typeCode'];
         if( is_null($token) ){
-            $userId = $this->id;
-            $deviceCode = $device;
-            $randomStr = Str::random(30);
-            $token = $deviceCode.$randomStr.$userId; //need change first src from header device check
+            $token = AccessToken::createToken();
         }
-
-        $this->token = $token;
-        $this->save();
         return $token;
     }
     public function dropToken(){
-        $this->token = null;
-        $this->save();
+        return $this->token()->delete();
     }
     public function createSignupToken(){
         $recoded = SignupAllow::whereemail($this->email);
@@ -281,7 +271,6 @@ class User extends Model implements AuthenticatableContract,
         return !is_null($this->blackUser);
     }
 
-
     public function image()
 	{
 		return $this->hasOne('App\Models\Image','id','image_id');
@@ -289,6 +278,10 @@ class User extends Model implements AuthenticatableContract,
     public function signupAllow()
     {
         return $this->hasOne('App\Models\SignupAllow','email','email');
+    }
+    public function token()
+    {
+        return $this->hasMany('App\Models\AccessToken','user_id','id');
     }
     public function content()
     {
