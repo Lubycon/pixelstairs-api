@@ -36,8 +36,17 @@ class Authenticate
                 if( !is_null($this->access_token) ){
                     $this->user_id = substr($this->access_token, AccessToken::$randomLength+1);
                     $tokenValidation = AccessToken::validToken($this->user_id,$this->access_token);
-                    if( $tokenValidation === false ) Abort::Error('0043',"Check Token");
-                    Auth::onceUsingId($this->user_id);
+                    if( $tokenValidation === false ){
+                        Abort::Error('0043',"Check Token");
+                    }else{
+                        Auth::onceUsingId($this->user_id);
+                        $lastToken = AccessToken::getMyLastToken();
+                        if( !is_null($lastToken) ){
+                            $lastToken->updateExpires();
+                        }else{
+                            Abort::Error('0043',"Check Token");
+                        }
+                    }
                 }
             } catch (\Exception $e) {
                 Abort::Error('0043',"Check Token");

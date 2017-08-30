@@ -24,8 +24,11 @@ class AccessToken extends Model
     public static $randomLength = 50;
 
     public static function getMyLastToken(){
-        $deviceCode = app('request')->clientInfo['device']['typeCode'];
-        return static::where('token','like',$deviceCode."%")->my()->notExpired()->latest()->first();
+        if( User::isUser() ){
+            $deviceCode = app('request')->clientInfo['device']['typeCode'];
+            return static::where('token','like',$deviceCode."%")->my()->notExpired()->latest()->first();
+        }
+        return null;
     }
 
     public static function validToken($user_id, $token){
@@ -58,7 +61,6 @@ class AccessToken extends Model
         $randomStr = Str::random(static::$randomLength);
         return $deviceCode.$randomStr.$userId;
     }
-
 
     public static function destroyExpiredTokens(){
         static::expired()->delete();
