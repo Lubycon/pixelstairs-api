@@ -131,11 +131,10 @@ class Content extends Model {
             "user" => $this->user->getSimpleInfo(),
 			"createdAt" => Carbon::parse($this->created_at)->toDateTimeString(),
 			"updatedAt" => Carbon::parse($this->updated_at)->toDateTimeString(),
-			"deletedAt" => null
+			"deletedAt" => is_null($this->deleted_at)
+                ? null
+                : Carbon::parse($this->deleted_at)->toDateTimeString(),
 		];
-		if($this->deleted_at) {
-			$contentInfo["deletedAt"] = Carbon::parse($this->deleted_at)->toDateTimeString();
-		}
 
 		return $contentInfo;
 	}
@@ -150,6 +149,7 @@ class Content extends Model {
         return json_decode($this->hash_tags);
     }
     public function getGroupImageObject(){
+        if( is_null($this->imageGroup) ) return null;
         return $this->imageGroup->getFirstObject();
     }
     public function getImageObject($imageModel){
