@@ -89,7 +89,7 @@ class AuthController extends Controller
      */
     protected function signout(AuthSignoutRequest $request)
     {
-        $this->user->dropToken();
+        AccessToken::destroyCurrentToken();
         return response()->success();
     }
 
