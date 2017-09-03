@@ -61,10 +61,10 @@ class AuthController extends Controller
         if(!Auth::once(User::bindSigninData($request))) Abort::Error('0061');
         $this->user = Auth::user();
         $this->dispatch(new LastSigninTimeCheckerJob($this->user));
-        $this->user->insertAccessToken();
+        $token = $this->user->insertAccessToken();
 
         return response()->success([
-            'token' => $this->user->token,
+            'token' => $token,
             'grade' => $this->user->grade,
             'status' => $this->user->status,
         ]);
@@ -80,7 +80,7 @@ class AuthController extends Controller
      *      type="string",
      *      name="X-pixel-token",
      *      in="header",
-     *      default="wtesttesttesttesttesttesttestte2",
+     *      default="wQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQW2",
      *      required=true
      *     ),
      *   @SWG\Response(response=200, description="successful operation")
@@ -132,7 +132,7 @@ class AuthController extends Controller
      *      type="string",
      *      name="X-pixel-token",
      *      in="header",
-     *      default="wtesttesttesttesttesttesttestte2",
+     *      default="wQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQW2",
      *      required=true
      *     ),
      *     @SWG\Parameter(
@@ -232,7 +232,7 @@ class AuthController extends Controller
             $this->user = User::onlyTrashed()->where('id', $testUserId)->first();
             $this->user->restore();
         }
-        $this->user->insertAccessToken('wtesttesttesttesttesttesttestte2');
+        $this->user->insertAccessToken('wQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQW2');
         return response()->success(true);
     }
 

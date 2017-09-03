@@ -101,7 +101,7 @@ class ContentController extends Controller
      *      type="string",
      *      name="X-pixel-token",
      *      in="header",
-     *      default="wtesttesttesttesttesttesttestte2",
+     *      default="wQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQW2",
      *      required=true
      *     ),
      *     @SWG\Parameter(
@@ -134,7 +134,7 @@ class ContentController extends Controller
      *      type="string",
      *      name="X-pixel-token",
      *      in="header",
-     *      default="wtesttesttesttesttesttesttestte2",
+     *      default="wQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQW2",
      *      required=true
      *     ),
      *     @SWG\Parameter(
@@ -176,7 +176,7 @@ class ContentController extends Controller
      *      type="string",
      *      name="X-pixel-token",
      *      in="header",
-     *      default="wtesttesttesttesttesttesttestte2",
+     *      default="wQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQW2",
      *      required=true
      *     ),
      *     @SWG\Parameter(
@@ -226,7 +226,7 @@ class ContentController extends Controller
      *      type="string",
      *      name="X-pixel-token",
      *      in="header",
-     *      default="wtesttesttesttesttesttesttestte2",
+     *      default="wQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQW2",
      *      required=true
      *     ),
      *   @SWG\Response(response=200, description="successful operation")
