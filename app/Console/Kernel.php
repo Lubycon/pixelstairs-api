@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Models\AccessToken;
 use Log;
 
 class Kernel extends ConsoleKernel
@@ -25,5 +26,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        // Clear expired token every day
+        $schedule->call(function () {
+            AccessToken::destroyExpiredTokens();
+        })->dailyAt('24:00');
     }
 }
