@@ -176,6 +176,12 @@ class User extends Model implements AuthenticatableContract,
         ]);
     }
 
+    public static function getDropInfo(){
+        return [
+            "status" => "drop",
+        ];
+    }
+
     public function getSimpleInfo(){
         return [
             "id" => $this->id,
