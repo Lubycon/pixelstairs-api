@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 
 // Requests
+use App\Http\Requests\Admin\Auth\AuthSignupRequest;
 
 // Jobs
 
@@ -48,7 +49,7 @@ class AuthController extends Controller
         }
     }
 
-    protected function signup(Request $request)
+    protected function signup(AuthSignupRequest $request)
     {
         $signupData = User::bindSignupData($request);
 
