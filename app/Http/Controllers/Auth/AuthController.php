@@ -179,12 +179,8 @@ class AuthController extends Controller
      */
     protected function emailExist(AuthEmailExistRequest $request)
     {
-        try{
-            $this->user = User::getFromEmail($request->email);
-        }catch(\Exception $e){
-            return response()->success(false);
-        }
-        return response()->success(true);
+        $result = User::isAvailableEmail($request->email) === false;
+        return response()->success($result);
     }
 
     /**
@@ -205,12 +201,8 @@ class AuthController extends Controller
      */
     protected function nicknameExist(AuthNicknameExistRequest $request)
     {
-        try{
-            $this->user = User::getFromNickname($request->nickname);
-        }catch(\Exception $e){
-            return response()->success(false);
-        }
-        return response()->success(true);
+        $result = User::isAvailableNickname($request->nickname) === false;
+        return response()->success($result);
     }
 
     /**

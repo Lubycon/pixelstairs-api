@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;
 use Validator;
+use App\Models\User;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +26,14 @@ class AppServiceProvider extends ServiceProvider
              $explodeBase64 = explode('data:image/',$value);
              return count($explodeBase64) > 1;
          });
+         Validator::extend('availableEmail', function ($attribute, $value, $params, $validator) {
+             return User::isAvailableEmail($value);
+         });
+
+         Validator::extend('availableNickname', function ($attribute, $value, $params, $validator) {
+             return User::isAvailableNickname($value);
+         });
+
      }
     /**
      * Register any application services.
