@@ -16,6 +16,8 @@ use Request;
 use Abort;
 use Carbon\Carbon;
 use Auth;
+use DB;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * App\Models\User
@@ -72,6 +74,8 @@ class User extends Model implements AuthenticatableContract,
 	protected $dates = ['deleted_at'];
     protected $hidden = ['password', 'token'];
 	protected $fillable = ['email', 'password', 'nickname', 'image_id','birthday','gender','grade','status', 'newsletters_accepted', 'terms_of_service_accepted'];
+
+	public static $dropUserMaintainDay = 30; // day
 
     public static function bindSigninData($request){
         return [
@@ -281,6 +285,32 @@ class User extends Model implements AuthenticatableContract,
         return !is_null($this->blackUser);
     }
 
+    public static function isAvailableEmail($email){
+        return static::withTrashed()
+            ->where('email',$email)
+            ->inDropTerm()
+            ->exists() === false;
+    }
+
+    public static function isAvailableNickname($nickname){
+        return static::withTrashed()
+                ->where('nickname',$nickname)
+                ->inDropTerm()
+                ->exists() === false;
+    }
+
+    public function scopeInDropTerm(Builder $query)
+    {
+        return $query
+            ->where(function( Builder $query ) {
+                $dropAddDay = static::$dropUserMaintainDay;
+                $dropTermQuery = DB::raw('DATE_ADD(deleted_at, INTERVAL '.$dropAddDay.' DAY)');
+                $now = Carbon::now()->toDateTimeString();
+                $query
+                    ->orWhere( $dropTermQuery , '>' , $now )
+                    ->orWhere('deleted_at','=',null);
+            });
+    }
 
     public function image()
 	{
