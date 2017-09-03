@@ -9,6 +9,7 @@ use Abort;
 
 // Models
 use App\Models\User;
+use App\Models\AccessToken;
 
 // Require
 use Illuminate\Http\Request;
@@ -223,7 +224,12 @@ class AuthController extends Controller
             $this->user = User::onlyTrashed()->where('id', $testUserId)->first();
             $this->user->restore();
         }
-        $this->user->insertAccessToken('wQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQW2');
+
+        Auth::onceUsingId($testUserId);
+        AccessToken::createToken();
+        Auth::user()->token()->first()->update([
+            "token" => "wQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQW2",
+        ]);
         return response()->success(true);
     }
 
