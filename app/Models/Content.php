@@ -113,7 +113,9 @@ class Content extends Model {
             "myLike" => $this->amILike($user),
             "counts" => $this->getCounts(),
             "hashTags" => $this->getHashTags(),
-            "user" => $this->user->getSimpleInfo(),
+            "user" => is_null($this->user)
+                ? User::getDropInfo()
+                : $this->user->getSimpleInfo(),
 			"createdAt" => Carbon::parse($this->created_at)->toDateTimeString(),
 			"updatedAt" => Carbon::parse($this->updated_at)->toDateTimeString()
         ];
