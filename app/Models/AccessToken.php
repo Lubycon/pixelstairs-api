@@ -62,6 +62,20 @@ class AccessToken extends Model
         return $deviceCode.$randomStr.$userId;
     }
 
+
+    public static function destroyCurrentToken(){
+        if(Auth::check()){
+            $token = app('request')->header("x-pixel-token");
+            return static::with('user')
+                ->whereHas('user', function (Builder $query) {
+                    $user_id = Auth::user()->id;
+                    $query->where('id', $user_id);
+                })
+                ->where('token', $token)
+                ->delete();
+        }
+    }
+
     public static function destroyExpiredTokens(){
         static::expired()->delete();
     }
