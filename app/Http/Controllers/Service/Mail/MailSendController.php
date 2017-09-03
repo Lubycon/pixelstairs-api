@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Mail\Service;
+namespace App\Http\Controllers\Service\Mail;
 
 // Global
 use Log;

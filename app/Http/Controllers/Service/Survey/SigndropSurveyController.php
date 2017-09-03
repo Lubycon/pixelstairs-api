@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Survey\Service;
+namespace App\Http\Controllers\Service\Survey;
 
 // Global
 use Log;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Cert\Service;
+namespace App\Http\Controllers\Service\Cert;
 
 // Global
 use Log;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Quote\Service;
+namespace App\Http\Controllers\Service\Quote;
 
 use Illuminate\Http\Request;
 

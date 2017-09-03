@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth\Service;
+namespace App\Http\Controllers\Service\Auth;
 
 // Global
 use Log;

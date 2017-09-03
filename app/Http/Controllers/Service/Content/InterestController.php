@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Content\Service;
+namespace App\Http\Controllers\Service\Content;
 
 // Global
 use Log;

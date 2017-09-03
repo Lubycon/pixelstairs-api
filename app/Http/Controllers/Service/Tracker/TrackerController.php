@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Tracker\Service;
+namespace App\Http\Controllers\Service\Tracker;
 
 use Illuminate\Http\Request;
 

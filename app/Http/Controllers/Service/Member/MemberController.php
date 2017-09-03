@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Member\Service;
+namespace App\Http\Controllers\Service\Member;
 
 // Global
 use Log;

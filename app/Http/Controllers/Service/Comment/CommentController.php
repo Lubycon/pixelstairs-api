@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Comment\Service;
+namespace App\Http\Controllers\Service\Comment;
 
 // Global
 use Log;
