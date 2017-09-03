@@ -38,10 +38,9 @@ class MemberPutRetrieveRequest extends Request
         // Do not check unique nickname in database
         $nicknameRule = Auth::user()->nickname === app('request')->nickname
             ? "required"
-            : "required|unique:users,nickname";
+            : "required|availableNickname";
 
         $requiredRule = [
-//            "newsletterAccepted" => "required|boolean",
             "nickname" => $nicknameRule,
             "profileImg" => "array",
         ];
