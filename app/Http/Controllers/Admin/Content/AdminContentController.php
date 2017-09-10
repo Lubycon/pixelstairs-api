@@ -19,6 +19,7 @@ use App\Classes\FileUpload;
 use App\Classes\Pager\Pager;
 
 // Request
+use App\Http\Requests\Service\Content\ContentPutRequest;
 
 class AdminContentController extends Controller {
     public $content;
@@ -56,7 +57,7 @@ class AdminContentController extends Controller {
         return response()->success($result);
     }
 
-    protected function put(Request $request, $content_id){
+    protected function put(ContentPutRequest $request, $content_id){
         $this->content = Content::withTrashed()->findOrFail($content_id);
         try{
             $this->content->update([

@@ -37,8 +37,8 @@ class MemberPutRetrieveRequest extends Request
         // If same before nickname and new nickname
         // Do not check unique nickname in database
         $nicknameRule = Auth::user()->nickname === app('request')->nickname
-            ? "required"
-            : "required|availableNickname";
+            ? "required|max:20|max:3"
+            : "required|availableNickname|max:20|max:3";
 
         $requiredRule = [
             "nickname" => $nicknameRule,
