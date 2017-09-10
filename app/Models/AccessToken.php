@@ -24,11 +24,17 @@ class AccessToken extends Model
     public static $randomLength = 50;
 
     public static function getMyLastToken(){
+        $myToken = null;
         if( User::isUser() ){
             $deviceCode = app('request')->clientInfo['device']['typeCode'];
-            return static::where('token','like',$deviceCode."%")->my()->notExpired()->latest()->first();
+            $myToken = static::my()->notExpired()->latest();
+            if( is_null($deviceCode) ){
+                $myToken = $myToken->first();
+            }else{
+                $myToken = $myToken->where('token','like',$deviceCode."%")->first();
+            }
         }
-        return null;
+        return $myToken;
     }
 
     public static function validToken($user_id, $token){
@@ -83,7 +89,7 @@ class AccessToken extends Model
 
     public function updateExpires(){
         $this->update([
-            "expired_at" => Carbon::now()->addHours(8),
+            "expired_at" => Carbon::now()->addHours(8)->toDateTimeString(),
         ]);
     }
 
