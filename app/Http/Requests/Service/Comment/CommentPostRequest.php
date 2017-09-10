@@ -32,7 +32,7 @@ class CommentPostRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            "description" => "required",
+            "description" => "required|max:65500",
         ];
         return $requiredRule;
     }

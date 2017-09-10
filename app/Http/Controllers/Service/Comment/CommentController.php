@@ -56,22 +56,21 @@ class CommentController extends Controller
      * )
      */
     protected function getList(CommentGetListRequest $request,$content_id){
-        // TODO :: inject pager
-//        $query = [
-//            "filter" => "contentId:$content_id"
-//        ];
-//        $collection = $this->pager
-//            ->search(new $this->comment,$query)
-//            ->getCollection();
-//        $result = $this->pager->getPageInfo();
-//        foreach($collection as $comment){
-//            $result->comments[] = $comment->getCommentWithAuthor();
-//        };
-//        if(!empty($result->comments)){
-//            return response()->success($result);
-//        }else{
-//            return response()->success();
-//        }
+        $modeling = new Pager( Comment::with(['user','user.image'])->where('content_id',$content_id) );
+        $collection = $modeling
+            ->setQueryObject($request->query())
+            ->setQuery()
+            ->getCollection();
+        $result = $modeling->getPageInfo();
+        foreach($collection as $comment){
+            $result->comments[] = $comment->getCommentWithAuthor();
+        };
+
+        if(!empty($result->comments)){
+            return response()->success($result);
+        }else{
+            return response()->success();
+        }
     }
 
     /**
@@ -107,7 +106,7 @@ class CommentController extends Controller
      */
     protected function post(CommentPostRequest $request,$content_id){
         $this->content = Content::findOrFail($content_id);
-        $this->comment = $this->content->comments()->create([
+        $this->comment = $this->content->comment()->create([
             "user_id" => $this->user->id,
             "description" => $request->description,
         ]);
@@ -158,7 +157,7 @@ class CommentController extends Controller
      */
     protected function put(CommentPutRequest $request,$content_id,$comment_id){
         $this->content = Content::findOrFail($content_id);
-        $this->comment = $this->content->comments()->findOrFail($comment_id);
+        $this->comment = $this->content->comment()->findOrFail($comment_id);
         $this->comment->update(["description" => $request->description,]);
         if($this->comment) return response()->success($this->comment);
         return Abort::Error('0040');
@@ -198,7 +197,7 @@ class CommentController extends Controller
      */
     protected function delete(CommentDeleteRequest $request,$content_id,$comment_id){
         $this->content = Content::findOrFail($content_id);
-        $this->comment = $this->content->comments()->findOrFail($comment_id);
+        $this->comment = $this->content->comment()->findOrFail($comment_id);
         if($this->comment->delete()) return response()->success($this->comment);
         return Abort::Error('0040');
     }
