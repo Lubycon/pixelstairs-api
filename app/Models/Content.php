@@ -85,10 +85,9 @@ class Content extends Model {
     }
     public function amILike($user){
         if( !is_null($user) ){
-            $result = $this->like()
-                ->whereuser_id($user->id)
-                ->first();
-            return !is_null($result);
+            foreach($this->like as $value){
+                if( $user->id === (string)$value['user_id'] ) return true;
+            }
         }
         return false;
     }
