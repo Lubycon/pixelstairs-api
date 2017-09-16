@@ -144,6 +144,7 @@ return [
         Stevebauman\Location\LocationServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
         Sentry\SentryLaravel\SentryLaravelServiceProvider::class,
+        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -208,6 +209,8 @@ return [
         'Location' => Stevebauman\Location\Facades\Location::class,
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
         'Sentry' => Sentry\SentryLaravel\SentryFacade::class,
+        'JWTAuth' => 'Tymon\JWTAuth\Facades\JWTAuth',
+        'JWTFactory' => 'Tymon\JWTAuth\Facades\JWTFactory'
 
     ],
 
