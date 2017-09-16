@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Service\Auth;
 
 // Global
 use Log;
+use Mockery\Exception;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Auth;
 use Abort;
 
@@ -59,10 +61,14 @@ class AuthController extends Controller
      */
     protected function signin(AuthSigninRequest $request)
     {
-        if(!Auth::once(User::bindSigninData($request))) Abort::Error('0061');
+        $credentials = User::bindSigninData($request);
+
+        if (! $token = JWTAuth::attempt($credentials)) {
+            return Abort::Error('0061');
+        }
+
         $this->user = Auth::user();
         $this->dispatch(new LastSigninTimeCheckerJob($this->user));
-        $token = $this->user->insertAccessToken();
 
         return response()->success([
             'token' => $token,
@@ -79,9 +85,9 @@ class AuthController extends Controller
      *   tags={"/Members/Auth"},
      *     @SWG\Parameter(
      *      type="string",
-     *      name="X-pixel-token",
+     *      name="Authorization",
      *      in="header",
-     *      default="wQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQW2",
+     *      default="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaXNzIjoiaHR0cDovL2FwaWxvY2FsLnBpeGVsc3RhaXJzLmNvbTo4MDgwL3YxL21lbWJlcnMvc2lnbmluIiwiaWF0IjoxNTA1NTQxMDE5LCJleHAiOjE1MDU1NDQ2MTksIm5iZiI6MTUwNTU0MTAxOSwianRpIjoiekFwOWlUSmdjTlBOYnRociJ9.NdK7NHJ98U3nMqSraJMpnr10cd1cz3EbZHyaFLWMlKc",
      *      required=true
      *     ),
      *   @SWG\Response(response=200, description="successful operation")
@@ -89,7 +95,6 @@ class AuthController extends Controller
      */
     protected function signout(AuthSignoutRequest $request)
     {
-        AccessToken::destroyCurrentToken();
         return response()->success();
     }
 
@@ -132,9 +137,9 @@ class AuthController extends Controller
      *   tags={"/Members/Auth"},
      *     @SWG\Parameter(
      *      type="string",
-     *      name="X-pixel-token",
+     *      name="Authorization",
      *      in="header",
-     *      default="wQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQW2",
+     *      default="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaXNzIjoiaHR0cDovL2FwaWxvY2FsLnBpeGVsc3RhaXJzLmNvbTo4MDgwL3YxL21lbWJlcnMvc2lnbmluIiwiaWF0IjoxNTA1NTQxMDE5LCJleHAiOjE1MDU1NDQ2MTksIm5iZiI6MTUwNTU0MTAxOSwianRpIjoiekFwOWlUSmdjTlBOYnRociJ9.NdK7NHJ98U3nMqSraJMpnr10cd1cz3EbZHyaFLWMlKc",
      *      required=true
      *     ),
      *     @SWG\Parameter(
@@ -228,7 +233,7 @@ class AuthController extends Controller
         Auth::onceUsingId($testUserId);
         AccessToken::createToken();
         Auth::user()->token()->first()->update([
-            "token" => "wQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQW2",
+            "token" => "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaXNzIjoiaHR0cDovL2FwaWxvY2FsLnBpeGVsc3RhaXJzLmNvbTo4MDgwL3YxL21lbWJlcnMvc2lnbmluIiwiaWF0IjoxNTA1NTQxMDE5LCJleHAiOjE1MDU1NDQ2MTksIm5iZiI6MTUwNTU0MTAxOSwianRpIjoiekFwOWlUSmdjTlBOYnRociJ9.NdK7NHJ98U3nMqSraJMpnr10cd1cz3EbZHyaFLWMlKc",
         ]);
         return response()->success(true);
     }
