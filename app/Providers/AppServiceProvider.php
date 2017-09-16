@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\PasswordReset;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;
 use Validator;
@@ -32,6 +33,10 @@ class AppServiceProvider extends ServiceProvider
 
          Validator::extend('availableNickname', function ($attribute, $value, $params, $validator) {
              return User::isAvailableNickname($value);
+         });
+
+         Validator::extend('availablePassword', function ($attribute, $value, $params, $validator) {
+             return PasswordReset::isAvailable($value);
          });
 
      }
