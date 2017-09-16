@@ -15,7 +15,7 @@ use App\Models\AccessToken;
 class Authenticate
 {
     protected $auth;
-    protected $access_token;
+    protected $authHeaderName = 'x-pixelstairs-token';
     protected $user_id;
     protected $user;
 
@@ -33,7 +33,9 @@ class Authenticate
     public function handle($request, Closure $next)
     {
         if( $this->isOptionMethod($request) === false ) {
-            $token = app('request')->header("Authorization");
+            $token = is_null( app('request')->header($this->authHeaderName))
+                ? app('request')->header($this->authHeaderName)
+                :  app('request')->header('Authorization');
             if( !is_null($token) ){
                 if (!JWTAuth::parseToken()->authenticate())  return Abort::Error('0043',"Check Token");
             }

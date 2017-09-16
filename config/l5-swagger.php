@@ -229,7 +229,6 @@ return [
         */
 
         'request' => [
-            'X-pixel-version' => env('API_VERSION'),
         ],
 
     ],
