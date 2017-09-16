@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin\Auth;
 use Log;
 use Auth;
 use Abort;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 // Models
 use App\Models\User;
@@ -35,7 +36,12 @@ class AuthController extends Controller
 
     protected function signin(Request $request)
     {
-        if(!Auth::once(User::bindSigninData($request))) Abort::Error('0061');
+        $credentials = User::bindSigninData($request);
+
+        if (! $token = JWTAuth::attempt($credentials)) {
+            return Abort::Error('0061');
+        }
+
         $this->user = Auth::user();
         if( $this->user->isAdmin()){
             $token = $this->user->insertAccessToken();
