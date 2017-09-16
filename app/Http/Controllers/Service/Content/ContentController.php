@@ -51,7 +51,7 @@ class ContentController extends Controller
      */
     protected function getList(Request $request){
         $eagerLoad = ['user','user.image','imageGroup','imageGroup.image'];
-        if(User::isUser()) $eagerLoad[] = 'like';
+        if(User::isUser()) $eagerLoad[] = 'myLike';
         $modeling = new Pager( Content::with($eagerLoad) );
         $collection = $modeling
             ->setQueryObject($request->query())

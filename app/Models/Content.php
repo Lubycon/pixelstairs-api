@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Log;
 
 use App\Models\View;
+use Auth;
 
 /**
  * App\Models\Content
@@ -85,9 +86,10 @@ class Content extends Model {
     }
     public function amILike($user){
         if( !is_null($user) ){
-            foreach($this->like as $value){
-                if( $user->id === (string)$value['user_id'] ) return true;
-            }
+            return !is_null($this->myLike);
+//            foreach($this->like as $value){
+//                if( $user->id === (string)$value['user_id'] ) return true;
+//            }
         }
         return false;
     }
@@ -173,6 +175,11 @@ class Content extends Model {
 	{
 		return $this->hasOne('App\Models\ImageGroup','id','image_group_id');
 	}
+    public function myLike()
+    {
+        return $this->hasOne('App\Models\Like','content_id','id')
+            ->where('user_id',Auth::user()->id);
+    }
     public function like()
     {
         return $this->hasMany('App\Models\Like','content_id','id');
