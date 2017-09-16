@@ -23,7 +23,7 @@ class ContentPostRequest extends Request
      *   type="object",
      *   allOf={
      *       @SWG\Schema(
-     *           required={"title","description","licenseCode","hashTags"},
+     *           required={"title","licenseCode","hashTags"},
      *           @SWG\Property(property="title", type="string", default="test title~~"),
      *           @SWG\Property(property="description", type="string", default="lorammmmmm"),
      *           @SWG\Property(property="licenseCode", type="string", default="0101"),
@@ -35,8 +35,8 @@ class ContentPostRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            "title" => "required",
-            "description" => "required",
+            "title" => "required|max:255",
+            "description" => "max:65500",
             "licenseCode" => "required|string",
             "hashTags" => "required|array",
         ];
