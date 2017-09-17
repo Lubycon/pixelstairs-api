@@ -46,7 +46,7 @@ Route::group(['prefix' => '/v1'], function () {
         });
 
         Route::group(['prefix' => 'me/'], function () {
-            Route::get('', 'Service\Member\MemberController@myRetrieve');
+            Route::get('', 'Service\Member\MemberController@getMyRetrieve');
             Route::put('', 'Service\Member\MemberController@putRetrieve');
         });
 
