@@ -34,7 +34,7 @@ class MemberController extends Controller
 
     /**
      * @SWG\Get(
-     *   path="/members/simple",
+     *   path="/members/me",
      *   summary="simple",
      *   operationId="simple",
      *   tags={"/Members/User"},
@@ -48,53 +48,14 @@ class MemberController extends Controller
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */
-    protected function simpleRetrieve(Request $request){
-        $result = $this->user->getSimpleInfo();
-        return response()->success($result);
-    }
-
-    /**
-     * @SWG\Get(
-     *   path="/members/{member_id}/detail",
-     *   @SWG\Parameter(
-     *     name="member_id",
-     *     description="ID of member that needs",
-     *     in="path",
-     *     required=true,
-     *     type="string",
-     *     default="2",
-     *   ),
-     *   summary="detail",
-     *   operationId="detail",
-     *   tags={"/Members/User"},
-     *     @SWG\Parameter(
-     *      type="string",
-     *      name="Authorization",
-     *      in="header",
-     *      default="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaXNzIjoiaHR0cDovL2FwaWxvY2FsLnBpeGVsc3RhaXJzLmNvbTo4MDgwL3YxL21lbWJlcnMvc2lnbmluIiwiaWF0IjoxNTA1NTQxMDE5LCJleHAiOjE1MDU1NDQ2MTksIm5iZiI6MTUwNTU0MTAxOSwianRpIjoiekFwOWlUSmdjTlBOYnRociJ9.NdK7NHJ98U3nMqSraJMpnr10cd1cz3EbZHyaFLWMlKc",
-     *      required=true
-     *     ),
-     *   @SWG\Response(response=200, description="successful operation")
-     * )
-     */
-    protected function getRetrieve(Request $request,$user_id)
-    {
-        $user = User::findOrFail($user_id);
-        $result = $user->getDetailInfo();
+    protected function getMyRetrieve(Request $request){
+        $result = $this->user->getMyInfo();
         return response()->success($result);
     }
 
     /**
      * @SWG\Put(
-     *   path="/members/{member_id}/detail",
-     *   @SWG\Parameter(
-     *     name="member_id",
-     *     description="ID of member that needs",
-     *     in="path",
-     *     required=true,
-     *     type="string",
-     *     default="2",
-     *   ),
+     *   path="/members/me",
      *   summary="detail",
      *   operationId="detail",
      *   tags={"/Members/User"},
@@ -115,11 +76,9 @@ class MemberController extends Controller
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */
-    public function putRetrieve(MemberPutRetrieveRequest $request,$user_id)
+    public function putMyRetrieve(MemberPutRetrieveRequest $request)
     {
-        $result = null;
-        $user = User::findOrFail($user_id);
-        $user->update([
+        $this->user->update([
             "nickname" => $request->nickname,
             "image_id" => $this->uploader->upload(
                 $this->user,
@@ -127,7 +86,39 @@ class MemberController extends Controller
             )->getId(),
             "newsletters_accepted" => $request->newsletterAccepted,
         ]);
-        $result = $this->user->getDetailInfo();
+        $result = $this->user->getMyInfo();
+        return response()->success($result);
+    }
+
+
+    /**
+     * @SWG\Get(
+     *   path="/members/{member_id}",
+     *   @SWG\Parameter(
+     *     name="member_id",
+     *     description="ID of member that needs",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     default="2",
+     *   ),
+     *   summary="detail",
+     *   operationId="detail",
+     *   tags={"/Members/User"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="Authorization",
+     *      in="header",
+     *      default="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaXNzIjoiaHR0cDovL2FwaWxvY2FsLnBpeGVsc3RhaXJzLmNvbTo4MDgwL3YxL21lbWJlcnMvc2lnbmluIiwiaWF0IjoxNTA1NTQxMDE5LCJleHAiOjE1MDU1NDQ2MTksIm5iZiI6MTUwNTU0MTAxOSwianRpIjoiekFwOWlUSmdjTlBOYnRociJ9.NdK7NHJ98U3nMqSraJMpnr10cd1cz3EbZHyaFLWMlKc",
+     *      required=true
+     *     ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
+    protected function getPublicRetrieve(Request $request, $user_id)
+    {
+        $this->user = User::findOrFail($user_id);
+        $result = $this->user->getPublicUserInfo();
         return response()->success($result);
     }
 }
