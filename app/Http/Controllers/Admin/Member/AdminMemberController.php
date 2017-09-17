@@ -10,6 +10,9 @@ use Abort;
 use App\Models\User;
 use App\Models\BlackUser;
 
+// Request
+use App\Http\Requests\Service\Member\MemberPutRetrieveRequest;
+
 // Require
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -76,7 +79,7 @@ class AdminMemberController extends Controller {
         return response()->success($result);
     }
 
-    public function putRetrieve(Request $request, $user_id)
+    public function putRetrieve(MemberPutRetrieveRequest $request, $user_id)
     {
         $this->user = User::findOrFail($user_id);
         $result = null;

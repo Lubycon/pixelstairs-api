@@ -20,9 +20,9 @@ class AuthSignupRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            "email" => "required|availableEmail|email",
-            "nickname" => "required|availableNickname",
-            "password" => "required|string",
+            "email" => "required|availableEmail|email|max:255",
+            "nickname" => "required|availableNickname|max:20|min:3",
+            "password" => "required|string|availablePassword|max:1000",
             "newsletterAccepted" => "required|boolean",
             "termsOfServiceAccepted" => "required|boolean"
         ];

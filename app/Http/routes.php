@@ -45,11 +45,15 @@ Route::group(['prefix' => '/v1'], function () {
             Route::post('nickname', 'Service\Auth\AuthController@nicknameExist');
         });
 
-        Route::get('simple', 'Service\Member\MemberController@simpleRetrieve');
-        Route::group(['prefix' => '{id}/'], function () {
-            Route::get('detail', 'Service\Member\MemberController@getRetrieve');
-            Route::put('detail', 'Service\Member\MemberController@putRetrieve');
+        Route::group(['prefix' => 'me/'], function () {
+            Route::get('', 'Service\Member\MemberController@getMyRetrieve');
+            Route::put('', 'Service\Member\MemberController@putMyRetrieve');
         });
+
+        Route::group(['prefix' => '{id}/'], function () {
+            Route::get('', 'Service\Member\MemberController@getPublicRetrieve');
+        });
+
         Route::group(['prefix' => 'password/'], function () {
             Route::post('token', 'Service\Auth\PasswordController@postToken');
             Route::post('mail', 'Service\Auth\PasswordController@postMail');

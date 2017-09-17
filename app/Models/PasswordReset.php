@@ -25,6 +25,38 @@ use Abort;
  */
 class PasswordReset extends Model {
 
+    public static $rules = [
+        [
+            "score" => 1,
+            "regex" => "/[a-z]/",
+            "name" => "Lower case",
+        ],
+        [
+            "score" => 1,
+            "regex" => "/[A-Z]/",
+            "name" => "Upper case",
+        ],
+        [
+            "score" => 1,
+            "regex" => "/[0-9]/",
+            "name" => "Number",
+        ],
+        [
+            "score" => 2,
+            "regex" => "/[\?\!\@\#\$\%\^\*\+\-\_\.\,\`]/",
+            "name" => "Special",
+        ],
+        [
+            "score" => 5,
+            "regex" => "/^(?:(.)(?!\1\1))*$/",
+            "name" => "Repeating",
+        ],
+        [
+            "score" => 10,
+            "regex" => "/^.{8,}$/",
+            "name" => "Length",
+        ],
+    ];
     protected $fillable = ['email','token'];
 
 
@@ -55,6 +87,29 @@ class PasswordReset extends Model {
         return $nowTime->diffInSeconds($expiredTime);
     }
 
+    public static function isAvailable($password) {
+        $score = 0;
+        $max = 0;
+
+        if($password && strlen($password)> 0) {
+            // 조건 정규식 배열에 forEach
+
+            foreach( static::$rules as $rule ){
+                $max += $rule['score']; // 나중에 수행할 정규화를 위해 모든 조건의 점수를 더한다
+                if(preg_match($rule['regex'], $password)) {
+                    $score += $rule['score']; // 테스트를 통과했으면 점수를 더한다
+                }
+                else {
+                    $score -= $rule['score']; // 테스트를 통과하지 못했으면 점수를 뺀다
+                }
+            }
+        }
+        else $score = 0;
+
+        // 이렇게 나온 점수가 양수일 경우에만 0~100 사이의 정수로 정규화한다
+        $score = $score > 0 ? ($score / $max) * 100 : 0;
+        return $score >= 70;
+    }
 
 
 	public function user()

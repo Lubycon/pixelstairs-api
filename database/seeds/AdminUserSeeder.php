@@ -77,7 +77,7 @@ class AdminUserSeeder extends Seeder
         Auth::onceUsingId(2);
         AccessToken::createToken();
         Auth::user()->token()->first()->update([
-            "token" => "wQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQW2",
+            "token" => "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaXNzIjoiaHR0cDovL2FwaWxvY2FsLnBpeGVsc3RhaXJzLmNvbTo4MDgwL3YxL21lbWJlcnMvc2lnbmluIiwiaWF0IjoxNTA1NTQxMDE5LCJleHAiOjE1MDU1NDQ2MTksIm5iZiI6MTUwNTU0MTAxOSwianRpIjoiekFwOWlUSmdjTlBOYnRociJ9.NdK7NHJ98U3nMqSraJMpnr10cd1cz3EbZHyaFLWMlKc",
         ]);
     }
 }

@@ -187,28 +187,23 @@ class User extends Model implements AuthenticatableContract,
         ];
     }
 
-    public function getSimpleInfo(){
+    public function getMyInfo(){
         return [
             "id" => $this->id,
             "email" => $this->email,
             "nickname" => $this->nickname,
             "profileImg" => $this->getImageObject(),
-            "gender" => $this->gender,
-            "birthday" => $this->birthday,
             "status" => $this->status,
             "newsletterAccepted" => $this->newsletters_accepted,
         ];
     }
-    public function getDetailInfo(){
+    public function getPublicUserInfo(){
         return [
             "id" => $this->id,
             "email" => $this->email,
             "nickname" => $this->nickname,
             "profileImg" => $this->getImageObject(),
-            "gender" => $this->gender,
-            "birthday" => $this->birthday,
-            "status" => $this->status,
-            "newsletterAccepted" => $this->newsletters_accepted,
+            "status" => $this->status
         ];
     }
     public function getDetailInfoByAdmin() {

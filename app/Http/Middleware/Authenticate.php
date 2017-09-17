@@ -7,13 +7,15 @@ use Closure;
 use Auth;
 use Abort;
 
+use Tymon\JWTAuth\Facades\JWTAuth;
+
 use App\Models\User;
 use App\Models\AccessToken;
 
 class Authenticate
 {
     protected $auth;
-    protected $access_token;
+    protected $authHeaderName = 'x-pixel-token';
     protected $user_id;
     protected $user;
 
@@ -30,26 +32,25 @@ class Authenticate
      */
     public function handle($request, Closure $next)
     {
+        $token = null;
+        $headerName = null;
         if( $this->isOptionMethod($request) === false ) {
-            try {
-                $this->access_token = app('request')->header("x-pixel-token");
-                if( !is_null($this->access_token) ){
-                    $this->user_id = substr($this->access_token, AccessToken::$randomLength+1);
-                    $tokenValidation = AccessToken::validToken($this->user_id,$this->access_token);
-                    if( $tokenValidation === false ){
-                        Abort::Error('0043',"Check Token");
-                    }else{
-                        Auth::onceUsingId($this->user_id);
-                        $lastToken = AccessToken::getMyLastToken();
-                        if( !is_null($lastToken) ){
-                            $lastToken->updateExpires();
-                        }else{
-                            Abort::Error('0043',"Check Token");
-                        }
-                    }
+            if( !is_null( app('request')->header($this->authHeaderName)) ){
+                $token = app('request')->header($this->authHeaderName);
+                $headerName = $this->authHeaderName;
+            }else if(!is_null( app('request')->header('Authorization')) ){
+                $token = app('request')->header('Authorization');
+                $headerName = 'Authorization';
+            }
+
+            if( !is_null($token) ){
+                if( $headerName === $this->authHeaderName ){
+                    $request->headers->set('Authorization', 'bearer '.$token);
                 }
-            } catch (\Exception $e) {
-                Abort::Error('0043',"Check Token");
+
+                if (!JWTAuth::parseToken()->authenticate()){
+                    return Abort::Error('0043',"Check Token");
+                }
             }
         }
         return $next($request);

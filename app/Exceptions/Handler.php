@@ -12,7 +12,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 //use App\Exceptions\UserNotFound;
-
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -107,6 +109,8 @@ class Handler extends ExceptionHandler
                 break;
             case $e instanceof FatalErrorException:                return '0070';  break;
             case $e instanceof ServiceUnavailableHttpException:    return '0074';  break;
+            case $e instanceof TokenExpiredException:              return '0062';  break;
+            case $e instanceof TokenInvalidException:              return '0041';  break;
             default: return null; break;
         }
     }

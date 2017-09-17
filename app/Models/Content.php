@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Log;
 
 use App\Models\View;
+use Auth;
 
 /**
  * App\Models\Content
@@ -85,10 +86,10 @@ class Content extends Model {
     }
     public function amILike($user){
         if( !is_null($user) ){
-            $result = $this->like()
-                ->whereuser_id($user->id)
-                ->first();
-            return !is_null($result);
+            return !is_null($this->myLike);
+//            foreach($this->like as $value){
+//                if( $user->id === (string)$value['user_id'] ) return true;
+//            }
         }
         return false;
     }
@@ -115,7 +116,7 @@ class Content extends Model {
             "hashTags" => $this->getHashTags(),
             "user" => is_null($this->user)
                 ? User::getDropInfo()
-                : $this->user->getSimpleInfo(),
+                : $this->user->getMyInfo(),
 			"createdAt" => Carbon::parse($this->created_at)->toDateTimeString(),
 			"updatedAt" => Carbon::parse($this->updated_at)->toDateTimeString()
         ];
@@ -130,7 +131,7 @@ class Content extends Model {
             "licenseCode" => $this->license_code,
             "counts" => $this->getCounts(),
             "hashTags" => $this->getHashTags(),
-            "user" => $this->user->getSimpleInfo(),
+            "user" => $this->user->getMyInfo(),
 			"createdAt" => Carbon::parse($this->created_at)->toDateTimeString(),
 			"updatedAt" => Carbon::parse($this->updated_at)->toDateTimeString(),
 			"deletedAt" => is_null($this->deleted_at)
@@ -174,6 +175,11 @@ class Content extends Model {
 	{
 		return $this->hasOne('App\Models\ImageGroup','id','image_group_id');
 	}
+    public function myLike()
+    {
+        return $this->hasOne('App\Models\Like','content_id','id')
+            ->where('user_id',Auth::user()->id);
+    }
     public function like()
     {
         return $this->hasMany('App\Models\Like','content_id','id');
