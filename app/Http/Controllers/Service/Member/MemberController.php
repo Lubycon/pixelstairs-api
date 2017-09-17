@@ -79,7 +79,8 @@ class MemberController extends Controller
      */
     protected function getRetrieve(Request $request,$user_id)
     {
-        $result = $this->user->getDetailInfo();
+        $user = User::findOrFail($user_id);
+        $result = $user->getDetailInfo();
         return response()->success($result);
     }
 
@@ -114,10 +115,11 @@ class MemberController extends Controller
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */
-    public function putRetrieve(MemberPutRetrieveRequest $request)
+    public function putRetrieve(MemberPutRetrieveRequest $request,$user_id)
     {
         $result = null;
-        $this->user->update([
+        $user = User::findOrFail($user_id);
+        $user->update([
             "nickname" => $request->nickname,
             "image_id" => $this->uploader->upload(
                 $this->user,
