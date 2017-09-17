@@ -15,8 +15,7 @@ class MemberPutRetrieveRequest extends Request
 
     public function authorize()
     {
-        $user_id = $this->route()->parameters()['id'];
-        return User::isUser() && User::isActive() && User::isMyId($user_id);
+        return User::isUser() && User::isActive();
     }
 
     /**

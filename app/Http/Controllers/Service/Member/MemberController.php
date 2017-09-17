@@ -34,7 +34,7 @@ class MemberController extends Controller
 
     /**
      * @SWG\Get(
-     *   path="/members/simple",
+     *   path="/members/me",
      *   summary="simple",
      *   operationId="simple",
      *   tags={"/Members/User"},
@@ -54,8 +54,47 @@ class MemberController extends Controller
     }
 
     /**
+     * @SWG\Put(
+     *   path="/members/me",
+     *   summary="detail",
+     *   operationId="detail",
+     *   tags={"/Members/User"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="X-pixel-token",
+     *      in="header",
+     *      default="wQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQW2",
+     *      required=true
+     *     ),
+     *     @SWG\Parameter(
+     *     in="body",
+     *     name="body",
+     *     description="Put detail",
+     *     required=true,
+     *      @SWG\Schema(ref="#/definitions/members/putRetrieve")
+     *   ),
+     *   @SWG\Response(response=200, description="successful operation")
+     * )
+     */
+    public function putMyRetrieve(MemberPutRetrieveRequest $request)
+    {
+        $result = null;
+        $this->user->update([
+            "nickname" => $request->nickname,
+            "image_id" => $this->uploader->upload(
+                $this->user,
+                $request->profileImg
+            )->getId(),
+            "newsletters_accepted" => $request->newsletterAccepted,
+        ]);
+        $result = $this->user->getMyInfo();
+        return response()->success($result);
+    }
+
+
+    /**
      * @SWG\Get(
-     *   path="/members/{member_id}/detail",
+     *   path="/members/{member_id}",
      *   @SWG\Parameter(
      *     name="member_id",
      *     description="ID of member that needs",
@@ -81,52 +120,6 @@ class MemberController extends Controller
     {
         $this->user = User::findOrFail($user_id);
         $result = $this->user->getPublicUserInfo();
-        return response()->success($result);
-    }
-
-    /**
-     * @SWG\Put(
-     *   path="/members/{member_id}/detail",
-     *   @SWG\Parameter(
-     *     name="member_id",
-     *     description="ID of member that needs",
-     *     in="path",
-     *     required=true,
-     *     type="string",
-     *     default="2",
-     *   ),
-     *   summary="detail",
-     *   operationId="detail",
-     *   tags={"/Members/User"},
-     *     @SWG\Parameter(
-     *      type="string",
-     *      name="X-pixel-token",
-     *      in="header",
-     *      default="wQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQWERQW2",
-     *      required=true
-     *     ),
-     *     @SWG\Parameter(
-     *     in="body",
-     *     name="body",
-     *     description="Put detail",
-     *     required=true,
-     *      @SWG\Schema(ref="#/definitions/members/putRetrieve")
-     *   ),
-     *   @SWG\Response(response=200, description="successful operation")
-     * )
-     */
-    public function putRetrieve(MemberPutRetrieveRequest $request)
-    {
-        $result = null;
-        $this->user->update([
-            "nickname" => $request->nickname,
-            "image_id" => $this->uploader->upload(
-                $this->user,
-                $request->profileImg
-            )->getId(),
-            "newsletters_accepted" => $request->newsletterAccepted,
-        ]);
-        $result = $this->user->getMyInfo();
         return response()->success($result);
     }
 }
