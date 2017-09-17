@@ -48,8 +48,8 @@ class MemberController extends Controller
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */
-    protected function simpleRetrieve(Request $request){
-        $result = $this->user->getSimpleInfo();
+    protected function getMyRetrieve(Request $request){
+        $result = $this->user->getMyInfo();
         return response()->success($result);
     }
 
@@ -77,9 +77,10 @@ class MemberController extends Controller
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */
-    protected function getRetrieve(Request $request,$user_id)
+    protected function getPublicRetrieve(Request $request, $user_id)
     {
-        $result = $this->user->getDetailInfo();
+        $this->user = User::findOrFail($user_id);
+        $result = $this->user->getPublicUserInfo();
         return response()->success($result);
     }
 
@@ -125,7 +126,7 @@ class MemberController extends Controller
             )->getId(),
             "newsletters_accepted" => $request->newsletterAccepted,
         ]);
-        $result = $this->user->getDetailInfo();
+        $result = $this->user->getMyInfo();
         return response()->success($result);
     }
 }

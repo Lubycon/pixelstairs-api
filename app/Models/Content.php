@@ -115,7 +115,7 @@ class Content extends Model {
             "hashTags" => $this->getHashTags(),
             "user" => is_null($this->user)
                 ? User::getDropInfo()
-                : $this->user->getSimpleInfo(),
+                : $this->user->getMyInfo(),
 			"createdAt" => Carbon::parse($this->created_at)->toDateTimeString(),
 			"updatedAt" => Carbon::parse($this->updated_at)->toDateTimeString()
         ];
@@ -130,7 +130,7 @@ class Content extends Model {
             "licenseCode" => $this->license_code,
             "counts" => $this->getCounts(),
             "hashTags" => $this->getHashTags(),
-            "user" => $this->user->getSimpleInfo(),
+            "user" => $this->user->getMyInfo(),
 			"createdAt" => Carbon::parse($this->created_at)->toDateTimeString(),
 			"updatedAt" => Carbon::parse($this->updated_at)->toDateTimeString(),
 			"deletedAt" => is_null($this->deleted_at)
