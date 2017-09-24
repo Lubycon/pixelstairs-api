@@ -111,6 +111,7 @@ class Handler extends ExceptionHandler
             case $e instanceof ServiceUnavailableHttpException:    return '0074';  break;
             case $e instanceof TokenExpiredException:              return '0062';  break;
             case $e instanceof TokenInvalidException:              return '0041';  break;
+
             default: return null; break;
         }
     }

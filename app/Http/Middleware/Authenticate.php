@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Requests\Request;
 use Log;
 use Closure;
 use Auth;
@@ -14,10 +15,10 @@ use App\Models\AccessToken;
 
 class Authenticate
 {
-    protected $auth;
+    protected $request;
     protected $authHeaderName = 'x-pixel-token';
-    protected $user_id;
-    protected $user;
+    protected $token;
+    protected $headerName;
 
     public function __construct()
     {
@@ -32,31 +33,44 @@ class Authenticate
      */
     public function handle($request, Closure $next)
     {
-        $token = null;
-        $headerName = null;
-        if( $this->isOptionMethod($request) === false ) {
-            if( !is_null( app('request')->header($this->authHeaderName)) ){
-                $token = app('request')->header($this->authHeaderName);
-                $headerName = $this->authHeaderName;
-            }else if(!is_null( app('request')->header('Authorization')) ){
-                $token = app('request')->header('Authorization');
-                $headerName = 'Authorization';
-            }
-
-            if( !is_null($token) ){
-                if( $headerName === $this->authHeaderName ){
-                    $request->headers->set('Authorization', 'bearer '.$token);
-                }
-
-                if (!JWTAuth::parseToken()->authenticate()){
+        $this->setRequest($request);
+        if( $this->isOptionMethod() === false ) {
+            $this->setHeaderName();
+            if( !is_null($this->token) ){
+                $this->setHeaderForLegacy();
+                if (!JWTAuth::setRequest($this->request)->parseToken()->authenticate()){
                     return Abort::Error('0043',"Check Token");
                 }
             }
         }
-        return $next($request);
+        return $next($this->request);
     }
 
-    protected function isOptionMethod($request){
-        return $request->method() === 'OPTIONS';
+    protected function setRequest(\Illuminate\Http\Request $request){
+        return $this->request = $request;
+    }
+
+    protected function setHeaderName(){
+        if( !is_null( $this->request->header($this->authHeaderName)) ){
+            $this->token = $this->request->header($this->authHeaderName);
+            $this->headerName = $this->authHeaderName;
+        }else if(!is_null( $this->request->header('Authorization')) ){
+            $this->token = $this->request->header('Authorization');
+            $this->headerName = 'Authorization';
+        }
+        return true;
+    }
+
+    protected function setHeaderForLegacy(){
+        // Deprecated!
+        // X-pixel-token conversion function
+        if( $this->headerName === $this->authHeaderName ){
+            $this->request->headers->set('Authorization', 'bearer '.$this->token);
+        }
+        return true;
+    }
+
+    protected function isOptionMethod(){
+        return $this->request->method() === 'OPTIONS';
     }
 }
