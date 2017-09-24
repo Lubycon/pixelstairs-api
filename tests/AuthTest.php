@@ -47,8 +47,16 @@ class AuthTest extends TestCase
         $this->signupWhenUser();
         $this->signupInvalid();
 
+        // Email exists
+        $this->emailExists();
+        $this->emailExistsInvalid();
+
+        // Nickname exists
+        $this->nicknameExists();
+        $this->nicknameExistsInvalid();
 
         // Signdrop
+        $this->signdropSurveyList();
         $this->signdropWhenGhost();
         $this->signdropInvalid();
         $this->signdropSuccess();
@@ -148,12 +156,19 @@ class AuthTest extends TestCase
         Auth::logout();
     }
 
+    public function signdropSurveyList(){
+        $this->json('GET', $this->prefix."signdrop/survey/list" , [
+        ],$this->headers)
+            ->assertResponseStatus(200);
+        Auth::logout();
+    }
 
     public function signdropSuccess(){
         $this->json('DELETE', $this->prefix."signdrop" , [
             "answerIds" => [1,7]
         ],$this->headers)
             ->assertResponseStatus(200);
+        // Don't logout
     }
 
     public function signdropWhenGhost(){
@@ -161,16 +176,79 @@ class AuthTest extends TestCase
             "answerIds" => [1,7]
         ])
             ->assertResponseStatus(403);
+        Auth::logout();
     }
 
     public function signdropInvalid(){
         $this->json('DELETE', $this->prefix."signdrop" , [
         ],$this->headers)
             ->assertResponseStatus(422);
-        
+        Auth::logout();
+
         $this->json('DELETE', $this->prefix."signdrop" , [
             "answerIds" => 100
         ],$this->headers)
             ->assertResponseStatus(422);
+        Auth::logout();
+
+        $this->json('DELETE', $this->prefix."signdrop" , [
+            "answerIds" => [1,7]
+        ],$this->invalidHeaders)
+            ->assertResponseStatus(401);
+        Auth::logout();
+    }
+
+    public function emailExists(){
+        $this->json('POST', $this->prefix."exists/email" , [
+            "email" => "test@pixelstairs.com"
+        ])
+            ->assertResponseStatus(200)
+            ->seeJson([
+                "result" => true,
+            ]);
+
+        $this->json('POST', $this->prefix."exists/email" , [
+            "email" => "flkdsjflkas@pixelstairs.com"
+        ])
+            ->assertResponseStatus(200)
+            ->seeJson([
+                "result" => false,
+            ]);
+        Auth::logout();
+    }
+
+
+    public function emailExistsInvalid(){
+        $this->json('POST', $this->prefix."exists/email" , [
+        ])
+            ->assertResponseStatus(422);
+        Auth::logout();
+    }
+
+
+    public function nicknameExists(){
+        $this->json('POST', $this->prefix."exists/nickname" , [
+            "nickname" => "Admin"
+        ])
+            ->assertResponseStatus(200)
+            ->seeJson([
+                "result" => true,
+            ]);
+
+        $this->json('POST', $this->prefix."exists/nickname" , [
+            "nickname" => "AdminAdminAdmin"
+        ])
+            ->assertResponseStatus(200)
+            ->seeJson([
+                "result" => false,
+            ]);
+        Auth::logout();
+    }
+
+    public function nicknameExistsInvalid(){
+        $this->json('POST', $this->prefix."exists/nickname" , [
+        ])
+            ->assertResponseStatus(422);
+        Auth::logout();
     }
 }
