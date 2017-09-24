@@ -119,7 +119,7 @@ class AuthTest extends TestCase
 
 
     public function signupSuccess(){
-        $rand = mt_rand(10000,20000);
+        $rand = mt_rand(10000,20000000);
         $this->json('POST', $this->prefix."signup" , [
               "email" => "nononoenofnd".$rand."@pixelstairs.com",
               "password" => "password1234!".$rand,

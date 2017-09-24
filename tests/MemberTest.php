@@ -36,7 +36,6 @@ class MemberTest extends TestCase
         $this->meGetWhenGhost();
         $this->mePutSuccess();
         $this->mePutWhenGhost();
-        $this->mePutAnothorUser();
         $this->mePutInvalid();
 
         // Get Public Member Data
@@ -61,21 +60,13 @@ class MemberTest extends TestCase
     public function mePutSuccess(){
         $this->json('PUT', $this->prefix."me" , [
             "newsletterAccepted" => true,
-            "nickname" => mt_rand(10000,20000),
+            "nickname" => mt_rand(10000,20000000),
         ],$this->headers)
             ->assertResponseStatus(200);
         Auth::logout();
     }
+
     public function mePutWhenGhost(){
-        $this->json('PUT', $this->prefix."me" , [
-            "newsletterAccepted" => true,
-            "nickname" => "user_nickname",
-        ])
-            ->assertResponseStatus(403);
-        Auth::logout();
-    }
-    public function mePutAnothorUser(){
-        // TODO GET anothor users token
         $this->json('PUT', $this->prefix."me" , [
             "newsletterAccepted" => true,
             "nickname" => "user_nickname",
