@@ -37,7 +37,7 @@ class ClientController extends Controller
         $result = [
             "ip"       => $clientInfo['ip'],
             "location" => $location,
-            "language" => $clientInfo['language'][0],
+            "language" => isset($clientInfo['language'][0]) ? $clientInfo['language'][0] : null,
             "device"   => $clientInfo['device'],
         ];
         return response()->success($result);

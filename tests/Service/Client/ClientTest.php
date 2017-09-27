@@ -23,16 +23,23 @@ class ClientTest extends TestCase
         $this->json('GET', $this->prefix)
             ->assertResponseStatus(200)
             ->seeJsonStructure([
-                "ip",
-                "location",
-                "language",
-                "device" => [
-                    "type",
-                    "typeCode",
-                    "device",
-                    "os",
-                    "browser",
-                ]
+                "status" => [
+                    "code",
+                    "devMsg",
+                    "msg"
+                ],
+                "result" => [
+                    "ip",
+                    "location",
+                    "language",
+                    "device" => [
+                        "type",
+                        "typeCode",
+                        "device",
+                        "os",
+                        "browser",
+                    ]
+                ],
             ]);
     }
 }
