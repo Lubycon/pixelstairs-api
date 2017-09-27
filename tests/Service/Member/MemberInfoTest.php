@@ -4,7 +4,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class MemberTest extends TestCase
+class MemberInfoTest extends TestCase
 {
     private $prefix = "/v1/members/";
     public $user;
