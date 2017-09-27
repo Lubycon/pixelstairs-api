@@ -119,14 +119,7 @@ class AuthController extends Controller
         $signupData = User::bindSignupData($request);
 
         if( $this->user = User::create($signupData)){
-            Auth::onceUsingId($this->user->id);
-            $credentials = [
-                'email' => $this->user->email,
-                'password' => $request->password
-            ];
-            if (! $token = JWTAuth::attempt($credentials)) {
-                return Abort::Error('0061');
-            }
+            $token = JWTAuth::fromUser($this->user);
             $this->dispatch(new SignupMailSendJob($this->user));
             return response()->success([
                 "token" => $token
