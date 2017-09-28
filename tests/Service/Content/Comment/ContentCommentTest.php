@@ -56,6 +56,7 @@ class ContentCommentTest extends TestCase
         $this->getListNotFound();
 
         $this->postSuccess();
+        $this->postNotFound();
         $this->postInvalid();
         $this->postWhenGhost();
         $this->postWhenInActiveUser();
@@ -64,7 +65,6 @@ class ContentCommentTest extends TestCase
         $this->testCommentId = $testComment->id;
 
         $this->putSuccess();
-        $this->postNotFound();
         $this->putInvalid();
         $this->putNotFound();
         $this->putContentNotFound();
