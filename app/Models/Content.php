@@ -58,6 +58,13 @@ class Content extends Model {
 	protected $dates = ['deleted_at'];
 	protected $fillable = array('user_id', 'license_code', 'image_group_id', 'title', 'description', 'view_count', 'like_count', 'hash_tags');
 
+
+	public function isImageUploaded(){
+	    return !(is_null($this->image_group_id) ||
+            $this->image_group_id === 0 ||
+            $this->image_group_id === '0');
+    }
+
     public function viewIt($user){
         if( !$this->amIView($user) ){
             $this->view()->create([
