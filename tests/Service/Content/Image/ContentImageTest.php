@@ -119,7 +119,6 @@ class ContentImageTest extends TestCase
     {
         $this->__setup();
 
-        // TODO big size image
         $this->postInvalid();
         $this->postNotfound();
         $this->postWhenGhost();

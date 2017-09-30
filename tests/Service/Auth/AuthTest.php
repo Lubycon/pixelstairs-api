@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Str;
 
 class AuthTest extends TestCase
 {
@@ -119,11 +120,11 @@ class AuthTest extends TestCase
 
 
     public function signupSuccess(){
-        $rand = mt_rand(10000,200000000000);
+        $randStr = Str::random(20);
         $this->json('POST', $this->prefix."signup" , [
-              "email" => "nononoenofnd".$rand."@pixelstairs.com",
-              "password" => "password1234!".$rand,
-              "nickname" => "usernicks".$rand,
+              "email" => $randStr."@pixelstairs.com",
+              "password" => $randStr,
+              "nickname" => $randStr,
               "newsletterAccepted" => true,
               "termsOfServiceAccepted" => true
         ])

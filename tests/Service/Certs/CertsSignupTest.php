@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Str;
 
 class CertsSignupTest extends TestCase
 {
@@ -126,13 +127,13 @@ class CertsSignupTest extends TestCase
     }
 
     public function getSignupCode(){
-        $rand = mt_rand(10000,20000000);
+        $randStr = Str::random(20);
         $this->json('POST', "/v1/members/signup" , [
-              "email" => "nononoenofnd".$rand."@pixelstairs.com",
-              "password" => "password1234!".$rand,
-              "nickname" => "usernicks".$rand,
-              "newsletterAccepted" => true,
-              "termsOfServiceAccepted" => true
+            "email" => $randStr."@pixelstairs.com",
+            "password" => $randStr,
+            "nickname" => $randStr,
+            "newsletterAccepted" => true,
+            "termsOfServiceAccepted" => true
         ])
             ->assertResponseStatus(200);
         $user = App\Models\User::orderBy('id','desc')->first();
