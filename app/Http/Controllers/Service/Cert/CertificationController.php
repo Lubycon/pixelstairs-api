@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Service\Cert;
 
 // Global
+use App\Models\SignupAllow;
 use Log;
 use Auth;
 use Abort;
@@ -53,6 +54,8 @@ class CertificationController extends Controller
      */
     public function checkCode(CertCheckCodeRequest $request)
     {
+        if(User::isGhost()) $this->user = SignupAllow::whereToken($request->code)->firstOrFail()->user;
+
         $validity = $this->user->checkSignupCode($request->code);
         if($validity) {
             $this->user->update([

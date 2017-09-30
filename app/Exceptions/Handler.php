@@ -46,6 +46,8 @@ class Handler extends ExceptionHandler
         HttpException::class,
         ModelNotFoundException::class,
         ValidationException::class,
+        TokenInvalidException::class,
+        TokenExpiredException::class,
     ];
 
     public function report(Exception $e)
