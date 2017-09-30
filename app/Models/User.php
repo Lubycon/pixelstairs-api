@@ -59,6 +59,9 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereBirthday($value)
  * @property-read \App\Models\BlackUser $blackUser
  * @property-read \App\Models\Signdrop $signdrop
+ * @property \Illuminate\Database\Eloquent\Collection|\App\Models\AccessToken[] $token
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User inDropTerm()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\User whereToken($value)
  */
 class User extends Model implements AuthenticatableContract,
     AuthorizableContract,

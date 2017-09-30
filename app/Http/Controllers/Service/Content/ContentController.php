@@ -151,6 +151,8 @@ class ContentController extends Controller
      */
     protected function uploadImage(ContentImagePostRequest $request,$content_id){
         $this->content = Content::findOrFail($content_id);
+        if( $this->content->isImageUploaded() ) return Abort::Error('0015');
+
         $this->uploader = new FileUpload();
         $this->content->update([
             "image_group_id" => $this->uploader->upload(
