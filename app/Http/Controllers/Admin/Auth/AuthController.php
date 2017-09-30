@@ -44,7 +44,6 @@ class AuthController extends Controller
 
         $this->user = Auth::user();
         if( $this->user->isAdmin()){
-            $token = $this->user->insertAccessToken();
             return response()->success([
                 'token' => $token,
                 'grade' => $this->user->grade,
@@ -60,7 +59,7 @@ class AuthController extends Controller
         $signupData = User::bindSignupData($request);
 
         if( $this->user = User::create($signupData)){
-            $token = $this->user->insertAccessToken();
+            $token = JWTAuth::fromUser($this->user);
             return response()->success([
                 "token" => $token
             ]);
