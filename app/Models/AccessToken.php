@@ -11,6 +11,16 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
+/**
+ * App\Models\AccessToken
+ *
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\AccessToken expired()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\AccessToken latest()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\AccessToken my()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\AccessToken notExpired()
+ * @mixin \Eloquent
+ */
 class AccessToken extends Model
 {
     use SoftDeletes;

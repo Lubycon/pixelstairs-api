@@ -46,6 +46,8 @@ class Handler extends ExceptionHandler
         HttpException::class,
         ModelNotFoundException::class,
         ValidationException::class,
+        TokenInvalidException::class,
+        TokenExpiredException::class,
     ];
 
     public function report(Exception $e)
@@ -111,6 +113,7 @@ class Handler extends ExceptionHandler
             case $e instanceof ServiceUnavailableHttpException:    return '0074';  break;
             case $e instanceof TokenExpiredException:              return '0062';  break;
             case $e instanceof TokenInvalidException:              return '0041';  break;
+
             default: return null; break;
         }
     }
