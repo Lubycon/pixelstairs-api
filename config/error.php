@@ -124,7 +124,7 @@ return [
     "msg" => "Login Failure"
 ),
 "0062" => (object)array(
-    "httpCode" => 401,
+    "httpCode" => 419,
     "msg" => "Token Expired"
 ),
 //↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑

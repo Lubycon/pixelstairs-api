@@ -19,10 +19,9 @@ class Authenticate
     protected $authHeaderName = 'x-pixel-token';
     protected $token;
     protected $headerName;
-
-    public function __construct()
-    {
-    }
+    protected $except = [
+        'v1/members/token/refresh'
+    ];
 
     /**
      * Handle an incoming request.
@@ -34,12 +33,14 @@ class Authenticate
     public function handle($request, Closure $next)
     {
         $this->setRequest($request);
-        if( $this->isOptionMethod() === false ) {
-            $this->setHeaderName();
-            if( !is_null($this->token) ){
-                $this->setHeaderForLegacy();
-                if (!JWTAuth::setRequest($this->request)->parseToken()->authenticate()){
-                    return Abort::Error('0043',"Check Token");
+        if( !in_array($request->path(),$this->except) ) {
+            if ($this->isOptionMethod() === false) {
+                $this->setHeaderName();
+                if (!is_null($this->token)) {
+                    $this->setHeaderForLegacy();
+                    if (!JWTAuth::setRequest($this->request)->parseToken()->authenticate()) {
+                        return Abort::Error('0043', "Check Token");
+                    }
                 }
             }
         }
