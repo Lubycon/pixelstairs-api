@@ -10,6 +10,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 // Models
 use App\Models\User;
+use App\Models\RefreshToken;
 
 // Require
 use Illuminate\Http\Request;
@@ -38,14 +39,16 @@ class AuthController extends Controller
     {
         $credentials = User::bindSigninData($request);
 
-        if (! $token = JWTAuth::attempt($credentials)) {
+        if (! $access_token = JWTAuth::attempt($credentials)) {
             return Abort::Error('0061');
         }
 
         $this->user = Auth::user();
+        $refresh_token = RefreshToken::createToken($access_token);
         if( $this->user->isAdmin()){
             return response()->success([
-                'token' => $token,
+                'access_token' => $access_token,
+                'refresh_token' => $refresh_token,
                 'grade' => $this->user->grade,
                 'status' => $this->user->status,
             ]);
@@ -59,9 +62,12 @@ class AuthController extends Controller
         $signupData = User::bindSignupData($request);
 
         if( $this->user = User::create($signupData)){
-            $token = JWTAuth::fromUser($this->user);
+            $access_token = JWTAuth::fromUser($this->user);
+            $auth = JWTAuth::setToken($access_token)->authenticate();
+            $refresh_token = RefreshToken::createToken($access_token);
             return response()->success([
-                "token" => $token
+                'access_token' => $access_token,
+                'refresh_token' => $refresh_token,
             ]);
         }
         return Abort::Error('0040');

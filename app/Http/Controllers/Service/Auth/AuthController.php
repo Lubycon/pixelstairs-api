@@ -128,6 +128,7 @@ class AuthController extends Controller
 
         if( $this->user = User::create($signupData)){
             $access_token = JWTAuth::fromUser($this->user);
+            $auth = JWTAuth::setToken($access_token)->authenticate();
             $refresh_token = RefreshToken::createToken($access_token);
             $this->dispatch(new SignupMailSendJob($this->user));
             return response()->success([
@@ -295,6 +296,7 @@ class AuthController extends Controller
     {
         $this->user = User::getFromEmail($request->email);
         $access_token = JWTAuth::fromUser($this->user);
+        $auth = JWTAuth::setToken($access_token)->authenticate();
         $refresh_token = RefreshToken::createToken($access_token);
         $this->dispatch(new SignupMailSendJob($this->user));
         return response()->success([
