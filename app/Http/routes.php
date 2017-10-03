@@ -126,9 +126,10 @@ Route::group(['prefix' => '/v1', 'domain' => env('APP_URL')], function () {
 });
 
 
-Route::post('/admin/members/signin', 'Admin\Auth\AuthController@signin');
-
 // ADMIN API
+Route::group(['prefix' => '/', 'domain' => env('ADMIN_APP_URL')], function () {
+    Route::post('/members/signin', 'Admin\Auth\AuthController@signin');
+});
 Route::group(['prefix' => '/', 'middleware' => 'auth.admin', 'domain' => env('ADMIN_APP_URL')], function () {
     Route::group(['prefix' => '/members/'], function () {
         Route::put('signout', 'Service\Auth\AuthController@signout');
