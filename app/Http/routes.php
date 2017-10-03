@@ -147,3 +147,7 @@ Route::group(['prefix' => '/admin', 'middleware' => 'auth.admin'], function () {
         });
     });
 });
+
+Route::get('/ping', function () {
+    return 'pong';
+});
