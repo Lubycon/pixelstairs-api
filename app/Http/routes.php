@@ -76,22 +76,6 @@ Route::group(['prefix' => '/v1'], function () {
         });
     });
 
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    Route::group(['prefix' => '/mail/'], function () {
-        Route::put('password', 'Service\Auth\PasswordController@postMail');
-    });
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-    // !!!!!!!!!!!Deprecated
-
     Route::group(['prefix' => '/contents/'], function () {
         Route::get('', 'Service\Content\ContentController@getList');
         Route::post('', 'Service\Content\ContentController@post');
@@ -135,7 +119,7 @@ Route::group(['prefix' => '/admin', 'middleware' => 'auth.admin'], function () {
         Route::post('signup', 'Admin\Auth\AuthController@signup');
 
         Route::get('', 'Admin\Member\AdminMemberController@getList');
-        Route::get('simple', 'Service\Member\MemberController@simpleRetrieve');
+        Route::get('simple', 'Service\Member\MemberController@getMyRetrieve');
 
         Route::group(['prefix' => '{id}/'], function () {
             Route::delete('signdrop', 'Admin\Auth\AuthController@signdrop');
