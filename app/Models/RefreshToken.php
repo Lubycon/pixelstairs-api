@@ -36,14 +36,6 @@ class RefreshToken extends Model
         'user_id' => 'string',
     ];
 
-//    public static function getMyLastToken(){
-//        $myToken = null;
-//        if( User::isUser() ){
-//            $myToken = static::my()->matchJWT()->latest()->first();
-//        }
-//        return $myToken;
-//    }
-
     public static function getValidToken(){
         $refresh_token = app('request')->headers->get('x-pixel-refresh-token');
         return static::my()->notExpired()->matchJWT()->where('token', $refresh_token)->first();
