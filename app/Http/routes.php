@@ -18,7 +18,7 @@ Route::get('/', function () {
     return view('welcome', ['ifYouWantPassData' => 'put in here', 'and' => 'more']);
 });
 
-Route::group(['prefix' => '/v1'], function () {
+Route::group(['prefix' => '/v1', 'domain' => env('APP_URL')], function () {
     /* FOR TEST START */
     Route::group(['prefix' => '/test'], function () {
         Route::post('testerReset', 'Service\Auth\AuthController@testerReset');
@@ -110,10 +110,11 @@ Route::group(['prefix' => '/v1'], function () {
 });
 
 
-Route::post('/admin/members/signin', 'Admin\Auth\AuthController@signin');
-
 // ADMIN API
-Route::group(['prefix' => '/admin', 'middleware' => 'auth.admin'], function () {
+Route::group(['prefix' => '/', 'domain' => env('ADMIN_APP_URL')], function () {
+    Route::post('/members/signin', 'Admin\Auth\AuthController@signin');
+});
+Route::group(['prefix' => '/', 'middleware' => 'auth.admin', 'domain' => env('ADMIN_APP_URL')], function () {
     Route::group(['prefix' => '/members/'], function () {
         Route::put('signout', 'Service\Auth\AuthController@signout');
         Route::post('signup', 'Admin\Auth\AuthController@signup');
