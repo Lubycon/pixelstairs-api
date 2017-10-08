@@ -248,6 +248,8 @@ class AuthController extends Controller
     protected function refreshAccessToken(Request $request)
     {
         $new_access_token = null;
+        $refresh_token = null;
+
         try {
             if (!$this->user = JWTAuth::parseToken()->authenticate()) Abort::Error('0054');
         } catch (TokenExpiredException $e) {
@@ -265,10 +267,14 @@ class AuthController extends Controller
             $this->user = User::findOrFail($sub);
             $new_access_token = JWTAuth::fromUser($this->user);
             $auth = JWTAuth::setToken($new_access_token)->authenticate();
+            $refresh_token = RefreshToken::getValidToken();
         } catch (\Exception $e) {
             Abort::Error('0061',$e);
         }
-        if( !is_null(RefreshToken::getValidToken()) ){
+        if( !is_null($refresh_token) ){
+            $refresh_token->update([
+                "jwt_token" => $new_access_token
+            ]);
             return response()->success($new_access_token);
         }
         return Abort::Error('0062');
