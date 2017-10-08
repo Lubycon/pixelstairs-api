@@ -120,7 +120,7 @@ Route::group(['prefix' => '/', 'middleware' => 'auth.admin', 'domain' => env('AD
         Route::post('signup', 'Admin\Auth\AuthController@signup');
 
         Route::get('', 'Admin\Member\AdminMemberController@getList');
-        Route::get('simple', 'Service\Member\MemberController@getMyRetrieve');
+        Route::get('me', 'Service\Member\MemberController@getMyRetrieve');
 
         Route::group(['prefix' => '{id}/'], function () {
             Route::delete('signdrop', 'Admin\Auth\AuthController@signdrop');
