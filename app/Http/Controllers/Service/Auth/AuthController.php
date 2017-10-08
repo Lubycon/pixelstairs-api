@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Service\Auth;
 
 // Global
+use App\Models\RefreshToken;
 use Log;
 use Mockery\Exception;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -25,6 +26,11 @@ use App\Http\Requests\Service\Auth\AuthSigndropRequest;
 use App\Http\Requests\Service\Auth\AuthSignoutRequest;
 use App\Http\Requests\Service\Auth\AuthEmailExistRequest;
 use App\Http\Requests\Service\Auth\AuthNicknameExistRequest;
+
+// Exceptions
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 // Jobs
 use App\Jobs\LastSigninTimeCheckerJob;
@@ -63,15 +69,17 @@ class AuthController extends Controller
     {
         $credentials = User::bindSigninData($request);
 
-        if (! $token = JWTAuth::attempt($credentials)) {
+        if (! $access_token = JWTAuth::attempt($credentials)) {
             return Abort::Error('0061');
         }
 
         $this->user = Auth::user();
         $this->dispatch(new LastSigninTimeCheckerJob($this->user));
+        $refresh_token = RefreshToken::createToken($access_token);
 
         return response()->success([
-            'token' => $token,
+            'access_token' => $access_token,
+            'refresh_token' => $refresh_token,
             'grade' => $this->user->grade,
             'status' => $this->user->status,
         ]);
@@ -119,10 +127,13 @@ class AuthController extends Controller
         $signupData = User::bindSignupData($request);
 
         if( $this->user = User::create($signupData)){
-            $token = JWTAuth::fromUser($this->user);
+            $access_token = JWTAuth::fromUser($this->user);
+            $auth = JWTAuth::setToken($access_token)->authenticate();
+            $refresh_token = RefreshToken::createToken($access_token);
             $this->dispatch(new SignupMailSendJob($this->user));
             return response()->success([
-                "token" => $token
+                'access_token' => $access_token,
+                'refresh_token' => $refresh_token,
             ]);
         }
         return Abort::Error('0040');
@@ -212,29 +223,55 @@ class AuthController extends Controller
     }
 
     /**
-     * @SWG\Post(
-     *   path="/test/testerReset",
-     *   summary="testerReset",
-     *   operationId="testerReset",
-     *   tags={"/Test"},
+     * @SWG\Get(
+     *   path="/members/token/refresh",
+     *   summary="Refresh access token",
+     *   operationId="refreshAccessToken",
+     *   tags={"/Members/Auth"},
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="Authorization",
+     *      in="header",
+     *      default="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaXNzIjoiaHR0cDovL2FwaWxvY2FsLnBpeGVsc3RhaXJzLmNvbTo4MDgwL3YxL21lbWJlcnMvc2lnbmluIiwiaWF0IjoxNTA2MjQyNzU2LCJleHAiOjI0OTc3OTA1MTcwMTA5ODg3NTYsIm5iZiI6MTUwNjI0Mjc1NiwianRpIjoiNGFGVDV5VEtlaTdiVDVtWiJ9.AcYrVZBkvIepPi66IGUG0RMHDiv2b93kEEet3Ie0loU",
+     *      required=true
+     *     ),
+     *     @SWG\Parameter(
+     *      type="string",
+     *      name="x-pixel-refresh-token",
+     *      in="header",
+     *      default="dpMqeFNmM1x1g0akHDsGYyWcKM5kfpYnHxi2r9KsSSQThrD3E9l2",
+     *      required=true
+     *     ),
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */
-    protected function testerReset(Request $request)
+    protected function refreshAccessToken(Request $request)
     {
-        $testUserId = 2;
-        $this->user = User::find($testUserId);
-        if( is_null($this->user) ){
-            $this->user = User::onlyTrashed()->where('id', $testUserId)->first();
-            $this->user->restore();
+        $new_access_token = null;
+        try {
+            if (!$this->user = JWTAuth::parseToken()->authenticate()) Abort::Error('0054');
+        } catch (TokenExpiredException $e) {
+            // pass!
+        } catch (TokenInvalidException $e) {
+            Abort::Error('0061',$e);
+        } catch (JWTException $e) {
+            Abort::Error('0061',$e);
         }
 
-        Auth::onceUsingId($testUserId);
-        AccessToken::createToken();
-        Auth::user()->token()->first()->update([
-            "token" => "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaXNzIjoiaHR0cDovL2FwaWxvY2FsLnBpeGVsc3RhaXJzLmNvbTo4MDgwL3YxL21lbWJlcnMvc2lnbmluIiwiaWF0IjoxNTA2MjQyNzU2LCJleHAiOjI0OTc3OTA1MTcwMTA5ODg3NTYsIm5iZiI6MTUwNjI0Mjc1NiwianRpIjoiNGFGVDV5VEtlaTdiVDVtWiJ9.AcYrVZBkvIepPi66IGUG0RMHDiv2b93kEEet3Ie0loU",
-        ]);
-        return response()->success(true);
+        try {
+            $expired_access_token = RefreshToken::getPureJWTToken();
+            $payload = RefreshToken::getJWTTokenPayload($expired_access_token);
+            $sub = $payload['sub'];
+            $this->user = User::findOrFail($sub);
+            $new_access_token = JWTAuth::fromUser($this->user);
+            $auth = JWTAuth::setToken($new_access_token)->authenticate();
+        } catch (\Exception $e) {
+            Abort::Error('0061',$e);
+        }
+        if( !is_null(RefreshToken::getValidToken()) ){
+            return response()->success($new_access_token);
+        }
+        return Abort::Error('0062');
     }
 
     /**
@@ -258,11 +295,13 @@ class AuthController extends Controller
     protected function signupTest(Request $request)
     {
         $this->user = User::getFromEmail($request->email);
-        $token = $this->user->insertAccessToken();
+        $access_token = JWTAuth::fromUser($this->user);
+        $auth = JWTAuth::setToken($access_token)->authenticate();
+        $refresh_token = RefreshToken::createToken($access_token);
         $this->dispatch(new SignupMailSendJob($this->user));
         return response()->success([
-            "user" => $this->user,
-            "token" => $token
+            'access_token' => $access_token,
+            'refresh_token' => $refresh_token,
         ]);
     }
 }

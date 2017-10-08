@@ -14,7 +14,6 @@ class Kernel extends HttpKernel
     protected $middleware = [
         \App\Http\Middleware\Authenticate::class,
         \App\Http\Middleware\CorsHandler::class,
-        \App\Http\Middleware\SecurityHandler::class,
         \App\Http\Middleware\UserInformationCapture::class,
     ];
 
