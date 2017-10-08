@@ -18,18 +18,7 @@ class ContentImagePostRequest extends Request
         return User::isActive() && User::isUser() && User::isMyContent($content_id);
     }
 
-    /**
-     *  @SWG\Definition(
-     *   definition="contents/image/post",
-     *   type="object",
-     *   allOf={
-     *       @SWG\Schema(
-     *           required={"file"},
-     *           @SWG\Property(property="file", type="file", default="a image file"),
-     *       )
-     *   }
-     * )
-     */
+    // Swagger definition in Controller
     public function rules()
     {
         $requiredRule = [

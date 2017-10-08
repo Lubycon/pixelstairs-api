@@ -128,7 +128,15 @@ class ContentController extends Controller
 
     /**
      * @SWG\Post(
-     *   path="/contents/image",
+     *   path="/contents/{content_id}/image",
+     *   @SWG\Parameter(
+     *     name="content_id",
+     *     description="ID of content that needs",
+     *     in="path",
+     *     required=true,
+     *     type="string",
+     *     default="1",
+     *   ),
      *   summary="image upload",
      *   operationId="image upload",
      *   tags={"/Contents/Image"},
@@ -140,12 +148,12 @@ class ContentController extends Controller
      *      required=true
      *     ),
      *     @SWG\Parameter(
-     *     in="body",
-     *     name="body",
-     *     description="Post detail",
-     *     required=true,
-     *      @SWG\Schema(ref="#/definitions/contents/image/post")
-     *   ),
+     *         description="file to upload",
+     *         in="formData",
+     *         name="file",
+     *         required=true,
+     *         type="file"
+     *     ),
      *   @SWG\Response(response=200, description="successful operation")
      * )
      */
