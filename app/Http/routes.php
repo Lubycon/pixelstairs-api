@@ -21,7 +21,6 @@ Route::get('/', function () {
 Route::group(['prefix' => '/v1'], function () {
     /* FOR TEST START */
     Route::group(['prefix' => '/test'], function () {
-
         Route::post('testerReset', 'Service\Auth\AuthController@testerReset');
 
         Route::group(['prefix' => '/mail'], function () {
@@ -39,6 +38,7 @@ Route::group(['prefix' => '/v1'], function () {
         Route::post('signup', 'Service\Auth\AuthController@signup');
         Route::delete('signdrop', 'Service\Auth\AuthController@signdrop');
         Route::get('signdrop/survey/list', 'Service\Survey\SigndropSurveyController@getList');
+        Route::get('token/refresh', 'Service\Auth\AuthController@refreshAccessToken');
 
         Route::group(['prefix' => 'exists/'], function () {
             Route::post('email', 'Service\Auth\AuthController@emailExist');
