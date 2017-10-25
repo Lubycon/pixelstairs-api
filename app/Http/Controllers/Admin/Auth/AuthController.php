@@ -77,6 +77,7 @@ class AuthController extends Controller
     {
         $this->user = User::findOrFail($id);
         if($this->user->delete()){
+            JWTAuth::invalidate();
             return response()->success();
         }
         return Abort::Error('0040');
