@@ -103,6 +103,7 @@ class AuthController extends Controller
      */
     protected function signout(AuthSignoutRequest $request)
     {
+        JWTAuth::invalidate();
         return response()->success();
     }
 
@@ -173,6 +174,7 @@ class AuthController extends Controller
         }
 
         if($this->user->delete()){
+            JWTAuth::invalidate();
             return response()->success();
         }
         return Abort::Error('0040');
@@ -265,8 +267,7 @@ class AuthController extends Controller
             $payload = RefreshToken::getJWTTokenPayload($expired_access_token);
             $sub = $payload['sub'];
             $this->user = User::findOrFail($sub);
-            $new_access_token = JWTAuth::fromUser($this->user);
-            $auth = JWTAuth::setToken($new_access_token)->authenticate();
+            $new_access_token = JWTAuth::refresh($expired_access_token);
             $refresh_token = RefreshToken::getValidToken();
         } catch (\Exception $e) {
             Abort::Error('0061',$e);
